@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { BookStatus, Prisma, UserRole } from '@prisma/client';
+import { BookStatus, Prisma, UserRole } from '../../generated/prisma/client';
 import slugify from 'slugify';
 import { PrismaService } from '../database/prisma.service';
 import { ProcessingQueue } from '../processing/processing.queue';
