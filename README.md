@@ -140,3 +140,21 @@ For a manual smoke test:
 - Secure PDF reader with presigned URLs and reading-progress mutation.
 - Full catalog search and full-text OCR indexing.
 - Management dashboard metrics.
+
+## GitHub Actions CI notifications
+
+Pull requests run the `CI` workflow, which installs npm workspaces, prepares `.env` from `.env.example`, then runs build and test jobs. When that workflow completes for a pull request, `CI Email Notification` sends the result to the PR author through SMTP.
+
+Configure these repository secrets before expecting emails:
+
+| Secret | Purpose |
+|---|---|
+| `SMTP_HOST` | SMTP server host. |
+| `SMTP_PORT` | SMTP server port, usually `587` for STARTTLS or `465` for SSL. |
+| `SMTP_USERNAME` | SMTP username. |
+| `SMTP_PASSWORD` | SMTP password or app password. |
+| `SMTP_FROM` | Sender address, for example `LIBIF CI <ci@example.com>`. |
+| `SMTP_SECURE` | Optional: `starttls` (default), `ssl`, or `none`. |
+| `CI_RESULTS_FALLBACK_EMAIL` | Optional fallback recipient if the PR author's public or commit email cannot be resolved. |
+
+GitHub may hide user email addresses. The notifier first tries the PR author's public GitHub profile email, then a non-`noreply` commit author email, and skips sending if neither is available and no fallback is configured.

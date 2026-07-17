@@ -1,0 +1,35 @@
+name: CI Email Notification
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  email-pr-author:
+    name: Email PR author
+    if: ${{ github.event.workflow_run.event == 'pull_request' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout trusted notification script
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Send CI result email
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          SMTP_FROM: ${{ secrets.SMTP_FROM }}
+          SMTP_SECURE: ${{ secrets.SMTP_SECURE }}
+          CI_RESULTS_FALLBACK_EMAIL: ${{ secrets.CI_RESULTS_FALLBACK_EMAIL }}
+        run: python3 .github/scripts/send-ci-result-email.py
