@@ -1,0 +1,134 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  LIBRARIAN
+  READER
+}
+
+enum BookStatus {
+  DRAFT
+  PENDING_PROCESSING
+  PROCESSING
+  PENDING_APPROVAL
+  PUBLISHED
+  REJECTED
+}
+
+enum ProcessingJobStatus {
+  QUEUED
+  RUNNING
+  SUCCEEDED
+  FAILED
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  role         UserRole
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  booksCreated Book[]   @relation("BookCreator")
+}
+
+model Book {
+  id            String          @id @default(cuid())
+  isbn          String?         @unique
+  title         String
+  subtitle      String?
+  description   String?
+  publisher     String?
+  publishedYear Int?
+  language      String?         @default("vi")
+  status        BookStatus      @default(PENDING_PROCESSING)
+  categoryId    String?
+  category      Category?       @relation(fields: [categoryId], references: [id])
+  createdById   String
+  createdBy     User            @relation("BookCreator", fields: [createdById], references: [id])
+  files         BookFile[]
+  authors       BookAuthor[]
+  tags          BookTag[]
+  jobs          ProcessingJob[]
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  @@index([title])
+  @@index([status])
+  @@index([categoryId])
+}
+
+model BookFile {
+  id               String   @id @default(cuid())
+  bookId           String
+  book             Book     @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  bucket           String
+  objectKey        String   @unique
+  originalFilename String
+  mimeType         String
+  sizeBytes        BigInt
+  checksumSha256   String
+  createdAt        DateTime @default(now())
+}
+
+model Author {
+  id    String       @id @default(cuid())
+  name  String       @unique
+  books BookAuthor[]
+}
+
+model BookAuthor {
+  bookId   String
+  authorId String
+  book     Book   @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  author   Author @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@id([bookId, authorId])
+}
+
+model Category {
+  id       String     @id @default(cuid())
+  name     String
+  slug     String     @unique
+  parentId String?
+  parent   Category?  @relation("CategoryTree", fields: [parentId], references: [id])
+  children Category[] @relation("CategoryTree")
+  books    Book[]
+}
+
+model Tag {
+  id    String    @id @default(cuid())
+  name  String
+  slug  String    @unique
+  books BookTag[]
+}
+
+model BookTag {
+  bookId String
+  tagId  String
+  book   Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  tag    Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([bookId, tagId])
+}
+
+model ProcessingJob {
+  id           String              @id @default(cuid())
+  bookId       String
+  book         Book                @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  type         String              @default("PDF_OCR_PIPELINE")
+  status       ProcessingJobStatus @default(QUEUED)
+  attempts     Int                 @default(0)
+  errorMessage String?
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+
+  @@index([bookId, status])
+}
