@@ -16,7 +16,9 @@ All AI-produced planning and design-reference artifacts are centralized under `a
 | `ai_artifacts/docs/component-inventory.md` | Shared component contracts and current implementation inventory. |
 | `ai_artifacts/docs/workflow-state-machines.md` | Workflow states, commands, events, permissions, and response expectations. |
 | `ai_artifacts/docs/api-contracts.md` | Current and target API/OpenAPI contract notes by batch. |
+| `ai_artifacts/docs/team_backlog_80_90_completion.md` | Canonical four-member backlog for reaching 80-90% application completion, including phase roadmap, ownership lanes, merge rules, task IDs, expected results, and validation. |
 | `ai_artifacts/plans/` | Approved execution plans by phase. |
+| `ai_artifacts/skeletons/` | Planning skeleton maps for future API modules, web routes, and domain components. These are not runtime placeholders; use them to determine expected files and ownership before generating implementation files. |
 | `ai_artifacts/stitch_design/` | Read-only Stitch screenshots, generated HTML, and reference design notes. |
 
 Root `docs/` contains original source/product PDFs. Do not put new AI working docs there unless a human explicitly asks for product-facing documentation in that location.
@@ -117,12 +119,14 @@ Core visual decisions live in `ai_artifacts/docs/ui-decisions.md`. Current found
 Before implementing a phase or batch, read the relevant docs in this order:
 
 1. `Agent_Prompt.md`
-2. The approved plan in `ai_artifacts/plans/`
-3. `architecture-alignment.md`
-4. `screen-matrix.md`
-5. `component-inventory.md`
-6. `ui-decisions.md`
-7. `workflow-state-machines.md` and `api-contracts.md` when contracts or workflows are touched
+2. `ai_artifacts/docs/team_backlog_80_90_completion.md` for the current member lane, task IDs, merge-conflict rules, and phase expectations
+3. The relevant skeleton map in `ai_artifacts/skeletons/` for the module, route, or component family you are assigned
+4. The approved plan in `ai_artifacts/plans/`
+5. `architecture-alignment.md`
+6. `screen-matrix.md`
+7. `component-inventory.md`
+8. `ui-decisions.md`
+9. `workflow-state-machines.md` and `api-contracts.md` when contracts or workflows are touched
 
 When implementation changes decisions or contracts:
 
@@ -135,22 +139,68 @@ When implementation changes decisions or contracts:
 - Keep component APIs and implementation paths in `component-inventory.md` only.
 - Keep API shape details in `api-contracts.md` only.
 
-## 7. Phase and batch workflow
+## 7. Team backlog and member-lane contract
+
+For high-completion work, use `ai_artifacts/docs/team_backlog_80_90_completion.md` as the canonical backlog and `ai_artifacts/skeletons/` as the file-ownership map.
+
+Every implementation agent must know which member lane they are executing before editing code:
+
+- **Member A — Reader Experience and Access**
+- **Member B — Document, Upload, and Catalog Management**
+- **Member C — Processing, Approval, and Notifications**
+- **Member D — Admin Operations, Taxonomy, Reporting, Settings, and Integration**
+
+When assigned to a member lane:
+
+1. Follow only the tasks, task IDs, directories, modules, routes, and components assigned to that member unless the user or phase lead explicitly widens scope.
+2. Treat the skeleton README files as the authoritative map for future files in your lane.
+3. Do not edit another member's owned module, route subtree, component family, tests, or docs section to “help” unless your task explicitly lists that shared touchpoint.
+4. Do not regenerate OpenAPI/client files, create Prisma migrations, or alter shared UI primitives unless your task explicitly assigns you that integration responsibility.
+5. If a needed change crosses lanes, stop that part of the work and report the exact cross-lane dependency instead of silently editing another member's files.
+6. Prefer additive DTO/API changes during feature work; breaking renames/removals belong in a dedicated integration PR.
+7. Keep docs updates limited to the smallest relevant section and avoid duplicating status already captured in the backlog, skeletons, screen matrix, or progress checklist.
+
+Use this assignment prompt shape for AI agents:
+
+```text
+You are Member [A/B/C/D] working on [TASK-ID] from ai_artifacts/docs/team_backlog_80_90_completion.md.
+
+Read first:
+- ai_artifacts/prompts/Agent_Prompt.md
+- ai_artifacts/docs/team_backlog_80_90_completion.md
+- relevant ai_artifacts/skeletons/**/README.md files
+
+Edit only:
+- [owned files/directories from the backlog and skeleton map]
+
+Do not edit:
+- other member lanes
+- shared UI primitives
+- Prisma schema/migrations
+- generated OpenAPI/client files
+- unrelated docs
+
+If the task requires cross-lane changes, report the dependency and keep your implementation inside your lane.
+```
+
+## 8. Phase and batch workflow
 
 Work architecture-first and component-first.
 
 For every phase or feature batch:
 
 1. Confirm scope from the approved plan and screen matrix.
-2. Inspect only the relevant Stitch folders for the current batch.
-3. Confirm required shared primitives/domain components already exist; extend them before composing routes.
-4. Define or verify typed view models, DTOs, API contracts, permissions, and workflow states before integration.
-5. Compose routes from shared components.
-6. Keep loading, empty, error, success, permission, filtered, and responsive states in the same route model where they represent one workflow.
-7. Update docs as part of the batch, not afterward as a separate cleanup.
-8. Stop and report at the end of the phase/batch; do not automatically start the next one.
+2. Confirm your assigned member lane and task IDs from `team_backlog_80_90_completion.md`.
+3. Read the relevant skeleton README files before creating new module, route, or component files.
+4. Inspect only the relevant Stitch folders for the current batch.
+5. Confirm required shared primitives/domain components already exist; extend them before composing routes.
+6. Define or verify typed view models, DTOs, API contracts, permissions, and workflow states before integration.
+7. Compose routes from shared components.
+8. Keep loading, empty, error, success, permission, filtered, and responsive states in the same route model where they represent one workflow.
+9. Update docs as part of the batch, not afterward as a separate cleanup.
+10. Stop and report at the end of the phase/batch; do not automatically start the next one.
 
-## 8. Implementation batches
+## 9. Implementation batches
 
 Use the batch assignments in `screen-matrix.md` as the source of truth.
 
@@ -165,7 +215,7 @@ Use the batch assignments in `screen-matrix.md` as the source of truth.
 
 Phase 3 authentication/access is complete: production credential flows, persisted sessions, password reset, auth screens, cookie-aware API adapters, and updated contracts are in place. Next work should move to Batch 2 / Phase 4 reader discovery and personal-library foundations before protected reader modules depend on entitlement state.
 
-## 9. Accessibility and interaction requirements
+## 10. Accessibility and interaction requirements
 
 - Exactly one H1 per route.
 - Every form control has a visible label or explicit accessible name.
@@ -178,7 +228,7 @@ Phase 3 authentication/access is complete: production credential flows, persiste
 - Progress uses semantic progressbar attributes.
 - Meet WCAG AA contrast and visible-focus requirements.
 
-## 10. Quality gates
+## 11. Quality gates
 
 A phase or batch is not complete while it contains:
 
@@ -198,7 +248,7 @@ A phase or batch is not complete while it contains:
 
 Run the smallest useful verification for the change, then broaden as risk increases. Standard implementation batches should include lint, tests, production build, targeted accessibility checks, and any relevant API/e2e checks.
 
-## 11. Required completion report
+## 12. Required completion report
 
 After every phase or batch, report:
 
