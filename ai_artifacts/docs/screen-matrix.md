@@ -1,8 +1,8 @@
 # Screen Matrix
 
-Generated: 2026-07-20 08:47:25Z
+Last updated: 2026-07-20
 
-Every actual first-level `stitch_design/` folder is mapped below. Route entries are canonical targets for later phases; Phase 0 does not implement them.
+Every first-level `ai_artifacts/stitch_design/` artifact is mapped below. Route entries are canonical targets for later phases; Phase 0 does not implement them.
 
 | Source folder | Canonical Next.js route | Role / permission | Workflow | Workflow state | Type | Frontend feature | Owning NestJS module | REST endpoints required | Reused shell | Reused components | Batch | Implementation status |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|

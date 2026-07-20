@@ -1,6 +1,6 @@
 # UI Decisions
 
-Generated: 2026-07-20 08:47:25Z
+Last updated: 2026-07-20
 
 ## Canonical brand and workspace naming
 
@@ -27,7 +27,7 @@ Generated: 2026-07-20 08:47:25Z
 | `--color-text-secondary` | `#414846` | Secondary text |
 | `--color-error` | `#BA1A1A` | Errors and destructive states |
 
-Add semantic success, warning, and information tokens with WCAG AA contrast during Phase 1.
+Semantic success, warning, information, error-surface, and muted-surface tokens are implemented in `apps/web/styles/tokens.css`.
 
 ## Typography and spacing
 
@@ -157,7 +157,7 @@ Add semantic success, warning, and information tokens with WCAG AA contrast duri
   - `--color-info: #2457A6`
   - matching success/warning/info/error/muted surface tokens.
 - Component catalogue decision: Storybook was not added in Phase 1 to avoid dependency/tooling sprawl. A non-production component catalogue was added at `apps/web/components/catalogue/ComponentCatalogue.tsx` to demonstrate required component states without creating a public route.
-- Dialog/Drawer decision: Phase 1 provides accessible labelled foundations. Full production-grade focus-trap hardening remains a later overlay-specific implementation concern unless a small accessibility dependency is approved.
+- Dialog/Drawer decision: Phase 1 foundations include unique labels, Escape close, focus entry, tab containment, body scroll lock, and focus restore. Full animation and route-specific command wiring remain later-phase work.
 
 ### Phase 1 acceptance fix update — 2026-07-20
 

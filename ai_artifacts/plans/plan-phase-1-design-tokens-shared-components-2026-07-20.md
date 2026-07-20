@@ -33,7 +33,7 @@ Root `docs/` currently contains original PDF source docs only, not the Phase 0 m
 | Phase 1 must add Storybook or an isolated component catalogue and demonstrate key states. | `ai_artifacts/prompts/Agent_Prompt.md:534-547` |
 | Phase 1 exit criteria require no raw design hex values in consumers, no duplicate common controls, keyboard support, accessible form relationships, responsive component rendering, component tests/a11y checks, and no complete feature route bypassing shared components. | `ai_artifacts/prompts/Agent_Prompt.md:549-559` |
 | Current UI decisions define LIBIF brand, canonical color tokens, Be Vietnam Pro, spacing/radius/elevation rules, navigation taxonomy, responsive rules, status dictionary, terminology, and Stitch deviations. | `ai_artifacts/docs/ui-decisions.md:5-141` |
-| Current component inventory identifies shared component contracts and notes current one-off UI to migrate later. | `ai_artifacts/docs/component-inventory.md:7-44` |
+| Current component inventory identifies shared component contracts, implementation locations, and remaining migration notes. | `ai_artifacts/docs/component-inventory.md:7-44` |
 | Current app structure uses Next.js App Router under `apps/web/app`, components under `apps/web/components`, and tests under `apps/web/tests`; preserve this structure. | `ai_artifacts/docs/architecture-alignment.md:7-12`; `ai_artifacts/docs/architecture-alignment.md:27-32` |
 | Current `apps/web/app/globals.css` has raw hex values, hard-coded radii/shadow, global button/input/card/nav/dropzone styles. | `apps/web/app/globals.css:1-14` |
 | Current root layout has a global nav; Phase 1 may introduce component primitives and a component catalogue but must not start Phase 2 route-shell migration. | `apps/web/app/layout.tsx:6-19`; `ai_artifacts/prompts/Agent_Prompt.md:563-570` |
@@ -65,7 +65,7 @@ Phase 1 tokens/shared components plan: Phase 1 should establish a production-rea
 - Phase 2 route groups, role-aware app shells, auth boundary, and generated API client.
 - Full implementation of any Stitch feature route.
 - Backend module changes, database migrations, OpenAPI generation, queues/workers, object storage, or auth policy implementation.
-- Pixel-perfect screen cloning or visual regression against all 82 Stitch screens.
+- Pixel-perfect screen cloning or visual regression against the full Stitch reference set.
 - New runtime UI dependencies beyond React/Next unless explicitly justified by the existing prompt and recorded.
 
 ---
@@ -95,10 +95,10 @@ Phase 1 tokens/shared components plan: Phase 1 should establish a production-rea
 
 ### Step 1 — Reconfirm artifact paths and baseline
 
-**Goal:** Prevent future work from reading stale root-level artifact paths.
+**Goal:** Prevent future work from reading stale artifact paths.
 
 - Read `ai_artifacts/prompts/Agent_Prompt.md`, `ai_artifacts/docs/ui-decisions.md`, `ai_artifacts/docs/component-inventory.md`, and `ai_artifacts/docs/architecture-alignment.md`.
-- Confirm `ai_artifacts/stitch_design/` still has 82 first-level folders.
+- Confirm `ai_artifacts/stitch_design/` has not changed from the inventory recorded in `ai_artifacts/docs/stitch-screen-index.md`.
 - Confirm current web files and scripts:
   - `apps/web/app/globals.css`
   - `apps/web/app/layout.tsx`
@@ -278,7 +278,7 @@ Fallback path if dependency policy blocks Storybook:
 **Goal:** Keep `ai_artifacts/` as the current source of truth.
 
 - Update `ai_artifacts/docs/component-inventory.md` with actual implemented component paths and API notes.
-- Update `ai_artifacts/docs/ui-decisions.md` with final success/warning/info values, token file locations, Storybook/catalogue decision, and any intentional deviations.
+- Update `ai_artifacts/docs/ui-decisions.md` with token file locations, catalogue decision, and any intentional deviations.
 - If DataTable or domain components rely on later API contracts, add notes to `ai_artifacts/docs/api-contracts.md` only if contract assumptions changed.
 - Do not move artifacts out of `ai_artifacts/`.
 
@@ -328,7 +328,7 @@ Completion report must use the 16-point format from `ai_artifacts/prompts/Agent_
 ## 7. Verification Steps
 
 1. Confirm artifact context:
-   - `find ai_artifacts/stitch_design -mindepth 1 -maxdepth 1 -type d | wc -l` returns `82`.
+   - `ai_artifacts/docs/stitch-screen-index.md` remains the source of truth for the Stitch reference inventory.
    - `test -f ai_artifacts/docs/component-inventory.md` and `test -f ai_artifacts/docs/ui-decisions.md` pass.
 2. Confirm TypeScript/lint/tests/build:
    - `npm run lint` passes.

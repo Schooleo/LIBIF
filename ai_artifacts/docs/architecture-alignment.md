@@ -1,6 +1,6 @@
 # Architecture Alignment
 
-Generated: 2026-07-20 08:47:25Z
+Last updated: 2026-07-20
 
 ## Current repository structure
 
@@ -9,7 +9,7 @@ Generated: 2026-07-20 08:47:25Z
 - API application: `apps/api` uses NestJS modules under `apps/api/src/modules` and Prisma under `apps/api/prisma`.
 - Shared package: `packages/shared/src/index.ts` currently exports TypeScript DTO types used by both web and API-adjacent code.
 - Infrastructure: `docker-compose.yml`, `docker-compose.debug.yml`, and `docker/pgadmin/servers.json` provide local PostgreSQL, Redis, MinIO, and debug tooling.
-- Existing PDFs under `docs/` are source/product references; Phase 0 markdown docs are now maintained alongside them.
+- Original PDFs under root `docs/` are source/product references; AI planning and implementation docs are maintained under `ai_artifacts/docs/`.
 
 ## Current scripts and quality gates
 
@@ -27,9 +27,9 @@ Generated: 2026-07-20 08:47:25Z
 ## Current route and component baseline
 
 - Current routes: `/`, `/catalog`, `/admin/books`, `/admin/books/new`.
-- Current root layout uses one global navigation in `apps/web/app/layout.tsx`.
-- Current CSS in `apps/web/app/globals.css` uses raw hex values, global element selectors, hard-coded radii, and a general `.card`/`.grid` pattern.
-- Current book intake components are `BookIntakeForm`, `CategoryTagFields`, `MetadataFields`, and `PdfDropzone` under `apps/web/components/book-intake`.
+- Current root layout still uses a simple global navigation; Phase 2 will replace it with role-aware shells and route groups.
+- Phase 1 styling now uses semantic tokens and shared CSS in `apps/web/styles/`, imported from `apps/web/app/globals.css`.
+- Current book intake components under `apps/web/components/book-intake` have been migrated to shared Phase 1 primitives while preserving existing behavior.
 
 ## Current API/module baseline
 
@@ -85,24 +85,20 @@ Generated: 2026-07-20 08:47:25Z
 2. Upload ownership is currently folded into `BooksModule` rather than a separate Upload module/application service boundary.
 3. Frontend API client is hand-written and not generated from or validated against OpenAPI.
 4. OpenAPI generation/decorators are not currently established in the inspected source.
-5. Current web styling uses raw tokens and global selectors rather than semantic CSS variables/Tailwind tokens.
-6. Current root navigation is placeholder-style and not role-aware.
-7. Processing queue exists, but worker entry points and stable UI processing stages are not implemented.
-8. Processing status enum is infrastructure-oriented (`QUEUED`, `RUNNING`, `SUCCEEDED`, `FAILED`) and must map to stable UI domain states (`queued`, `validating`, `compressing`, `performing_ocr`, `indexing`, `retrying`, `completed`, `failed`, `cancelled`).
-9. Current Prisma schema lacks audit records, approval/correction records, notification records, reading state, bookmarks, report export jobs, file versioning, and full-text/search structures.
-10. Admin/Reader route groups and nested layouts are not yet implemented.
+5. Current root navigation is not yet role-aware; Phase 2 owns route groups and shells.
+6. Processing queue exists, but worker entry points and full status endpoints are not implemented.
+7. Current Prisma schema lacks audit records, approval/correction records, notification records, reading state, bookmarks, report export jobs, file versioning, and full-text/search structures.
+8. Admin/Reader route groups and nested layouts are not yet implemented.
 
 ## Design inconsistencies and implementation risks
 
-- Stitch count mismatch: prompt states 80 first-level folders; actual inventory is 82, including three reference/extra folders.
-- `institutional_precision` and `libif_system` lack screenshots and generated HTML; use them as design guidance only.
+- `institutional_precision` and `libif_system` are design guidance references.
 - Generated Tailwind/HTML is not production architecture and must not be copied wholesale.
 - `action_notification_detail` has a known horizontal overflow/clipping risk to correct during Batch 5 implementation.
-- Current web CSS uses non-canonical colors (`#155eef`, `#f7f7fb`, etc.) that conflict with canonical LIBIF tokens.
 
 ## Migration strategy
 
-1. Phase 1: introduce semantic tokens and shared components without changing business behavior.
+1. Phase 1 completed: semantic tokens and shared components are in place without changing business behavior.
 2. Phase 2: add role-aware Next.js route groups/layouts and typed OpenAPI-backed API client.
 3. Later batches: move current intake behavior behind Upload/Catalog boundaries while preserving existing endpoint behavior until the new contracts are verified.
 4. Add Auth and Reader modules before protected routes rely on them.
@@ -119,6 +115,6 @@ Generated: 2026-07-20 08:47:25Z
 
 ## Future implementation file targets
 
-- Phase 1 likely adds `apps/web/components/ui`, `apps/web/components/layout`, `apps/web/components/domain`, `apps/web/styles` or equivalent token files, and component tests/stories.
-- Phase 2 likely adds route groups under `apps/web/app/(auth)`, `apps/web/app/(reader)`, `apps/web/app/(admin)`, typed API client package/files, and NestJS OpenAPI setup.
+- Phase 1 added `apps/web/components/ui`, `apps/web/components/layout`, `apps/web/components/domain`, `apps/web/styles`, component tests, and an isolated component catalogue.
+- Phase 2 should add route groups under `apps/web/app/(auth)`, `apps/web/app/(reader)`, `apps/web/app/(admin)`, typed API client package/files, and NestJS OpenAPI setup.
 - Backend follow-up likely adds `apps/api/src/modules/auth`, `apps/api/src/modules/upload`, `apps/api/src/modules/reader`, expanded `processing`, and reporting/notification capabilities.

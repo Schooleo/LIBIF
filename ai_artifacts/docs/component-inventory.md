@@ -1,8 +1,8 @@
 # Component Inventory
 
-Generated: 2026-07-20 08:47:25Z
+Last updated: 2026-07-20
 
-Phase 0 inventory only. Components listed here are candidates/contracts for Phase 1+; this pass does not implement them.
+This file combines the original component contract inventory with the current implementation locations. Treat the tables below as the component source of truth for future phases.
 
 | Component | Responsibility | Public API sketch | Variants / sizes | Accessibility contract | Responsive behavior | Owning location | Consuming screens |
 |---|---|---|---|---|---|---|---|
@@ -37,11 +37,10 @@ Phase 0 inventory only. Components listed here are candidates/contracts for Phas
 | ProtectedPdfViewer | Protected reader UI | accessGrant, book, progress callbacks | compact, full | keyboard controls, no security claims from UI deterrents | controls adapt to viewport | `apps/web/components/domain/reader` | secure reader |
 | ChartCard / KpiCard / MetricCard | Reporting visuals | title, value/data, loading | chart, KPI, metric | text alternatives/data table link | preserves skeleton dimensions | `apps/web/components/domain/reports` | dashboards, reports |
 
-## Current one-off UI to migrate later
+## Remaining UI migration notes
 
-- `apps/web/app/globals.css` global `.card`, `.grid`, `button`, `input`, and raw color styles should become semantic tokens and shared components in Phase 1.
-- `apps/web/app/layout.tsx` global nav should become role-aware shells in Phase 2.
-- `apps/web/components/book-intake/*` should be decomposed/reused through shared form, upload, metadata, category/tag, progress, and result components.
+- `apps/web/app/layout.tsx` simple global nav should become role-aware shells in Phase 2.
+- `apps/web/components/book-intake/*` now uses shared primitives; later upload/catalog batches should move deeper domain behavior behind Upload/Catalog contracts without duplicating UI primitives.
 
 ---
 
@@ -57,7 +56,7 @@ Implemented shared foundations are now located under the existing Next.js struct
 | Indicators | `apps/web/components/ui/indicators/*`, `apps/web/components/ui/status/status-config.ts` | Badge, StatusBadge, Avatar, Divider, Tooltip, Spinner, Skeleton, ProgressBar, Stepper. |
 | Forms | `apps/web/components/ui/forms/*` | FormField owns labels/descriptions/errors/control ids/ARIA; includes text/password/search/date inputs, textarea, select, checkbox/radio/switch, FileDropzone, filters. |
 | Surfaces/feedback | `apps/web/components/ui/surfaces/Card.tsx`, `apps/web/components/ui/feedback/feedback.tsx` | Card, Panel, MetricCard, SelectableCard, InlineAlert, EmptyState, ResultState, Toast. |
-| Overlays | `apps/web/components/ui/overlays/overlays.tsx` | Labelled Dialog/ConfirmationDialog/DestructiveDialog/Drawer foundations; full focus trap deferred. |
+| Overlays | `apps/web/components/ui/overlays/overlays.tsx` | Dialog/ConfirmationDialog/DestructiveDialog/Drawer foundations with labels, Escape close, focus entry/trap, scroll lock, and focus restore. |
 | Layout primitives | `apps/web/components/layout/index.tsx` | PageHeader, Breadcrumbs, Tabs only; Phase 2 shells intentionally not started. |
 | Data display | `apps/web/components/ui/data/DataTable.tsx` | DataTable, table toolbar, bulk actions, row/column helpers, pagination, description list, timeline, chart/KPI cards. |
 | Domain foundations | `apps/web/components/domain/**` | DocumentCard/Row/StatusBadge/MetadataSummary, AuditTimeline, UploadWorkflow, ProcessingStageStepper, ProcessingJobSummary, UserRoleBadge. |
