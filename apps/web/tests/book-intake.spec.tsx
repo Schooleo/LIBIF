@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { BookIntakeForm } from '../components/book-intake/BookIntakeForm';
 
-vi.mock('../lib/api', () => ({
+vi.mock('../lib/api-browser', () => ({
   lookupIsbn: vi.fn(async () => ({ found: true, metadata: { title: 'Clean Code', authors: ['Robert C. Martin'], publisher: 'Prentice Hall', publishedYear: 2008 } })),
   uploadBookIntake: vi.fn(async (_file, _metadata, onProgress) => {
     onProgress(45);

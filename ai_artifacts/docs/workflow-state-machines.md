@@ -9,9 +9,9 @@ This document defines backend-owned workflow truth for later implementation. Nam
 - **States:** anonymous, credentials_submitted, authenticated, validation_failed, session_expired, reset_requested, reset_token_valid, reset_token_invalid, password_reset_completed, access_denied.
 - **Commands:** register_reader, sign_in, sign_out, request_password_reset, reset_password, refresh_session, check_permission.
 - **Events:** UserRegistered, UserSignedIn, PasswordResetRequested, PasswordResetCompleted, SessionExpired, AccessDeniedRecorded.
-- **Transitions:** anonymous -> authenticated on valid sign-in; anonymous -> validation_failed on invalid credentials; authenticated -> session_expired on expiry; reset_requested -> password_reset_completed on valid token and accepted password.
-- **API responses:** session object with role/permissions; safe validation error envelope; reset completion result; permission failure envelope with trace/reference id.
-- **Permissions:** anonymous can register/sign in/request reset; authenticated users can read own session; NestJS policies enforce protected routes.
+- **Transitions:** anonymous -> authenticated on valid registration/sign-in; anonymous -> validation_failed on invalid credentials; authenticated -> session_expired on expiry/revocation; authenticated -> anonymous on sign-out; reset_requested -> password_reset_completed on valid single-use token and accepted password.
+- **API responses:** generated `SessionDto` with role/permissions and `persistent-cookie`/`development-header` strategy; uniform reset request message; reset completion result; NestJS forbidden/validation envelopes for access-denied screens.
+- **Permissions:** anonymous can register/sign in/request reset; authenticated users can read own session; database-backed sessions are authoritative for protected routes; development headers require explicit non-production opt-in.
 
 ## Upload and file replacement
 

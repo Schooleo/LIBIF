@@ -53,8 +53,8 @@ export function ReaderShell({ children, user = { name: 'Reader preview', role: '
   return <AppShell variant="reader" navItems={readerNav} user={user}>{children}</AppShell>;
 }
 
-export function AdminShell({ children, user }: { children: ReactNode; user: ShellUser }) {
-  return <AppShell variant="admin" navItems={adminNav} user={user}>{children}</AppShell>;
+export function AdminShell({ children, user, utility }: { children: ReactNode; user: ShellUser; utility?: ReactNode }) {
+  return <AppShell variant="admin" navItems={adminNav} user={user} utility={utility}>{children}</AppShell>;
 }
 
 export function AuthShell({ children }: { children: ReactNode }) {
@@ -85,8 +85,9 @@ const adminNav: NavItem[] = [
 ];
 
 const authNav: NavItem[] = [
-  { label: 'Access denied', href: '/access-denied' },
-  { label: 'Session expired', href: '/session-expired' },
+  { label: 'Sign in', href: '/sign-in' },
+  { label: 'Register', href: '/register' },
+  { label: 'Reset password', href: '/forgot-password' },
   { label: 'Home', href: '/' }
 ];
 

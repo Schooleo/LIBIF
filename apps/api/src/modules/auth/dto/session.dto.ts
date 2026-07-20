@@ -37,17 +37,23 @@ export class SessionDto {
   @ApiProperty({ enum: PERMISSION_KEYS, isArray: true })
   permissions!: PermissionKey[];
 
-  @ApiProperty({ enum: ['development-header', 'production-unconfigured'] })
-  strategy!: 'development-header' | 'production-unconfigured';
+  @ApiProperty({ enum: ['persistent-cookie', 'development-header'] })
+  strategy!: 'persistent-cookie' | 'development-header';
 }
 
 export class AuthErrorDto {
-  @ApiProperty({ example: 403 })
-  statusCode!: number;
-
-  @ApiProperty({ example: 'Forbidden' })
-  error!: string;
+  @ApiProperty({ example: 'AUTHENTICATION_REQUIRED' })
+  code!: string;
 
   @ApiProperty({ example: 'Authentication is required.' })
   message!: string;
+
+  @ApiProperty({ type: 'object', additionalProperties: { type: 'array', items: { type: 'string' } }, example: {} })
+  fieldErrors!: Record<string, string[]>;
+
+  @ApiProperty({ example: 'request-trace-id' })
+  traceId!: string;
+
+  @ApiProperty({ example: 403 })
+  status!: number;
 }

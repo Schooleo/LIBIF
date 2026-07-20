@@ -1,5 +1,5 @@
 import { AccessBoundaryCard } from '../../../components/layout';
 
 export default function SessionExpiredPage() {
-  return <AccessBoundaryCard title="Session expired" description="The app can now route users to a session boundary state. Full sign-in and recovery flows remain deferred until the authentication batch." actionHref="/" actionLabel="Return home" />;
+  return <AccessBoundaryCard title="Session expired" description="Your session is missing, expired, or was revoked. Sign in again to continue." actionHref="/sign-in" actionLabel="Sign in again" />;
 }

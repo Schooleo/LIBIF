@@ -1,8 +1,8 @@
-import type { CategoryDto } from '../../../../../lib/api';
+import type { CategoryDto } from '../../../../../lib/api-types';
 import { BookIntakeForm } from '../../../../../components/book-intake/BookIntakeForm';
 import { InlineAlert } from '../../../../../components/ui';
 import { PageHeader } from '../../../../../components/layout';
-import { fetchCategories } from '../../../../../lib/api';
+import { fetchCategories } from '../../../../../lib/api-server';
 
 export default async function NewBookIntakePage() {
   let categories: CategoryDto[] = [];

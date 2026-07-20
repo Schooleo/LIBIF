@@ -27,7 +27,7 @@ Last updated: 2026-07-20
 ## Current route and component baseline
 
 - Current route groups: `apps/web/app/(reader)`, `apps/web/app/(admin)`, and `apps/web/app/(auth)`.
-- Current routes: `/`, `/catalogue`, `/catalog` compatibility redirect, `/admin/books`, `/admin/books/new`, `/access-denied`, and `/session-expired`.
+- Current routes: `/`, `/catalogue`, `/catalog` compatibility redirect, `/admin/books`, `/admin/books/new`, `/sign-in`, `/register`, `/forgot-password`, `/reset-password`, `/reset-password/completed`, `/access-denied`, and `/session-expired`.
 - The root layout owns only document shell/font setup; role-aware navigation now lives in Reader/Admin/Auth shells.
 - Phase 1 styling now uses semantic tokens and shared CSS in `apps/web/styles/`, imported from `apps/web/app/globals.css`.
 - Current book intake components under `apps/web/components/book-intake` have been migrated to shared Phase 1 primitives while preserving existing behavior.
@@ -36,20 +36,25 @@ Last updated: 2026-07-20
 
 - `AppModule` imports `DatabaseModule`, `AuthModule`, `StorageModule`, `ProcessingModule`, `BooksModule`, `CatalogModule`, `IsbnModule`, and `HealthModule`.
 - Current endpoints include:
+  - `POST /api/auth/register`
+  - `POST /api/auth/sign-in`
+  - `POST /api/auth/sign-out`
   - `GET /api/auth/session`
+  - `POST /api/auth/password-reset-requests`
+  - `POST /api/auth/password-resets`
   - `POST /api/admin/books/intake`
   - `GET /api/admin/books`
   - `GET /api/categories`
   - `GET /api/catalog/books`
   - `GET /api/isbn/:isbn`
   - health endpoints under `HealthModule`
-- `AuthModule` currently owns development-header session representation, role guard scaffolding, and `GET /api/auth/session`; production credential flows are still deferred. Web development auth headers are opt-in through `NEXT_PUBLIC_LIBIF_ENABLE_DEV_AUTH=true`, so admin UI gates fail closed by default.
+- `AuthModule` owns reader registration, email/password sign-in, sign-out, database-backed sessions, password-reset tokens, role guard scaffolding, and `GET /api/auth/session`. Development auth headers remain available only when both API and web dev-auth flags opt in outside production, so admin UI gates fail closed by default.
 - `BooksService` currently owns intake persistence and coordinates Prisma, storage, and processing queue; admin book routes are now guarded by the Auth boundary.
 - `CatalogService` currently owns category reads and public published-book list reads.
 
 ## Database layer
 
-- Prisma schema currently models `User`, `Book`, `BookFile`, `Author`, `BookAuthor`, `Category`, `Tag`, `BookTag`, and `ProcessingJob`.
+- Prisma schema currently models `User`, `UserSession`, `PasswordResetToken`, `Book`, `BookFile`, `Author`, `BookAuthor`, `Category`, `Tag`, `BookTag`, and `ProcessingJob`.
 - Current enums: `UserRole`, `BookStatus`, `ProcessingJobStatus`.
 - PostgreSQL is the configured provider.
 - Future catalogue search must add authoritative backend pagination/filtering/sorting and `pg_trgm` behavior; no direct frontend database access is allowed.
@@ -82,11 +87,11 @@ Last updated: 2026-07-20
 - **Notifications capability:** event-driven records and authorized action links, without duplicating workflow truth.
 - **Reporting read layer:** query services over approved module-owned data; no ad hoc frontend database access.
 
-## Architecture gaps to resolve after Phase 2
+## Architecture gaps to resolve after Phase 3
 
-1. Production authentication, registration, sign-in/out, password reset, and user-management flows are still deferred.
-2. Reader module is not yet present as a first-class module.
-3. Upload ownership is currently folded into `BooksModule` rather than a separate Upload module/application service boundary.
+1. Reader module is not yet present as a first-class module.
+2. Upload ownership is currently folded into `BooksModule` rather than a separate Upload module/application service boundary.
+3. Auth-adjacent administration remains deferred: staff provisioning UX, role changes, account deactivation, MFA/OAuth, production email provider integration, throttling, and security settings.
 4. OpenAPI generation exists, but later batches must keep decorators/generator output current as DTOs expand.
 5. Processing queue exists, but worker entry points and full status endpoints are not implemented.
 6. Current Prisma schema lacks audit records, approval/correction records, notification records, reading state, bookmarks, report export jobs, file versioning, and full-text/search structures.
@@ -101,10 +106,11 @@ Last updated: 2026-07-20
 
 1. Phase 1 completed: semantic tokens and shared components are in place without changing business behavior.
 2. Phase 2 completed: role-aware Next.js route groups/layouts, admin session gating, auth/session boundary scaffold, NestJS OpenAPI generation, and typed frontend API client are in place.
-3. Later batches: move current intake behavior behind Upload/Catalog boundaries while preserving existing endpoint behavior until the new contracts are verified.
-4. Add production Auth flows and Reader module before protected reader routes rely on them.
-5. Add processing workers and status endpoints before processing queue screens.
-6. Add audit/event records before approval/correction, taxonomy risky actions, and user administration screens.
+3. Phase 3 completed: production auth/access foundation, persisted sessions, password reset, auth screens, secure cookie transport, and generated auth contracts are in place.
+4. Next batches: add Reader module and protected reader-access contracts before protected reader routes rely on entitlement state.
+5. Move current intake behavior behind Upload/Catalog boundaries while preserving existing endpoint behavior until the new contracts are verified.
+6. Add processing workers and status endpoints before processing queue screens.
+7. Add audit/event records before approval/correction, taxonomy risky actions, and user administration screens.
 
 ## Anti-fragmentation decisions
 
@@ -118,4 +124,4 @@ Last updated: 2026-07-20
 
 - Phase 1 added `apps/web/components/ui`, `apps/web/components/layout`, `apps/web/components/domain`, `apps/web/styles`, component tests, and an isolated component catalogue.
 - Phase 2 added route groups under `apps/web/app/(auth)`, `apps/web/app/(reader)`, `apps/web/app/(admin)`, typed API client files under `apps/web/lib`, and NestJS OpenAPI setup under `apps/api/src/openapi*` plus `apps/api/openapi/libif-api.json`.
-- Phase 2 added `apps/api/src/modules/auth` as a boundary scaffold; backend follow-up likely adds production auth flows, `apps/api/src/modules/upload`, `apps/api/src/modules/reader`, expanded `processing`, and reporting/notification capabilities.
+- Phase 3 expanded `apps/api/src/modules/auth` into the production auth/access foundation; backend follow-up likely adds `apps/api/src/modules/reader`, a dedicated upload boundary, expanded `processing`, and reporting/notification capabilities.

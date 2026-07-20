@@ -44,7 +44,7 @@ The repository is a TypeScript monorepo with:
 - S3/MinIO-compatible object storage.
 - Redis/BullMQ queue infrastructure.
 
-Phase 1 and Phase 2 foundations are already in place:
+Phase 1, Phase 2, and Phase 3 foundations are already in place:
 
 - Tailwind/PostCSS setup via `apps/web/postcss.config.mjs` and `apps/web/app/globals.css`.
 - Semantic tokens/base/component CSS in `apps/web/styles/`.
@@ -57,7 +57,8 @@ Phase 1 and Phase 2 foundations are already in place:
 - Reader/Admin/Auth shell components in `apps/web/components/layout/index.tsx`.
 - OpenAPI generation via `apps/api/src/openapi.ts`, `apps/api/src/openapi.generate.ts`, and `apps/api/openapi/libif-api.json`.
 - Typed frontend API path map in `apps/web/lib/generated/api-types.ts`, OpenAPI response aliases in `apps/web/lib/api-types.ts`, and split API adapters under `apps/web/lib/api-*.ts`.
-- Auth/session boundary scaffold under `apps/api/src/modules/auth/`; web admin routes gate through `GET /api/auth/session` and dev auth headers are opt-in.
+- Production auth/access foundation under `apps/api/src/modules/auth/`: reader registration, sign-in/out, database-backed sessions, password reset token flow, secure HTTP-only session cookie, and explicit non-production dev-header fallback.
+- Auth routes under `apps/web/app/(auth)`: `/sign-in`, `/register`, `/forgot-password`, `/reset-password`, `/reset-password/completed`, `/access-denied`, and `/session-expired`.
 
 Do not rebuild these foundations from scratch. Extend them when a later batch needs a missing variant or domain-specific component.
 
@@ -162,7 +163,7 @@ Use the batch assignments in `screen-matrix.md` as the source of truth.
 7. Dashboards, reports, export, and settings.
 8. Cross-screen integration and hardening.
 
-Phase 2 foundation is complete: role-aware shells, route groups, authentication/authorization boundary representation, and typed API-client/OpenAPI alignment are in place. Next work should choose one implementation batch from `screen-matrix.md`, starting with Batch 1 if production authentication screens are the priority.
+Phase 3 authentication/access is complete: production credential flows, persisted sessions, password reset, auth screens, cookie-aware API adapters, and updated contracts are in place. Next work should move to Batch 2 / Phase 4 reader discovery and personal-library foundations before protected reader modules depend on entitlement state.
 
 ## 9. Accessibility and interaction requirements
 

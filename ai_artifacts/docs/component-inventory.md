@@ -96,3 +96,16 @@ Automated accessibility and shell coverage:
 | Overlays | Added Escape close, focus entry/trap, scroll lock, and focus restore to Dialog/Drawer foundations. | `apps/web/components/ui/overlays/overlays.tsx`, overlay Vitest cases |
 | Data table | Added controlled server-state contract for pagination, sort, filters, row count, loading, and state changes while preserving static table use. | `apps/web/components/ui/data/DataTable.tsx`, DataTable Vitest cases |
 | Catalogue | Added narrow-container, long-content, focus-visible, overlay, and controlled data examples without creating public routes. | `apps/web/components/catalogue/ComponentCatalogue.tsx`, catalogue axe/smoke tests |
+
+---
+
+## Phase 3 auth/access implementation update — 2026-07-20
+
+| Area | Implemented paths | Notes |
+|---|---|---|
+| Auth forms | `apps/web/components/auth/AuthForms.tsx` | Composes shared `Card`, `FormField`, `TextInput`, `PasswordInput`, `Button`, `InlineAlert`, and `ResultState` for sign-in, registration, forgot-password, and reset-password states. |
+| Sign-out action | `apps/web/components/auth/SignOutButton.tsx` | Client-side sign-out affordance for authenticated shells; calls the generated auth API wrapper and returns to `/sign-in`. |
+| Auth routes | `apps/web/app/(auth)/sign-in/page.tsx`, `register/page.tsx`, `forgot-password/page.tsx`, `reset-password/page.tsx`, `reset-password/completed/page.tsx` | Batch 1 screens implemented with existing AuthShell and shared primitives; no new design tokens or one-off form controls. |
+| Auth tests | `apps/web/tests/auth-forms.spec.tsx` | Covers registration validation, sign-in error state, uniform reset-request success, and reset-token API error display. |
+
+Deferred auth UI/component work remains in later batches: user administration, role changes, account deactivation, security settings, OAuth/MFA/passkeys, and production email-provider configuration screens.

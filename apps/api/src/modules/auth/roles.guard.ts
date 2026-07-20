@@ -9,11 +9,11 @@ import { ROLES_KEY } from './roles.decorator';
 export class RolesGuard implements CanActivate {
   constructor(@Inject(Reflector) private readonly reflector: Reflector, @Inject(AuthService) private readonly auth: AuthService) {}
 
-  canActivate(context: ExecutionContext): boolean {
+  async canActivate(context: ExecutionContext): Promise<boolean> {
     const roles = this.reflector.getAllAndOverride<RoleKey[]>(ROLES_KEY, [context.getHandler(), context.getClass()]);
     if (!roles?.length) return true;
     const request = context.switchToHttp().getRequest<AuthenticatedRequest>();
-    const user = this.auth.resolveUser(request);
+    const user = await this.auth.resolveUser(request);
     if (!user) throw new ForbiddenException('Authentication is required.');
     request.user = user;
     if (!roles.includes(user.role)) throw new ForbiddenException('Permission denied.');

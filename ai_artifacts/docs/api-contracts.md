@@ -8,7 +8,12 @@ OpenAPI is now generated for implemented endpoints at `apps/api/openapi/libif-ap
 
 | Endpoint | Owner today | Consumer today | Notes |
 |---|---|---|---|
-| `GET /api/auth/session` | `AuthModule` | `apps/web/lib/api-server.ts` and admin layout gating | Development-header session boundary; browser/dev headers are opt-in and production credential auth still deferred. |
+| `POST /api/auth/register` | `AuthModule` | `apps/web/app/(auth)/register/page.tsx` | Creates reader account, hashes password, starts persisted session, and sets `libif_session`. |
+| `POST /api/auth/sign-in` | `AuthModule` | `apps/web/app/(auth)/sign-in/page.tsx` | Validates email/password, starts persisted session, and sets `libif_session`. |
+| `POST /api/auth/sign-out` | `AuthModule` | `apps/web/components/auth/SignOutButton.tsx` | Revokes current session and clears `libif_session`; idempotent for missing sessions. |
+| `GET /api/auth/session` | `AuthModule` | `apps/web/lib/api-server.ts` and admin layout gating | Resolves database-backed session from `libif_session`; dev-header fallback requires explicit non-production opt-in. |
+| `POST /api/auth/password-reset-requests` | `AuthModule` | `apps/web/app/(auth)/forgot-password/page.tsx` | Uniform public response; creates a hashed, expiring reset token for existing accounts and sends through the reset delivery port. |
+| `POST /api/auth/password-resets` | `AuthModule` | `apps/web/app/(auth)/reset-password/page.tsx` | Consumes a valid reset token once, updates password hash, and revokes existing sessions. |
 | `POST /api/admin/books/intake` | `BooksModule` | `apps/web/components/book-intake/BookIntakeForm.tsx` | Multipart `file` + JSON `metadata`; returns book/file/processingJob; guarded for Admin/Librarian. |
 | `GET /api/admin/books` | `BooksModule` | `apps/web/app/(admin)/admin/books/page.tsx` | Admin list without production pagination/filter/sort yet; guarded for Admin/Librarian. |
 | `GET /api/categories` | `CatalogModule` | `apps/web/app/(admin)/admin/books/new/page.tsx` | Category list. |
@@ -57,13 +62,16 @@ Use this shape for upload-triggered processing and long-running report exports. 
 
 ### Batch 1 — Authentication and access
 
+Implemented in Phase 3. Current contracts are generated in OpenAPI for:
+
 - `POST /api/auth/register`
 - `POST /api/auth/sign-in`
 - `POST /api/auth/sign-out`
 - `GET /api/auth/session`
 - `POST /api/auth/password-reset-requests`
 - `POST /api/auth/password-resets`
-- Permission failure envelope for access-denied screens.
+
+Deferred auth-adjacent contracts remain in Batch 6/7: user administration, role changes, account deactivation, MFA/OAuth, production email-provider configuration, and security settings.
 
 ### Batch 2 — Reader discovery and personal library
 
@@ -151,4 +159,4 @@ Use this shape for upload-triggered processing and long-running report exports. 
 
 ## OpenAPI implementation status
 
-Phase 2 added NestJS Swagger setup, stable operation IDs, generated JSON at `apps/api/openapi/libif-api.json`, a dependency-free frontend path-map generator at `apps/web/scripts/generate-api-types.mjs`, OpenAPI-owned response aliases at `apps/web/lib/api-types.ts`, and split `openapi-fetch` transport adapters in `apps/web/lib/api-server.ts` and `apps/web/lib/api-browser.ts`. Later phases must keep OpenAPI decorators and generated path types aligned whenever endpoints change.
+Phase 2 added NestJS Swagger setup, stable operation IDs, generated JSON at `apps/api/openapi/libif-api.json`, a dependency-free frontend path-map generator at `apps/web/scripts/generate-api-types.mjs`, OpenAPI-owned response aliases at `apps/web/lib/api-types.ts`, and split `openapi-fetch` transport adapters in `apps/web/lib/api-server.ts` and `apps/web/lib/api-browser.ts`. Phase 3 added generated auth request/response DTOs and cookie-aware frontend calls. Later phases must keep OpenAPI decorators and generated path types aligned whenever endpoints change.

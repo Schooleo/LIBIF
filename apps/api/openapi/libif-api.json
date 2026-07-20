@@ -1,6 +1,112 @@
 {
   "openapi": "3.0.0",
   "paths": {
+    "/api/auth/register": {
+      "post": {
+        "operationId": "register",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Register a reader account and start a session.",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/api/auth/sign-in": {
+      "post": {
+        "operationId": "signIn",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignInRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Sign in with email and password.",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/api/auth/sign-out": {
+      "post": {
+        "operationId": "signOut",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthMessageDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Revoke the current session and clear the session cookie.",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
     "/api/auth/session": {
       "get": {
         "operationId": "getSession",
@@ -18,6 +124,80 @@
           }
         },
         "summary": "Return the current session boundary state.",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/api/auth/password-reset-requests": {
+      "post": {
+        "operationId": "requestPasswordReset",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PasswordResetRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthMessageDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Request a password reset link if an account exists.",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/api/auth/password-resets": {
+      "post": {
+        "operationId": "resetPassword",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PasswordResetDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthMessageDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Reset a password with a valid reset token.",
         "tags": [
           "Auth"
         ]
@@ -234,6 +414,24 @@
       }
     },
     "schemas": {
+      "RegisterRequestDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "reader@example.edu"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 12,
+            "example": "correct horse battery staple"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
       "SessionUserDto": {
         "type": "object",
         "properties": {
@@ -302,8 +500,8 @@
           "strategy": {
             "type": "string",
             "enum": [
-              "development-header",
-              "production-unconfigured"
+              "persistent-cookie",
+              "development-header"
             ]
           }
         },
@@ -311,6 +509,103 @@
           "authenticated",
           "permissions",
           "strategy"
+        ]
+      },
+      "AuthErrorDto": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "AUTHENTICATION_REQUIRED"
+          },
+          "message": {
+            "type": "string",
+            "example": "Authentication is required."
+          },
+          "fieldErrors": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "example": {}
+          },
+          "traceId": {
+            "type": "string",
+            "example": "request-trace-id"
+          },
+          "status": {
+            "type": "number",
+            "example": 403
+          }
+        },
+        "required": [
+          "code",
+          "message",
+          "fieldErrors",
+          "traceId",
+          "status"
+        ]
+      },
+      "SignInRequestDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "reader@example.edu"
+          },
+          "password": {
+            "type": "string",
+            "example": "correct horse battery staple"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "AuthMessageDto": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "If an account exists for that email, a reset link has been sent."
+          }
+        },
+        "required": [
+          "message"
+        ]
+      },
+      "PasswordResetRequestDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "reader@example.edu"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "PasswordResetDto": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "example": "reset-token-from-email"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 12,
+            "example": "new correct horse battery staple"
+          }
+        },
+        "required": [
+          "token",
+          "password"
         ]
       },
       "IntakeBookSummaryDto": {
@@ -398,28 +693,6 @@
           "book",
           "file",
           "processingJob"
-        ]
-      },
-      "AuthErrorDto": {
-        "type": "object",
-        "properties": {
-          "statusCode": {
-            "type": "number",
-            "example": 403
-          },
-          "error": {
-            "type": "string",
-            "example": "Forbidden"
-          },
-          "message": {
-            "type": "string",
-            "example": "Authentication is required."
-          }
-        },
-        "required": [
-          "statusCode",
-          "error",
-          "message"
         ]
       },
       "CategoryResponseDto": {

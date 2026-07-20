@@ -3,6 +3,10 @@
 
 export interface components {
   schemas: {
+    "RegisterRequestDto": {
+    "email": string;
+    "password": string;
+  };
     "SessionUserDto": {
     "id": string;
     "email": string;
@@ -13,7 +17,28 @@ export interface components {
     "authenticated": boolean;
     "user"?: components['schemas']["SessionUserDto"];
     "permissions": ("catalogue:read" | "reader:library:read" | "admin:books:read" | "admin:books:write" | "admin:taxonomy:manage" | "admin:users:manage")[];
-    "strategy": "development-header" | "production-unconfigured";
+    "strategy": "persistent-cookie" | "development-header";
+  };
+    "AuthErrorDto": {
+    "code": string;
+    "message": string;
+    "fieldErrors": Record<string, unknown>;
+    "traceId": string;
+    "status": number;
+  };
+    "SignInRequestDto": {
+    "email": string;
+    "password": string;
+  };
+    "AuthMessageDto": {
+    "message": string;
+  };
+    "PasswordResetRequestDto": {
+    "email": string;
+  };
+    "PasswordResetDto": {
+    "token": string;
+    "password": string;
   };
     "IntakeBookSummaryDto": {
     "id": string;
@@ -33,11 +58,6 @@ export interface components {
     "book": components['schemas']["IntakeBookSummaryDto"];
     "file": components['schemas']["IntakeFileSummaryDto"];
     "processingJob": components['schemas']["IntakeProcessingJobSummaryDto"];
-  };
-    "AuthErrorDto": {
-    "statusCode": number;
-    "error": string;
-    "message": string;
   };
     "CategoryResponseDto": {
     "id": string;
@@ -92,12 +112,102 @@ export interface components {
 }
 
 export interface paths {
+  "/api/auth/register": {
+    post: {
+      requestBody: {
+        content: {
+          "application/json": components['schemas']["RegisterRequestDto"];
+        };
+      };
+      responses: {
+      "201": {
+        content: {
+          "application/json": components['schemas']["SessionDto"];
+        };
+      };
+      "409": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/auth/sign-in": {
+    post: {
+      requestBody: {
+        content: {
+          "application/json": components['schemas']["SignInRequestDto"];
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["SessionDto"];
+        };
+      };
+      "401": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/auth/sign-out": {
+    post: {
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["AuthMessageDto"];
+        };
+      };
+      };
+    };
+  };
   "/api/auth/session": {
     get: {
       responses: {
       "200": {
         content: {
           "application/json": components['schemas']["SessionDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/auth/password-reset-requests": {
+    post: {
+      requestBody: {
+        content: {
+          "application/json": components['schemas']["PasswordResetRequestDto"];
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["AuthMessageDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/auth/password-resets": {
+    post: {
+      requestBody: {
+        content: {
+          "application/json": components['schemas']["PasswordResetDto"];
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["AuthMessageDto"];
+        };
+      };
+      "400": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
         };
       };
       };

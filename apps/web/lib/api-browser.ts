@@ -1,8 +1,38 @@
 import { API_BASE_URL, createLibifApiClient, apiErrorMessage } from './api-client';
-import type { CreateBookIntakeDto, CreateBookIntakeResponse, IsbnLookupResponse } from './api-types';
+import type { AuthMessageDto, CreateBookIntakeDto, CreateBookIntakeResponse, IsbnLookupResponse, PasswordResetDto, PasswordResetRequestDto, RegisterRequestDto, SessionDto, SignInRequestDto } from './api-types';
 import { getDevAuthHeaders } from './auth/session';
 
 const client = createLibifApiClient(getDevAuthHeaders());
+
+export async function registerReader(payload: RegisterRequestDto): Promise<SessionDto> {
+  const { data, error } = await client.POST('/api/auth/register', { body: payload });
+  if (error) throw new Error(apiErrorMessage(error, 'Registration failed'));
+  return data;
+}
+
+export async function signIn(payload: SignInRequestDto): Promise<SessionDto> {
+  const { data, error } = await client.POST('/api/auth/sign-in', { body: payload });
+  if (error) throw new Error(apiErrorMessage(error, 'Sign in failed'));
+  return data;
+}
+
+export async function signOut(): Promise<AuthMessageDto> {
+  const { data, error } = await client.POST('/api/auth/sign-out');
+  if (error) throw new Error(apiErrorMessage(error, 'Sign out failed'));
+  return data;
+}
+
+export async function requestPasswordReset(payload: PasswordResetRequestDto): Promise<AuthMessageDto> {
+  const { data, error } = await client.POST('/api/auth/password-reset-requests', { body: payload });
+  if (error) throw new Error(apiErrorMessage(error, 'Password reset request failed'));
+  return data;
+}
+
+export async function resetPassword(payload: PasswordResetDto): Promise<AuthMessageDto> {
+  const { data, error } = await client.POST('/api/auth/password-resets', { body: payload });
+  if (error) throw new Error(apiErrorMessage(error, 'Password reset failed'));
+  return data;
+}
 
 export async function lookupIsbn(isbn: string): Promise<IsbnLookupResponse> {
   const { data, error } = await client.GET('/api/isbn/{isbn}', { params: { path: { isbn } } });

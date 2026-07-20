@@ -1,8 +1,8 @@
 'use client';
 
-import type { CategoryDto, CreateBookIntakeDto, CreateBookIntakeResponse } from '../../lib/api';
+import type { CategoryDto, CreateBookIntakeDto, CreateBookIntakeResponse } from '../../lib/api-types';
 import { useMemo, useState } from 'react';
-import { lookupIsbn, uploadBookIntake } from '../../lib/api';
+import { lookupIsbn, uploadBookIntake } from '../../lib/api-browser';
 import { Button, Card, InlineAlert, ProgressBar, ResultState } from '../ui';
 import { CategoryTagFields } from './CategoryTagFields';
 import { MetadataFields } from './MetadataFields';

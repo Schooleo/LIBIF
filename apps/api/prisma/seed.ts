@@ -1,5 +1,6 @@
 import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient, UserRole } from '../src/generated/prisma/client';
+import { PasswordHasher } from '../src/modules/auth/password-hasher.service';
 import slugify from 'slugify';
 
 const adapter = new PrismaPg({
@@ -7,18 +8,23 @@ const adapter = new PrismaPg({
 });
 
 const prisma = new PrismaClient({ adapter });
+const passwordHasher = new PasswordHasher();
+
+const devUsers = [
+  { email: 'admin@libif.local', password: 'admin libif dev passphrase', role: UserRole.ADMIN },
+  { email: 'librarian@libif.local', password: 'librarian libif dev passphrase', role: UserRole.LIBRARIAN },
+  { email: 'reader@libif.local', password: 'reader libif dev passphrase', role: UserRole.READER }
+];
 
 async function main() {
-  await prisma.user.upsert({
-    where: { email: 'admin@libif.local' },
-    update: {},
-    create: { email: 'admin@libif.local', passwordHash: 'dev-only', role: UserRole.ADMIN }
-  });
-  await prisma.user.upsert({
-    where: { email: 'librarian@libif.local' },
-    update: {},
-    create: { email: 'librarian@libif.local', passwordHash: 'dev-only', role: UserRole.LIBRARIAN }
-  });
+  for (const user of devUsers) {
+    const passwordHash = await passwordHasher.hash(user.password);
+    await prisma.user.upsert({
+      where: { email: user.email },
+      update: { passwordHash, role: user.role },
+      create: { email: user.email, passwordHash, role: user.role }
+    });
+  }
 
   for (const name of ['Giáo trình', 'Nghiên cứu', 'Văn học', 'Luận văn']) {
     await prisma.category.upsert({

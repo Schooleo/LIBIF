@@ -1,6 +1,7 @@
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { AppModule } from '../src/app.module';
+import { HttpErrorFilter } from '../src/common/http-error.filter';
 import { PrismaService } from '../src/modules/database/prisma.service';
 import { ProcessingQueue } from '../src/modules/processing/processing.queue';
 import { StorageService, StoredPdf } from '../src/modules/storage/storage.service';
@@ -30,8 +31,10 @@ describe('Digital book intake (e2e)', () => {
   let prisma: PrismaService;
   let queue: FakeProcessingQueue;
   const staffHeaders = { 'x-libif-dev-role': 'LIBRARIAN', 'x-libif-dev-user-email': 'librarian@libif.local' };
+  const originalDevAuth = process.env.LIBIF_ENABLE_DEV_AUTH;
 
   beforeAll(async () => {
+    process.env.LIBIF_ENABLE_DEV_AUTH = 'true';
     const moduleRef = await Test.createTestingModule({ imports: [AppModule] })
       .overrideProvider(StorageService)
       .useClass(FakeStorageService)
@@ -41,12 +44,15 @@ describe('Digital book intake (e2e)', () => {
 
     app = moduleRef.createNestApplication();
     app.setGlobalPrefix('api');
+    app.useGlobalFilters(new HttpErrorFilter());
     await app.init();
     prisma = app.get(PrismaService);
     queue = app.get(ProcessingQueue) as unknown as FakeProcessingQueue;
   });
 
   beforeEach(async () => {
+    await prisma.passwordResetToken.deleteMany();
+    await prisma.userSession.deleteMany();
     await prisma.processingJob.deleteMany();
     await prisma.bookFile.deleteMany();
     await prisma.bookTag.deleteMany();
@@ -61,6 +67,8 @@ describe('Digital book intake (e2e)', () => {
 
   afterAll(async () => {
     await app.close();
+    await prisma.$disconnect();
+    process.env.LIBIF_ENABLE_DEV_AUTH = originalDevAuth;
   });
 
   it('persists book, private file pointer, tags, authors, and queued processing job', async () => {
