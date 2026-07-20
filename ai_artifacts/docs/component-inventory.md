@@ -42,3 +42,55 @@ Phase 0 inventory only. Components listed here are candidates/contracts for Phas
 - `apps/web/app/globals.css` global `.card`, `.grid`, `button`, `input`, and raw color styles should become semantic tokens and shared components in Phase 1.
 - `apps/web/app/layout.tsx` global nav should become role-aware shells in Phase 2.
 - `apps/web/components/book-intake/*` should be decomposed/reused through shared form, upload, metadata, category/tag, progress, and result components.
+
+---
+
+## Phase 1 implementation update — 2026-07-20
+
+Implemented shared foundations are now located under the existing Next.js structure:
+
+| Area | Implemented paths | Notes |
+|---|---|---|
+| Token/base styles | `apps/web/styles/tokens.css`, `apps/web/styles/base.css`, `apps/web/styles/components.css`, `apps/web/app/globals.css` | Semantic CSS variables, Tailwind import, base focus policy, component classes. |
+| Shared utility | `apps/web/lib/classnames.ts` | Small dependency-free class composition helper. |
+| Actions | `apps/web/components/ui/actions/Button.tsx`, `apps/web/components/ui/actions/IconButton.tsx` | Explicit button type, loading/disabled semantics, accessible icon button label. |
+| Indicators | `apps/web/components/ui/indicators/*`, `apps/web/components/ui/status/status-config.ts` | Badge, StatusBadge, Avatar, Divider, Tooltip, Spinner, Skeleton, ProgressBar, Stepper. |
+| Forms | `apps/web/components/ui/forms/*` | FormField owns labels/descriptions/errors/control ids/ARIA; includes text/password/search/date inputs, textarea, select, checkbox/radio/switch, FileDropzone, filters. |
+| Surfaces/feedback | `apps/web/components/ui/surfaces/Card.tsx`, `apps/web/components/ui/feedback/feedback.tsx` | Card, Panel, MetricCard, SelectableCard, InlineAlert, EmptyState, ResultState, Toast. |
+| Overlays | `apps/web/components/ui/overlays/overlays.tsx` | Labelled Dialog/ConfirmationDialog/DestructiveDialog/Drawer foundations; full focus trap deferred. |
+| Layout primitives | `apps/web/components/layout/index.tsx` | PageHeader, Breadcrumbs, Tabs only; Phase 2 shells intentionally not started. |
+| Data display | `apps/web/components/ui/data/DataTable.tsx` | DataTable, table toolbar, bulk actions, row/column helpers, pagination, description list, timeline, chart/KPI cards. |
+| Domain foundations | `apps/web/components/domain/**` | DocumentCard/Row/StatusBadge/MetadataSummary, AuditTimeline, UploadWorkflow, ProcessingStageStepper, ProcessingJobSummary, UserRoleBadge. |
+| Catalogue | `apps/web/components/catalogue/ComponentCatalogue.tsx` | Non-routed isolated component catalogue fallback instead of Storybook. |
+| Tests | `apps/web/tests/ui-components.spec.tsx`, `apps/web/tests/book-intake.spec.tsx` | Component semantics and intake regression coverage. |
+
+Current proof UI migrated to shared primitives:
+
+- `apps/web/app/page.tsx`
+- `apps/web/app/admin/books/new/page.tsx`
+- `apps/web/app/admin/books/page.tsx`
+- `apps/web/app/catalog/page.tsx`
+- `apps/web/components/book-intake/BookIntakeForm.tsx`
+- `apps/web/components/book-intake/CategoryTagFields.tsx`
+- `apps/web/components/book-intake/MetadataFields.tsx`
+- `apps/web/components/book-intake/PdfDropzone.tsx`
+
+Deferred from Phase 1 by design:
+
+- Full `AppShell`, `AdminShell`, `ReaderShell`, route groups, auth boundary, and generated API client remain Phase 2 work.
+- Protected PDF viewer, approval/correction panels, category tree, tag selector, notification item, reader book card, and job polling behavior remain batch-specific/domain-deepening work unless required by the next batch.
+
+Automated accessibility coverage added in Phase 1:
+
+- `apps/web/tests/accessibility.spec.tsx` renders the non-routed component catalogue and checks it with `jest-axe`.
+- `apps/web/tests/setup.ts` registers the `toHaveNoViolations` matcher.
+
+### Phase 1 acceptance fix inventory — 2026-07-20
+
+| Area | Implemented update | Verification anchor |
+|---|---|---|
+| Typography | Loaded Be Vietnam Pro via `next/font/google` and mapped the token variable into `--font-sans`. | `apps/web/app/layout.tsx`, `apps/web/styles/tokens.css` |
+| Status badges | Expanded canonical `statusConfig` to every Phase 1 dictionary state. | `apps/web/components/ui/status/status-config.ts`, `apps/web/tests/ui-components.spec.tsx` |
+| Overlays | Added Escape close, focus entry/trap, scroll lock, and focus restore to Dialog/Drawer foundations. | `apps/web/components/ui/overlays/overlays.tsx`, overlay Vitest cases |
+| Data table | Added controlled server-state contract for pagination, sort, filters, row count, loading, and state changes while preserving static table use. | `apps/web/components/ui/data/DataTable.tsx`, DataTable Vitest cases |
+| Catalogue | Added narrow-container, long-content, focus-visible, overlay, and controlled data examples without creating public routes. | `apps/web/components/catalogue/ComponentCatalogue.tsx`, catalogue axe/smoke tests |

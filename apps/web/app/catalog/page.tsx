@@ -1,4 +1,7 @@
 import type { BookListItemDto } from '@libif/shared';
+import { DocumentCard } from '../../components/domain';
+import { EmptyState, InlineAlert } from '../../components/ui';
+import { PageHeader } from '../../components/layout';
 import { fetchPublicBooks } from '../../lib/api';
 
 export default async function CatalogPage() {
@@ -11,18 +14,14 @@ export default async function CatalogPage() {
   }
 
   return (
-    <main>
-      <h1>Public Catalog</h1>
-      <p>Only published books appear here; newly uploaded intakes remain hidden while pending processing/approval.</p>
-      {loadError ? <p className="error" role="alert">Catalog books could not be loaded: {loadError}</p> : null}
-      <section className="card grid">
-        {books.length === 0 ? <p>No published books yet.</p> : books.map((book) => (
-          <article key={book.id}>
-            <h2>{book.title}</h2>
-            <p>{book.authors.map((author) => author.name).join(', ')}</p>
-          </article>
-        ))}
-      </section>
+    <main className="ui-stack">
+      <PageHeader title="Public Catalog" description="Only published books appear here; newly uploaded intakes remain hidden while pending processing/approval." />
+      {loadError ? <InlineAlert tone="error">Catalog books could not be loaded: {loadError}</InlineAlert> : null}
+      {books.length === 0 ? <EmptyState title="No published books yet." /> : (
+        <section className="ui-stack" aria-label="Published books">
+          {books.map((book) => <DocumentCard key={book.id} document={{ id: book.id, title: book.title, authors: book.authors.map((author) => author.name), status: book.status }} />)}
+        </section>
+      )}
     </main>
   );
 }

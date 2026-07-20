@@ -139,3 +139,31 @@ Add semantic success, warning, and information tokens with WCAG AA contrast duri
 3. Whether report export files expire and what retention period applies.
 4. Whether category deletion is always reassignment-first or can be blocked by policy.
 5. Whether processing cancellation is supported in MVP.
+
+---
+
+## Phase 1 implementation update — 2026-07-20
+
+- Canonical artifact root is `ai_artifacts/`; implementation references were updated to use `ai_artifacts/prompts/Agent_Prompt.md`, `ai_artifacts/docs/`, and `ai_artifacts/stitch_design/`.
+- Token implementation files:
+  - `apps/web/styles/tokens.css`
+  - `apps/web/styles/base.css`
+  - `apps/web/styles/components.css`
+  - `apps/web/app/globals.css`
+- Compiled Tailwind integration uses local PostCSS via `apps/web/postcss.config.mjs` and imports `tailwindcss` in `apps/web/app/globals.css`. This follows Tailwind's current Next.js/PostCSS guidance; no Tailwind CDN is used.
+- Additional WCAG-conscious semantic tokens added:
+  - `--color-success: #146C2E`
+  - `--color-warning: #8A4B00`
+  - `--color-info: #2457A6`
+  - matching success/warning/info/error/muted surface tokens.
+- Component catalogue decision: Storybook was not added in Phase 1 to avoid dependency/tooling sprawl. A non-production component catalogue was added at `apps/web/components/catalogue/ComponentCatalogue.tsx` to demonstrate required component states without creating a public route.
+- Dialog/Drawer decision: Phase 1 provides accessible labelled foundations. Full production-grade focus-trap hardening remains a later overlay-specific implementation concern unless a small accessibility dependency is approved.
+
+### Phase 1 acceptance fix update — 2026-07-20
+
+- **Typography loading:** Be Vietnam Pro is now loaded through `next/font/google` in `apps/web/app/layout.tsx`; `apps/web/styles/tokens.css` maps `--font-sans` to `--font-be-vietnam-pro` with system fallbacks.
+- **Status coverage:** `apps/web/components/ui/status/status-config.ts` covers the canonical dictionary from this document, including archived, upload idle/cancelled, processing compression/OCR/indexing, approval/correction, report export, category/tag actions, and stale notifications.
+- **Overlay behavior:** `Dialog`, `ConfirmationDialog`, `DestructiveDialog`, and `Drawer` now share modal foundations with unique labels, Escape close, focus entry, tab containment, body scroll lock, and restore-focus cleanup. Full animation and route-level command wiring remain later-phase work.
+- **Data tables:** `DataTable` exposes caller-controlled server-state props for page, page size, sort key/direction, filters, total row count, loading, and `onStateChange`; `Pagination` supports controlled `onPageChange`.
+- **Catalogue coverage:** `ComponentCatalogue` is client-only and remains non-routed. It now demonstrates long content, narrow-container layout, controlled server-table state, canonical status variants, focus-visible states, and overlay triggers.
+- **Test coverage:** Vitest covers canonical status entries, controlled table sorting/pagination, Dialog Escape + focus restore, Drawer modal close behavior, and catalogue responsive/overlay smoke checks. Jest-axe still runs against the catalogue.
