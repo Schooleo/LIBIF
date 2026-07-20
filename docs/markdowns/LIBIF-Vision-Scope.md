@@ -82,6 +82,29 @@ Dựa trên những khó khăn thực tế của các nhóm người dùng, các
 
 ---
 
+### 4.2 SO SÁNH QUY TRÌNH NGHIỆP VỤ (WORKFLOW LEVEL) VỚI CÁC ĐỐI THỦ CẠNH TRANH
+
+| Bước Nghiệp vụ | Quy trình Thủ công Hiện tại | Quy trình trên DSpace / Koha / Vebrary | Quy trình Tương lai trên **LIBIF** |
+|---|---|---|---|
+| **1. Tiếp nhận & Tải file** | Lưu file PDF thô vào ổ đĩa local/Google Drive cá nhân. | Tải file lên hệ thống mã nguồn mở qua giao diện quản trị phức tạp nhiều bước. | **Kéo-thả PDF thô lên Web Portal Admin**; hệ thống tự đẩy vào hàng đợi nén & lưu S3 an toàn. |
+| **2. Nhập Metadata** | Ghi thủ công tên sách, tác giả, ISBN vào file Excel rời rạc. | Nhập thủ công theo chuẩn MARC21/Dublin Core phức tạp, tốn thời gian đào tạo. | **Quét/Nhập mã ISBN**: Hệ thống tự động gọi Google Books API điền 80% metadata. |
+| **3. Xử lý OCR & Nén file** | Không có OCR. File dạng ảnh nặng, không tìm kiếm được text. | Phụ thuộc vào plugin bên ngoài (Batch OCR), cấu hình phức tạp, dễ gây quá tải server. | **Chạy tự động Pipe & Filter VietOCR Worker Queue** dưới nền; nén 50% dung lượng, tạo searchable text layer. |
+| **4. Tra cứu & Đọc sách** | Độc giả phải hỏi thủ thư; nhận file qua email/Zalo. | Tra cứu qua OPAC, tải file PDF về máy local để đọc (dễ thất thoát bản quyền). | **Cổng Catalog trực tuyến**: Độc giả tìm kiếm toàn văn (Full-text) & đọc trực tiếp qua **DRM Canvas Reader** chống copy/download. |
+| **5. Báo cáo & Giám sát** | Đếm thủ công số lượt mượn sách, báo cáo chậm trễ. | Thống kê lượt download file cơ bản, thiếu biểu đồ hành vi chi tiết. | **Dashboard thời gian thực**: Thống kê tự động tổng lượt đọc, thời gian đọc, danh mục yêu thích và xuất file Excel. |
+
+---
+
+### 4.3 SO SÁNH QUY TRÌNH NGHIỆP VỤ VỚI VIỆC KẾT HỢP CÁC CÔNG CỤ CÓ SẴN
+
+| Bước Nghiệp vụ | Phương án Kết hợp (Nextcloud + Paperless-ngx + Google Drive) | Quy trình Tối ưu hóa trên **LIBIF** |
+|---|---|---|
+| **Quản lý & Lưu trữ File** | Phải cấu hình Sync 3 dịch vụ khác nhau; dữ liệu phân tán, dễ lỗi phân quyền. | **Một nền tảng duy nhất (All-in-one)**: Quản lý file PDF, Metadata, OCR và Phân quyền tập trung. |
+| **Quy trình OCR Tiếng Việt** | Paperless-ngx dùng Tesseract OCR cơ bản; độ chính xác chữ tiếng Việt có dấu thấp (< 80%). | **Tích hợp VietOCR Deep Learning Model**: Độ chính xác chữ có dấu > 94%, xử lý tiếng Việt chuyên sâu. |
+| **Bảo mật & DRM Sách số** | Google Drive / Nextcloud cho phép người dùng download file gốc hoặc xem qua Viewer mặc định. | **DRM Canvas Reader độc quyền**: Vẽ Canvas động, chặn chuột phải/phím tắt, Watermark mờ thông tin người đọc. |
+| **Chi phí Vận hành & Bảo trì** | Cần đội ngũ IT riêng để duy trì, cập nhật và tích hợp 3 phần mềm rời rạc. | **Mô hình Modular Monolith tinh gọn**: Triển khai 1-Click với Docker, chi phí bảo trì tối ưu. |
+
+---
+
 ## 5. TRẠNG THÁI TƯƠNG LAI (FUTURE STATE)
 
 - **Quy trình của Thủ thư:** Chỉ cần quét sách thành PDF, đăng tải lên hệ thống qua trang admin. Hệ thống tự động tối ưu dung lượng và chạy OCR nhận diện văn bản. Thủ thư quét mã vạch/ISBN, hệ thống tự động điền các trường metadata, thủ thư chỉ cần bổ sung danh mục và tags.

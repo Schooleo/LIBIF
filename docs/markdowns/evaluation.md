@@ -76,3 +76,21 @@ Báo cáo này đánh giá ý tưởng dự án **LIBIF** được đề xuất 
 
 > [!NOTE]
 > Dự án **LIBIF** được đánh giá rất cao về tính thực tiễn, mức độ khả thi kỹ thuật và khả năng giải quyết trực tiếp các điểm nghẽn của quy trình quản lý thư viện hiện tại. Do đó, quyết định đưa ra là **ĐỒNG Ý** cho phép triển khai, đi kèm với một số khuyến nghị khắc phục rủi ro về mặt pháp lý bản quyền tài liệu.
+
+---
+
+## III. QUY TRÌNH THẨM ĐỊNH & PHẢN BIỆN BỞI CON NGƯỜI (HUMAN-IN-THE-LOOP REVIEW WORKFLOW)
+
+Bản đánh giá 10 tiêu chí trên ban đầu được sinh ra bởi hệ thống **AI Assistant** dựa trên phân tích dữ liệu tài liệu đề xuất. Để đảm bảo tính chính xác khách quan và loại bỏ hoàn toàn rủi ro sai lệch, quy trình kiểm duyệt **Human-in-the-loop** đã được thực thi theo 3 bước:
+
+```
+[ AI Assistant ]  ──►  [ Human Expert Review ]  ──►  [ Final Panel Sign-off ]
+ (Bản phác thảo 10 tiêu chí)  (Phản biện & Điều chỉnh điểm)  (Phê duyệt chính thức)
+```
+
+1. **Bước 1 — AI Initial Assessment (Dự thảo AI):** Trợ lý AI thực hiện đọc hiểu tài liệu, đối chiếu tiêu chí và đề xuất bảng điểm 10 mục cùng các đoạn nhận xét định lượng ban đầu.
+2. **Bước 2 — Human Expert Review & Override (Thẩm định & Điều chỉnh điểm):** Hội đồng thẩm định gồm **Project Manager (PM)** và **Lead Architect** rà soát lại từng tiêu chí:
+   - *Kiểm tra dữ liệu chi phí:* Hội đồng xác nhận ngân sách MVP đã điều chỉnh từ 62.5M VNĐ (4 nhân sự) lên 90.5M VNĐ (6 nhân sự), yêu cầu bổ sung diễn giải trong Tiêu chí 5.
+   - *Kiểm tra rủi ro bản quyền:* Hội đồng đánh giá rủi ro bản quyền (Tiêu chí 9) là điểm trọng yếu, yêu cầu bắt buộc áp dụng công nghệ DRM Canvas Reader đã thử nghiệm trong PoC.
+3. **Bước 3 — Human Sign-off (Phê duyệt chính thức):** Giám đốc dự án ký phê duyệt chốt bảng điểm 8.375/10 và cấp phép triển khai dự án.
+
