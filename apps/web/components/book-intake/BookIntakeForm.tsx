@@ -1,8 +1,9 @@
 'use client';
 
-import type { CategoryDto, CreateBookIntakeDto, CreateBookIntakeResponse } from '@libif/shared';
+import type { CategoryDto, CreateBookIntakeDto, CreateBookIntakeResponse } from '../../lib/api-types';
 import { useMemo, useState } from 'react';
-import { lookupIsbn, uploadBookIntake } from '../../lib/api';
+import { lookupIsbn, uploadBookIntake } from '../../lib/api-browser';
+import { Button, Card, InlineAlert, ProgressBar, ResultState } from '../ui';
 import { CategoryTagFields } from './CategoryTagFields';
 import { MetadataFields } from './MetadataFields';
 import { PdfDropzone } from './PdfDropzone';
@@ -60,22 +61,23 @@ export function BookIntakeForm({ categories }: { categories: CategoryDto[] }) {
   };
 
   return (
-    <form className="card grid" onSubmit={submit}>
-      <PdfDropzone file={file} onFile={setFile} error={fileError} />
-      <MetadataFields metadata={metadata} onChange={setMetadata} onLookup={handleLookup} lookupMessage={lookupMessage} />
-      <CategoryTagFields categories={categories} metadata={metadata} onChange={setMetadata} />
-      {progress > 0 ? <progress aria-label="Upload progress" value={progress} max={100}>{progress}%</progress> : null}
-      <button type="submit" disabled={!canSubmit}>Create digital book intake</button>
-      {error ? <p className="error" role="alert">{error}</p> : null}
-      {result ? (
-        <section className="success" aria-live="polite">
-          <h2>Book intake queued</h2>
-          <p>Book ID: {result.book.id}</p>
-          <p>Status: {result.book.status}</p>
-          <p>Processing job: {result.processingJob.id} ({result.processingJob.status})</p>
-          <p><a href="/admin/books">View admin book list</a></p>
-        </section>
-      ) : null}
-    </form>
+    <Card>
+      <form className="ui-stack" onSubmit={submit}>
+        <PdfDropzone file={file} onFile={setFile} error={fileError} />
+        <MetadataFields metadata={metadata} onChange={setMetadata} onLookup={handleLookup} lookupMessage={lookupMessage} />
+        <CategoryTagFields categories={categories} metadata={metadata} onChange={setMetadata} />
+        {progress > 0 ? <ProgressBar label="Upload progress" value={progress} /> : null}
+        <Button type="submit" disabled={!canSubmit}>Create digital book intake</Button>
+        {error ? <InlineAlert tone="error">{error}</InlineAlert> : null}
+        {result ? (
+          <ResultState title="Book intake queued">
+            <p>Book ID: {result.book.id}</p>
+            <p>Status: {result.book.status}</p>
+            <p>Processing job: {result.processingJob.id} ({result.processingJob.status})</p>
+            <p><a href="/admin/books">View admin book list</a></p>
+          </ResultState>
+        ) : null}
+      </form>
+    </Card>
   );
 }

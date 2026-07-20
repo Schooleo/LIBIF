@@ -1,0 +1,280 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>ADM-21 — Security &amp; Session Settings</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-primary": "#a4cfc5",
+                        "secondary": "#12696b",
+                        "on-secondary-fixed-variant": "#004f51",
+                        "on-secondary-fixed": "#002021",
+                        "on-primary-fixed": "#00201b",
+                        "on-background": "#191c1c",
+                        "outline-variant": "#c0c8c5",
+                        "on-primary-fixed-variant": "#244e46",
+                        "surface-tint": "#3d665e",
+                        "secondary-container": "#a2edee",
+                        "surface-container-highest": "#e1e3e2",
+                        "surface-variant": "#e1e3e2",
+                        "on-secondary-container": "#1a6d6f",
+                        "on-primary": "#ffffff",
+                        "tertiary-container": "#003c3c",
+                        "surface-container-high": "#e6e9e8",
+                        "primary-fixed": "#bfece1",
+                        "inverse-surface": "#2e3131",
+                        "on-tertiary-fixed": "#002020",
+                        "secondary-fixed": "#a5eff1",
+                        "on-surface": "#191c1c",
+                        "on-error-container": "#93000a",
+                        "surface": "#f8faf9",
+                        "on-primary-container": "#7ca79d",
+                        "surface-bright": "#f8faf9",
+                        "on-tertiary-fixed-variant": "#004f50",
+                        "on-tertiary-container": "#47adac",
+                        "on-error": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed": "#91f3f2",
+                        "surface-container": "#eceeed",
+                        "primary-container": "#103c35",
+                        "tertiary": "#002525",
+                        "background": "#f8faf9",
+                        "primary-fixed-dim": "#a4cfc5",
+                        "on-secondary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "outline": "#717976",
+                        "inverse-on-surface": "#eff1f0",
+                        "secondary-fixed-dim": "#89d3d5",
+                        "surface-dim": "#d8dada",
+                        "surface-container-low": "#f2f4f3",
+                        "primary": "#002520",
+                        "tertiary-fixed-dim": "#74d6d6",
+                        "on-surface-variant": "#414846",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "lg": "24px",
+                        "md": "16px",
+                        "sm": "8px",
+                        "margin-mobile": "16px",
+                        "margin-desktop": "40px",
+                        "xs": "4px",
+                        "xl": "32px",
+                        "gutter": "24px",
+                        "base": "8px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Be Vietnam Pro"],
+                        "label-md": ["Be Vietnam Pro"],
+                        "label-sm": ["Be Vietnam Pro"],
+                        "headline-xl": ["Be Vietnam Pro"],
+                        "headline-md": ["Be Vietnam Pro"],
+                        "headline-lg-mobile": ["Be Vietnam Pro"],
+                        "body-lg": ["Be Vietnam Pro"],
+                        "body-md": ["Be Vietnam Pro"],
+                        "body-sm": ["Be Vietnam Pro"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "label-md": ["14px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "headline-xl": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+        body { font-family: 'Be Vietnam Pro', sans-serif; }
+    </style>
+</head>
+<body class="bg-background text-on-background flex h-screen overflow-hidden">
+<!-- SideNavBar -->
+<nav class="hidden md:flex bg-surface-container-low h-screen w-64 flex-col border-r border-outline-variant fixed left-0 top-0 z-40 p-md transition-all duration-200 ease-in-out">
+<div class="mb-lg">
+<h1 class="font-headline-md text-headline-md text-primary">LIBIF Admin</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Document Control Center</p>
+</div>
+<div class="flex-1 flex flex-col gap-sm">
+<a class="flex items-center gap-md p-md rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-md p-md rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="folder_open">folder_open</span>
+<span class="font-label-md text-label-md">Repository</span>
+</a>
+<a class="flex items-center gap-md p-md rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="database">database</span>
+<span class="font-label-md text-label-md">Metadata</span>
+</a>
+<a class="flex items-center gap-md p-md rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="admin_panel_settings">admin_panel_settings</span>
+<span class="font-label-md text-label-md">Access Control</span>
+</a>
+<a class="flex items-center gap-md p-md rounded-lg bg-secondary-container text-on-secondary-container transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="settings" data-weight="fill" style="font-variation-settings: 'FILL' 1;">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</div>
+<div class="mt-auto flex flex-col gap-sm pt-md border-t border-outline-variant">
+<a class="flex items-center gap-md p-md rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span class="font-label-md text-label-md">Help</span>
+</a>
+<a class="flex items-center gap-md p-md rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-label-md text-label-md">Logout</span>
+</a>
+
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col ml-0 md:ml-64 h-screen bg-surface">
+<!-- Settings TopNav -->
+<header class="bg-surface-container-lowest w-full h-12 border-b border-outline-variant flex items-center gap-xl px-margin-desktop shrink-0">
+<div class="font-headline-md text-headline-md text-secondary mr-lg">Settings</div>
+<nav class="flex items-center gap-lg h-full">
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-secondary transition-all duration-150 flex items-center h-full pt-xs" href="#">General</a>
+<a class="font-label-md text-label-md text-secondary border-b-2 border-secondary flex items-center h-full pt-xs" href="#">Security</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-secondary transition-all duration-150 flex items-center h-full pt-xs" href="#">System</a>
+</nav>
+</header>
+<!-- Canvas -->
+<div class="flex-1 overflow-y-auto p-margin-mobile md:p-margin-desktop">
+<div class="max-w-4xl mx-auto space-y-gutter">
+<div class="mb-xl">
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-sm">Security &amp; Session Settings</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Manage global security policies, session lifecycles, and role-based access configurations.</p>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<!-- Session Management -->
+<section class="bg-surface-container-lowest rounded-lg border border-outline-variant p-lg flex flex-col">
+<div class="flex items-center gap-md mb-md">
+<span class="material-symbols-outlined text-secondary" data-icon="timer">timer</span>
+<h3 class="font-headline-md text-headline-md text-on-surface">Session Management</h3>
+</div>
+<div class="space-y-md flex-1">
+<div>
+<label class="font-label-md text-label-md text-on-surface block mb-xs">Idle Timeout (Minutes)</label>
+<input class="w-full bg-surface-container-lowest border border-outline-variant rounded p-sm font-body-md text-body-md focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary" type="number" value="30">
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-xs">Automatically terminate idle administrative sessions.</p>
+</div>
+<div>
+<label class="font-label-md text-label-md text-on-surface block mb-xs">Concurrent Session Limit</label>
+<select class="w-full bg-surface-container-lowest border border-outline-variant rounded p-sm font-body-md text-body-md focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary">
+<option>1 (Strict)</option>
+<option selected="">3 (Standard)</option>
+<option>Unlimited</option>
+</select>
+</div>
+</div>
+<div class="mt-lg pt-md border-t border-outline-variant flex justify-end">
+<button class="bg-secondary text-on-secondary font-label-md text-label-md px-md py-sm rounded hover:bg-opacity-90 transition-opacity">Save Session Rules</button>
+</div>
+</section>
+<!-- Secure Reader Settings -->
+<section class="bg-surface-container-lowest rounded-lg border border-outline-variant p-lg flex flex-col">
+<div class="flex items-center gap-md mb-md">
+<span class="material-symbols-outlined text-secondary" data-icon="link">link</span>
+<h3 class="font-headline-md text-headline-md text-on-surface">Secure Reader Settings</h3>
+</div>
+<div class="space-y-md flex-1">
+<div>
+<label class="font-label-md text-label-md text-on-surface block mb-xs">Temporary Link Expiry</label>
+<div class="flex items-center gap-sm">
+<input class="w-24 bg-surface-container-lowest border border-outline-variant rounded p-sm font-body-md text-body-md focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary" type="number" value="24">
+<span class="font-body-md text-body-md text-on-surface-variant">Hours</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-xs">Default lifespan for externally shared secure document links.</p>
+</div>
+<div class="flex items-center justify-between p-sm bg-surface-container-low rounded border border-outline-variant">
+<span class="font-body-md text-body-md text-on-surface">Watermark External Links</span>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox">
+<div class="w-11 h-6 bg-outline-variant rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-secondary"></div>
+</label>
+</div>
+</div>
+<div class="mt-lg pt-md border-t border-outline-variant flex justify-end">
+<button class="bg-secondary text-on-secondary font-label-md text-label-md px-md py-sm rounded hover:bg-opacity-90 transition-opacity">Update Settings</button>
+</div>
+</section>
+<!-- Role Policy Summary -->
+<section class="bg-surface-container-lowest rounded-lg border border-outline-variant p-lg md:col-span-2">
+<div class="flex items-center gap-md mb-md">
+<span class="material-symbols-outlined text-secondary" data-icon="policy">policy</span>
+<h3 class="font-headline-md text-headline-md text-on-surface">Role Policy Summary</h3>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-md">
+<div class="p-md border border-outline-variant rounded bg-surface">
+<h4 class="font-label-md text-label-md text-on-surface mb-xs flex items-center gap-sm">
+<span class="material-symbols-outlined text-outline text-sm" data-icon="visibility">visibility</span> Reader
+                                </h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">View-only access to published documents. Cannot modify metadata or share externally.</p>
+</div>
+<div class="p-md border border-outline-variant rounded bg-surface">
+<h4 class="font-label-md text-label-md text-on-surface mb-xs flex items-center gap-sm">
+<span class="material-symbols-outlined text-outline text-sm" data-icon="edit_document">edit_document</span> Librarian
+                                </h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Can upload, edit metadata, and manage document lifecycles within assigned repositories.</p>
+</div>
+<div class="p-md border border-outline-variant rounded bg-surface border-l-4 border-l-secondary">
+<h4 class="font-label-md text-label-md text-on-surface mb-xs flex items-center gap-sm">
+<span class="material-symbols-outlined text-secondary text-sm" data-icon="shield_person">shield_person</span> Admin
+                                </h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Full system access, including security settings, user provisioning, and audit logs.</p>
+</div>
+</div>
+</section>
+<!-- High Impact / Audit Access -->
+<section class="bg-error-container rounded-lg border border-error p-lg md:col-span-2 flex flex-col md:flex-row gap-lg items-start md:items-center">
+<div class="flex-1">
+<div class="flex items-center gap-md mb-sm">
+<span class="material-symbols-outlined text-error" data-icon="warning">warning</span>
+<h3 class="font-headline-md text-headline-md text-on-error-container">Critical Security Actions</h3>
+</div>
+<p class="font-body-sm text-body-sm text-on-error-container mb-md">Modifying audit access or flushing active sessions requires re-authentication.</p>
+<div class="flex items-center gap-md mt-md">
+<label class="font-label-sm text-label-sm text-on-error-container">Audit Log Access:</label>
+<select class="bg-surface-container-lowest border border-error rounded p-sm font-body-sm text-body-sm text-on-surface focus:outline-none">
+<option selected="">Admins Only</option>
+<option>Admins &amp; Librarians</option>
+</select>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-md rounded border border-error w-full md:w-auto flex flex-col gap-sm shadow-sm">
+<label class="font-label-sm text-label-sm text-on-surface">Confirm Administrator Password</label>
+<input class="w-full bg-surface border border-outline-variant rounded p-sm font-body-md text-body-md focus:outline-none focus:border-error focus:ring-1 focus:ring-error" placeholder="••••••••" type="password">
+<button class="bg-error text-on-error font-label-md text-label-md px-md py-sm rounded hover:bg-opacity-90 transition-opacity mt-xs flex items-center justify-center gap-sm">
+<span class="material-symbols-outlined text-sm" data-icon="lock">lock</span> Apply Critical Changes
+                            </button>
+</div>
+</section>
+</div>
+</div>
+</div>
+</main>
+
+
+</body></html>

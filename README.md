@@ -1,13 +1,22 @@
 # LIBIF
 
-This repository implements the first MVP vertical slice for **LIBIF**: **Digital Book Intake**.
+LIBIF is a TypeScript monorepo for an integrated digital-library application. The current development build includes the first MVP vertical slice plus the Phase 1–3 platform foundations:
 
-A librarian can upload a scanned PDF, save metadata, assign category/tags, and create persistent book/file/job records. The feature covers:
+- **Frontend:** Next.js App Router, shared design tokens/components, reader/admin/auth shells, digital book intake, public catalogue proof, and authentication screens.
+- **Backend:** NestJS modular API for auth/access, intake, categories/catalog, ISBN lookup, private storage, and processing-queue producer boundary.
+- **Database:** PostgreSQL via Prisma for users, sessions, password reset tokens, books, files, authors, categories, tags, and processing jobs.
+- **Contracts:** OpenAPI generation plus generated frontend API path types.
+- **Storage/queue:** MinIO-compatible private object storage and Redis/BullMQ queue scaffold.
 
-- **Frontend:** Next.js admin intake form, upload progress, ISBN lookup, admin list, public catalog proof.
-- **Backend:** NestJS modular API for intake, categories/catalog, ISBN lookup, storage, and processing queue scaffold.
-- **Database:** PostgreSQL schema via Prisma for books, files, authors, categories, tags, users, and processing jobs.
-- **Storage/queue:** MinIO-compatible private object storage and Redis/BullMQ queue producer boundary.
+## Current dev progress
+
+| Phase | Status | Notes |
+|---|---|---|
+| Phase 1 — Design tokens/shared components | Complete | Semantic CSS tokens, shared UI primitives, layout shells, domain foundations, component tests. |
+| Phase 2 — Route shells/auth boundary/API client | Complete | Reader/Admin/Auth route groups, admin gating, OpenAPI generation, typed API adapters. |
+| Phase 3 — Authentication/access | Complete | Register, sign-in/out, DB-backed sessions, HTTP-only cookie, password reset flow, standard error envelope, auth routes. |
+
+Next likely product direction is Reader discovery/personal-library work unless staff/user administration is prioritized first.
 
 ## Local setup
 
@@ -29,12 +38,28 @@ npm run db:seed
 npm run dev
 ```
 
-API runs on `http://localhost:3001` and web runs on the Next.js dev port.
+API runs on `http://localhost:3001` and web runs on the Next.js dev port, usually `http://localhost:3000`.
 
-Seed users are development-only:
+## Seeded development accounts
 
-- `admin@libif.local`
-- `librarian@libif.local`
+`make db-seed` / `npm run db:seed` creates one usable email/password account for each role. These credentials are for local development only.
+
+| Role | Email | Password |
+|---|---|---|
+| Admin | `admin@libif.local` | `admin libif dev passphrase` |
+| Librarian | `librarian@libif.local` | `librarian libif dev passphrase` |
+| Reader | `reader@libif.local` | `reader libif dev passphrase` |
+
+You can also use the explicit development-header fallback for local staff workflows by enabling both API and web flags in `.env`:
+
+```env
+LIBIF_ENABLE_DEV_AUTH="true"
+NEXT_PUBLIC_LIBIF_ENABLE_DEV_AUTH="true"
+NEXT_PUBLIC_LIBIF_DEV_ROLE="LIBRARIAN"
+NEXT_PUBLIC_LIBIF_DEV_EMAIL="librarian@libif.local"
+```
+
+Valid dev roles are `ADMIN`, `LIBRARIAN`, and `READER`. Keep these flags disabled outside local development.
 
 ## Development commands
 
@@ -92,7 +117,23 @@ The bundled `docker/pgadmin/servers.json` pre-registers the local Postgres conta
 
 Use `make debug-logs` to follow pgAdmin logs and `make debug-down` to stop only pgAdmin. Use `make infra-down` when you want to stop the core services too.
 
-## API contract
+## Implemented API contract highlights
+
+OpenAPI JSON is generated to `apps/api/openapi/libif-api.json`; frontend path types are generated to `apps/web/lib/generated/api-types.ts`.
+
+Current implemented endpoints include:
+
+- `POST /api/auth/register`
+- `POST /api/auth/sign-in`
+- `POST /api/auth/sign-out`
+- `GET /api/auth/session`
+- `POST /api/auth/password-reset-requests`
+- `POST /api/auth/password-resets`
+- `POST /api/admin/books/intake`
+- `GET /api/admin/books`
+- `GET /api/categories`
+- `GET /api/catalog/books`
+- `GET /api/isbn/:isbn`
 
 ### `POST /api/admin/books/intake`
 
@@ -118,27 +159,34 @@ Success response includes `book.id`, `file.id`, and `processingJob.id`. The DB s
 ## Verification
 
 ```bash
+npm run openapi:generate
 npm run lint
 npm test
-npm run test:e2e
 npm run build
+npm run test:e2e -w apps/api
 ```
 
 For a manual smoke test:
 
 1. Start Docker services and run migrations/seeds.
-2. Open `/admin/books/new`.
-3. Upload `apps/api/test/fixtures/sample.pdf` and metadata.
-4. Confirm the success panel shows `PENDING_PROCESSING` and a queued processing job.
-5. Open `/admin/books` and confirm the record exists.
-6. Confirm `/catalog` does not show pending books.
+2. Open `/sign-in` and sign in as `librarian@libif.local` using the seeded password.
+3. Open `/admin/books/new`.
+4. Upload `apps/api/test/fixtures/sample.pdf` and metadata.
+5. Confirm the success panel shows `PENDING_PROCESSING` and a queued processing job.
+6. Open `/admin/books` and confirm the record exists.
+7. Confirm `/catalog` does not show pending books.
+8. Sign out, then confirm staff routes send anonymous users to `/session-expired`.
 
 ## Follow-up features
 
-- OCR/compression workers for queued processing jobs.
-- Approval workflow from pending to published/rejected.
+- Production password-reset email provider.
+- Reader discovery and personal library.
 - Secure PDF reader with presigned URLs and reading-progress mutation.
+- Upload/Catalog module deepening and document metadata workflows.
+- OCR/compression workers and processing status endpoints.
+- Approval workflow from pending to published/rejected.
 - Full catalog search and full-text OCR indexing.
+- Staff/user administration, role changes, and account deactivation.
 - Management dashboard metrics.
 
 ## GitHub Actions CI notifications

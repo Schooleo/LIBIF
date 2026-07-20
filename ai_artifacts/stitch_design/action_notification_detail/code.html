@@ -1,0 +1,316 @@
+<!DOCTYPE html><html class="h-full" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Action Notification Detail - LIBIF</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "inverse-primary": "#a4cfc5",
+                    "secondary": "#12696b",
+                    "on-secondary-fixed-variant": "#004f51",
+                    "on-secondary-fixed": "#002021",
+                    "on-primary-fixed": "#00201b",
+                    "on-background": "#191c1c",
+                    "outline-variant": "#c0c8c5",
+                    "on-primary-fixed-variant": "#244e46",
+                    "surface-tint": "#3d665e",
+                    "secondary-container": "#a2edee",
+                    "surface-container-highest": "#e1e3e2",
+                    "surface-variant": "#e1e3e2",
+                    "on-secondary-container": "#1a6d6f",
+                    "on-primary": "#ffffff",
+                    "tertiary-container": "#003c3c",
+                    "surface-container-high": "#e6e9e8",
+                    "primary-fixed": "#bfece1",
+                    "inverse-surface": "#2e3131",
+                    "on-tertiary-fixed": "#002020",
+                    "secondary-fixed": "#a5eff1",
+                    "on-surface": "#191c1c",
+                    "on-error-container": "#93000a",
+                    "surface": "#f8faf9",
+                    "on-primary-container": "#7ca79d",
+                    "surface-bright": "#f8faf9",
+                    "on-tertiary-fixed-variant": "#004f50",
+                    "on-tertiary-container": "#47adac",
+                    "on-error": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "tertiary-fixed": "#91f3f2",
+                    "surface-container": "#eceeed",
+                    "primary-container": "#103c35",
+                    "tertiary": "#002525",
+                    "background": "#f8faf9",
+                    "primary-fixed-dim": "#a4cfc5",
+                    "on-secondary": "#ffffff",
+                    "error": "#ba1a1a",
+                    "outline": "#717976",
+                    "inverse-on-surface": "#eff1f0",
+                    "secondary-fixed-dim": "#89d3d5",
+                    "surface-dim": "#d8dada",
+                    "surface-container-low": "#f2f4f3",
+                    "primary": "#002520",
+                    "tertiary-fixed-dim": "#74d6d6",
+                    "on-surface-variant": "#414846",
+                    "surface-container-lowest": "#ffffff",
+                    "on-tertiary": "#ffffff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "lg": "24px",
+                    "md": "16px",
+                    "sm": "8px",
+                    "margin-mobile": "16px",
+                    "margin-desktop": "40px",
+                    "xs": "4px",
+                    "xl": "32px",
+                    "gutter": "24px",
+                    "base": "8px"
+            },
+            "fontFamily": {
+                    "headline-lg": ["Be Vietnam Pro"],
+                    "label-md": ["Be Vietnam Pro"],
+                    "label-sm": ["Be Vietnam Pro"],
+                    "headline-xl": ["Be Vietnam Pro"],
+                    "headline-md": ["Be Vietnam Pro"],
+                    "headline-lg-mobile": ["Be Vietnam Pro"],
+                    "body-lg": ["Be Vietnam Pro"],
+                    "body-md": ["Be Vietnam Pro"],
+                    "body-sm": ["Be Vietnam Pro"]
+            },
+            "fontSize": {
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "label-md": ["14px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "headline-xl": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        body {
+            background-color: #F7F9F8; /* Base background */
+            color: #191c1c;
+        }
+        .flat-card {
+            background-color: #FFFFFF;
+            border-radius: 10px;
+            border: 1px solid #D9E1DE;
+        }
+        .btn-primary {
+            background-color: #138A8A; /* Interactive Cyan */
+            color: #FFFFFF;
+        }
+        .btn-primary:hover {
+            opacity: 0.9;
+            box-shadow: 0px 4px 12px rgba(16, 60, 53, 0.08);
+        }
+        .btn-secondary {
+            border: 1px solid #138A8A;
+            color: #138A8A;
+            background-color: transparent;
+        }
+        .btn-secondary:hover {
+            background-color: rgba(19, 138, 138, 0.05);
+        }
+        
+        /* Required Shell Layout Adjustments */
+        main {
+            margin-left: 16rem; /* 64 * 0.25rem = 16rem for SideNavBar */
+            padding-top: 4rem; /* 16 * 0.25rem = 4rem for TopNavBar */
+            min-height: 100vh;
+        }
+        @media (max-width: 767px) {
+             main {
+                 margin-left: 0;
+                 padding-top: 4rem;
+             }
+        }
+    </style>
+</head>
+<body class="font-body-md bg-background text-on-background antialiased flex">
+<!-- Top Navigation Bar -->
+<header class="w-full h-16 bg-surface dark:bg-surface-dim border-b border-outline-variant dark:border-outline flex items-center justify-between px-margin-desktop fixed top-0 z-30 md:ml-64 transition-all duration-300 md:w-[calc(100%-16rem)]">
+<div class="flex items-center gap-md">
+<button class="md:hidden text-primary p-2 focus:outline-none focus:ring-2 focus:ring-primary rounded-lg" id="mobile-menu-btn">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed">LIBIF</h1>
+</div>
+<div class="flex items-center gap-md">
+<!-- Search bar on left logic represented here if needed, but normally embedded in header -->
+<button class="text-primary dark:text-primary-fixed hover:bg-surface-container-low dark:hover:bg-surface-container-highest p-2 rounded-full transition-colors cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">notifications</span>
+</button>
+
+</div>
+</header>
+<!-- Side Navigation Bar -->
+<nav class="fixed left-0 top-0 h-full z-40 p-md bg-surface-container-low dark:bg-surface-container-lowest border-r border-outline-variant dark:border-outline w-64 flex flex-col hidden md:flex" id="side-nav">
+<div class="mb-lg px-sm"><h2 class="font-headline-md text-headline-md text-primary font-bold">LIBIF Admin</h2></div>
+<div class="flex flex-col gap-sm flex-grow">
+<!-- Active state logic: Assuming 'Dashboard' as we are viewing a notification, or perhaps 'Dashboard' is a catch-all for inbox -->
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-all duration-200 ease-in-out rounded-lg" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-all duration-200 ease-in-out rounded-lg" href="#">
+<span class="material-symbols-outlined">folder_open</span>
+<span class="font-label-md text-label-md">Repository</span>
+</a>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-all duration-200 ease-in-out rounded-lg" href="#">
+<span class="material-symbols-outlined">database</span>
+<span class="font-label-md text-label-md">Metadata</span>
+</a>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-all duration-200 ease-in-out rounded-lg" href="#">
+<span class="material-symbols-outlined">admin_panel_settings</span>
+<span class="font-label-md text-label-md">Access Control</span>
+</a>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-all duration-200 ease-in-out rounded-lg" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</div>
+<div class="mt-auto border-t border-outline-variant dark:border-outline pt-md flex flex-col gap-sm">
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-all duration-200 ease-in-out rounded-lg" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="font-label-md text-label-md">Help</span>
+</a>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-all duration-200 ease-in-out rounded-lg" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-label-md text-label-md">Logout</span>
+</a>
+
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-1 w-full bg-background p-margin-mobile md:p-margin-desktop overflow-y-auto">
+<div class="max-w-4xl mx-auto space-y-lg">
+<!-- Breadcrumbs / Back Navigation -->
+<div class="flex items-center gap-sm text-on-surface-variant font-body-sm">
+<a class="hover:text-primary transition-colors flex items-center gap-xs" href="#">
+<span class="material-symbols-outlined text-[18px]">arrow_back</span>
+                    Back to Notifications
+                </a>
+</div>
+<!-- Detail Header -->
+<div class="flex flex-col md:flex-row md:items-start justify-between gap-md">
+<div>
+<div class="flex items-center gap-sm mb-sm">
+<span class="inline-flex items-center px-2 py-1 rounded-full text-label-sm font-label-sm bg-error-container text-on-error-container">
+<span class="material-symbols-outlined text-[14px] mr-1" style="font-variation-settings: 'FILL' 1;">error</span>
+                            Action Required
+                        </span>
+<span class="text-body-sm text-on-surface-variant">Received 2 hours ago</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-background mb-xs">
+                        Correction Requested for: Vietnamese Archival Records v4
+                    </h2>
+<p class="font-body-md text-on-surface-variant">
+                        Sender: System Administrator • Job ID: #LIB-2023-8991
+                    </p>
+</div>
+</div>
+<!-- Main Content Area - Bento Grid style -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<!-- Primary Notification Content (Span 2 cols) -->
+<div class="md:col-span-2 flat-card p-lg flex flex-col h-full border-l-4 border-l-[#ba1a1a]">
+<div class="flex items-center gap-md mb-md">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">admin_panel_settings</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-background">System Administrator</p>
+<p class="font-body-sm text-on-surface-variant">Plain Language Explanation</p>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-md rounded-lg border border-outline-variant font-body-md text-on-surface mb-lg flex-grow">
+<p class="mb-4">Hello,</p>
+<p class="mb-4">The recent submission for the 'Vietnamese Archival Records v4' batch has been flagged during the initial review process.</p>
+<p class="mb-4 font-semibold text-error">Issue: Metadata fields for Author Name must follow the canonical format (Last Name, First Name).</p>
+<p class="">Please review the highlighted records and update the metadata formatting before resubmitting the job for approval. The system cannot process the ingestion until these formatting rules are strictly applied.</p>
+</div>
+<!-- Actions -->
+<div class="flex flex-wrap items-center gap-md mt-auto pt-md border-t border-outline-variant">
+<button class="btn-primary font-label-md text-label-md px-6 py-3 rounded-lg flex items-center gap-sm transition-all">
+<span class="material-symbols-outlined">edit_document</span>
+                            Review &amp; Resubmit
+                        </button>
+<button class="btn-secondary font-label-md text-label-md px-6 py-3 rounded-lg flex items-center gap-sm transition-all">
+<span class="material-symbols-outlined">check_circle</span>
+                            Mark as Read
+                        </button>
+</div>
+</div>
+<!-- Contextual Details Sidebar -->
+<div class="md:col-span-1 space-y-gutter">
+<!-- Related Document Card -->
+<div class="flat-card p-md">
+<h3 class="font-headline-md text-headline-md text-on-background mb-md flex items-center gap-sm">
+<span class="material-symbols-outlined text-outline">description</span>
+                            Related Record
+                        </h3>
+<div class="space-y-sm mb-md">
+<div class="flex justify-between items-start">
+<span class="font-body-sm text-on-surface-variant">Batch Name:</span>
+<span class="font-body-sm text-on-background font-medium text-right">Vietnamese Archival Records v4</span>
+</div>
+<div class="flex justify-between items-start">
+<span class="font-body-sm text-on-surface-variant">Status:</span>
+<span class="font-body-sm text-error font-medium">Validation Failed</span>
+</div>
+<div class="flex justify-between items-start">
+<span class="font-body-sm text-on-surface-variant">Submitted:</span>
+<span class="font-body-sm text-on-background text-right">Oct 24, 2023 14:30 PST</span>
+</div>
+</div>
+<a class="text-secondary font-label-md text-label-md flex items-center gap-xs hover:underline mt-sm" href="#">
+<span class="material-symbols-outlined text-[18px]">open_in_new</span>
+                            Link to Record
+                        </a>
+</div>
+<!-- Error Log Snippet -->
+<div class="flat-card p-md bg-inverse-surface text-inverse-on-surface border-none shadow-none">
+<h3 class="font-headline-md text-headline-md text-inverse-primary mb-sm flex items-center gap-sm">
+<span class="material-symbols-outlined text-[20px]">terminal</span>
+                            System Log
+                        </h3>
+<pre class="font-mono text-[11px] leading-relaxed overflow-x-auto text-outline-variant opacity-80">[14:31:02] INFO: Ingestion started
+[14:31:05] WARN: Parsing metadata XML
+[14:31:06] ERR: REGEX_FAIL on field 
+           'Author_Name'. 
+           Expected: ^[\w\s]+,\s[\w\s]+$
+           Found: 'Nguyen Van A'
+[14:31:06] FATAL: Validation aborted.
+                        </pre>
+</div>
+</div>
+</div>
+</div>
+</main>
+<script>
+        // Simple mobile menu toggle
+        document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+            const sideNav = document.getElementById('side-nav');
+            sideNav.classList.toggle('hidden');
+        });
+    </script>
+
+
+</body></html>

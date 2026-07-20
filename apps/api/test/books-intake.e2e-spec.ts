@@ -1,6 +1,7 @@
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { AppModule } from '../src/app.module';
+import { HttpErrorFilter } from '../src/common/http-error.filter';
 import { PrismaService } from '../src/modules/database/prisma.service';
 import { ProcessingQueue } from '../src/modules/processing/processing.queue';
 import { StorageService, StoredPdf } from '../src/modules/storage/storage.service';
@@ -29,8 +30,11 @@ describe('Digital book intake (e2e)', () => {
   let app: INestApplication;
   let prisma: PrismaService;
   let queue: FakeProcessingQueue;
+  const staffHeaders = { 'x-libif-dev-role': 'LIBRARIAN', 'x-libif-dev-user-email': 'librarian@libif.local' };
+  const originalDevAuth = process.env.LIBIF_ENABLE_DEV_AUTH;
 
   beforeAll(async () => {
+    process.env.LIBIF_ENABLE_DEV_AUTH = 'true';
     const moduleRef = await Test.createTestingModule({ imports: [AppModule] })
       .overrideProvider(StorageService)
       .useClass(FakeStorageService)
@@ -40,12 +44,15 @@ describe('Digital book intake (e2e)', () => {
 
     app = moduleRef.createNestApplication();
     app.setGlobalPrefix('api');
+    app.useGlobalFilters(new HttpErrorFilter());
     await app.init();
     prisma = app.get(PrismaService);
     queue = app.get(ProcessingQueue) as unknown as FakeProcessingQueue;
   });
 
   beforeEach(async () => {
+    await prisma.passwordResetToken.deleteMany();
+    await prisma.userSession.deleteMany();
     await prisma.processingJob.deleteMany();
     await prisma.bookFile.deleteMany();
     await prisma.bookTag.deleteMany();
@@ -60,6 +67,8 @@ describe('Digital book intake (e2e)', () => {
 
   afterAll(async () => {
     await app.close();
+    await prisma.$disconnect();
+    process.env.LIBIF_ENABLE_DEV_AUTH = originalDevAuth;
   });
 
   it('persists book, private file pointer, tags, authors, and queued processing job', async () => {
@@ -76,6 +85,7 @@ describe('Digital book intake (e2e)', () => {
 
     const response = await request(app.getHttpServer())
       .post('/api/admin/books/intake')
+      .set(staffHeaders)
       .field('metadata', JSON.stringify(metadata))
       .attach('file', 'test/fixtures/sample.pdf')
       .expect(201);
@@ -101,6 +111,7 @@ describe('Digital book intake (e2e)', () => {
   it('rejects a non-PDF upload without committed book rows', async () => {
     await request(app.getHttpServer())
       .post('/api/admin/books/intake')
+      .set(staffHeaders)
       .field('metadata', JSON.stringify({ title: 'Bad', authors: ['A'], tags: [] }))
       .attach('file', Buffer.from('not pdf'), { filename: 'bad.txt', contentType: 'text/plain' })
       .expect(400);
@@ -112,5 +123,19 @@ describe('Digital book intake (e2e)', () => {
     await prisma.user.create({ data: { email: 'librarian@libif.local', passwordHash: 'dev-only', role: 'LIBRARIAN' } });
     await prisma.book.create({ data: { title: 'Pending Book', createdBy: { connect: { email: 'librarian@libif.local' } } } });
     await request(app.getHttpServer()).get('/api/catalog/books').expect(200, []);
+  });
+
+  it('rejects admin book access without a development session boundary', async () => {
+    await request(app.getHttpServer()).get('/api/admin/books').expect(403);
+  });
+
+  it('exposes a development session when controlled dev headers are present', async () => {
+    const response = await request(app.getHttpServer()).get('/api/auth/session').set(staffHeaders).expect(200);
+    expect(response.body).toMatchObject({
+      authenticated: true,
+      user: { email: 'librarian@libif.local', role: 'LIBRARIAN' },
+      strategy: 'development-header'
+    });
+    expect(response.body.permissions).toContain('admin:books:read');
   });
 });

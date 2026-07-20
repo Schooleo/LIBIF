@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Edit Category - InstiVault</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-dim": "#d3daea",
+                        "on-secondary-fixed": "#002021",
+                        "outline": "#717976",
+                        "tertiary-container": "#003c3c",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-low": "#f0f3ff",
+                        "secondary": "#12696b",
+                        "on-primary-fixed": "#00201b",
+                        "secondary-container": "#a2edee",
+                        "surface-container": "#e7eefe",
+                        "primary-fixed-dim": "#a4cfc5",
+                        "primary": "#002520",
+                        "surface-tint": "#3d665e",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-container": "#7ca79d",
+                        "background": "#f9f9ff",
+                        "outline-variant": "#c0c8c5",
+                        "on-error-container": "#93000a",
+                        "on-error": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed-dim": "#74d6d6",
+                        "on-secondary-container": "#1a6d6f",
+                        "on-surface-variant": "#414846",
+                        "inverse-primary": "#a4cfc5",
+                        "primary-container": "#103c35",
+                        "on-primary": "#ffffff",
+                        "surface-bright": "#f9f9ff",
+                        "on-primary-fixed-variant": "#244e46",
+                        "error": "#ba1a1a",
+                        "on-tertiary-fixed": "#002020",
+                        "primary-fixed": "#bfece1",
+                        "on-surface": "#151c27",
+                        "surface-container-highest": "#dce2f3",
+                        "secondary-fixed-dim": "#89d3d5",
+                        "on-tertiary-container": "#47adac",
+                        "on-background": "#151c27",
+                        "error-container": "#ffdad6",
+                        "inverse-on-surface": "#ebf1ff",
+                        "tertiary": "#002525",
+                        "secondary-fixed": "#a5eff1",
+                        "on-tertiary-fixed-variant": "#004f50",
+                        "surface-container-high": "#e2e8f8",
+                        "surface-variant": "#dce2f3",
+                        "surface": "#f9f9ff",
+                        "on-secondary-fixed-variant": "#004f51",
+                        "tertiary-fixed": "#91f3f2",
+                        "inverse-surface": "#2a313d"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xl": "32px",
+                        "sm": "8px",
+                        "container-max": "1440px",
+                        "xs": "4px",
+                        "gutter": "16px",
+                        "unit": "8px",
+                        "lg": "24px",
+                        "md": "16px"
+                    },
+                    "fontFamily": {
+                        "title-sm": ["Be Vietnam Pro"],
+                        "body-md": ["Be Vietnam Pro"],
+                        "display-lg-mobile": ["Be Vietnam Pro"],
+                        "label-caps": ["Be Vietnam Pro"],
+                        "display-lg": ["Be Vietnam Pro"],
+                        "body-sm": ["Be Vietnam Pro"],
+                        "headline-md": ["Be Vietnam Pro"]
+                    },
+                    "fontSize": {
+                        "title-sm": ["18px", { "lineHeight": "24px", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "display-lg-mobile": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Be Vietnam Pro', sans-serif; background-color: #f7f9f8; }
+        .bg-custom-surface { background-color: #f7f9f8; }
+        .bg-custom-card { background-color: #ffffff; }
+        .border-custom { border-color: #e2e8f0; }
+        .text-primary-dark { color: #103c35; }
+        .text-ghost { color: #0c6668; border-color: #0c6668; }
+        .shadow-soft { box-shadow: 0px 4px 12px rgba(16, 60, 53, 0.08); }
+        .focus-ring:focus { border-color: #0c6668; box-shadow: 0 0 0 2px #e8f3f2; outline: none; }
+    </style>
+</head>
+<body class="bg-custom-surface text-on-surface h-screen w-full overflow-hidden flex relative font-body-md text-body-md">
+<!-- Sidebar (Background Context) -->
+<nav class="hidden md:flex flex-col h-screen w-64 fixed left-0 top-0 bg-primary z-40 border-r border-outline-variant text-on-primary">
+<div class="p-lg border-b border-on-primary/10">
+<h1 class="font-headline-md text-headline-md text-on-primary tracking-tight">InstiVault</h1>
+<p class="font-body-sm text-body-sm text-on-primary/70">Institutional Archive</p>
+</div>
+<div class="flex-1 py-md overflow-y-auto">
+<a class="flex items-center gap-md px-lg py-md text-on-primary/70 hover:bg-primary-container/20 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="account_tree">account_tree</span>
+<span>Repository</span>
+</a>
+<a class="flex items-center gap-md px-lg py-md bg-primary-container text-on-primary-container border-l-4 border-on-tertiary-container" href="#">
+<span class="material-symbols-outlined" data-icon="library_books">library_books</span>
+<span>Collections</span>
+</a>
+<a class="flex items-center gap-md px-lg py-md text-on-primary/70 hover:bg-primary-container/20 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="bar_chart">bar_chart</span>
+<span>Analytics</span>
+</a>
+<a class="flex items-center gap-md px-lg py-md text-on-primary/70 hover:bg-primary-container/20 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span>Archives</span>
+</a>
+<a class="flex items-center gap-md px-lg py-md text-on-primary/70 hover:bg-primary-container/20 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span>Settings</span>
+</a>
+</div>
+<div class="p-md border-t border-on-primary/10">
+<button class="w-full py-sm bg-surface-container-lowest text-primary rounded-lg font-title-sm text-title-sm">Upload Document</button>
+</div>
+</nav>
+<!-- Main Content Area (Background Context) -->
+<div class="ml-0 md:ml-64 w-full h-full flex flex-col opacity-40 pointer-events-none filter blur-[2px] transition-all duration-300">
+<!-- Top App Bar -->
+<header class="flex justify-between items-center w-full h-16 px-lg sticky top-0 z-30 bg-surface border-b border-outline-variant">
+<div class="font-title-sm text-title-sm font-bold text-primary">Repository Management</div>
+<div class="flex items-center gap-md text-on-surface-variant">
+<span class="material-symbols-outlined cursor-pointer hover:text-secondary">notifications</span>
+<span class="material-symbols-outlined cursor-pointer hover:text-secondary">help_outline</span>
+<span class="material-symbols-outlined cursor-pointer hover:text-secondary">account_circle</span>
+</div>
+</header>
+<!-- Dummy Content representing ADM-08 -->
+<main class="p-lg flex-1 overflow-y-auto">
+<div class="mb-lg">
+<h2 class="font-display-lg text-display-lg text-primary-dark mb-sm">Categories</h2>
+<p class="text-on-surface-variant">Manage the taxonomy and classification of institutional documents.</p>
+</div>
+<div class="bg-custom-card border border-custom rounded-lg p-lg">
+<!-- Mock Table Structure -->
+<div class="flex justify-between items-center pb-md border-b border-custom mb-md">
+<div class="font-title-sm text-title-sm">Financial Directives</div>
+<button class="px-md py-sm bg-primary-container text-on-primary rounded font-title-sm text-title-sm">Add Category</button>
+</div>
+<div class="space-y-sm">
+<div class="flex items-center justify-between p-md bg-surface-container-lowest border border-custom rounded hover:bg-[#f7f9f8]">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-outline">folder</span>
+<span class="font-title-sm text-title-sm">Fiscal Policy</span>
+</div>
+<span class="material-symbols-outlined text-outline">more_vert</span>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- Edit Category Side Panel (Overlay) -->
+<div class="fixed inset-0 z-50 flex justify-end bg-on-surface/20 backdrop-blur-sm">
+<aside class="w-full max-w-md h-full bg-surface-container-lowest shadow-soft border-l border-custom flex flex-col animate-[slideIn_0.3s_ease-out]">
+<!-- Panel Header -->
+<div class="flex justify-between items-center px-lg py-md border-b border-custom">
+<h2 class="font-headline-md text-headline-md text-primary-dark">Edit Category: Fiscal Policy</h2>
+<button aria-label="Close panel" class="text-on-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined" data-icon="close">close</span>
+</button>
+</div>
+<!-- Panel Content / Form -->
+<div class="flex-1 overflow-y-auto p-lg space-y-lg">
+<!-- Category Name -->
+<div class="space-y-xs">
+<label class="block font-title-sm text-title-sm text-on-surface" for="category_name">Category Name</label>
+<input class="w-full px-md py-sm bg-surface-container-lowest border border-custom rounded-lg focus-ring text-on-surface font-body-md text-body-md" id="category_name" type="text" value="Fiscal Policy"/>
+</div>
+<!-- Duplicate Name Warning (Simulated State) -->
+<div class="bg-error-container border border-error/20 rounded-lg p-md flex gap-sm items-start">
+<span class="material-symbols-outlined text-error" data-icon="warning">warning</span>
+<div>
+<h4 class="font-title-sm text-title-sm text-on-error-container mb-xs">Duplicate Name Warning</h4>
+<p class="font-body-sm text-body-sm text-on-error-container/80">A category named "Fiscal Policy" already exists within the "Financial Directives" branch. Please choose a unique name.</p>
+</div>
+</div>
+<!-- Parent Category -->
+<div class="space-y-xs">
+<label class="block font-title-sm text-title-sm text-on-surface" for="parent_category">Parent Category</label>
+<div class="relative">
+<select class="w-full px-md py-sm pr-lg bg-surface-container-lowest border border-custom rounded-lg focus-ring text-on-surface appearance-none font-body-md text-body-md" id="parent_category">
+<option value="root">-- Top Level (No Parent) --</option>
+<option selected="" value="financial_directives">Financial Directives</option>
+<option value="hr_policies">Human Resources</option>
+<option value="academic_standards">Academic Standards</option>
+</select>
+<span class="material-symbols-outlined absolute right-md top-1/2 -translate-y-1/2 pointer-events-none text-outline">expand_more</span>
+</div>
+</div>
+<!-- Slug / Identifier -->
+<div class="space-y-xs">
+<label class="block font-title-sm text-title-sm text-on-surface" for="category_slug">Slug / Identifier</label>
+<input class="w-full px-md py-sm bg-surface-dim/30 border border-custom rounded-lg text-on-surface-variant cursor-not-allowed font-body-md text-body-md font-mono text-sm" id="category_slug" readonly="" type="text" value="fiscal-policy"/>
+<p class="font-body-sm text-body-sm text-outline mt-xs">Auto-generated identifier used for system URLs.</p>
+</div>
+<!-- Description -->
+<div class="space-y-xs flex-1 flex flex-col">
+<label class="block font-title-sm text-title-sm text-on-surface" for="category_description">Description</label>
+<textarea class="w-full px-md py-sm bg-surface-container-lowest border border-custom rounded-lg focus-ring text-on-surface font-body-md text-body-md resize-y" id="category_description" placeholder="Enter a description for this category..." rows="4"></textarea>
+</div>
+</div>
+<!-- Panel Footer Actions -->
+<div class="px-lg py-md border-t border-custom bg-surface-container-lowest flex justify-end gap-md">
+<button class="px-lg py-sm rounded-lg border border-[#0c6668] text-[#0c6668] font-title-sm text-title-sm hover:bg-[#e8f3f2] transition-colors" type="button">
+                    Cancel
+                </button>
+<button class="px-lg py-sm rounded-lg bg-primary-container text-on-primary font-title-sm text-title-sm hover:bg-[#138a8a] transition-colors shadow-sm" type="submit">
+                    Save Changes
+                </button>
+</div>
+</aside>
+</div>
+<style>
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+    </style>
+</body></html>

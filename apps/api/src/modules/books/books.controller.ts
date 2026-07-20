@@ -1,23 +1,50 @@
-import { BadRequestException, Body, Controller, Get, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Inject, Post, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiBody, ApiConsumes, ApiCreatedResponse, ApiForbiddenResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
+import { CurrentUser } from '../auth/current-user.decorator';
+import { AuthErrorDto, type SessionUserDto } from '../auth/dto/session.dto';
+import { Roles } from '../auth/roles.decorator';
+import { RolesGuard } from '../auth/roles.guard';
 import { MAX_PDF_SIZE_BYTES } from '../storage/pdf-validation';
 import { BooksService } from './books.service';
+import { CreateBookIntakeResponseDto } from './dto/book-intake-response.dto';
 import { CreateBookIntakeDto } from './dto/create-book-intake.dto';
+import { BookListItemResponseDto } from '../catalog/dto/catalog-response.dto';
 
+@ApiTags('Admin Books')
 @Controller('admin/books')
+@UseGuards(RolesGuard)
+@Roles('ADMIN', 'LIBRARIAN')
 export class BooksController {
-  constructor(private readonly books: BooksService) {}
+  constructor(@Inject(BooksService) private readonly books: BooksService) {}
 
   @Post('intake')
+  @ApiOperation({ summary: 'Create a digital book intake and queue processing.' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      required: ['file', 'metadata'],
+      properties: {
+        file: { type: 'string', format: 'binary' },
+        metadata: { type: 'string', description: 'JSON string matching CreateBookIntakeDto.' }
+      }
+    }
+  })
+  @ApiCreatedResponse({ type: CreateBookIntakeResponseDto })
+  @ApiForbiddenResponse({ type: AuthErrorDto })
   @UseInterceptors(FileInterceptor('file', { limits: { fileSize: MAX_PDF_SIZE_BYTES } }))
-  async createIntake(@UploadedFile() file: Express.Multer.File, @Body('metadata') metadata: string) {
+  async createIntake(@UploadedFile() file: Express.Multer.File, @Body('metadata') metadata: string, @CurrentUser() user: SessionUserDto) {
     const parsed = await this.parseMetadata(metadata);
-    return this.books.createIntake(parsed, file);
+    return this.books.createIntake(parsed, file, user.email);
   }
 
   @Get()
+  @ApiOperation({ summary: 'List digital book intake records for staff.' })
+  @ApiOkResponse({ type: [BookListItemResponseDto] })
+  @ApiForbiddenResponse({ type: AuthErrorDto })
   listAdminBooks() {
     return this.books.listAdminBooks();
   }

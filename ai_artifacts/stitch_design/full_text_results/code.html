@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LIBIF - Full-Text Results</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-surface-variant": "#414846",
+                      "on-secondary": "#ffffff",
+                      "outline-variant": "#c0c8c5",
+                      "outline": "#717976",
+                      "on-secondary-container": "#1a6d6f",
+                      "on-surface": "#151c27",
+                      "primary-container": "#103c35",
+                      "secondary-fixed": "#a5eff1",
+                      "secondary": "#12696b",
+                      "on-tertiary": "#ffffff",
+                      "surface-variant": "#dce2f3",
+                      "secondary-container": "#a2edee",
+                      "inverse-surface": "#2a313d",
+                      "background": "#f9f9ff",
+                      "primary-fixed": "#bfece1",
+                      "on-background": "#151c27",
+                      "surface-bright": "#f9f9ff",
+                      "surface-tint": "#3d665e",
+                      "error-container": "#ffdad6",
+                      "surface": "#f9f9ff",
+                      "on-error-container": "#93000a",
+                      "on-error": "#ffffff",
+                      "primary": "#002520",
+                      "on-primary-fixed": "#00201b",
+                      "on-primary": "#ffffff",
+                      "on-tertiary-fixed": "#002020",
+                      "primary-fixed-dim": "#a4cfc5",
+                      "tertiary-fixed": "#91f3f2",
+                      "surface-container-low": "#f0f3ff",
+                      "on-tertiary-container": "#47adac",
+                      "error": "#ba1a1a",
+                      "on-primary-container": "#7ca79d",
+                      "surface-container-lowest": "#ffffff",
+                      "inverse-primary": "#a4cfc5",
+                      "on-primary-fixed-variant": "#244e46",
+                      "on-secondary-fixed-variant": "#004f51",
+                      "surface-dim": "#d3daea",
+                      "on-tertiary-fixed-variant": "#004f50",
+                      "on-secondary-fixed": "#002021",
+                      "surface-container": "#e7eefe",
+                      "surface-container-highest": "#dce2f3",
+                      "secondary-fixed-dim": "#89d3d5",
+                      "inverse-on-surface": "#ebf1ff",
+                      "tertiary": "#002525",
+                      "tertiary-container": "#003c3c",
+                      "surface-container-high": "#e2e8f8",
+                      "tertiary-fixed-dim": "#74d6d6"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "md": "16px",
+                      "xs": "4px",
+                      "unit": "8px",
+                      "lg": "24px",
+                      "gutter": "16px",
+                      "container-max": "1440px",
+                      "xl": "32px",
+                      "sm": "8px"
+              },
+              "fontFamily": {
+                      "headline-md": [
+                              "Be Vietnam Pro"
+                      ],
+                      "label-caps": [
+                              "Be Vietnam Pro"
+                      ],
+                      "body-sm": [
+                              "Be Vietnam Pro"
+                      ],
+                      "display-lg-mobile": [
+                              "Be Vietnam Pro"
+                      ],
+                      "display-lg": [
+                              "Be Vietnam Pro"
+                      ],
+                      "body-md": [
+                              "Be Vietnam Pro"
+                      ],
+                      "title-sm": [
+                              "Be Vietnam Pro"
+                      ]
+              },
+              "fontSize": {
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "label-caps": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "display-lg-mobile": [
+                              "28px",
+                              {
+                                      "lineHeight": "34px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "display-lg": [
+                              "36px",
+                              {
+                                      "lineHeight": "44px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "title-sm": [
+                              "18px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+    </script>
+<style>
+        .custom-highlight {
+            background-color: rgba(19, 138, 138, 0.15); /* #138A8A with opacity */
+            color: #12696b; /* secondary color from config */
+            font-weight: 600;
+            padding: 0 4px;
+            border-radius: 2px;
+        }
+        .btn-primary {
+            background-color: #103C35;
+            color: white;
+            transition: background-color 0.2s;
+        }
+        .btn-primary:hover {
+            background-color: #138A8A;
+        }
+        .btn-ghost {
+            color: #0C6668;
+            border: 1px solid #0C6668;
+            transition: all 0.2s;
+        }
+        .btn-ghost:hover {
+            background-color: rgba(12, 102, 104, 0.05);
+        }
+        .input-standard {
+            border: 1px solid #E2E8F0;
+            transition: all 0.2s;
+        }
+        .input-standard:focus {
+            border-color: #0C6668;
+            box-shadow: 0 0 0 2px #E8F3F2;
+            outline: none;
+        }
+        .card-standard {
+            border: 1px solid #E2E8F0;
+            background-color: #FFFFFF;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md h-screen flex overflow-hidden selection:bg-secondary-fixed selection:text-on-secondary-fixed">
+<!-- SideNavBar -->
+<nav class="hidden md:flex flex-col h-full py-lg bg-primary dark:bg-primary-container fixed left-0 h-full w-64 shadow-sm z-40 transition-all duration-300 ease-in-out">
+<div class="px-lg mb-xl">
+<h1 class="font-headline-md text-headline-md text-on-primary">LIBIF</h1>
+<p class="font-label-caps text-label-caps text-on-primary-fixed-variant mt-xs">Institutional Access</p>
+<p class="font-body-sm text-body-sm text-on-primary-fixed-variant opacity-80 mt-xs">University Library</p>
+</div>
+<ul class="flex-1 space-y-sm">
+<li>
+<a class="flex items-center px-lg py-md border-l-4 border-on-tertiary-container bg-primary-container text-on-primary-container font-label-caps text-label-caps transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined mr-md" data-icon="search">search</span>
+                    Browse
+                </a>
+</li>
+<li>
+<a class="flex items-center px-lg py-md border-l-4 border-transparent text-on-primary-fixed-variant opacity-80 hover:bg-primary-fixed-dim hover:text-on-primary-fixed font-label-caps text-label-caps transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined mr-md" data-icon="library_books">library_books</span>
+                    Collections
+                </a>
+</li>
+<li>
+<a class="flex items-center px-lg py-md border-l-4 border-transparent text-on-primary-fixed-variant opacity-80 hover:bg-primary-fixed-dim hover:text-on-primary-fixed font-label-caps text-label-caps transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined mr-md" data-icon="history">history</span>
+                    History
+                </a>
+</li>
+<li>
+<a class="flex items-center px-lg py-md border-l-4 border-transparent text-on-primary-fixed-variant opacity-80 hover:bg-primary-fixed-dim hover:text-on-primary-fixed font-label-caps text-label-caps transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined mr-md" data-icon="bookmark">bookmark</span>
+                    Reserved
+                </a>
+</li>
+</ul>
+<div class="mt-auto px-lg pt-lg border-t border-primary-fixed-dim">
+<ul class="space-y-sm">
+<li>
+<a class="flex items-center py-md text-on-primary-fixed-variant opacity-80 hover:text-on-primary-fixed font-label-caps text-label-caps transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined mr-md" data-icon="settings">settings</span>
+                        Settings
+                    </a>
+</li>
+<li>
+<a class="flex items-center py-md text-on-primary-fixed-variant opacity-80 hover:text-on-primary-fixed font-label-caps text-label-caps transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined mr-md" data-icon="help">help</span>
+                        Support
+                    </a>
+</li>
+</ul>
+</div>
+</nav>
+<!-- Main Content Wrapper -->
+<div class="flex-1 flex flex-col md:ml-64 w-full h-full overflow-hidden bg-background">
+<!-- TopNavBar -->
+<header class="flex justify-between items-center w-full px-lg h-16 z-50 bg-surface dark:bg-surface-dim border-b border-outline-variant dark:border-outline sticky top-0 flex-shrink-0">
+<div class="flex items-center flex-1 max-w-2xl">
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full pl-10 pr-4 py-2 input-standard rounded-DEFAULT font-body-sm text-body-sm bg-surface-container-lowest text-on-surface placeholder-outline" placeholder="Search full text..." type="text" value="Trade Routes"/>
+<button class="absolute right-2 top-1/2 -translate-y-1/2 text-primary hover:text-secondary p-1 rounded-DEFAULT transition-colors">
+<span class="material-symbols-outlined text-[20px]">tune</span>
+</button>
+</div>
+</div>
+<div class="flex items-center space-x-md ml-lg">
+<button class="p-2 text-on-surface-variant hover:text-secondary-container transition-colors cursor-pointer rounded-full hover:bg-surface-container">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-secondary-container transition-colors cursor-pointer rounded-full hover:bg-surface-container">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</header>
+<!-- Main Workspace -->
+<main class="flex-1 overflow-y-auto overflow-x-hidden p-lg">
+<div class="max-w-container-max mx-auto h-full flex flex-col md:flex-row gap-gutter">
+<!-- Filters Sidebar (4 Columns Desktop) -->
+<aside class="w-full md:w-4/12 lg:w-3/12 flex-shrink-0 mb-lg md:mb-0">
+<div class="card-standard p-md rounded-lg sticky top-lg">
+<div class="flex justify-between items-center border-b border-outline-variant pb-md mb-md">
+<h2 class="font-title-sm text-title-sm text-primary">Refine Results</h2>
+<button class="font-label-caps text-label-caps text-secondary hover:underline cursor-pointer">Clear All</button>
+</div>
+<!-- Filter Group 1: Category -->
+<div class="mb-lg">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant mb-sm uppercase">Category</h3>
+<div class="space-y-sm">
+<label class="flex items-center group cursor-pointer">
+<input checked="" class="form-checkbox h-4 w-4 text-primary border-outline-variant rounded-sm focus:ring-secondary focus:ring-offset-0 bg-surface-container-lowest" type="checkbox"/>
+<span class="ml-sm font-body-sm text-body-sm text-on-surface group-hover:text-primary transition-colors">History (42)</span>
+</label>
+<label class="flex items-center group cursor-pointer">
+<input checked="" class="form-checkbox h-4 w-4 text-primary border-outline-variant rounded-sm focus:ring-secondary focus:ring-offset-0 bg-surface-container-lowest" type="checkbox"/>
+<span class="ml-sm font-body-sm text-body-sm text-on-surface group-hover:text-primary transition-colors">Economics (18)</span>
+</label>
+<label class="flex items-center group cursor-pointer">
+<input class="form-checkbox h-4 w-4 text-primary border-outline-variant rounded-sm focus:ring-secondary focus:ring-offset-0 bg-surface-container-lowest" type="checkbox"/>
+<span class="ml-sm font-body-sm text-body-sm text-on-surface group-hover:text-primary transition-colors">Geography (12)</span>
+</label>
+</div>
+</div>
+<!-- Filter Group 2: Year -->
+<div class="mb-lg">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant mb-sm uppercase">Publication Year</h3>
+<div class="flex items-center space-x-2">
+<input class="w-full input-standard rounded-DEFAULT px-2 py-1 font-body-sm text-body-sm" placeholder="YYYY" type="number"/>
+<span class="text-on-surface-variant">-</span>
+<input class="w-full input-standard rounded-DEFAULT px-2 py-1 font-body-sm text-body-sm" placeholder="YYYY" type="number"/>
+</div>
+</div>
+<!-- Filter Group 3: Author -->
+<div>
+<h3 class="font-label-caps text-label-caps text-on-surface-variant mb-sm uppercase">Author</h3>
+<div class="relative mb-sm">
+<span class="material-symbols-outlined absolute left-2 top-1/2 -translate-y-1/2 text-outline text-[16px]">search</span>
+<input class="w-full pl-8 pr-2 py-1 input-standard rounded-DEFAULT font-body-sm text-body-sm" placeholder="Filter authors..." type="text"/>
+</div>
+<div class="space-y-sm max-h-32 overflow-y-auto pr-2 custom-scrollbar">
+<label class="flex items-center group cursor-pointer">
+<input class="form-checkbox h-4 w-4 text-primary border-outline-variant rounded-sm focus:ring-secondary focus:ring-offset-0 bg-surface-container-lowest" type="checkbox"/>
+<span class="ml-sm font-body-sm text-body-sm text-on-surface truncate group-hover:text-primary transition-colors">Smith, J.</span>
+</label>
+<label class="flex items-center group cursor-pointer">
+<input class="form-checkbox h-4 w-4 text-primary border-outline-variant rounded-sm focus:ring-secondary focus:ring-offset-0 bg-surface-container-lowest" type="checkbox"/>
+<span class="ml-sm font-body-sm text-body-sm text-on-surface truncate group-hover:text-primary transition-colors">Doe, A.</span>
+</label>
+<label class="flex items-center group cursor-pointer">
+<input class="form-checkbox h-4 w-4 text-primary border-outline-variant rounded-sm focus:ring-secondary focus:ring-offset-0 bg-surface-container-lowest" type="checkbox"/>
+<span class="ml-sm font-body-sm text-body-sm text-on-surface truncate group-hover:text-primary transition-colors">Johnson, R.</span>
+</label>
+</div>
+</div>
+</div>
+</aside>
+<!-- Results Content (8 Columns Desktop) -->
+<div class="w-full md:w-8/12 lg:w-9/12 flex flex-col h-full">
+<!-- Results Header & Sorting -->
+<div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-lg">
+<div class="mb-md sm:mb-0">
+<h1 class="font-headline-md text-headline-md text-on-surface">Full-Text Results</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Found 156 matches across 12 books for <span class="font-semibold">"Trade Routes"</span></p>
+</div>
+<div class="flex items-center space-x-md">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Sort by:</span>
+<select class="input-standard rounded-DEFAULT font-body-sm text-body-sm py-1.5 pl-3 pr-8 bg-surface-container-lowest text-on-surface cursor-pointer appearance-none">
+<option value="relevance">Relevance</option>
+<option value="date_desc">Date (Newest)</option>
+<option value="date_asc">Date (Oldest)</option>
+<option value="matches_desc">Most Matches</option>
+</select>
+</div>
+</div>
+<!-- Results List -->
+<div class="flex-1 flex flex-col space-y-md">
+<!-- Result Item 1 -->
+<article class="card-standard rounded-lg p-md hover:border-secondary transition-colors duration-200 group">
+<div class="flex flex-col sm:flex-row gap-md">
+<!-- Thumbnail -->
+<div class="w-full sm:w-24 md:w-32 flex-shrink-0 bg-surface-container flex items-center justify-center rounded-DEFAULT border border-outline-variant overflow-hidden aspect-[2/3] relative">
+<img class="object-cover w-full h-full opacity-90 group-hover:opacity-100 transition-opacity" data-alt="A vintage book cover with a faded, embossed title and intricate border design. The cover is a muted navy blue with gold foil accents, showing signs of wear on the corners. The aesthetic is academic, historic, and archival, fitting a library context. Lighting is flat and studio-like." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAyk4dNKAZRto7N0AdupOmGEWXr4cPDaxgItoD_0egDGC53byGLG6oLjCBKkX2F35X6XKFuBXh89Ee0mlJpl8nSx98VJem9Yyr2hBZykzoX89jmrnT9C2xZ28qVKohbabddXfnc2oCNWcAixJiVXWbQsr-2wT6a_kOG6ArLyQcRZz2B-UX2vkl4fW0vyUTjnfe0IPqJwMcIu95DdlqBkF9YKSm19Qr9emgusCOaJsBFDVC7LQZ6Jl2fmbyPYF_AE-B0kkDNQD2lxSA"/>
+<div class="absolute bottom-0 left-0 w-full bg-surface-tint/90 text-on-primary py-1 px-2 flex justify-between items-center backdrop-blur-sm">
+<span class="font-label-caps text-[10px]">Page 142</span>
+</div>
+</div>
+<!-- Content -->
+<div class="flex-1 flex flex-col min-w-0">
+<header class="mb-sm">
+<div class="flex justify-between items-start mb-1">
+<h3 class="font-title-sm text-title-sm text-primary truncate pr-4">Analysis of Early 19th Century Trade Routes</h3>
+<span class="inline-flex items-center bg-surface-container text-on-surface-variant font-label-caps text-[10px] px-2 py-0.5 rounded-sm whitespace-nowrap">
+<span class="material-symbols-outlined text-[14px] mr-1">find_in_page</span>
+                                                12 Matches
+                                            </span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate">By <span class="text-on-surface font-medium">Arthur Pendelton</span> · Published 1924</p>
+</header>
+<!-- Snippet -->
+<div class="bg-surface-container-lowest border-l-2 border-secondary p-md my-sm flex-1 text-on-surface font-body-sm text-body-sm leading-relaxed overflow-hidden relative">
+<p class="...">...the establishment of these primary <span class="custom-highlight">Trade Routes</span> significantly altered the economic landscape of the Mediterranean basin, leading to a rapid exchange of not only goods but also cultural paradigms between previously isolated...</p>
+</div>
+<footer class="mt-auto pt-sm flex justify-between items-center border-t border-outline-variant/30 border-dashed">
+<span class="font-label-caps text-label-caps text-on-surface-variant">Chapter 4: The Mediterranean Exchange</span>
+<button class="btn-ghost px-4 py-1.5 rounded-DEFAULT font-label-caps text-label-caps flex items-center">
+                                            Open at page
+                                            <span class="material-symbols-outlined ml-xs text-[16px]">arrow_forward</span>
+</button>
+</footer>
+</div>
+</div>
+</article>
+<!-- Result Item 2 -->
+<article class="card-standard rounded-lg p-md hover:border-secondary transition-colors duration-200 group">
+<div class="flex flex-col sm:flex-row gap-md">
+<!-- Thumbnail -->
+<div class="w-full sm:w-24 md:w-32 flex-shrink-0 bg-surface-container flex items-center justify-center rounded-DEFAULT border border-outline-variant overflow-hidden aspect-[2/3] relative">
+<img class="object-cover w-full h-full opacity-90 group-hover:opacity-100 transition-opacity" data-alt="A modern academic textbook cover featuring abstract geometric shapes representing global connections. The color palette includes deep greens, cyans, and white, aligning with a professional, institutional aesthetic. The title is set in a stark, sans-serif typeface. Clean, minimalist lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCtkYC5AfemedTXbJO6112OiZDmgfn2NznuNb71Gd3SvzlTGRiku36n-gyc8TUZ2QwcZ37Co699Bo6HvNIr8DG_awXFC1BwmuEkKANsqPb6tc63J3kiJ03fW4boyb2JxBfCMJdN8rYEPGOQz-tRn5d0pmpgZ9behzq9VQ1oO1W-h395uq76BU1RACldHeq0ipVRN9y_f_hwnetvKJFjP9TTZYs51mlbFG4NwUL50Bz0F0l7UQ9eV4ujFACWkLDAoFN2Wq-SjcbcF4k"/>
+<div class="absolute bottom-0 left-0 w-full bg-surface-tint/90 text-on-primary py-1 px-2 flex justify-between items-center backdrop-blur-sm">
+<span class="font-label-caps text-[10px]">Page 87</span>
+</div>
+</div>
+<!-- Content -->
+<div class="flex-1 flex flex-col min-w-0">
+<header class="mb-sm">
+<div class="flex justify-between items-start mb-1">
+<h3 class="font-title-sm text-title-sm text-primary truncate pr-4">Global Economics and Pre-Industrial Networks</h3>
+<span class="inline-flex items-center bg-surface-container text-on-surface-variant font-label-caps text-[10px] px-2 py-0.5 rounded-sm whitespace-nowrap">
+<span class="material-symbols-outlined text-[14px] mr-1">find_in_page</span>
+                                                5 Matches
+                                            </span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate">By <span class="text-on-surface font-medium">Eleanor Vance</span> · Published 1998</p>
+</header>
+<!-- Snippet -->
+<div class="bg-surface-container-lowest border-l-2 border-secondary p-md my-sm flex-1 text-on-surface font-body-sm text-body-sm leading-relaxed overflow-hidden relative">
+<p class="...">...It is impossible to overstate the importance of maritime <span class="custom-highlight">Trade Routes</span> during this era. The reliance on overland paths slowly gave way as naval technology advanced, shrinking the effective distance between key production centers and consumer markets...</p>
+</div>
+<footer class="mt-auto pt-sm flex justify-between items-center border-t border-outline-variant/30 border-dashed">
+<span class="font-label-caps text-label-caps text-on-surface-variant">Section II: Maritime Expansion</span>
+<button class="btn-ghost px-4 py-1.5 rounded-DEFAULT font-label-caps text-label-caps flex items-center">
+                                            Open at page
+                                            <span class="material-symbols-outlined ml-xs text-[16px]">arrow_forward</span>
+</button>
+</footer>
+</div>
+</div>
+</article>
+</div>
+<!-- Footer Info (Minimal) -->
+<footer class="w-full flex flex-col items-center py-xl px-lg mt-auto border-t border-outline-variant bg-surface-container dark:bg-surface-container-highest mt-lg rounded-lg">
+<div class="font-title-sm text-title-sm font-semibold text-primary mb-md">LIBIF</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant dark:text-on-surface text-center mb-md">© 2024 LIBIF Institutional Knowledge Systems. All rights reserved.</p>
+<div class="flex flex-wrap justify-center gap-md">
+<a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Terms of Service</a>
+<a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Accessibility</a>
+<a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Contact Librarian</a>
+</div>
+</footer>
+</div>
+</div>
+</main>
+</div>
+</body></html>

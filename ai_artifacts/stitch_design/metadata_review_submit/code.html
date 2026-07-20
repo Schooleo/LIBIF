@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LIBIF Admin — Metadata Review &amp; Submit</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            background-color: #F7F9F8;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #F1F5F9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #CBD5E1;
+            border-radius: 2px;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-secondary-fixed-variant": "#004f51",
+                      "on-primary-fixed-variant": "#244e46",
+                      "surface-tint": "#3d665e",
+                      "secondary-fixed": "#a5eff1",
+                      "on-tertiary": "#ffffff",
+                      "surface-variant": "#dce2f3",
+                      "on-tertiary-fixed-variant": "#004f50",
+                      "surface-container-high": "#e2e8f8",
+                      "surface-container-lowest": "#ffffff",
+                      "on-error-container": "#93000a",
+                      "surface-bright": "#f9f9ff",
+                      "secondary": "#12696b",
+                      "error": "#ba1a1a",
+                      "secondary-fixed-dim": "#89d3d5",
+                      "tertiary-container": "#003c3c",
+                      "background": "#f9f9ff",
+                      "inverse-primary": "#a4cfc5",
+                      "primary-container": "#103c35",
+                      "outline-variant": "#c0c8c5",
+                      "primary-fixed-dim": "#a4cfc5",
+                      "on-secondary": "#ffffff",
+                      "tertiary-fixed": "#91f3f2",
+                      "surface-dim": "#d3daea",
+                      "on-surface": "#151c27",
+                      "on-primary": "#ffffff",
+                      "surface-container-low": "#f0f3ff",
+                      "on-secondary-fixed": "#002021",
+                      "inverse-on-surface": "#ebf1ff",
+                      "surface-container-highest": "#dce2f3",
+                      "on-error": "#ffffff",
+                      "tertiary": "#002525",
+                      "primary": "#002520",
+                      "on-tertiary-fixed": "#002020",
+                      "on-surface-variant": "#414846",
+                      "on-background": "#151c27",
+                      "on-tertiary-container": "#47adac",
+                      "surface": "#f9f9ff",
+                      "on-secondary-container": "#1a6d6f",
+                      "outline": "#717976",
+                      "on-primary-fixed": "#00201b",
+                      "surface-container": "#e7eefe",
+                      "primary-fixed": "#bfece1",
+                      "inverse-surface": "#2a313d",
+                      "error-container": "#ffdad6",
+                      "on-primary-container": "#7ca79d",
+                      "tertiary-fixed-dim": "#74d6d6",
+                      "secondary-container": "#a2edee"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "xs": "4px",
+                      "gutter": "16px",
+                      "container-max": "1440px",
+                      "xl": "32px",
+                      "md": "16px",
+                      "sm": "8px",
+                      "lg": "24px",
+                      "unit": "8px"
+              }
+            }
+          }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface">
+<!-- Sidebar Fragment -->
+<aside class="flex flex-col h-screen h-full w-64 fixed left-0 top-0 bg-primary-container text-on-primary-container border-r border-outline-variant shadow-sm z-50">
+<div class="p-lg">
+<h1 class="font-display-lg text-display-lg font-bold text-on-primary">LIBIF Admin</h1>
+<p class="text-on-primary-container opacity-70 font-body-sm text-body-sm mt-1">Institutional Access</p>
+</div>
+<nav class="flex-1 mt-md">
+<!-- Active Tab: Acquisitions (closest to workflow of Review & Submit) -->
+<a class="flex items-center gap-3 px-4 py-3 text-on-primary opacity-80 hover:bg-primary-fixed-dim hover:text-on-primary-fixed-dim transition-colors cursor-pointer duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-body-md text-body-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-primary opacity-80 hover:bg-primary-fixed-dim hover:text-on-primary-fixed-dim transition-colors cursor-pointer duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span class="font-body-md text-body-md">Repository</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 bg-primary-container text-on-primary-container border-l-4 border-secondary transition-colors cursor-pointer duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="label" style="font-variation-settings: 'FILL' 1;">label</span>
+<span class="font-body-md text-body-md">Metadata</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-primary opacity-80 hover:bg-primary-fixed-dim hover:text-on-primary-fixed-dim transition-colors cursor-pointer duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="shopping_cart">shopping_cart</span>
+<span class="font-body-md text-body-md">Acquisitions</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-primary opacity-80 hover:bg-primary-fixed-dim hover:text-on-primary-fixed-dim transition-colors cursor-pointer duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-body-md text-body-md">Settings</span>
+</a>
+</nav>
+<div class="mt-auto border-t border-on-primary/10 p-md">
+<button class="w-full py-3 bg-secondary text-on-secondary rounded-lg font-title-sm text-title-sm mb-md flex items-center justify-center gap-2">
+<span class="material-symbols-outlined" data-icon="upload">upload</span>
+                Upload Document
+            </button>
+<a class="flex items-center gap-3 px-4 py-2 text-on-primary opacity-60 hover:opacity-100 transition-opacity" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span class="font-body-md text-body-md">Help Center</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-on-primary opacity-60 hover:opacity-100 transition-opacity" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-body-md text-body-md">Log Out</span>
+</a>
+</div>
+</aside>
+<!-- Top Bar Fragment -->
+<header class="flex items-center justify-between px-lg w-full ml-64 h-16 sticky top-0 z-40 bg-surface border-b border-outline-variant">
+<div class="flex items-center gap-xl">
+<div class="flex items-center bg-surface-container-low px-4 py-2 rounded-lg border border-outline-variant w-96">
+<span class="material-symbols-outlined text-on-surface-variant mr-2" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 w-full text-body-sm font-body-sm" placeholder="Quick Search" type="text"/>
+</div>
+<div class="hidden md:flex items-center space-x-6">
+<a class="text-on-surface-variant font-medium hover:text-secondary transition-all font-title-sm text-title-sm" href="#">Collections</a>
+<a class="text-on-surface-variant font-medium hover:text-secondary transition-all font-title-sm text-title-sm" href="#">Publishers</a>
+<a class="text-on-surface-variant font-medium hover:text-secondary transition-all font-title-sm text-title-sm" href="#">Archives</a>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button class="p-2 text-on-surface-variant hover:bg-surface-container transition-colors rounded-full relative">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-1 right-1 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container transition-colors rounded-full">
+<span class="material-symbols-outlined" data-icon="apps">apps</span>
+</button>
+<div class="h-10 w-10 rounded-full bg-secondary-container overflow-hidden border border-outline-variant">
+<img class="w-full h-full object-cover" data-alt="Close-up portrait of a professional academic librarian with glasses, smiling warmly, in a high-key library setting with blurred bookshelves in the background. The lighting is soft and corporate, maintaining the institutional trust aesthetic of LIBIF." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHy36bcljlAID73gxpqEz-C87-0VRIzs_zDD2uBFeqO3lyHuD3AjoNXDyFmWF-o9PNhKXn9jSYd5dtRkRj5tjYk5qXLHieZYy9AOGe5YAXRo1mFmWB73M2VCCDvCp5w8xCKcTDybVg9BBM5kGHZpFkQ6IBJrJPR7tkHbZBophquMerUE_G94DpElmi-KcIJwHgySqQSJZSL2-QWHsFDFYob8GOv0hV-hNnhXUOFzTvoXykE9Q6lLAJimQqtln969ffUrbooBewgtU"/>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="ml-64 p-lg max-w-7xl mx-auto">
+<!-- Stepper -->
+<div class="flex items-center justify-between mb-xl px-xl">
+<div class="flex flex-col items-center gap-2 group opacity-60">
+<div class="w-10 h-10 rounded-full border-2 border-primary flex items-center justify-center font-bold text-primary">
+<span class="material-symbols-outlined" data-icon="check" style="font-variation-settings: 'wght' 700;">check</span>
+</div>
+<span class="font-label-caps text-label-caps text-on-surface-variant">Upload</span>
+</div>
+<div class="h-[2px] flex-1 bg-outline-variant mx-4"></div>
+<div class="flex flex-col items-center gap-2 group opacity-60">
+<div class="w-10 h-10 rounded-full border-2 border-primary flex items-center justify-center font-bold text-primary">
+<span class="material-symbols-outlined" data-icon="check" style="font-variation-settings: 'wght' 700;">check</span>
+</div>
+<span class="font-label-caps text-label-caps text-on-surface-variant">Metadata Entry</span>
+</div>
+<div class="h-[2px] flex-1 bg-outline-variant mx-4"></div>
+<div class="flex flex-col items-center gap-2 group">
+<div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center font-bold text-on-primary shadow-lg ring-4 ring-primary-fixed">
+                    3
+                </div>
+<span class="font-label-caps text-label-caps text-primary font-bold">Review</span>
+</div>
+</div>
+<div class="grid grid-cols-12 gap-lg">
+<!-- Left Column: Visual Previews -->
+<div class="col-span-12 lg:col-span-4 flex flex-col gap-lg">
+<!-- PDF Preview Card -->
+<div class="bg-white border border-outline-variant rounded-xl overflow-hidden shadow-sm">
+<div class="p-md border-b border-outline-variant flex items-center justify-between">
+<h3 class="font-headline-md text-headline-md text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary" data-icon="picture_as_pdf">picture_as_pdf</span>
+                            PDF Preview
+                        </h3>
+<button class="text-secondary hover:underline font-body-sm text-body-sm">Expand</button>
+</div>
+<div class="bg-surface-container-low h-[420px] flex items-center justify-center relative overflow-hidden group">
+<div class="absolute inset-0 bg-black/5 group-hover:bg-black/0 transition-colors z-10 pointer-events-none"></div>
+<div class="w-[80%] h-[90%] bg-white shadow-xl p-8 flex flex-col items-center text-center transform group-hover:scale-[1.02] transition-transform duration-500">
+<div class="w-16 h-1 w-primary bg-primary-container mb-8"></div>
+<h4 class="font-display-lg text-display-lg font-extrabold text-primary mb-4 leading-tight">THE SILK ROAD</h4>
+<p class="font-body-md text-body-md text-on-surface-variant mb-auto">A NEW HISTORY OF THE WORLD</p>
+<div class="w-full border-t border-outline-variant pt-4 flex justify-between items-end">
+<span class="font-label-caps text-label-caps">PETER FRANKOPAN</span>
+<span class="font-label-caps text-label-caps opacity-50">2015</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Cover Image -->
+<div class="bg-white border border-outline-variant rounded-xl overflow-hidden shadow-sm">
+<div class="p-md border-b border-outline-variant">
+<h3 class="font-headline-md text-headline-md text-on-surface">Cover Art</h3>
+</div>
+<div class="p-md">
+<div class="aspect-[3/4] rounded-lg overflow-hidden border border-outline-variant">
+<img class="w-full h-full object-cover" data-alt="A high-resolution professional book cover for 'The Silk Road', featuring intricate golden filigree patterns inspired by Persian art against a deep teal and turquoise background. The aesthetic is academic yet visually rich, emphasizing the historical and cultural significance of the subject matter in a clean, professional lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJ3Qy--ms3Ze2yNPQxugQ6yS1BG9phf5pEmnrjj26SiRJIbQimFo9bBpTLAqFWj4AElZutPyCltls0JJ16zUw5jSgE5qXcZrjxuKEu4Yn687NpneB9XpfAUNP38VDVRGcwDRE2A7pTdLF6wkhmcvVBeCzeA9pJNVT3osMM5SHN2BhdwoZ-sK23FJD4-cSvmByiTbsYQ_ubw2l88J2McfG-z-ruUYu0xfbhcbUCYEBPkzgPP2lw9smpzenfvGFIeuLifrKmedql_Uk"/>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Metadata Summary -->
+<div class="col-span-12 lg:col-span-8 flex flex-col gap-lg">
+<div class="bg-white border border-outline-variant rounded-xl shadow-sm">
+<div class="p-lg flex items-center justify-between border-b border-outline-variant">
+<h2 class="font-display-lg text-display-lg text-primary">Metadata Summary</h2>
+<span class="px-3 py-1 bg-surface-container-high text-primary font-label-caps text-label-caps rounded-full">Ref: LIB-8921-X</span>
+</div>
+<!-- Sections -->
+<div class="p-lg space-y-xl">
+<!-- Basic Info -->
+<section>
+<div class="flex items-center justify-between mb-md">
+<h4 class="font-title-sm text-title-sm text-on-surface-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary" data-icon="info">info</span>
+                                    Basic Info
+                                </h4>
+<a class="text-secondary hover:underline font-body-sm text-body-sm flex items-center gap-1" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="edit" style="font-size: 16px;">edit</span>
+                                    Edit
+                                </a>
+</div>
+<div class="grid grid-cols-2 gap-y-4 bg-surface-container-low p-md rounded-lg">
+<div>
+<p class="font-label-caps text-label-caps text-on-surface-variant opacity-60">Title</p>
+<p class="font-body-md text-body-md font-semibold">The Silk Road</p>
+</div>
+<div>
+<p class="font-label-caps text-label-caps text-on-surface-variant opacity-60">Publisher</p>
+<p class="font-body-md text-body-md font-semibold">Bloomsbury</p>
+</div>
+<div>
+<p class="font-label-caps text-label-caps text-on-surface-variant opacity-60">Publication Year</p>
+<p class="font-body-md text-body-md font-semibold">2015</p>
+</div>
+<div>
+<p class="font-label-caps text-label-caps text-on-surface-variant opacity-60">Language</p>
+<p class="font-body-md text-body-md font-semibold">English (EN-GB)</p>
+</div>
+</div>
+</section>
+<!-- Classification -->
+<section>
+<div class="flex items-center justify-between mb-md">
+<h4 class="font-title-sm text-title-sm text-on-surface-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary" data-icon="category">category</span>
+                                    Classification
+                                </h4>
+<a class="text-secondary hover:underline font-body-sm text-body-sm flex items-center gap-1" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="edit" style="font-size: 16px;">edit</span>
+                                    Edit
+                                </a>
+</div>
+<div class="grid grid-cols-2 gap-y-4 bg-surface-container-low p-md rounded-lg">
+<div>
+<p class="font-label-caps text-label-caps text-on-surface-variant opacity-60">Primary Category</p>
+<p class="font-body-md text-body-md font-semibold">History/Economics</p>
+</div>
+<div>
+<p class="font-label-caps text-label-caps text-on-surface-variant opacity-60">Tags</p>
+<div class="flex flex-wrap gap-2 mt-1">
+<span class="px-2 py-0.5 bg-secondary-container text-on-secondary-container text-xs rounded-md">Trade Routes</span>
+<span class="px-2 py-0.5 bg-secondary-container text-on-secondary-container text-xs rounded-md">Central Asia</span>
+<span class="px-2 py-0.5 bg-secondary-container text-on-secondary-container text-xs rounded-md">Geopolitics</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Institutional Notes -->
+<section>
+<div class="flex items-center justify-between mb-md">
+<h4 class="font-title-sm text-title-sm text-on-surface-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary" data-icon="description">description</span>
+                                    Institutional Notes
+                                </h4>
+<a class="text-secondary hover:underline font-body-sm text-body-sm flex items-center gap-1" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="edit" style="font-size: 16px;">edit</span>
+                                    Edit
+                                </a>
+</div>
+<div class="bg-surface-container-low p-md rounded-lg">
+<p class="font-label-caps text-label-caps text-on-surface-variant opacity-60">Internal Audit Note</p>
+<p class="font-body-sm text-body-sm mt-1 italic text-on-surface-variant">
+                                    "High-priority archival entry for the Department of International Relations. Cross-reference with the 2018 East-West Trade anthology. Metadata validated by Senior Curator."
+                                </p>
+</div>
+</section>
+</div>
+<!-- Validation Checklist -->
+<div class="p-lg bg-surface-container border-t border-outline-variant">
+<h4 class="font-label-caps text-label-caps text-on-surface-variant mb-md">Validation Checklist</h4>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-md">
+<div class="flex items-center gap-3 bg-white/50 p-3 rounded-lg border border-outline-variant">
+<span class="material-symbols-outlined text-success text-[#138A8A]" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-body-sm text-body-sm font-medium">PDF Integrity: Pass</span>
+</div>
+<div class="flex items-center gap-3 bg-white/50 p-3 rounded-lg border border-outline-variant">
+<span class="material-symbols-outlined text-success text-[#138A8A]" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-body-sm text-body-sm font-medium">Required Metadata: Complete</span>
+</div>
+<div class="flex items-center gap-3 bg-white/50 p-3 rounded-lg border border-outline-variant">
+<span class="material-symbols-outlined text-success text-[#138A8A]" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-body-sm text-body-sm font-medium">Malware Scan: Clear</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer Actions -->
+<div class="flex items-center justify-end gap-md pt-md">
+<button class="px-8 py-3 rounded-lg border border-secondary text-secondary font-title-sm text-title-sm hover:bg-surface-container-low transition-colors">
+                        Save as Draft
+                    </button>
+<button class="px-10 py-3 rounded-lg bg-primary-container text-on-primary font-title-sm text-title-sm hover:bg-primary transition-all shadow-md active:scale-95 flex items-center gap-2">
+<span class="material-symbols-outlined" data-icon="send">send</span>
+                        Submit for Processing
+                    </button>
+</div>
+</div>
+</div>
+</main>
+<!-- Micro-interaction Script -->
+<script>
+        document.querySelectorAll('button, a').forEach(elem => {
+            elem.addEventListener('mousedown', () => {
+                elem.style.transform = 'scale(0.98)';
+            });
+            elem.addEventListener('mouseup', () => {
+                elem.style.transform = 'scale(1)';
+            });
+            elem.addEventListener('mouseleave', () => {
+                elem.style.transform = 'scale(1)';
+            });
+        });
+
+        // Atmospheric effect: Subtle grain/noise overlay
+        const canvas = document.createElement('canvas');
+        canvas.id = 'noise-layer';
+        canvas.style.position = 'fixed';
+        canvas.style.top = '0';
+        canvas.style.left = '0';
+        canvas.style.width = '100%';
+        canvas.style.height = '100%';
+        canvas.style.pointerEvents = 'none';
+        canvas.style.opacity = '0.03';
+        canvas.style.zIndex = '9999';
+        document.body.appendChild(canvas);
+
+        const ctx = canvas.getContext('2d');
+        function noise() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            const idata = ctx.createImageData(canvas.width, canvas.height);
+            const buffer32 = new Uint32Array(idata.data.buffer);
+            for (let i = 0; i < buffer32.length; i++) {
+                if (Math.random() < 0.5) buffer32[i] = 0xff000000;
+            }
+            ctx.putImageData(idata, 0, 0);
+        }
+        noise();
+        window.addEventListener('resize', noise);
+    </script>
+</body></html>

@@ -1,5 +1,5 @@
 import { DeleteObjectCommand, HeadBucketCommand, PutObjectCommand, S3Client, CreateBucketCommand } from '@aws-sdk/client-s3';
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { createHash, randomUUID } from 'crypto';
 
@@ -16,7 +16,7 @@ export class StorageService {
   private readonly client: S3Client;
   private readonly bucket: string;
 
-  constructor(private readonly config: ConfigService) {
+  constructor(@Inject(ConfigService) private readonly config: ConfigService) {
     this.bucket = this.config.get<string>('S3_BUCKET') ?? 'library-pdfs';
     this.client = new S3Client({
       region: this.config.get<string>('S3_REGION') ?? 'us-east-1',

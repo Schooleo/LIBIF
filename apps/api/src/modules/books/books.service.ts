@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { BookStatus, Prisma, UserRole } from '../../generated/prisma/client';
 import slugify from 'slugify';
 import { PrismaService } from '../database/prisma.service';
@@ -48,9 +48,9 @@ function normalizeIsbn(isbn?: string): string | undefined {
 @Injectable()
 export class BooksService {
   constructor(
-    private readonly prisma: PrismaService,
-    private readonly storage: StorageService,
-    private readonly queue: ProcessingQueue
+    @Inject(PrismaService) private readonly prisma: PrismaService,
+    @Inject(StorageService) private readonly storage: StorageService,
+    @Inject(ProcessingQueue) private readonly queue: ProcessingQueue
   ) {}
 
   async createIntake(dto: CreateBookIntakeDto, file: Express.Multer.File, librarianEmail = 'librarian@libif.local'): Promise<IntakeResult> {

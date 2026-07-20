@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Correction Notification - KnowledgeArchive</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-bright": "#f9f9ff",
+                      "on-secondary-fixed": "#002021",
+                      "tertiary-fixed": "#91f3f2",
+                      "primary": "#002520",
+                      "surface-container-low": "#f0f3ff",
+                      "on-primary-container": "#7ca79d",
+                      "inverse-surface": "#2a313d",
+                      "surface-tint": "#3d665e",
+                      "secondary": "#12696b",
+                      "tertiary": "#002525",
+                      "on-tertiary": "#ffffff",
+                      "on-surface-variant": "#414846",
+                      "on-surface": "#151c27",
+                      "on-tertiary-fixed-variant": "#004f50",
+                      "on-primary-fixed": "#00201b",
+                      "error-container": "#ffdad6",
+                      "surface-dim": "#d3daea",
+                      "inverse-on-surface": "#ebf1ff",
+                      "outline": "#717976",
+                      "error": "#ba1a1a",
+                      "background": "#f9f9ff",
+                      "surface-container-highest": "#dce2f3",
+                      "secondary-fixed": "#a5eff1",
+                      "on-error": "#ffffff",
+                      "surface-container": "#e7eefe",
+                      "surface": "#f9f9ff",
+                      "on-primary-fixed-variant": "#244e46",
+                      "on-background": "#151c27",
+                      "on-error-container": "#93000a",
+                      "surface-container-lowest": "#ffffff",
+                      "on-tertiary-fixed": "#002020",
+                      "tertiary-container": "#003c3c",
+                      "primary-fixed-dim": "#a4cfc5",
+                      "primary-container": "#103c35",
+                      "on-secondary": "#ffffff",
+                      "primary-fixed": "#bfece1",
+                      "on-primary": "#ffffff",
+                      "surface-variant": "#dce2f3",
+                      "outline-variant": "#c0c8c5",
+                      "on-secondary-container": "#1a6d6f",
+                      "on-secondary-fixed-variant": "#004f51",
+                      "inverse-primary": "#a4cfc5",
+                      "secondary-fixed-dim": "#89d3d5",
+                      "on-tertiary-container": "#47adac",
+                      "surface-container-high": "#e2e8f8",
+                      "tertiary-fixed-dim": "#74d6d6",
+                      "secondary-container": "#a2edee"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "xs": "4px",
+                      "unit": "8px",
+                      "xl": "32px",
+                      "container-max": "1440px",
+                      "sm": "8px",
+                      "md": "16px",
+                      "gutter": "16px",
+                      "lg": "24px"
+              },
+              "fontFamily": {
+                      "display-lg-mobile": [
+                              "Be Vietnam Pro"
+                      ],
+                      "body-sm": [
+                              "Be Vietnam Pro"
+                      ],
+                      "label-caps": [
+                              "Be Vietnam Pro"
+                      ],
+                      "body-md": [
+                              "Be Vietnam Pro"
+                      ],
+                      "headline-md": [
+                              "Be Vietnam Pro"
+                      ],
+                      "title-sm": [
+                              "Be Vietnam Pro"
+                      ],
+                      "display-lg": [
+                              "Be Vietnam Pro"
+                      ]
+              },
+              "fontSize": {
+                      "display-lg-mobile": [
+                              "28px",
+                              {
+                                      "lineHeight": "34px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-caps": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "title-sm": [
+                              "18px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "display-lg": [
+                              "36px",
+                              {
+                                      "lineHeight": "44px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex">
+<!-- SideNavBar -->
+<nav class="bg-primary dark:bg-primary text-on-primary dark:text-on-primary font-body-md text-body-md h-screen w-64 fixed left-0 top-0 border-r border-outline-variant flex flex-col h-full py-lg z-50">
+<div class="px-md mb-xl flex items-center space-x-md">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center overflow-hidden shrink-0">
+<img alt="University Crest" class="w-full h-full object-cover" data-alt="A minimalist university crest logo, highly stylized and modern, rendered in deep teal and stark white. The crest implies academic authority but uses clean, contemporary geometric lines. The overall aesthetic is corporate minimalism, conveying institutional trust." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-t_0CFvvIBlUBCwrfQssDV3VWuoK71HyPBJOuwiMp9czMNaYCdoCe9l9KUkyC353Q1aeLsYNeu3KgDMPurcewink4qCX-5hFG7-zNWMVIFcazuc7_mXolk-6Bsg4TGq90jHF1z5fTF5p9U9PYnZGeBYJViSC6TvoB1qWl4dwHJQTKzDc-mN6kYIaTThZjMotMYai-JTz-M4R3RJhGXbAKAqgaNvFTMKuKVkR44MFjKQo3bxdimzmWtyegAwyA4RUUtxf2lnTG6sA"/>
+</div>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-on-primary truncate">Institutional Repository</h1>
+<p class="font-body-sm text-body-sm text-on-primary/70">Librarian Workspace</p>
+</div>
+</div>
+<button class="mx-md mb-lg bg-surface-container-highest text-primary font-title-sm text-title-sm py-sm px-md rounded-lg flex items-center justify-center space-x-sm hover:bg-surface-container-highest/90 transition-colors duration-200 ease-in-out">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">add</span>
+<span>New Entry</span>
+</button>
+<ul class="flex-1 space-y-sm">
+<li>
+<a class="text-on-primary-fixed-variant hover:bg-primary-container/20 flex items-center px-md py-sm duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined mr-md">dashboard</span>
+<span>Dashboard</span>
+</a>
+</li>
+<li>
+<a class="text-on-primary-fixed-variant hover:bg-primary-container/20 flex items-center px-md py-sm duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined mr-md">library_books</span>
+<span>Collections</span>
+</a>
+</li>
+<li>
+<a class="border-l-4 border-secondary bg-primary-container text-on-primary-container font-semibold flex items-center px-md py-sm duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined mr-md">fact_check</span>
+<span>Approvals</span>
+</a>
+</li>
+<li>
+<a class="text-on-primary-fixed-variant hover:bg-primary-container/20 flex items-center px-md py-sm duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined mr-md">inventory_2</span>
+<span>Archival Queue</span>
+</a>
+</li>
+<li>
+<a class="text-on-primary-fixed-variant hover:bg-primary-container/20 flex items-center px-md py-sm duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined mr-md">settings</span>
+<span>Settings</span>
+</a>
+</li>
+</ul>
+<ul class="mt-auto pt-lg border-t border-outline-variant/30 space-y-sm">
+<li>
+<a class="text-on-primary-fixed-variant hover:bg-primary-container/20 flex items-center px-md py-sm duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined mr-md">help</span>
+<span>Support</span>
+</a>
+</li>
+<li>
+<a class="text-on-primary-fixed-variant hover:bg-primary-container/20 flex items-center px-md py-sm duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined mr-md">logout</span>
+<span>Sign Out</span>
+</a>
+</li>
+</ul>
+</nav>
+<div class="flex-1 ml-64 flex flex-col min-h-screen">
+<!-- TopAppBar -->
+<header class="bg-surface dark:bg-surface text-primary dark:text-inverse-primary font-body-sm text-body-sm docked full-width top-0 sticky z-40 border-b border-outline-variant flex justify-between items-center px-lg py-md transition-all duration-200">
+<div class="flex items-center space-x-lg">
+<div class="font-title-sm text-title-sm font-bold text-primary mr-xl">KnowledgeArchive</div>
+<div class="relative w-64">
+<span class="material-symbols-outlined absolute left-sm top-1/2 transform -translate-y-1/2 text-outline">search</span>
+<input class="w-full pl-xl pr-sm py-sm bg-surface-container-low border-none rounded-full focus:ring-2 focus:ring-secondary text-body-sm" placeholder="Search archive..." type="text"/>
+</div>
+</div>
+<nav class="flex items-center space-x-lg">
+<a class="text-on-surface-variant hover:text-secondary transition-all duration-200" href="#">Quick View</a>
+<a class="text-on-surface-variant hover:text-secondary transition-all duration-200" href="#">Recent</a>
+<a class="text-on-surface-variant hover:text-secondary transition-all duration-200" href="#">Reports</a>
+</nav>
+<div class="flex items-center space-x-md">
+<button class="text-on-surface-variant hover:text-secondary transition-all duration-200 relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="text-on-surface-variant hover:text-secondary transition-all duration-200">
+<span class="material-symbols-outlined">history</span>
+</button>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-outline-variant ml-md">
+<img alt="Administrator Profile" class="w-full h-full object-cover" data-alt="A professional headshot of an academic administrator or head librarian, viewed from the shoulders up. They are wearing subtle, sophisticated glasses and professional attire in muted tones. The lighting is soft studio lighting, conveying approachability and competence against a neutral background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAtlg6aWa7LWkrnMQGq4cKbA75ADRr0G5B9Ey_A6sFmKVvWXSqszcianvtiumrq-LELVvnNs5c40xzUf2dNRtHDU9uSPmFuWok2ijJjUxkWDIoxDhoOwLR2QW8fLC8aaUQZtLZQZox2NcqHu4k1KzWdZi1tuz41WdDAi7GibhwQBVDhFRBFGRgsRjm0Xc6bjQwB9f9j0qzKggONfUplROxP1PzP96CAqa0AbOWXSw3ozvVofYqmjw-zsJm1oj6ZLJ2WVOOB45sM2oA"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 p-lg max-w-5xl mx-auto w-full">
+<div class="mb-xl flex items-center justify-between">
+<div>
+<div class="flex items-center space-x-sm text-outline font-body-sm text-body-sm mb-xs">
+<a class="hover:text-primary transition-colors" href="#">Approvals</a>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+<a class="hover:text-primary transition-colors" href="#">Pending Review</a>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+<span class="text-on-surface">Correction Notice</span>
+</div>
+<h2 class="font-display-lg text-display-lg text-on-surface">Action Required</h2>
+</div>
+<div class="flex space-x-md">
+<button class="px-md py-sm border border-secondary text-secondary font-title-sm text-title-sm rounded hover:bg-secondary/10 transition-colors duration-200">Mark as Read</button>
+<button class="px-md py-sm bg-primary-container text-on-primary-container font-title-sm text-title-sm rounded hover:bg-primary-container/90 transition-colors duration-200">Open Correction Task</button>
+</div>
+</div>
+<!-- Bento-style Layout for Notification -->
+<div class="grid grid-cols-12 gap-md">
+<!-- Main Details Card -->
+<div class="col-span-12 md:col-span-8 bg-surface-container-lowest border border-outline-variant rounded-lg p-lg">
+<div class="flex items-start justify-between mb-lg pb-md border-b border-outline-variant/50">
+<div>
+<span class="inline-flex items-center px-sm py-xs rounded-full bg-error-container text-on-error-container font-label-caps text-label-caps mb-sm">
+<span class="material-symbols-outlined text-[14px] mr-xs">error</span>
+                                Metadata Discrepancy
+                            </span>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-xs">A History of Institutional Archiving in the 20th Century</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Submission ID: REQ-2023-8842</p>
+</div>
+</div>
+<div class="space-y-md">
+<div>
+<h4 class="font-title-sm text-title-sm text-on-surface mb-sm">Reviewer Comments</h4>
+<div class="bg-surface-container-low p-md rounded border border-outline-variant/30 text-on-surface font-body-md text-body-md leading-relaxed">
+                                "The publication date provided in the submission metadata (1998) conflicts with the scanned title page of the attached manuscript (which indicates 1999). Additionally, the secondary author's surname appears to be misspelled. Please verify against physical records and correct the primary record before archival commit."
+                            </div>
+</div>
+<div class="grid grid-cols-2 gap-md pt-md border-t border-outline-variant/30">
+<div>
+<p class="font-label-caps text-label-caps text-outline mb-xs">Submitted By</p>
+<div class="flex items-center space-x-sm">
+<div class="w-8 h-8 rounded-full bg-surface-variant flex items-center justify-center text-on-surface font-bold text-sm">
+                                        DR
+                                    </div>
+<span class="font-body-md text-body-md text-on-surface">Dr. Rebecca Thorne</span>
+</div>
+</div>
+<div>
+<p class="font-label-caps text-label-caps text-outline mb-xs">Reviewer</p>
+<div class="flex items-center space-x-sm">
+<div class="w-8 h-8 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center font-bold text-sm">
+                                        AM
+                                    </div>
+<span class="font-body-md text-body-md text-on-surface">Archivist Miller</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Context Panel -->
+<div class="col-span-12 md:col-span-4 space-y-md">
+<!-- Deadline Card -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-md flex items-center space-x-md">
+<div class="w-12 h-12 rounded-full bg-error-container/50 flex items-center justify-center text-error">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">timer</span>
+</div>
+<div>
+<p class="font-label-caps text-label-caps text-outline">Deadline</p>
+<p class="font-title-sm text-title-sm text-error">24 Hours Remaining</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Due Oct 24, 5:00 PM</p>
+</div>
+</div>
+<!-- Quick Metadata Card -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-md">
+<h4 class="font-title-sm text-title-sm text-on-surface mb-md pb-sm border-b border-outline-variant/30">Record Snapshot</h4>
+<ul class="space-y-sm">
+<li class="flex justify-between">
+<span class="font-body-sm text-body-sm text-outline">Collection</span>
+<span class="font-body-sm text-body-sm text-on-surface font-medium">Modern History</span>
+</li>
+<li class="flex justify-between">
+<span class="font-body-sm text-body-sm text-outline">Type</span>
+<span class="font-body-sm text-body-sm text-on-surface font-medium">Monograph</span>
+</li>
+<li class="flex justify-between">
+<span class="font-body-sm text-body-sm text-outline">Status</span>
+<span class="font-body-sm text-body-sm text-on-surface font-medium">Blocked</span>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

@@ -1,10 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { BookStatus } from '../../generated/prisma/client';
 import { PrismaService } from '../database/prisma.service';
 
 @Injectable()
 export class CatalogService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
 
   listCategories() {
     return this.prisma.category.findMany({ orderBy: { name: 'asc' } });
