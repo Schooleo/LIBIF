@@ -1,7 +1,7 @@
 # BÁO CÁO ĐÁNH GIÁ ĐỀ XUẤT DỰ ÁN (PROJECT PROPOSAL EVALUATION)
-## Dự án: CircleLibrary — Hệ thống Số hóa Thư viện Thông minh
+## Dự án: LIBIF — Hệ thống Số hóa Thư viện Thông minh
 
-Báo cáo này đánh giá ý tưởng dự án **CircleLibrary** được đề xuất trong tài liệu [Project-Proposal.md](file:///home/yugui/HCMUS/Courses/Management/Project-Proposal.md) dựa trên các tiêu chí tuyển chọn ý tưởng tại [criteria.md](file:///home/yugui/HCMUS/Courses/Management/criteria.md).
+Báo cáo này đánh giá ý tưởng dự án **LIBIF** được đề xuất trong tài liệu [Project-Proposal.md](./Project-Proposal.md).
 
 ---
 
@@ -42,7 +42,7 @@ Báo cáo này đánh giá ý tưởng dự án **CircleLibrary** được đề
 
 ### 8. Growth Potential (Tiềm năng tăng trưởng)
 * **Điểm:** **8.0 / 10**
-* **Nhận xét:** Theo Quyết định 206/QĐ-TTg của Thủ tướng Chính phủ về Chương trình chuyển đổi số ngành thư viện, nhu cầu số hóa thư viện là bắt buộc và có nguồn ngân sách nhà nước hỗ trợ. CircleLibrary có tiềm năng tăng trưởng lớn bằng cách đóng gói giải pháp thành mô hình SaaS hoặc chuyển giao công nghệ cho các cơ sở giáo dục khác.
+* **Nhận xét:** Theo Quyết định 206/QĐ-TTg của Thủ tướng Chính phủ về Chương trình chuyển đổi số ngành thư viện, nhu cầu số hóa thư viện là bắt buộc và có nguồn ngân sách nhà nước hỗ trợ. LIBIF có tiềm năng tăng trưởng lớn bằng cách đóng gói giải pháp thành mô hình SaaS hoặc chuyển giao công nghệ cho các cơ sở giáo dục khác.
 
 ### 9. Risk Assessment (Đánh giá rủi ro)
 * **Điểm:** **7.5 / 10**
@@ -75,4 +75,4 @@ Báo cáo này đánh giá ý tưởng dự án **CircleLibrary** được đề
 ### 2. Kết luận & Quyết định: **ĐỒNG Ý (APPROVE)**
 
 > [!NOTE]
-> Dự án **CircleLibrary** được đánh giá rất cao về tính thực tiễn, mức độ khả thi kỹ thuật và khả năng giải quyết trực tiếp các điểm nghẽn của quy trình quản lý thư viện hiện tại. Do đó, quyết định đưa ra là **ĐỒNG Ý** cho phép triển khai, đi kèm với một số khuyến nghị khắc phục rủi ro về mặt pháp lý bản quyền tài liệu.
+> Dự án **LIBIF** được đánh giá rất cao về tính thực tiễn, mức độ khả thi kỹ thuật và khả năng giải quyết trực tiếp các điểm nghẽn của quy trình quản lý thư viện hiện tại. Do đó, quyết định đưa ra là **ĐỒNG Ý** cho phép triển khai, đi kèm với một số khuyến nghị khắc phục rủi ro về mặt pháp lý bản quyền tài liệu.
