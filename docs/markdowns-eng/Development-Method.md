@@ -1,31 +1,31 @@
 # LIBIF
-## Hệ thống Số hóa Thư viện Thông minh (Library Digitization & Document Management System)
+## Intelligent Library Digitization & Document Management System
 
 ---
 
-# PHƯƠNG PHÁP PHÁT TRIỂN PHẦN MỀM VÀ QUY TRÌNH TÍCH HỢP AI & CI/CD
+# SOFTWARE DEVELOPMENT METHODOLOGY & CI/CD GUIDE
 ### (AI-ASSISTED DEVELOPMENT METHODOLOGY & CI/CD DEPLOYMENT GUIDE)
 
-> Tài liệu mô tả chi tiết phương pháp phát triển phần mềm Agile kết hợp trợ lý lập trình trí tuệ nhân tạo (GitHub Copilot & Antigravity AI Assistant), kịch bản sinh mã nguồn tự động, quy trình kiểm thử và tự động hóa triển khai CI/CD container hóa với Docker.
+> Details the AI-assisted Agile software development methodology (GitHub Copilot & Antigravity AI Assistant), code generation scenarios, testing workflows, and automated containerized CI/CD deployment with Docker.
 
 ---
 
-| Trường thông tin | Nội dung |
+| Field | Content |
 |---|---|
-| **Tên dự án** | LIBIF — Hệ thống Số hóa Thư viện Thông minh (Library Digitization System) |
-| **Phiên bản** | v1.0 (Development Methodology & CI/CD Architecture) |
-| **Ngày lập** | Ngày 20 tháng 07 năm 2026 |
-| **Tác giả** | DevOps & Lead Software Engineer — Đội ngũ LIBIF |
+| **Project Name** | LIBIF — Intelligent Library Digitization System |
+| **Version** | v1.0 (Development Methodology & CI/CD Architecture) |
+| **Date** | July 20, 2026 |
+| **Author** | DevOps & Lead Software Engineer |
 
 ---
 
-## 1. PHƯƠNG PHÁP PHÁT TRIỂN PHẦN MỀM TĂNG CƯỜNG BỞI AI (AI-ASSISTED AGILE METHODOLOGY)
+## 1. AI-ASSISTED AGILE METHODOLOGY
 
-Dự án LIBIF áp dụng quy trình phát triển **Agile / Scrum** trong **08 tuần** được gia tốc bởi các trợ lý AI Coding Assistants (**GitHub Copilot** và **Antigravity AI Assistant**). Phương pháp này giúp đội ngũ quy mô tinh gọn (4-6 lập trình viên) đạt hiệu suất tương đương một đội ngũ 12-15 người truyền thống.
+The LIBIF project adopts an **Agile / Scrum** process across an **8-week** timeframe accelerated by AI Coding Assistants (**GitHub Copilot** and **Antigravity AI Assistant**), enabling a lean team of 6 engineers to match the throughput of a traditional 12-15 member team.
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    QUY TRÌNH PHÁT TRIỂN HYBRID AGILE + AI                    │
+│                    HYBRID AGILE + AI DEVELOPMENT WORKFLOW                   │
 ├───────────────┬───────────────────────────────┬─────────────────────────────┤
 │ 1. PLANNING   │ 2. PROMPT & CODE GEN          │ 3. REVIEW & TESTING         │
 │ • Agile Sprint│ • Context Provision           │ • Peer Code Review          │
@@ -34,33 +34,31 @@ Dự án LIBIF áp dụng quy trình phát triển **Agile / Scrum** trong **08 
 └───────────────┴───────────────────────────────┴─────────────────────────────┘
 ```
 
-### 1.1 Vai trò của AI trong Chu kỳ Phát triển (Software Development Lifecycle - SDLC)
+### 1.1 AI Role across SDLC Stages
 
-| Giai đoạn SDLC | Hoạt động của Lập trình viên | Sự hỗ trợ của Trợ lý AI (Antigravity / Copilot) | Mức độ gia tốc |
+| SDLC Phase | Developer Role | AI Assistant Support (Antigravity / Copilot) | Acceleration |
 |---|---|---|:---:|
-| **Requirements & Spec** | Định nghĩa User Story & AC | Tự động sinh kịch bản kiểm thử (Acceptance Tests) & WBS | **2.5x** |
-| **Architecture & DB** | Thiết kế ERD & API Contract | Sinh mã Prisma Schema, Migration Script & DTO Validation | **3.0x** |
-| **Backend Coding** | Viết nghiệp vụ cốt lõi (Business Logic) | Sinh Boilerplate NestJS Controllers, Services, Repositories | **3.5x** |
-| **Frontend Development**| Thiết kế UI & User Experience | Sinh React/Next.js Tailwind Components & State Management | **3.0x** |
-| **Testing & Fixes** | Chạy E2E & UAT Testing | Viết Unit Test Jest/Vitest tự động, phân tích Stack Trace lỗi | **4.0x** |
-| **Documentation** | Phê duyệt nội dung xuất bản | Sinh tài liệu OpenAPI/Swagger & Technical Documentation | **5.0x** |
+| **Requirements & Spec** | Define User Stories & AC | Auto-generate Acceptance Test cases & WBS breakdown | **2.5x** |
+| **Architecture & DB** | Design ERDs & API Contracts | Generate Prisma Schemas, DB Migration Scripts & DTOs | **3.0x** |
+| **Backend Coding** | Implement core business logic | Generate Boilerplate NestJS Controllers, Services, Repositories | **3.5x** |
+| **Frontend Development**| UI/UX design execution | Generate React/Next.js Tailwind Components & State Hooks | **3.0x** |
+| **Testing & Fixes** | E2E & UAT testing | Auto-write Jest/Vitest unit tests, parse stack traces | **4.0x** |
+| **Documentation** | Review & publish | Auto-generate OpenAPI/Swagger & technical docs | **5.0x** |
 
 ---
 
-## 2. KỊCH BẢN THỰC TẾ SINH MÃ NGUỒN TỰ ĐỘNG BẰNG AI (AI CODE GENERATION DEMO)
+## 2. REAL-WORLD AI CODE GENERATION SCENARIOS
 
-Để chứng minh tính hiệu quả của việc ứng dụng AI, dưới đây là 3 kịch bản thực tế đã được đội ngũ áp dụng thành công trong việc tạo mã nguồn hệ thống LIBIF:
+### 2.1 Scenario 1: Generating NestJS Backend Catalog Module
 
-### 2.1 Kịch bản 1: Sinh Mô-đun Backend NestJS (Catalog & Metadata Module)
+- **Prompt provided to AI:**
+  > *"Generate a NestJS Controller and Service for the Catalog module in the LIBIF project. Requirements: Use Prisma ORM to query books, support pagination (page, limit), filtering by categoryId and tags, and full-text search by title/author. Include class-validator DTOs and Swagger annotations."*
 
-- **Prompt đưa vào AI:**
-  > *"Hãy tạo một NestJS Controller và Service cho module Catalog trong dự án LIBIF. Yêu cầu: Sử dụng Prisma ORM để tra cứu sách, hỗ trợ phân trang (page, limit), lọc theo categoryId, tags, và tìm kiếm full-text theo title/author. Nhớ thêm class-validator DTOs và Swagger Annotations."*
-
-- **Kết quả Mã nguồn AI tạo ra (Trích đoạn NestJS Service):**
+- **AI Generated Code (NestJS Service Snippet):**
 
 ```typescript
 // src/modules/catalog/catalog.service.ts
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { FilterCatalogDto } from './dto/filter-catalog.dto';
 
@@ -100,12 +98,12 @@ export class CatalogService {
 }
 ```
 
-### 2.2 Kịch bản 2: Sinh Giao diện Frontend Component DRM Reader (Next.js 14)
+### 2.2 Scenario 2: Generating Next.js DRM Reader Toolbar Component
 
-- **Prompt đưa vào AI:**
-  > *"Tạo một React component trong Next.js 14 (TypeScript, TailwindCSS) để hiển thị thanh công cụ đọc sách trực tuyến (Reader Controls Toolbar). Bao gồm nút Zoom In/Out, chuyển trang Previous/Next, hiển thị trang hiện tại / tổng số trang, và nút kích hoạt Fullscreen."*
+- **Prompt provided to AI:**
+  > *"Create a React component in Next.js 14 (TypeScript, TailwindCSS) for a Reader Controls Toolbar. Include Zoom In/Out, Previous/Next page buttons, page indicator, and a Fullscreen toggle button."*
 
-- **Kết quả Mã nguồn AI tạo ra (Trích đoạn React Component):**
+- **AI Generated Code (React Component Snippet):**
 
 ```tsx
 // src/components/reader/ReaderToolbar.tsx
@@ -131,7 +129,7 @@ export const ReaderToolbar: React.FC<ReaderToolbarProps> = ({
         <button onClick={() => onPageChange(Math.max(1, currentPage - 1))} className="p-2 hover:bg-slate-800 rounded">
           <ChevronLeft className="w-5 h-5" />
         </button>
-        <span className="text-sm font-medium">Trang {currentPage} / {totalPages}</span>
+        <span className="text-sm font-medium">Page {currentPage} / {totalPages}</span>
         <button onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))} className="p-2 hover:bg-slate-800 rounded">
           <ChevronRight className="w-5 h-5" />
         </button>
@@ -155,14 +153,13 @@ export const ReaderToolbar: React.FC<ReaderToolbarProps> = ({
 
 ---
 
-## 3. TỰ ĐỘNG HÓA TRIỂN KHAI VÀ CONTAINER HÓA (DOCKER & CI/CD PIPELINE)
+## 3. DOCKER CONTAINERIZATION & CI/CD AUTOMATION
 
-### 3.1 Cấu trúc Docker Multi-Stage Build cho Hệ thống LIBIF
+### 3.1 Multi-Stage Dockerfile Strategy
 
-Dự án áp dụng Dockerfile đa tầng (Multi-stage build) giúp giảm kích thước Image từ **1.2GB xuống chỉ còn 145MB**, tăng tốc độ triển khai và bảo mật tối đa môi trường Production.
+Reduces Image size from **1.2GB down to 145MB**, accelerating deployment speed and securing production containers.
 
 ```dockerfile
-# ── Stage 1: Build Stage ──
 FROM node:20-alpine AS builder
 WORKDIR /app
 COPY package*.json pnpm-lock.yaml ./
@@ -170,7 +167,6 @@ RUN npm install -g pnpm && pnpm install --frozen-lockfile
 COPY . .
 RUN pnpm build
 
-# ── Stage 2: Production Runner ──
 FROM node:20-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
@@ -185,9 +181,7 @@ EXPOSE 3000
 CMD ["node", "dist/main.js"]
 ```
 
-### 3.2 Quy trình CI/CD Tự động hóa với GitHub Actions
-
-Mọi sự kiện `git push` lên nhánh `main` hoặc `pull_request` đều kích hoạt luồng kiểm thử và triển khai tự động (CI/CD Pipeline) được mô tả trong file `.github/workflows/deploy.yml`:
+### 3.2 GitHub Actions CI/CD Pipeline (`.github/workflows/deploy.yml`)
 
 ```yaml
 name: LIBIF CI/CD Pipeline
@@ -252,9 +246,9 @@ jobs:
 
 ---
 
-## 4. TỔNG KẾT HIỆU QUẢ CỦA MÔ HÌNH PHÁT TRIỂN
+## 4. METHODOLOGY IMPACT SUMMARY
 
-Việc kết hợp **Agile Scrum + AI Coding Assistants + Containerized CI/CD** mang lại những cải tiến mang tính đột phá cho dự án LIBIF:
-- **Tốc độ bàn giao (Velocity):** Rút ngắn thời gian phát triển tính năng từ **3 tuần xuống 1 tuần**.
-- **Chất lượng mã nguồn:** 100% Pull Requests trải qua tự động hóa Linter, Unit Test Coverage **> 82%**.
-- **Triển khai mượt mà:** Thời gian Zero-downtime deployment chỉ mất **45 giây** qua Docker Compose trên AWS EC2.
+Combining **Agile Scrum + AI Assistants + Containerized CI/CD** yields:
+- **Velocity:** Reduced feature iteration cycle from **3 weeks down to 1 week**.
+- **Code Quality:** 100% PRs pass automated linting and unit tests with **> 82% Code Coverage**.
+- **Deployment Efficiency:** Zero-downtime deployment completing in **45 seconds** via Docker Compose.
