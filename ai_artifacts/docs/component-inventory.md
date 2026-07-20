@@ -39,7 +39,7 @@ This file combines the original component contract inventory with the current im
 
 ## Remaining UI migration notes
 
-- `apps/web/app/layout.tsx` simple global nav should become role-aware shells in Phase 2.
+- `apps/web/app/layout.tsx` now owns only root document/font setup; role-aware navigation lives in `ReaderShell`, `AdminShell`, and `AuthShell`.
 - `apps/web/components/book-intake/*` now uses shared primitives; later upload/catalog batches should move deeper domain behavior behind Upload/Catalog contracts without duplicating UI primitives.
 
 ---
@@ -57,7 +57,7 @@ Implemented shared foundations are now located under the existing Next.js struct
 | Forms | `apps/web/components/ui/forms/*` | FormField owns labels/descriptions/errors/control ids/ARIA; includes text/password/search/date inputs, textarea, select, checkbox/radio/switch, FileDropzone, filters. |
 | Surfaces/feedback | `apps/web/components/ui/surfaces/Card.tsx`, `apps/web/components/ui/feedback/feedback.tsx` | Card, Panel, MetricCard, SelectableCard, InlineAlert, EmptyState, ResultState, Toast. |
 | Overlays | `apps/web/components/ui/overlays/overlays.tsx` | Dialog/ConfirmationDialog/DestructiveDialog/Drawer foundations with labels, Escape close, focus entry/trap, scroll lock, and focus restore. |
-| Layout primitives | `apps/web/components/layout/index.tsx` | PageHeader, Breadcrumbs, Tabs only; Phase 2 shells intentionally not started. |
+| Layout and shells | `apps/web/components/layout/index.tsx` | PageHeader, Breadcrumbs, Tabs, AppShell, ReaderShell, session-backed AdminShell, AuthShell, AccessBoundaryCard. |
 | Data display | `apps/web/components/ui/data/DataTable.tsx` | DataTable, table toolbar, bulk actions, row/column helpers, pagination, description list, timeline, chart/KPI cards. |
 | Domain foundations | `apps/web/components/domain/**` | DocumentCard/Row/StatusBadge/MetadataSummary, AuditTimeline, UploadWorkflow, ProcessingStageStepper, ProcessingJobSummary, UserRoleBadge. |
 | Catalogue | `apps/web/components/catalogue/ComponentCatalogue.tsx` | Non-routed isolated component catalogue fallback instead of Storybook. |
@@ -65,22 +65,25 @@ Implemented shared foundations are now located under the existing Next.js struct
 
 Current proof UI migrated to shared primitives:
 
-- `apps/web/app/page.tsx`
-- `apps/web/app/admin/books/new/page.tsx`
-- `apps/web/app/admin/books/page.tsx`
-- `apps/web/app/catalog/page.tsx`
+- `apps/web/app/(reader)/page.tsx`
+- `apps/web/app/(reader)/catalogue/page.tsx`
+- `apps/web/app/catalog/page.tsx` compatibility redirect
+- `apps/web/app/(admin)/admin/books/new/page.tsx`
+- `apps/web/app/(admin)/admin/books/page.tsx`
+- `apps/web/app/(auth)/access-denied/page.tsx`
+- `apps/web/app/(auth)/session-expired/page.tsx`
 - `apps/web/components/book-intake/BookIntakeForm.tsx`
 - `apps/web/components/book-intake/CategoryTagFields.tsx`
 - `apps/web/components/book-intake/MetadataFields.tsx`
 - `apps/web/components/book-intake/PdfDropzone.tsx`
 
-Deferred from Phase 1 by design:
+Deferred from Phase 1 and Phase 2 by design:
 
-- Full `AppShell`, `AdminShell`, `ReaderShell`, route groups, auth boundary, and generated API client remain Phase 2 work.
-- Protected PDF viewer, approval/correction panels, category tree, tag selector, notification item, reader book card, and job polling behavior remain batch-specific/domain-deepening work unless required by the next batch.
+- Production sign-in/register/password reset UI, protected PDF viewer, approval/correction panels, category tree, tag selector, notification item, reader book card, and job polling behavior remain batch-specific/domain-deepening work unless required by the next batch.
 
-Automated accessibility coverage added in Phase 1:
+Automated accessibility and shell coverage:
 
+- `apps/web/tests/shells-auth.spec.tsx` covers shell landmarks/navigation and dev auth header behavior.
 - `apps/web/tests/accessibility.spec.tsx` renders the non-routed component catalogue and checks it with `jest-axe`.
 - `apps/web/tests/setup.ts` registers the `toHaveNoViolations` matcher.
 

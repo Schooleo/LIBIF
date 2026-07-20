@@ -1,17 +1,18 @@
 # API Contracts
 
-Generated: 2026-07-20 08:48:05Z
+Last updated: 2026-07-20
 
-OpenAPI must become the source of truth in later implementation. This document records the current endpoints and target contract shapes needed by the Stitch screen batches.
+OpenAPI is now generated for implemented endpoints at `apps/api/openapi/libif-api.json`, with frontend path types generated to `apps/web/lib/generated/api-types.ts`. This document records implemented endpoints plus target contract shapes needed by later Stitch screen batches.
 
 ## Current implemented endpoints
 
 | Endpoint | Owner today | Consumer today | Notes |
 |---|---|---|---|
-| `POST /api/admin/books/intake` | `BooksModule` | `apps/web/components/book-intake/BookIntakeForm.tsx` | Multipart `file` + JSON `metadata`; returns book/file/processingJob. |
-| `GET /api/admin/books` | `BooksModule` | `apps/web/app/admin/books/page.tsx` | Admin list without production pagination/filter/sort yet. |
-| `GET /api/categories` | `CatalogModule` | `apps/web/app/admin/books/new/page.tsx` | Category list. |
-| `GET /api/catalog/books` | `CatalogModule` | `apps/web/app/catalog/page.tsx` | Public published books only. |
+| `GET /api/auth/session` | `AuthModule` | `apps/web/lib/api-server.ts` and admin layout gating | Development-header session boundary; browser/dev headers are opt-in and production credential auth still deferred. |
+| `POST /api/admin/books/intake` | `BooksModule` | `apps/web/components/book-intake/BookIntakeForm.tsx` | Multipart `file` + JSON `metadata`; returns book/file/processingJob; guarded for Admin/Librarian. |
+| `GET /api/admin/books` | `BooksModule` | `apps/web/app/(admin)/admin/books/page.tsx` | Admin list without production pagination/filter/sort yet; guarded for Admin/Librarian. |
+| `GET /api/categories` | `CatalogModule` | `apps/web/app/(admin)/admin/books/new/page.tsx` | Category list. |
+| `GET /api/catalog/books` | `CatalogModule` | `apps/web/app/(reader)/catalogue/page.tsx` | Public published books only. |
 | `GET /api/isbn/:isbn` | `IsbnModule` | `apps/web/components/book-intake/MetadataFields.tsx` | ISBN lookup proxy. |
 
 ## Standard error envelope
@@ -148,6 +149,6 @@ Use this shape for upload-triggered processing and long-running report exports. 
 - Taxonomy/tag/user risky-action preview/result DTOs.
 - Report/dashboard/export DTOs.
 
-## OpenAPI gap
+## OpenAPI implementation status
 
-The current frontend imports shared TypeScript types and calls endpoints through a hand-written adapter. Later phases must add generated or OpenAPI-validated client behavior before broad screen integration.
+Phase 2 added NestJS Swagger setup, stable operation IDs, generated JSON at `apps/api/openapi/libif-api.json`, a dependency-free frontend path-map generator at `apps/web/scripts/generate-api-types.mjs`, OpenAPI-owned response aliases at `apps/web/lib/api-types.ts`, and split `openapi-fetch` transport adapters in `apps/web/lib/api-server.ts` and `apps/web/lib/api-browser.ts`. Later phases must keep OpenAPI decorators and generated path types aligned whenever endpoints change.

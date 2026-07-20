@@ -1,6 +1,6 @@
 'use client';
 
-import type { CategoryDto, CreateBookIntakeDto } from '@libif/shared';
+import type { CategoryDto, CreateBookIntakeDto } from '../../lib/api';
 import { FormField, Select, TextInput } from '../ui';
 
 type Props = {

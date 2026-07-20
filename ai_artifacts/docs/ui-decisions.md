@@ -167,3 +167,11 @@ Semantic success, warning, information, error-surface, and muted-surface tokens 
 - **Data tables:** `DataTable` exposes caller-controlled server-state props for page, page size, sort key/direction, filters, total row count, loading, and `onStateChange`; `Pagination` supports controlled `onPageChange`.
 - **Catalogue coverage:** `ComponentCatalogue` is client-only and remains non-routed. It now demonstrates long content, narrow-container layout, controlled server-table state, canonical status variants, focus-visible states, and overlay triggers.
 - **Test coverage:** Vitest covers canonical status entries, controlled table sorting/pagination, Dialog Escape + focus restore, Drawer modal close behavior, and catalogue responsive/overlay smoke checks. Jest-axe still runs against the catalogue.
+
+## Phase 2 implementation update — 2026-07-20
+
+- Route-group shells are implemented in `apps/web/app/(reader)`, `apps/web/app/(admin)`, and `apps/web/app/(auth)`.
+- `apps/web/app/layout.tsx` no longer owns global navigation; `ReaderShell`, `AdminShell`, and `AuthShell` own workspace navigation and landmarks.
+- `/catalogue` is the canonical reader catalogue route; `/catalog` remains as a compatibility redirect.
+- Access-boundary routes `/access-denied` and `/session-expired` exist as Phase 2 shell/boundary states only; production sign-in and reset flows remain later Batch 1 work.
+- Admin endpoints now require the backend development-header auth boundary outside production; frontend API helpers send controlled dev headers only when `NEXT_PUBLIC_LIBIF_ENABLE_DEV_AUTH=true`, and production/default development behavior remains fail-closed until real credentials are implemented.

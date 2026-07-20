@@ -14,15 +14,7 @@ export const metadata = { title: 'LIBIF', description: 'LIBIF' };
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
-      <body className={beVietnamPro.variable}>
-        <nav className="libif-top-nav" aria-label="Primary">
-          <a href="/">Home</a>
-          <a href="/admin/books/new">New Intake</a>
-          <a href="/admin/books">Admin Books</a>
-          <a href="/catalog">Public Catalog</a>
-        </nav>
-        {children}
-      </body>
+      <body className={beVietnamPro.variable}>{children}</body>
     </html>
   );
 }

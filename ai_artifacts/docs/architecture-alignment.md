@@ -7,41 +7,44 @@ Last updated: 2026-07-20
 - Root npm workspace: `package.json` declares `packages/shared`, `apps/api`, and `apps/web`.
 - Web application: `apps/web` uses Next.js, React, TypeScript, App Router files under `apps/web/app`, components under `apps/web/components`, and Vitest tests under `apps/web/tests`.
 - API application: `apps/api` uses NestJS modules under `apps/api/src/modules` and Prisma under `apps/api/prisma`.
-- Shared package: `packages/shared/src/index.ts` currently exports TypeScript DTO types used by both web and API-adjacent code.
+- Shared package: `packages/shared/src/index.ts` exports shared TypeScript types for cross-package use, but the web API response surface now consumes generated OpenAPI types from `apps/web/lib/generated/api-types.ts`.
 - Infrastructure: `docker-compose.yml`, `docker-compose.debug.yml`, and `docker/pgadmin/servers.json` provide local PostgreSQL, Redis, MinIO, and debug tooling.
 - Original PDFs under root `docs/` are source/product references; AI planning and implementation docs are maintained under `ai_artifacts/docs/`.
 
 ## Current scripts and quality gates
 
-- Root scripts: `dev`, `build`, `lint`, `test`, `test:e2e`, `db:migrate`, `db:seed`.
-- Web scripts: `next dev`, `next build`, ESLint over `app`, `components`, `lib`, and `vitest run`.
-- API scripts: Nest build/dev/start, ESLint, Jest unit tests, Jest e2e tests, Prisma migration/seed/generate.
+- Root scripts: `dev`, `build`, `lint`, `test`, `test:e2e`, `db:migrate`, `db:seed`, `openapi:generate`.
+- Web scripts: `next dev`, shared prebuild + `next build`, generated API type refresh, ESLint over `app`, `components`, `lib`, and `vitest run`.
+- API scripts: Nest build/dev/start, OpenAPI JSON generation, ESLint, Jest unit tests, Jest e2e tests, Prisma migration/seed/generate.
 - Makefile wraps install, infra, debug, database, build, lint, test, e2e, and full `verify`.
 
 ## Framework and dependency baseline
 
 - Web: Next.js 16.2.x, React 19.2.x, TypeScript 6.0.x, Vitest, Testing Library.
-- API: NestJS 11.1.x, Prisma 7.8.x, PostgreSQL driver, AWS SDK S3 client, BullMQ, class-validator/class-transformer, Multer.
-- Shared: TypeScript package with DTO types.
+- API: NestJS 11.1.x, `@nestjs/swagger`, Prisma 7.8.x, PostgreSQL driver, AWS SDK S3 client, BullMQ, class-validator/class-transformer, Multer.
+- Shared: TypeScript package retained for cross-package TypeScript types; web response DTOs are generated from OpenAPI.
 
 ## Current route and component baseline
 
-- Current routes: `/`, `/catalog`, `/admin/books`, `/admin/books/new`.
-- Current root layout still uses a simple global navigation; Phase 2 will replace it with role-aware shells and route groups.
+- Current route groups: `apps/web/app/(reader)`, `apps/web/app/(admin)`, and `apps/web/app/(auth)`.
+- Current routes: `/`, `/catalogue`, `/catalog` compatibility redirect, `/admin/books`, `/admin/books/new`, `/access-denied`, and `/session-expired`.
+- The root layout owns only document shell/font setup; role-aware navigation now lives in Reader/Admin/Auth shells.
 - Phase 1 styling now uses semantic tokens and shared CSS in `apps/web/styles/`, imported from `apps/web/app/globals.css`.
 - Current book intake components under `apps/web/components/book-intake` have been migrated to shared Phase 1 primitives while preserving existing behavior.
 
 ## Current API/module baseline
 
-- `AppModule` imports `DatabaseModule`, `StorageModule`, `ProcessingModule`, `BooksModule`, `CatalogModule`, `IsbnModule`, and `HealthModule`.
+- `AppModule` imports `DatabaseModule`, `AuthModule`, `StorageModule`, `ProcessingModule`, `BooksModule`, `CatalogModule`, `IsbnModule`, and `HealthModule`.
 - Current endpoints include:
+  - `GET /api/auth/session`
   - `POST /api/admin/books/intake`
   - `GET /api/admin/books`
   - `GET /api/categories`
   - `GET /api/catalog/books`
   - `GET /api/isbn/:isbn`
   - health endpoints under `HealthModule`
-- `BooksService` currently owns intake persistence and coordinates Prisma, storage, and processing queue.
+- `AuthModule` currently owns development-header session representation, role guard scaffolding, and `GET /api/auth/session`; production credential flows are still deferred. Web development auth headers are opt-in through `NEXT_PUBLIC_LIBIF_ENABLE_DEV_AUTH=true`, so admin UI gates fail closed by default.
+- `BooksService` currently owns intake persistence and coordinates Prisma, storage, and processing queue; admin book routes are now guarded by the Auth boundary.
 - `CatalogService` currently owns category reads and public published-book list reads.
 
 ## Database layer
@@ -79,16 +82,14 @@ Last updated: 2026-07-20
 - **Notifications capability:** event-driven records and authorized action links, without duplicating workflow truth.
 - **Reporting read layer:** query services over approved module-owned data; no ad hoc frontend database access.
 
-## Architecture gaps to resolve after Phase 0
+## Architecture gaps to resolve after Phase 2
 
-1. Auth and Reader modules are not yet present as first-class modules.
-2. Upload ownership is currently folded into `BooksModule` rather than a separate Upload module/application service boundary.
-3. Frontend API client is hand-written and not generated from or validated against OpenAPI.
-4. OpenAPI generation/decorators are not currently established in the inspected source.
-5. Current root navigation is not yet role-aware; Phase 2 owns route groups and shells.
-6. Processing queue exists, but worker entry points and full status endpoints are not implemented.
-7. Current Prisma schema lacks audit records, approval/correction records, notification records, reading state, bookmarks, report export jobs, file versioning, and full-text/search structures.
-8. Admin/Reader route groups and nested layouts are not yet implemented.
+1. Production authentication, registration, sign-in/out, password reset, and user-management flows are still deferred.
+2. Reader module is not yet present as a first-class module.
+3. Upload ownership is currently folded into `BooksModule` rather than a separate Upload module/application service boundary.
+4. OpenAPI generation exists, but later batches must keep decorators/generator output current as DTOs expand.
+5. Processing queue exists, but worker entry points and full status endpoints are not implemented.
+6. Current Prisma schema lacks audit records, approval/correction records, notification records, reading state, bookmarks, report export jobs, file versioning, and full-text/search structures.
 
 ## Design inconsistencies and implementation risks
 
@@ -99,9 +100,9 @@ Last updated: 2026-07-20
 ## Migration strategy
 
 1. Phase 1 completed: semantic tokens and shared components are in place without changing business behavior.
-2. Phase 2: add role-aware Next.js route groups/layouts and typed OpenAPI-backed API client.
+2. Phase 2 completed: role-aware Next.js route groups/layouts, admin session gating, auth/session boundary scaffold, NestJS OpenAPI generation, and typed frontend API client are in place.
 3. Later batches: move current intake behavior behind Upload/Catalog boundaries while preserving existing endpoint behavior until the new contracts are verified.
-4. Add Auth and Reader modules before protected routes rely on them.
+4. Add production Auth flows and Reader module before protected reader routes rely on them.
 5. Add processing workers and status endpoints before processing queue screens.
 6. Add audit/event records before approval/correction, taxonomy risky actions, and user administration screens.
 
@@ -116,5 +117,5 @@ Last updated: 2026-07-20
 ## Future implementation file targets
 
 - Phase 1 added `apps/web/components/ui`, `apps/web/components/layout`, `apps/web/components/domain`, `apps/web/styles`, component tests, and an isolated component catalogue.
-- Phase 2 should add route groups under `apps/web/app/(auth)`, `apps/web/app/(reader)`, `apps/web/app/(admin)`, typed API client package/files, and NestJS OpenAPI setup.
-- Backend follow-up likely adds `apps/api/src/modules/auth`, `apps/api/src/modules/upload`, `apps/api/src/modules/reader`, expanded `processing`, and reporting/notification capabilities.
+- Phase 2 added route groups under `apps/web/app/(auth)`, `apps/web/app/(reader)`, `apps/web/app/(admin)`, typed API client files under `apps/web/lib`, and NestJS OpenAPI setup under `apps/api/src/openapi*` plus `apps/api/openapi/libif-api.json`.
+- Phase 2 added `apps/api/src/modules/auth` as a boundary scaffold; backend follow-up likely adds production auth flows, `apps/api/src/modules/upload`, `apps/api/src/modules/reader`, expanded `processing`, and reporting/notification capabilities.

@@ -1,6 +1,6 @@
 'use client';
 
-import type { CategoryDto, CreateBookIntakeDto, CreateBookIntakeResponse } from '@libif/shared';
+import type { CategoryDto, CreateBookIntakeDto, CreateBookIntakeResponse } from '../../lib/api';
 import { useMemo, useState } from 'react';
 import { lookupIsbn, uploadBookIntake } from '../../lib/api';
 import { Button, Card, InlineAlert, ProgressBar, ResultState } from '../ui';

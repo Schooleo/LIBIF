@@ -44,7 +44,7 @@ The repository is a TypeScript monorepo with:
 - S3/MinIO-compatible object storage.
 - Redis/BullMQ queue infrastructure.
 
-Phase 1 foundations are already in place in `apps/web`:
+Phase 1 and Phase 2 foundations are already in place:
 
 - Tailwind/PostCSS setup via `apps/web/postcss.config.mjs` and `apps/web/app/globals.css`.
 - Semantic tokens/base/component CSS in `apps/web/styles/`.
@@ -53,6 +53,11 @@ Phase 1 foundations are already in place in `apps/web`:
 - Domain foundations under `apps/web/components/domain/`.
 - A non-routed component catalogue at `apps/web/components/catalogue/ComponentCatalogue.tsx`.
 - Component/accessibility tests under `apps/web/tests/`.
+- Route-group shells under `apps/web/app/(reader)`, `apps/web/app/(admin)`, and `apps/web/app/(auth)`.
+- Reader/Admin/Auth shell components in `apps/web/components/layout/index.tsx`.
+- OpenAPI generation via `apps/api/src/openapi.ts`, `apps/api/src/openapi.generate.ts`, and `apps/api/openapi/libif-api.json`.
+- Typed frontend API path map in `apps/web/lib/generated/api-types.ts`, OpenAPI response aliases in `apps/web/lib/api-types.ts`, and split API adapters under `apps/web/lib/api-*.ts`.
+- Auth/session boundary scaffold under `apps/api/src/modules/auth/`; web admin routes gate through `GET /api/auth/session` and dev auth headers are opt-in.
 
 Do not rebuild these foundations from scratch. Extend them when a later batch needs a missing variant or domain-specific component.
 
@@ -73,7 +78,7 @@ Do not rebuild these foundations from scratch. Extend them when a later batch ne
 - Use shared components and semantic tokens; do not create page-local button/input/dialog/table/card/status implementations.
 - Do not use Tailwind CDN or runtime CSS imports.
 - Do not use raw design hex values in consumers; tokens belong in `apps/web/styles/tokens.css`.
-- Do not scatter raw `fetch` calls through page components once typed API-client work begins.
+- Do not scatter raw `fetch` calls through page components; use `apps/web/lib/api.ts` and the generated path map.
 
 ### Backend and integrations
 
@@ -157,7 +162,7 @@ Use the batch assignments in `screen-matrix.md` as the source of truth.
 7. Dashboards, reports, export, and settings.
 8. Cross-screen integration and hardening.
 
-Phase 2 is the next foundation phase after Phase 1: role-aware shells, route groups, authentication/authorization boundary representation, and typed API-client/OpenAPI alignment.
+Phase 2 foundation is complete: role-aware shells, route groups, authentication/authorization boundary representation, and typed API-client/OpenAPI alignment are in place. Next work should choose one implementation batch from `screen-matrix.md`, starting with Batch 1 if production authentication screens are the priority.
 
 ## 9. Accessibility and interaction requirements
 

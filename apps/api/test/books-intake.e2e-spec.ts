@@ -29,6 +29,7 @@ describe('Digital book intake (e2e)', () => {
   let app: INestApplication;
   let prisma: PrismaService;
   let queue: FakeProcessingQueue;
+  const staffHeaders = { 'x-libif-dev-role': 'LIBRARIAN', 'x-libif-dev-user-email': 'librarian@libif.local' };
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({ imports: [AppModule] })
@@ -76,6 +77,7 @@ describe('Digital book intake (e2e)', () => {
 
     const response = await request(app.getHttpServer())
       .post('/api/admin/books/intake')
+      .set(staffHeaders)
       .field('metadata', JSON.stringify(metadata))
       .attach('file', 'test/fixtures/sample.pdf')
       .expect(201);
@@ -101,6 +103,7 @@ describe('Digital book intake (e2e)', () => {
   it('rejects a non-PDF upload without committed book rows', async () => {
     await request(app.getHttpServer())
       .post('/api/admin/books/intake')
+      .set(staffHeaders)
       .field('metadata', JSON.stringify({ title: 'Bad', authors: ['A'], tags: [] }))
       .attach('file', Buffer.from('not pdf'), { filename: 'bad.txt', contentType: 'text/plain' })
       .expect(400);
@@ -112,5 +115,19 @@ describe('Digital book intake (e2e)', () => {
     await prisma.user.create({ data: { email: 'librarian@libif.local', passwordHash: 'dev-only', role: 'LIBRARIAN' } });
     await prisma.book.create({ data: { title: 'Pending Book', createdBy: { connect: { email: 'librarian@libif.local' } } } });
     await request(app.getHttpServer()).get('/api/catalog/books').expect(200, []);
+  });
+
+  it('rejects admin book access without a development session boundary', async () => {
+    await request(app.getHttpServer()).get('/api/admin/books').expect(403);
+  });
+
+  it('exposes a development session when controlled dev headers are present', async () => {
+    const response = await request(app.getHttpServer()).get('/api/auth/session').set(staffHeaders).expect(200);
+    expect(response.body).toMatchObject({
+      authenticated: true,
+      user: { email: 'librarian@libif.local', role: 'LIBRARIAN' },
+      strategy: 'development-header'
+    });
+    expect(response.body.permissions).toContain('admin:books:read');
   });
 });
