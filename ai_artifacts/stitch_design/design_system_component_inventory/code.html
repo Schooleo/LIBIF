@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SYS-01: Design System &amp; Component Inventory</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed": "#91f3f2",
+                        "on-tertiary-fixed": "#002020",
+                        "on-primary-fixed": "#00201b",
+                        "on-error": "#ffffff",
+                        "inverse-surface": "#2a313d",
+                        "surface-tint": "#3d665e",
+                        "secondary-fixed": "#a5eff1",
+                        "error-container": "#ffdad6",
+                        "secondary": "#12696b",
+                        "surface": "#f9f9ff",
+                        "on-tertiary": "#ffffff",
+                        "surface-dim": "#d3daea",
+                        "surface-container-low": "#f0f3ff",
+                        "primary": "#002520",
+                        "outline": "#717976",
+                        "tertiary-fixed-dim": "#74d6d6",
+                        "secondary-container": "#a2edee",
+                        "surface-container": "#e7eefe",
+                        "on-error-container": "#93000a",
+                        "on-primary-container": "#7ca79d",
+                        "background": "#f9f9ff",
+                        "surface-variant": "#dce2f3",
+                        "on-surface-variant": "#414846",
+                        "secondary-fixed-dim": "#89d3d5",
+                        "surface-bright": "#f9f9ff",
+                        "on-tertiary-container": "#47adac",
+                        "tertiary": "#002525",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-fixed-dim": "#a4cfc5",
+                        "outline-variant": "#c0c8c5",
+                        "error": "#ba1a1a",
+                        "surface-container-high": "#e2e8f8",
+                        "on-tertiary-fixed-variant": "#004f50",
+                        "inverse-primary": "#a4cfc5",
+                        "surface-container-highest": "#dce2f3",
+                        "on-secondary-fixed": "#002021",
+                        "on-secondary-container": "#1a6d6f",
+                        "on-primary": "#ffffff",
+                        "on-primary-fixed-variant": "#244e46",
+                        "on-background": "#151c27",
+                        "on-secondary-fixed-variant": "#004f51",
+                        "on-surface": "#151c27",
+                        "primary-fixed": "#bfece1",
+                        "tertiary-container": "#003c3c",
+                        "primary-container": "#103c35",
+                        "inverse-on-surface": "#ebf1ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "unit": "8px",
+                        "container-max": "1440px",
+                        "md": "16px",
+                        "lg": "24px",
+                        "gutter": "16px",
+                        "xs": "4px",
+                        "xl": "32px",
+                        "sm": "8px"
+                    },
+                    "fontFamily": {
+                        "display-lg-mobile": ["Be Vietnam Pro"],
+                        "title-sm": ["Be Vietnam Pro"],
+                        "label-caps": ["Be Vietnam Pro"],
+                        "body-md": ["Be Vietnam Pro"],
+                        "display-lg": ["Be Vietnam Pro"],
+                        "headline-md": ["Be Vietnam Pro"],
+                        "body-sm": ["Be Vietnam Pro"]
+                    },
+                    "fontSize": {
+                        "display-lg-mobile": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "title-sm": ["18px", { "lineHeight": "24px", "fontWeight": "600" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Be Vietnam Pro', sans-serif; background-color: #F7F9F8; color: #151c27; }
+        .ds-section { margin-bottom: 48px; }
+        .ds-title { margin-bottom: 24px; padding-bottom: 8px; border-bottom: 2px solid #D9E1DE; }
+        .card-border { border: 1px solid #D9E1DE; }
+        .color-swatch { width: 100%; height: 80px; border-radius: 8px 8px 0 0; }
+        .grid-bg { background-image: linear-gradient(to right, #D9E1DE 1px, transparent 1px), linear-gradient(to bottom, #D9E1DE 1px, transparent 1px); background-size: 8px 8px; }
+    </style>
+</head>
+<body class="p-lg md:p-xl max-w-container-max mx-auto">
+<header class="mb-xl">
+<h1 class="font-display-lg text-display-lg text-primary-container mb-xs">SYS-01: Design System</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Component Inventory &amp; Visual Tokens for Institutional Knowledge Management.</p>
+</header>
+<!-- Color Palette -->
+<section class="ds-section">
+<h2 class="font-headline-md text-headline-md text-primary-container ds-title">Color Palette</h2>
+<div class="grid grid-cols-2 md:grid-cols-6 gap-md">
+<div class="bg-surface card-border rounded-lg overflow-hidden shadow-sm">
+<div class="color-swatch" style="background-color: #103C35;"></div>
+<div class="p-sm">
+<p class="font-label-caps text-label-caps uppercase text-on-surface-variant">Primary Green</p>
+<p class="font-body-sm text-body-sm text-on-surface">#103C35</p>
+</div>
+</div>
+<div class="bg-surface card-border rounded-lg overflow-hidden shadow-sm">
+<div class="color-swatch" style="background-color: #0C6668;"></div>
+<div class="p-sm">
+<p class="font-label-caps text-label-caps uppercase text-on-surface-variant">Dark Cyan</p>
+<p class="font-body-sm text-body-sm text-on-surface">#0C6668</p>
+</div>
+</div>
+<div class="bg-surface card-border rounded-lg overflow-hidden shadow-sm">
+<div class="color-swatch" style="background-color: #138A8A;"></div>
+<div class="p-sm">
+<p class="font-label-caps text-label-caps uppercase text-on-surface-variant">Interactive</p>
+<p class="font-body-sm text-body-sm text-on-surface">#138A8A</p>
+</div>
+</div>
+<div class="bg-surface card-border rounded-lg overflow-hidden shadow-sm">
+<div class="color-swatch card-border" style="background-color: #F7F9F8;"></div>
+<div class="p-sm">
+<p class="font-label-caps text-label-caps uppercase text-on-surface-variant">Background</p>
+<p class="font-body-sm text-body-sm text-on-surface">#F7F9F8</p>
+</div>
+</div>
+<div class="bg-surface card-border rounded-lg overflow-hidden shadow-sm">
+<div class="color-swatch card-border" style="background-color: #FFFFFF;"></div>
+<div class="p-sm">
+<p class="font-label-caps text-label-caps uppercase text-on-surface-variant">Surface</p>
+<p class="font-body-sm text-body-sm text-on-surface">#FFFFFF</p>
+</div>
+</div>
+<div class="bg-surface card-border rounded-lg overflow-hidden shadow-sm">
+<div class="color-swatch" style="background-color: #D9E1DE;"></div>
+<div class="p-sm">
+<p class="font-label-caps text-label-caps uppercase text-on-surface-variant">Border</p>
+<p class="font-body-sm text-body-sm text-on-surface">#D9E1DE</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Typography -->
+<section class="ds-section">
+<h2 class="font-headline-md text-headline-md text-primary-container ds-title">Typography Hierarchy</h2>
+<div class="bg-surface p-lg card-border rounded-lg space-y-md">
+<div>
+<p class="font-label-caps text-label-caps text-on-surface-variant mb-xs">Display Large (display-lg)</p>
+<h1 class="font-display-lg text-display-lg text-on-surface">Institutional Repository</h1>
+</div>
+<div>
+<p class="font-label-caps text-label-caps text-on-surface-variant mb-xs">Headline Medium (headline-md)</p>
+<h2 class="font-headline-md text-headline-md text-on-surface">Document Collections</h2>
+</div>
+<div>
+<p class="font-label-caps text-label-caps text-on-surface-variant mb-xs">Title Small (title-sm)</p>
+<h3 class="font-title-sm text-title-sm text-on-surface">Recent Accessions</h3>
+</div>
+<div>
+<p class="font-label-caps text-label-caps text-on-surface-variant mb-xs">Body Medium (body-md)</p>
+<p class="font-body-md text-body-md text-on-surface">The digital archive preserves critical research outputs, ensuring long-term access and integrity of the scholarly record.</p>
+</div>
+<div>
+<p class="font-label-caps text-label-caps text-on-surface-variant mb-xs">Body Small (body-sm)</p>
+<p class="font-body-sm text-body-sm text-on-surface">Metadata indexing completed at 14:32 UTC.</p>
+</div>
+<div>
+<p class="font-label-caps text-label-caps text-on-surface-variant mb-xs">Label Caps (label-caps)</p>
+<p class="font-label-caps text-label-caps text-on-surface uppercase">Archived Status</p>
+</div>
+</div>
+</section>
+<!-- Components: Buttons & Inputs -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-xl ds-section">
+<!-- Buttons -->
+<div>
+<h2 class="font-headline-md text-headline-md text-primary-container ds-title">Buttons &amp; Actions</h2>
+<div class="bg-surface p-lg card-border rounded-lg flex flex-col gap-lg">
+<div class="flex items-center gap-md flex-wrap">
+<button class="bg-[#103C35] hover:bg-[#138A8A] text-white px-md py-[8px] rounded font-title-sm text-body-sm transition-colors focus:outline-none focus:ring-2 focus:ring-[#0C6668] focus:ring-offset-2">Primary Action</button>
+<button class="bg-[#103C35] opacity-50 cursor-not-allowed text-white px-md py-[8px] rounded font-title-sm text-body-sm">Disabled</button>
+</div>
+<div class="flex items-center gap-md flex-wrap">
+<button class="bg-surface border border-[#0C6668] text-[#0C6668] hover:bg-[#E8F3F2] px-md py-[8px] rounded font-title-sm text-body-sm transition-colors focus:outline-none focus:ring-2 focus:ring-[#0C6668] focus:ring-offset-2">Secondary Action</button>
+<button class="text-[#0C6668] hover:bg-[#E8F3F2] px-md py-[8px] rounded font-title-sm text-body-sm transition-colors focus:outline-none focus:ring-2 focus:ring-[#0C6668] focus:ring-offset-2">Ghost Action</button>
+</div>
+<div class="flex items-center gap-md">
+<button aria-label="Search" class="bg-[#103C35] hover:bg-[#138A8A] text-white p-[8px] rounded flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-[#0C6668] focus:ring-offset-2">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</button>
+<button aria-label="Filter" class="bg-surface border border-[#0C6668] text-[#0C6668] hover:bg-[#E8F3F2] p-[8px] rounded flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-[#0C6668] focus:ring-offset-2">
+<span class="material-symbols-outlined text-[20px]">filter_list</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Inputs -->
+<div>
+<h2 class="font-headline-md text-headline-md text-primary-container ds-title">Form Elements</h2>
+<div class="bg-surface p-lg card-border rounded-lg flex flex-col gap-md">
+<div class="flex flex-col gap-xs">
+<label class="font-title-sm text-body-sm text-on-surface">Document Title</label>
+<input class="border border-[#D9E1DE] rounded px-sm py-[8px] font-body-sm text-body-sm focus:border-[#0C6668] focus:ring-2 focus:ring-[#E8F3F2] outline-none transition-all" placeholder="Enter title..." type="text"/>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="font-title-sm text-body-sm text-on-surface">Collection Type</label>
+<select class="border border-[#D9E1DE] rounded px-sm py-[8px] font-body-sm text-body-sm focus:border-[#0C6668] focus:ring-2 focus:ring-[#E8F3F2] outline-none transition-all bg-white">
+<option>Monographs</option>
+<option>Journals</option>
+</select>
+</div>
+<div class="flex items-center gap-xl mt-sm">
+<label class="flex items-center gap-sm cursor-pointer group">
+<input class="w-4 h-4 text-[#0C6668] border-[#D9E1DE] rounded focus:ring-[#0C6668]" type="checkbox"/>
+<span class="font-body-sm text-body-sm text-on-surface group-hover:text-[#0C6668]">Peer Reviewed</span>
+</label>
+<label class="flex items-center gap-sm cursor-pointer group">
+<input class="w-4 h-4 text-[#0C6668] border-[#D9E1DE] focus:ring-[#0C6668]" name="access" type="radio"/>
+<span class="font-body-sm text-body-sm text-on-surface group-hover:text-[#0C6668]">Open Access</span>
+</label>
+</div>
+</div>
+</div>
+</div>
+<!-- Layout & Spacing -->
+<section class="ds-section">
+<h2 class="font-headline-md text-headline-md text-primary-container ds-title">Grid &amp; Spacing System (8px)</h2>
+<div class="bg-surface p-lg card-border rounded-lg relative overflow-hidden">
+<div class="grid-bg absolute inset-0 opacity-20"></div>
+<div class="relative z-10 flex flex-col gap-md">
+<div class="flex items-center gap-md">
+<div class="w-8 h-8 bg-[#103C35] bg-opacity-20 flex items-center justify-center font-label-caps text-xs">8</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Base Unit (sm)</p>
+</div>
+<div class="flex items-center gap-md">
+<div class="w-16 h-8 bg-[#103C35] bg-opacity-40 flex items-center justify-center font-label-caps text-xs">16</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Gutter &amp; Default Padding (md)</p>
+</div>
+<div class="flex items-center gap-md">
+<div class="w-24 h-8 bg-[#103C35] bg-opacity-60 flex items-center justify-center font-label-caps text-white">24</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Section Spacing (lg)</p>
+</div>
+</div>
+</div>
+</section>
+</body></html>

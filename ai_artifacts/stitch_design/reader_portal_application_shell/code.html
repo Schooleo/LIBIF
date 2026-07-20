@@ -1,0 +1,355 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>LIBIF Reader Portal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed": "#91f3f2",
+                        "on-tertiary-fixed": "#002020",
+                        "on-primary-fixed": "#00201b",
+                        "on-error": "#ffffff",
+                        "inverse-surface": "#2a313d",
+                        "surface-tint": "#3d665e",
+                        "secondary-fixed": "#a5eff1",
+                        "error-container": "#ffdad6",
+                        "secondary": "#12696b",
+                        "surface": "#f9f9ff",
+                        "on-tertiary": "#ffffff",
+                        "surface-dim": "#d3daea",
+                        "surface-container-low": "#f0f3ff",
+                        "primary": "#002520",
+                        "outline": "#717976",
+                        "tertiary-fixed-dim": "#74d6d6",
+                        "secondary-container": "#a2edee",
+                        "surface-container": "#e7eefe",
+                        "on-error-container": "#93000a",
+                        "on-primary-container": "#7ca79d",
+                        "background": "#f9f9ff",
+                        "surface-variant": "#dce2f3",
+                        "on-surface-variant": "#414846",
+                        "secondary-fixed-dim": "#89d3d5",
+                        "surface-bright": "#f9f9ff",
+                        "on-tertiary-container": "#47adac",
+                        "tertiary": "#002525",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-fixed-dim": "#a4cfc5",
+                        "outline-variant": "#c0c8c5",
+                        "error": "#ba1a1a",
+                        "surface-container-high": "#e2e8f8",
+                        "on-tertiary-fixed-variant": "#004f50",
+                        "inverse-primary": "#a4cfc5",
+                        "surface-container-highest": "#dce2f3",
+                        "on-secondary-fixed": "#002021",
+                        "on-secondary-container": "#1a6d6f",
+                        "on-primary": "#ffffff",
+                        "on-primary-fixed-variant": "#244e46",
+                        "on-background": "#151c27",
+                        "on-secondary-fixed-variant": "#004f51",
+                        "on-surface": "#151c27",
+                        "primary-fixed": "#bfece1",
+                        "tertiary-container": "#003c3c",
+                        "primary-container": "#103c35",
+                        "inverse-on-surface": "#ebf1ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "unit": "8px",
+                        "container-max": "1440px",
+                        "md": "16px",
+                        "lg": "24px",
+                        "gutter": "16px",
+                        "xs": "4px",
+                        "xl": "32px",
+                        "sm": "8px"
+                    },
+                    "fontFamily": {
+                        "display-lg-mobile": ["Be Vietnam Pro"],
+                        "title-sm": ["Be Vietnam Pro"],
+                        "label-caps": ["Be Vietnam Pro"],
+                        "body-md": ["Be Vietnam Pro"],
+                        "display-lg": ["Be Vietnam Pro"],
+                        "headline-md": ["Be Vietnam Pro"],
+                        "body-sm": ["Be Vietnam Pro"]
+                    },
+                    "fontSize": {
+                        "display-lg-mobile": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "title-sm": ["18px", { "lineHeight": "24px", "fontWeight": "600" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-body-md text-body-md">
+<!-- TopNavBar -->
+<header class="bg-surface dark:bg-surface-container font-body-md text-body-md docked full-width top-0 border-b border-outline-variant dark:border-outline flat no shadows z-50 sticky h-16">
+<div class="flex justify-between items-center w-full px-lg py-md max-w-container-max mx-auto h-full">
+<div class="flex items-center gap-xl">
+<a class="font-display-lg text-display-lg font-bold text-primary dark:text-primary-fixed tracking-tight hover:opacity-80 transition-opacity" href="#">
+                    LIBIF
+                </a>
+<!-- Search Bar -->
+<div class="hidden lg:flex relative items-center w-64 border border-outline-variant rounded bg-surface focus-within:border-secondary focus-within:ring-2 focus-within:ring-secondary/20 transition-all">
+<span class="material-symbols-outlined absolute left-sm text-outline-variant" data-icon="search">search</span>
+<input class="w-full pl-xl pr-sm py-sm bg-transparent border-none focus:ring-0 text-on-surface text-body-sm font-body-sm" placeholder="Search library..." type="text">
+</div>
+</div>
+<!-- Navigation Links -->
+<nav class="hidden md:flex items-center gap-lg">
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-secondary cursor-pointer duration-200 ease-in-out hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-colors px-sm py-xs rounded" href="#">Browse</a>
+<a class="text-secondary dark:text-secondary-fixed-dim border-b-2 border-secondary font-semibold pb-2 cursor-pointer duration-200 ease-in-out" href="#">Collections</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-secondary cursor-pointer duration-200 ease-in-out hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-colors px-sm py-xs rounded" href="#">History</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-secondary cursor-pointer duration-200 ease-in-out hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-colors px-sm py-xs rounded" href="#">Reserved</a>
+</nav>
+<!-- Trailing Actions -->
+<div class="flex items-center gap-md">
+<button aria-label="Notifications" class="text-on-surface-variant hover:text-primary transition-colors p-sm rounded-full hover:bg-surface-container-low">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button aria-label="help" class="text-on-surface-variant hover:text-primary transition-colors p-sm rounded-full hover:bg-surface-container-low hidden sm:block">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+</button>
+<button aria-label="User Profile Menu" class="w-8 h-8 rounded-full overflow-hidden border border-outline-variant focus:outline-none focus:ring-2 focus:ring-secondary ml-sm">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="A professional headshot of an academic researcher with a clean, high-contrast, modern light-mode library background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCmOjAxonnVPlRI_nc4fdqL7aRXcU5fC4zextQprL9lrvdSEG2BlxAh3QH_hpNZELmLmS8IxGF1MhrItiSegMhtJGJgmpOT72mBZ5XIeknp5-t2jsPY2hw80h1J9JZZ0ea0-kIiZIpBfm6IMlpzUh4g7TYe0YNKgf9WokBjXaRE4xiX_n6gneWnB90URGRrZU5UW50g4fq95OX4tLqBEuVqkK6xDWZx0zOhq7pWG5atvu0Tdua598AtPgHRH_FcS742WtFZanqAub0">
+</button>
+<!-- Mobile Menu Toggle -->
+<button aria-label="Menu" class="md:hidden text-on-surface-variant p-sm ml-sm">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Sub-header / Page Title -->
+<div class="bg-surface-container-low border-b border-outline-variant pt-lg pb-md px-lg">
+<div class="max-w-container-max mx-auto flex flex-col md:flex-row md:items-end justify-between gap-md">
+<div>
+<nav aria-label="Breadcrumb" class="flex text-on-surface-variant text-body-sm font-body-sm mb-sm">
+<ol class="inline-flex items-center space-x-1 md:space-x-3">
+<li class="inline-flex items-center">
+<a class="inline-flex items-center hover:text-primary transition-colors" href="#">
+                                Home
+                            </a>
+</li>
+<li class="">
+<div class="flex items-center">
+<span class="material-symbols-outlined text-[16px] mx-1">chevron_right</span>
+<span aria-current="page" class="text-on-surface">Collections</span>
+</div>
+</li>
+</ol>
+</nav>
+<h1 class="font-headline-md text-headline-md text-on-surface">Library Collections</h1>
+</div>
+<div>
+<button class="bg-primary-container text-on-primary hover:bg-primary transition-colors px-md py-sm rounded font-title-sm text-title-sm flex items-center gap-sm shadow-sm active:scale-95">
+<span class="material-symbols-outlined text-[18px]" data-icon="add">add</span>
+                    New Request
+                </button>
+</div>
+</div>
+</div>
+<!-- Main Content Area -->
+<main class="flex-grow w-full max-w-container-max mx-auto px-lg py-lg md:py-xl">
+<div class="bg-surface-container-lowest rounded-[10px] border border-outline-variant p-lg md:p-xl shadow-sm min-h-[500px]">
+<div class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-12 gap-gutter">
+<!-- Filters / Sidebar Column -->
+<aside class="md:col-span-1 lg:col-span-3 border-r border-outline-variant pr-lg hidden md:block">
+<h3 class="font-title-sm text-title-sm text-on-surface mb-md">Refine Search</h3>
+<div class="space-y-md">
+<div>
+<label class="font-label-caps text-label-caps text-on-surface-variant block mb-xs">Format</label>
+<div class="space-y-xs">
+<label class="flex items-center gap-sm text-body-sm text-on-surface cursor-pointer group">
+<input class="rounded border-outline-variant text-primary-container focus:ring-primary-container" type="checkbox">
+<span class="group-hover:text-primary transition-colors">Journals (124)</span>
+</label>
+<label class="flex items-center gap-sm text-body-sm text-on-surface cursor-pointer group">
+<input checked="" class="rounded border-outline-variant text-primary-container focus:ring-primary-container" type="checkbox">
+<span class="group-hover:text-primary transition-colors">Monographs (89)</span>
+</label>
+<label class="flex items-center gap-sm text-body-sm text-on-surface cursor-pointer group">
+<input class="rounded border-outline-variant text-primary-container focus:ring-primary-container" type="checkbox">
+<span class="group-hover:text-primary transition-colors">Digital Archives (42)</span>
+</label>
+</div>
+</div>
+<hr class="border-outline-variant">
+<div>
+<label class="font-label-caps text-label-caps text-on-surface-variant block mb-xs">Subject Area</label>
+<div class="space-y-xs">
+<label class="flex items-center gap-sm text-body-sm text-on-surface cursor-pointer group">
+<input class="rounded border-outline-variant text-primary-container focus:ring-primary-container" type="checkbox">
+<span class="group-hover:text-primary transition-colors">History (56)</span>
+</label>
+<label class="flex items-center gap-sm text-body-sm text-on-surface cursor-pointer group">
+<input class="rounded border-outline-variant text-primary-container focus:ring-primary-container" type="checkbox">
+<span class="group-hover:text-primary transition-colors">Linguistics (31)</span>
+</label>
+</div>
+</div>
+</div>
+</aside>
+<!-- Content Grid -->
+<div class="md:col-span-3 lg:col-span-9 pl-0 md:pl-lg">
+<div class="flex justify-between items-center mb-md pb-sm border-b border-outline-variant">
+<span class="text-body-sm text-on-surface-variant">Showing 1-9 of 255 results</span>
+<div class="flex items-center gap-sm">
+<span class="text-body-sm text-on-surface-variant">Sort by:</span>
+<select class="border border-outline-variant rounded bg-transparent text-body-sm py-xs pl-sm pr-lg focus:ring-secondary focus:border-secondary">
+<option>Relevance</option>
+<option>Date Added (Newest)</option>
+<option>Title (A-Z)</option>
+</select>
+</div>
+</div>
+<!-- Bento-style Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-md">
+<!-- Card 1 -->
+<div class="border border-outline-variant rounded flex flex-col overflow-hidden hover:shadow-md transition-shadow group">
+<div class="h-32 bg-surface-container relative overflow-hidden">
+<div class="absolute top-sm right-sm bg-surface text-on-surface font-label-caps text-label-caps px-xs py-[2px] rounded border border-outline-variant z-10">Monograph</div>
+<div class="w-full h-full bg-surface-variant group-hover:scale-105 transition-transform duration-500 flex items-center justify-center">
+<span class="material-symbols-outlined text-[48px] text-outline opacity-50" data-icon="book">book</span>
+</div>
+</div>
+<div class="p-md flex-grow flex flex-col justify-between bg-surface-container-lowest group-hover:bg-surface-container-low/50 transition-colors">
+<div>
+<h4 class="font-title-sm text-title-sm text-on-surface mb-xs line-clamp-2">The Architecture of Information: Navigating Digital Archives</h4>
+<p class="text-body-sm text-on-surface-variant line-clamp-2">An in-depth analysis of structural paradigms in modern digital repositories and their impact on researcher workflow.</p>
+</div>
+<div class="mt-md flex justify-between items-center border-t border-outline-variant pt-sm">
+<span class="text-body-sm text-secondary font-semibold">Available</span>
+<button aria-label="Request" class="text-primary hover:text-primary-container p-xs rounded hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined" data-icon="bookmark_add">bookmark_add</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Card 2 (Highlight) -->
+<div class="border border-secondary rounded flex flex-col overflow-hidden shadow-sm relative group lg:col-span-2 lg:flex-row">
+<div class="absolute top-0 left-0 w-1 h-full bg-secondary"></div>
+<div class="h-48 lg:h-auto lg:w-1/3 bg-surface-container relative overflow-hidden flex-shrink-0">
+<div class="absolute top-sm right-sm bg-tertiary-container text-on-tertiary-container font-label-caps text-label-caps px-xs py-[2px] rounded z-10">Journal</div>
+<div class="w-full h-full bg-surface-variant group-hover:scale-105 transition-transform duration-500 flex items-center justify-center">
+<span class="material-symbols-outlined text-[48px] text-outline opacity-50" data-icon="article">article</span>
+</div>
+</div>
+<div class="p-md lg:p-lg flex-grow flex flex-col justify-between bg-surface-container-lowest">
+<div>
+<div class="flex items-center gap-xs mb-xs">
+<span class="material-symbols-outlined text-[16px] text-secondary" data-icon="star">star</span>
+<span class="text-label-caps font-label-caps text-secondary">Featured Collection</span>
+</div>
+<h4 class="font-headline-md text-headline-md text-on-surface mb-xs">Journal of Academic Preservation</h4>
+<p class="text-body-sm text-on-surface-variant mb-md">Quarterly publication focusing on methodologies for long-term storage and retrieval of fragile physical manuscripts alongside their digital counterparts.</p>
+</div>
+<div class="mt-auto flex gap-sm">
+<button class="bg-secondary text-on-secondary hover:bg-secondary-container hover:text-on-secondary-container transition-colors px-md py-sm rounded font-title-sm text-title-sm text-center flex-grow sm:flex-grow-0">
+                                        View Issues
+                                    </button>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="border border-outline-variant rounded flex flex-col overflow-hidden hover:shadow-md transition-shadow group">
+<div class="h-32 bg-surface-container relative overflow-hidden">
+<div class="absolute top-sm right-sm bg-surface text-on-surface font-label-caps text-label-caps px-xs py-[2px] rounded border border-outline-variant z-10">Digital Archive</div>
+<div class="w-full h-full bg-surface-variant group-hover:scale-105 transition-transform duration-500 flex items-center justify-center">
+<span class="material-symbols-outlined text-[48px] text-outline opacity-50" data-icon="folder_special">folder_special</span>
+</div>
+</div>
+<div class="p-md flex-grow flex flex-col justify-between bg-surface-container-lowest group-hover:bg-surface-container-low/50 transition-colors">
+<div>
+<h4 class="font-title-sm text-title-sm text-on-surface mb-xs line-clamp-2">Historical Maps of Southeast Asia (1850-1920)</h4>
+<p class="text-body-sm text-on-surface-variant line-clamp-2">High-resolution scans of colonial and indigenous cartography.</p>
+</div>
+<div class="mt-md flex justify-between items-center border-t border-outline-variant pt-sm">
+<span class="text-body-sm text-outline font-semibold">Restricted Access</span>
+<button aria-label="Info" class="text-on-surface-variant hover:text-primary p-xs rounded hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined" data-icon="info">info</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Pagination (Simplified) -->
+<div class="mt-xl flex justify-center items-center gap-xs">
+<button class="p-sm text-on-surface-variant hover:bg-surface-container-low rounded border border-transparent hover:border-outline-variant disabled:opacity-50" disabled="">
+<span class="material-symbols-outlined" data-icon="chevron_left">chevron_left</span>
+</button>
+<button class="w-8 h-8 rounded bg-primary-container text-on-primary font-title-sm text-title-sm flex items-center justify-center">1</button>
+<button class="w-8 h-8 rounded text-on-surface hover:bg-surface-container-low font-title-sm text-title-sm flex items-center justify-center transition-colors">2</button>
+<button class="w-8 h-8 rounded text-on-surface hover:bg-surface-container-low font-title-sm text-title-sm flex items-center justify-center transition-colors">3</button>
+<span class="text-on-surface-variant">...</span>
+<button class="w-8 h-8 rounded text-on-surface hover:bg-surface-container-low font-title-sm text-title-sm flex items-center justify-center transition-colors">29</button>
+<button class="p-sm text-on-surface-variant hover:bg-surface-container-low rounded border border-transparent hover:border-outline-variant transition-colors">
+<span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface border-t border-outline-variant py-xl mt-auto">
+<div class="max-w-container-max mx-auto px-lg grid grid-cols-1 md:grid-cols-4 gap-lg">
+<div class="col-span-1 md:col-span-2">
+<span class="font-display-lg text-title-sm font-bold text-primary dark:text-primary-fixed tracking-tight mb-sm block">LIBIF</span>
+<p class="text-body-sm text-on-surface-variant max-w-sm mb-md">Institutional Knowledge Management System. Providing secure, structured access to archival resources and academic publications.</p>
+<div class="flex items-center gap-sm">
+<span class="text-body-sm text-on-surface font-semibold">Language:</span>
+<select class="border border-outline-variant rounded bg-surface-container-lowest text-body-sm py-xs pl-sm pr-lg focus:ring-secondary focus:border-secondary">
+<option>English</option>
+<option>Vietnamese</option>
+</select>
+</div>
+</div>
+<div>
+<h4 class="font-title-sm text-title-sm text-on-surface mb-sm">Institution</h4>
+<ul class="space-y-xs text-body-sm text-on-surface-variant">
+<li class=""><a class="hover:text-primary transition-colors" href="#">About the Library</a></li>
+<li class=""><a class="hover:text-primary transition-colors" href="#">Policies &amp; Guidelines</a></li>
+<li class=""><a class="hover:text-primary transition-colors" href="#">Staff Directory</a></li>
+<li class=""><a class="hover:text-primary transition-colors" href="#">Contact Support</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-title-sm text-title-sm text-on-surface mb-sm">Resources</h4>
+<ul class="space-y-xs text-body-sm text-on-surface-variant">
+<li class=""><a class="hover:text-primary transition-colors" href="#">Research Guides</a></li>
+<li class=""><a class="hover:text-primary transition-colors" href="#">Citation Tools</a></li>
+<li class=""><a class="hover:text-primary transition-colors" href="#">Interlibrary Loan</a></li>
+<li class=""><a class="hover:text-primary transition-colors" href="#">Accessibility Options</a></li>
+</ul>
+</div>
+</div>
+<div class="max-w-container-max mx-auto px-lg mt-xl pt-md border-t border-outline-variant flex flex-col md:flex-row justify-between items-center text-body-sm text-on-surface-variant gap-sm">
+<span class="">© 2024 LIBIF Institutional Library. All rights reserved.</span>
+<div class="flex gap-md">
+<a class="hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="hover:text-primary transition-colors" href="#">Terms of Service</a>
+</div>
+</div>
+</footer>
+
+
+</body></html>

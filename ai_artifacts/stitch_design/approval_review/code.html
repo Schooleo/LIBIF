@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Approval Review - Document Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container": "#e7eefe",
+                        "surface-container-high": "#e2e8f8",
+                        "tertiary-fixed-dim": "#74d6d6",
+                        "tertiary-container": "#003c3c",
+                        "inverse-on-surface": "#ebf1ff",
+                        "tertiary": "#002525",
+                        "surface-container-highest": "#dce2f3",
+                        "secondary-fixed-dim": "#89d3d5",
+                        "inverse-primary": "#a4cfc5",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-container": "#47adac",
+                        "error": "#ba1a1a",
+                        "on-primary-container": "#7ca79d",
+                        "tertiary-fixed": "#91f3f2",
+                        "surface-container-low": "#f0f3ff",
+                        "surface-dim": "#d3daea",
+                        "on-tertiary-fixed-variant": "#004f50",
+                        "on-secondary-fixed": "#002021",
+                        "on-secondary-fixed-variant": "#004f51",
+                        "on-primary-fixed-variant": "#244e46",
+                        "primary-fixed": "#bfece1",
+                        "on-background": "#151c27",
+                        "background": "#f9f9ff",
+                        "inverse-surface": "#2a313d",
+                        "primary-fixed-dim": "#a4cfc5",
+                        "primary": "#002520",
+                        "on-primary-fixed": "#00201b",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-fixed": "#002020",
+                        "surface-tint": "#3d665e",
+                        "error-container": "#ffdad6",
+                        "surface": "#f9f9ff",
+                        "on-error-container": "#93000a",
+                        "on-error": "#ffffff",
+                        "surface-bright": "#f9f9ff",
+                        "outline-variant": "#c0c8c5",
+                        "outline": "#717976",
+                        "on-secondary-container": "#1a6d6f",
+                        "on-secondary": "#ffffff",
+                        "on-surface-variant": "#414846",
+                        "surface-variant": "#dce2f3",
+                        "secondary-container": "#a2edee",
+                        "on-tertiary": "#ffffff",
+                        "primary-container": "#103c35",
+                        "secondary-fixed": "#a5eff1",
+                        "secondary": "#12696b",
+                        "on-surface": "#151c27"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-max": "1440px",
+                        "xl": "32px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "xs": "4px",
+                        "unit": "8px",
+                        "lg": "24px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Be Vietnam Pro"],
+                        "title-sm": ["Be Vietnam Pro"],
+                        "display-lg-mobile": ["Be Vietnam Pro"],
+                        "display-lg": ["Be Vietnam Pro"],
+                        "body-md": ["Be Vietnam Pro"],
+                        "label-caps": ["Be Vietnam Pro"],
+                        "body-sm": ["Be Vietnam Pro"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "title-sm": ["18px", { "lineHeight": "24px", "fontWeight": "600" }],
+                        "display-lg-mobile": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        /* Custom scrollbar for webkit to maintain minimalist aesthetic */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #c0c8c5; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #717976; 
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md text-body-md h-screen w-screen overflow-hidden flex flex-col antialiased selection:bg-secondary-container selection:text-on-secondary-container">
+<!-- TopNavBar Component -->
+<header class="flex items-center justify-between px-lg w-full sticky top-0 z-40 bg-surface h-16 border-b border-outline-variant flat no-shadows shrink-0">
+<div class="flex items-center gap-md">
+<span class="font-display-lg text-display-lg text-primary tracking-tight">LIBIF</span>
+<div class="h-6 w-px bg-outline-variant mx-sm"></div>
+<span class="font-title-sm text-title-sm text-on-surface-variant">Document Processing Workspace</span>
+</div>
+<div class="flex items-center bg-surface-container-low rounded-full px-md py-sm w-96 border border-outline-variant">
+<span class="material-symbols-outlined text-on-surface-variant mr-sm">search</span>
+<input class="bg-transparent border-none outline-none w-full text-body-sm font-body-sm focus:ring-0 text-on-surface placeholder:text-on-surface-variant/70" placeholder="Search knowledge base..." type="text"/>
+</div>
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-on-surface-variant hover:bg-surface-container-low cursor-pointer active:opacity-80 transition-colors p-2 rounded-full" data-icon="help">help</span>
+<span class="material-symbols-outlined text-on-surface-variant hover:bg-surface-container-low cursor-pointer active:opacity-80 transition-colors p-2 rounded-full" data-icon="notifications">notifications</span>
+<span class="material-symbols-outlined text-on-surface-variant hover:bg-surface-container-low cursor-pointer active:opacity-80 transition-colors p-2 rounded-full" data-icon="settings">settings</span>
+<img alt="User profile" class="w-8 h-8 rounded-full border border-outline-variant object-cover ml-sm cursor-pointer" data-alt="A small circular avatar image showing a professional headshot of a librarian or archivist in a well-lit academic setting. Minimalist and corporate trust aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuArI4GpsWo3-m_asUPLXoxzOcNHLJxh4729TQjOEwMTK2qje19aPMZfe00n_cwxIGiCVl2acZ3xahKlcGqn3rZD6rCKUL-6gGsSaUgnRqNrC5F1XIMrQ9tO-kI_E4z9wIeqC89r2R85ZVHxwLi0DwDMkZ8B3rof1JseBiLSINxhwaMZq_lMQ29Eaj9JnxANAtoKXDtWQVF0AakHK8-oimCemz00FLfTnZGXUAVSdBlQjPo3uwjCbEE-Yc8B-PHZrUkwj62e6D1qJKk"/>
+</div>
+</header>
+<!-- Main Workspace (Split Layout) -->
+<main class="flex-1 flex overflow-hidden w-full h-full">
+<!-- Left Panel: Document Preview (60%) -->
+<div class="w-[60%] flex flex-col border-r border-outline-variant bg-surface-container-lowest h-full relative">
+<!-- Document Toolbar -->
+<div class="h-14 border-b border-outline-variant flex items-center justify-between px-md bg-surface-container-low shrink-0">
+<div class="flex items-center gap-xs bg-surface border border-outline-variant rounded p-1 shadow-sm">
+<button class="p-1 hover:bg-surface-container-high rounded text-on-surface-variant transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]" data-icon="zoom_out">zoom_out</span>
+</button>
+<div class="w-px h-4 bg-outline-variant mx-1"></div>
+<span class="text-body-sm font-body-sm text-on-surface px-2 min-w-[3rem] text-center">100%</span>
+<div class="w-px h-4 bg-outline-variant mx-1"></div>
+<button class="p-1 hover:bg-surface-container-high rounded text-on-surface-variant transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]" data-icon="zoom_in">zoom_in</span>
+</button>
+<div class="w-px h-4 bg-outline-variant mx-1"></div>
+<button class="p-1 hover:bg-surface-container-high rounded text-on-surface-variant transition-colors flex items-center justify-center" title="Fit to width">
+<span class="material-symbols-outlined text-[20px]" data-icon="fit_screen">fit_screen</span>
+</button>
+</div>
+<div class="flex items-center gap-sm bg-surface border border-outline-variant rounded p-1 shadow-sm">
+<button class="p-1 hover:bg-surface-container-high rounded text-on-surface-variant transition-colors disabled:opacity-30 flex items-center justify-center" disabled="">
+<span class="material-symbols-outlined text-[20px]" data-icon="navigate_before">navigate_before</span>
+</button>
+<span class="text-body-sm font-body-sm text-on-surface px-3">Page <span class="font-bold">1</span> of 342</span>
+<button class="p-1 hover:bg-surface-container-high rounded text-on-surface-variant transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]" data-icon="navigate_next">navigate_next</span>
+</button>
+</div>
+</div>
+<!-- Preview Area Split (Thumbnails + Canvas) -->
+<div class="flex-1 flex overflow-hidden bg-[#E8F3F2]"> <!-- Theme-aligned subordinate background -->
+<!-- Thumbnail Strip -->
+<div class="w-24 border-r border-outline-variant flex flex-col items-center py-md gap-md overflow-y-auto bg-surface shrink-0">
+<!-- Active Page Thumbnail -->
+<div class="w-16 h-[22px] flex flex-col gap-1 items-center group cursor-pointer">
+<div class="w-16 h-24 bg-white border-2 border-secondary rounded-sm shadow-sm overflow-hidden relative">
+<img class="w-full h-full object-cover" data-alt="A highly detailed, vertically oriented thumbnail image showing the title page of a sociology textbook. It features stark black serif typography against an off-white background, embodying an academic, archival aesthetic with a soft glow indicating active selection." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBhLGu9nwcZ5LZdKEc-hCdTRArrUmIYnK3NhCTXx1aQFkBjn9K0t0nYP-4RYGUpr_A-yr47FKnCgu78mANF4jI_sUlUgvyZ0MF-KD6On8LlO22Ht9COzFQF7xSsePzw0vSv6hBuJO0u8JlN9XZVQlmnpoBM0OmDBaIPjBZs02bs07InV1qEj2_G6wzSK0BVmzQx5CZn0bFRLiKITB100992mHXfLnRCUwW4_FQhAcXGVtW2q8eG9UYhPbwot4FmWT1c-7cb_jaymAw"/>
+<div class="absolute inset-0 bg-secondary/10"></div>
+</div>
+<span class="font-label-caps text-[10px] font-bold text-secondary">1</span>
+</div>
+<!-- Inactive Page Thumbnails -->
+<div class="w-16 flex flex-col gap-1 items-center group cursor-pointer opacity-70 hover:opacity-100 transition-opacity">
+<div class="w-16 h-24 bg-white border border-outline-variant rounded-sm shadow-sm overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A small thumbnail showing a dense page of academic text with two columns. Minimalist, high contrast, black text on white paper, reflecting a formal institutional document aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCxvcHORkzyXqQ9imJTygYbekif2SLul4AuMrnx_SWywYFxYQJfErZ-GqwWoRODlN5_cWSXS03EKm7-xmyvOgCP3b4ODWfV-B8YF_GAdFNAPHqMSz0AsdG9ERqWHYdc9c7rgXMKg3AR2psiYu8usHHSDAEavJDNkV_wjY2-P7WeTX4OHw3S0mSFKH_f3wAcGdNWWvEDW129_pgdaaKwQoFD8hVBpE4t-nhfxhuPx8TAsDX2r1hRuFMVhWvNl1BPD3tSO6o_KioHyu4"/>
+</div>
+<span class="font-label-caps text-[10px] text-on-surface-variant">2</span>
+</div>
+<div class="w-16 flex flex-col gap-1 items-center group cursor-pointer opacity-70 hover:opacity-100 transition-opacity">
+<div class="w-16 h-24 bg-white border border-outline-variant rounded-sm shadow-sm overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A thumbnail depicting an academic document page featuring a large, complex structural diagram or chart embedded within text paragraphs. Clean, precise lines, muted tones, academic setting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCYCrylOLfvQ_qAlzuEA0C2Sui6frG18gO5iQbBFPjrauzTR3kCmA5pEsj0sMp-TkvO2mh6842cVVzkey2-8WLarTghTXQwg6mSoYd5Ce3e6X-GuNB0bmOBmPix9bl1gB5Mu_DUgFgUmgVt0OHqKI-U7w2L1nGMHb6XG8pQp49WWvL32J9EFpoEzVPsU8cvqXcfwwlVj4Gc9iS7BjO8AmWoTidI4j0JmFds9FJWq2SYM-BkTMibI0d3WXvc6R9IxsvIsw5CZGaCp6s"/>
+</div>
+<span class="font-label-caps text-[10px] text-on-surface-variant">3</span>
+</div>
+<div class="w-16 flex flex-col gap-1 items-center group cursor-pointer opacity-70 hover:opacity-100 transition-opacity">
+<div class="w-16 h-24 bg-white border border-outline-variant rounded-sm shadow-sm overflow-hidden">
+<div class="w-full h-full flex items-center justify-center bg-surface-container-lowest">
+<span class="material-symbols-outlined text-outline-variant">description</span>
+</div>
+</div>
+<span class="font-label-caps text-[10px] text-on-surface-variant">4</span>
+</div>
+</div>
+<!-- Main Canvas -->
+<div class="flex-1 overflow-auto p-lg flex justify-center items-start">
+<!-- The Document Page -->
+<div class="w-full max-w-[800px] bg-white shadow-[0px_4px_12px_rgba(16,60,53,0.08)] border border-outline-variant rounded-sm min-h-[1050px] relative mt-md mb-xl">
+<img class="w-full h-full object-contain" data-alt="A high-resolution, full-page scan of the title page of 'The Structural Transformation of the Public Sphere' by Jurgen Habermas. The typography is classic, formal, and authoritative. The paper texture is faintly visible, evoking a sense of institutional permanence and archival quality. The lighting is perfectly even, typical of a high-end document scanner." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCdIvFlHIhetU9_DEU-hlxJ5Ise9-JhrttK_nA_voCn-4a0lM65CFtXRmei9Iq5iyRQemig2Udk8q7FVxg84Zd3NXMOJo1rzeHenk41jkfxv2k-R8EsvnzMW1zeFXlL_GilM4_ZoXkUg7q1TyTdupotp9Bk8qNTAKo-NQ8b9cM1sMBSfyJ2qRiy0foxIeaeTljUKd3gFZE0PhUeoHjmFKnTeajjb8o3Md3qVb_9OHMAMQyDN01VQ9QkzRlFmxrUv5GyQ4PkWeVgb0w"/>
+<!-- Overlay Highlight Example (e.g., OCR bounding box) -->
+<div class="absolute top-[30%] left-[15%] right-[15%] h-[40px] bg-secondary-container/20 border border-secondary border-dashed rounded pointer-events-none hidden"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Panel: Review Actions (40%) -->
+<div class="w-[40%] flex flex-col bg-surface-container-lowest h-full shadow-[-4px_0_12px_rgba(0,0,0,0.03)] z-10 relative">
+<!-- Header / Breadcrumbs -->
+<div class="px-xl py-lg border-b border-outline-variant bg-surface-container-lowest shrink-0">
+<nav class="flex items-center gap-xs text-on-surface-variant font-label-caps text-label-caps mb-3">
+<span class="hover:text-primary cursor-pointer transition-colors uppercase tracking-wider">Approvals</span>
+<span class="material-symbols-outlined text-[14px]" data-icon="chevron_right">chevron_right</span>
+<span class="text-on-surface uppercase tracking-wider font-bold">Review</span>
+</nav>
+<h1 class="font-headline-md text-headline-md text-on-surface tracking-tight">Document Verification</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Review extracted metadata and quality metrics before publishing.</p>
+</div>
+<!-- Scrollable Review Content -->
+<div class="flex-1 overflow-y-auto px-xl py-lg flex flex-col gap-xl">
+<!-- 1. Metadata Checklist -->
+<section class="flex flex-col gap-md">
+<div class="flex items-center justify-between border-b border-outline-variant pb-2">
+<h2 class="font-title-sm text-title-sm text-on-surface">Metadata Extraction</h2>
+<span class="px-2 py-0.5 bg-secondary-container text-on-secondary-container rounded text-[10px] font-bold uppercase tracking-wider">Auto-Verified</span>
+</div>
+<div class="flex flex-col gap-1">
+<!-- Field Row -->
+<div class="flex justify-between items-start p-sm rounded hover:bg-surface-container-low transition-colors group">
+<div class="flex-1 pr-4">
+<div class="font-label-caps text-label-caps text-on-surface-variant mb-1">TITLE</div>
+<div class="font-body-md text-body-md text-on-surface leading-snug">The Structural Transformation of the Public Sphere</div>
+</div>
+<span class="material-symbols-outlined text-secondary mt-1" data-icon="check_circle">check_circle</span>
+</div>
+<div class="w-full h-px bg-surface-variant ml-sm"></div>
+<!-- Field Row -->
+<div class="flex justify-between items-start p-sm rounded hover:bg-surface-container-low transition-colors group">
+<div class="flex-1 pr-4">
+<div class="font-label-caps text-label-caps text-on-surface-variant mb-1">AUTHOR(S)</div>
+<div class="font-body-md text-body-md text-on-surface">Jürgen Habermas</div>
+</div>
+<span class="material-symbols-outlined text-secondary mt-1" data-icon="check_circle">check_circle</span>
+</div>
+<div class="w-full h-px bg-surface-variant ml-sm"></div>
+<!-- Field Row -->
+<div class="flex justify-between items-start p-sm rounded hover:bg-surface-container-low transition-colors group">
+<div class="flex-1 pr-4 flex gap-lg">
+<div>
+<div class="font-label-caps text-label-caps text-on-surface-variant mb-1">PUBLICATION YEAR</div>
+<div class="font-body-md text-body-md text-on-surface">1962</div>
+</div>
+<div>
+<div class="font-label-caps text-label-caps text-on-surface-variant mb-1">ISBN / IDENTIFIER</div>
+<div class="font-body-md text-body-md text-on-surface font-mono">978-0262581080</div>
+</div>
+</div>
+<span class="material-symbols-outlined text-secondary mt-1" data-icon="check_circle">check_circle</span>
+</div>
+</div>
+</section>
+<!-- 2 & 3. File Details & OCR Summary (Bento Grid Style) -->
+<section class="grid grid-cols-2 gap-md">
+<!-- File Details -->
+<div class="bg-surface border border-outline-variant rounded-lg p-md flex flex-col gap-md relative overflow-hidden">
+<div class="absolute top-0 right-0 p-3 opacity-10">
+<span class="material-symbols-outlined text-[48px]" data-icon="description">description</span>
+</div>
+<h3 class="font-label-caps text-label-caps text-on-surface-variant">FILE SPECIFICATIONS</h3>
+<div class="grid grid-cols-2 gap-y-sm">
+<div>
+<span class="text-[10px] text-on-surface-variant uppercase block">Format</span>
+<span class="font-title-sm text-title-sm text-on-surface">PDF/A-1b</span>
+</div>
+<div>
+<span class="text-[10px] text-on-surface-variant uppercase block">Size</span>
+<span class="font-title-sm text-title-sm text-on-surface">24.6 MB</span>
+</div>
+<div>
+<span class="text-[10px] text-on-surface-variant uppercase block">Pages</span>
+<span class="font-title-sm text-title-sm text-on-surface">342</span>
+</div>
+<div>
+<span class="text-[10px] text-on-surface-variant uppercase block">DPI</span>
+<span class="font-title-sm text-title-sm text-on-surface">300</span>
+</div>
+</div>
+</div>
+<!-- OCR Summary -->
+<div class="bg-surface-container-low border border-outline-variant rounded-lg p-md flex flex-col items-center justify-center text-center gap-sm">
+<div class="relative w-16 h-16 flex items-center justify-center">
+<!-- Simulated SVG Progress Ring -->
+<svg class="w-full h-full transform -rotate-90" viewbox="0 0 36 36">
+<path class="text-surface-variant" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3"></path>
+<path class="text-secondary" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="99.2, 100" stroke-linecap="round" stroke-width="3"></path>
+</svg>
+<span class="absolute font-title-sm text-title-sm text-on-surface">99%</span>
+</div>
+<div>
+<div class="font-title-sm text-title-sm text-on-surface">OCR Confidence</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant mt-1">Excellent text extraction</div>
+</div>
+</div>
+</section>
+<!-- 4. Category & Tags -->
+<section class="flex flex-col gap-md">
+<h2 class="font-title-sm text-title-sm text-on-surface border-b border-outline-variant pb-2">Classification &amp; Taxonomy</h2>
+<div class="flex flex-wrap gap-2">
+<span class="px-3 py-1.5 bg-surface text-on-surface rounded border border-outline-variant font-body-sm text-body-sm hover:border-secondary cursor-pointer transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[14px] text-on-surface-variant" data-icon="account_balance">account_balance</span>
+                            Political Science
+                        </span>
+<span class="px-3 py-1.5 bg-surface text-on-surface rounded border border-outline-variant font-body-sm text-body-sm hover:border-secondary cursor-pointer transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[14px] text-on-surface-variant" data-icon="group">group</span>
+                            Sociology
+                        </span>
+<span class="px-3 py-1.5 bg-surface text-on-surface rounded border border-outline-variant font-body-sm text-body-sm hover:border-secondary cursor-pointer transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[14px] text-on-surface-variant" data-icon="label">label</span>
+                            Habermas
+                        </span>
+<span class="px-3 py-1.5 bg-surface-container-low text-on-surface-variant rounded border border-dashed border-outline-variant font-body-sm text-body-sm hover:text-on-surface cursor-pointer transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="add">add</span> Tag
+                        </span>
+</div>
+</section>
+<!-- 5. Quality Checklist -->
+<section class="flex flex-col gap-md">
+<h2 class="font-title-sm text-title-sm text-on-surface border-b border-outline-variant pb-2">Manual Quality Assurance</h2>
+<div class="bg-surface border border-outline-variant rounded-lg p-md flex flex-col gap-4">
+<label class="flex items-start gap-4 cursor-pointer group">
+<div class="relative flex items-center justify-center mt-0.5">
+<input checked="" class="peer sr-only" type="checkbox"/>
+<div class="w-5 h-5 border border-outline rounded bg-surface peer-checked:bg-secondary peer-checked:border-secondary transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined text-[16px] text-white opacity-0 peer-checked:opacity-100" data-icon="check">check</span>
+</div>
+</div>
+<div>
+<span class="font-title-sm text-title-sm text-on-surface block select-none group-hover:text-primary transition-colors">Document is fully legible</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant select-none">No blurred pages, artifacts, or unreadable sections.</span>
+</div>
+</label>
+<div class="w-full h-px bg-surface-variant ml-9"></div>
+<label class="flex items-start gap-4 cursor-pointer group">
+<div class="relative flex items-center justify-center mt-0.5">
+<input checked="" class="peer sr-only" type="checkbox"/>
+<div class="w-5 h-5 border border-outline rounded bg-surface peer-checked:bg-secondary peer-checked:border-secondary transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined text-[16px] text-white opacity-0 peer-checked:opacity-100" data-icon="check">check</span>
+</div>
+</div>
+<div>
+<span class="font-title-sm text-title-sm text-on-surface block select-none group-hover:text-primary transition-colors">No missing pages</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant select-none">Pagination is continuous and complete from cover to cover.</span>
+</div>
+</label>
+<div class="w-full h-px bg-surface-variant ml-9"></div>
+<label class="flex items-start gap-4 cursor-pointer group">
+<div class="relative flex items-center justify-center mt-0.5">
+<input class="peer sr-only" type="checkbox"/>
+<div class="w-5 h-5 border border-outline rounded bg-surface peer-checked:bg-secondary peer-checked:border-secondary transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined text-[16px] text-white opacity-0 peer-checked:opacity-100" data-icon="check">check</span>
+</div>
+</div>
+<div>
+<span class="font-title-sm text-title-sm text-on-surface block select-none group-hover:text-primary transition-colors">Metadata manually verified</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant select-none">I have cross-referenced the auto-extracted data with the source.</span>
+</div>
+</label>
+</div>
+</section>
+<!-- Spacer to ensure bottom scroll clearance -->
+<div class="h-4"></div>
+</div>
+<!-- Footer Actions -->
+<div class="p-xl border-t border-outline-variant bg-surface-container-lowest flex flex-col gap-md shrink-0 shadow-[0_-4px_12px_rgba(0,0,0,0.02)]">
+<button class="w-full py-3 px-6 bg-primary-container text-white font-title-sm text-title-sm rounded shadow-sm hover:bg-[#002525] active:bg-[#001515] transition-colors flex justify-center items-center gap-2">
+<span class="material-symbols-outlined text-[20px]" data-icon="publish">publish</span>
+                    Approve and Publish
+                </button>
+<div class="flex gap-md">
+<button class="flex-1 py-2.5 px-4 bg-transparent border border-secondary text-secondary font-title-sm text-title-sm rounded hover:bg-secondary-container/30 transition-colors flex justify-center items-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="edit_note">edit_note</span>
+                        Request Correction
+                    </button>
+<button class="flex-1 py-2.5 px-4 bg-transparent border border-error text-error font-title-sm text-title-sm rounded hover:bg-error-container hover:text-on-error-container transition-colors flex justify-center items-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="cancel">cancel</span>
+                        Reject
+                    </button>
+</div>
+<button class="w-full py-2 text-on-surface-variant font-title-sm text-title-sm hover:text-on-surface transition-colors">
+                    Save review draft
+                </button>
+</div>
+</div>
+</main>
+</body></html>

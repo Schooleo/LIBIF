@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Report Export Failed</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary": "#ffffff",
+                        "tertiary": "#002525",
+                        "tertiary-fixed-dim": "#74d6d6",
+                        "tertiary-fixed": "#91f3f2",
+                        "outline": "#717976",
+                        "on-surface": "#151c27",
+                        "on-primary-fixed": "#00201b",
+                        "error-container": "#ffdad6",
+                        "secondary": "#12696b",
+                        "on-primary-container": "#7ca79d",
+                        "secondary-fixed": "#a5eff1",
+                        "secondary-container": "#a2edee",
+                        "on-background": "#151c27",
+                        "on-error-container": "#93000a",
+                        "on-primary": "#ffffff",
+                        "primary-container": "#103c35",
+                        "inverse-primary": "#a4cfc5",
+                        "surface": "#f9f9ff",
+                        "surface-bright": "#f9f9ff",
+                        "on-tertiary-container": "#47adac",
+                        "on-secondary-container": "#1a6d6f",
+                        "primary-fixed-dim": "#a4cfc5",
+                        "on-error": "#ffffff",
+                        "surface-variant": "#dce2f3",
+                        "surface-container": "#e7eefe",
+                        "surface-container-highest": "#dce2f3",
+                        "on-secondary-fixed": "#002021",
+                        "tertiary-container": "#003c3c",
+                        "background": "#f9f9ff",
+                        "primary-fixed": "#bfece1",
+                        "primary": "#002520",
+                        "surface-dim": "#d3daea",
+                        "surface-container-low": "#f0f3ff",
+                        "outline-variant": "#c0c8c5",
+                        "on-tertiary-fixed": "#002020",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-high": "#e2e8f8",
+                        "on-surface-variant": "#414846",
+                        "inverse-on-surface": "#ebf1ff",
+                        "secondary-fixed-dim": "#89d3d5",
+                        "on-secondary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "on-primary-fixed-variant": "#244e46",
+                        "on-tertiary-fixed-variant": "#004f50",
+                        "inverse-surface": "#2a313d",
+                        "on-secondary-fixed-variant": "#004f51",
+                        "surface-tint": "#3d665e"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "unit": "8px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "lg": "24px",
+                        "xs": "4px",
+                        "xl": "32px",
+                        "gutter": "16px",
+                        "container-max": "1440px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Be Vietnam Pro"],
+                        "display-lg-mobile": ["Be Vietnam Pro"],
+                        "body-md": ["Be Vietnam Pro"],
+                        "display-lg": ["Be Vietnam Pro"],
+                        "label-caps": ["Be Vietnam Pro"],
+                        "title-sm": ["Be Vietnam Pro"],
+                        "body-sm": ["Be Vietnam Pro"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "display-lg-mobile": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "title-sm": ["18px", { "lineHeight": "24px", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: #f9f9ff; /* theme('colors.background') fallback */
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex items-center justify-center p-md">
+<!-- Modal Overlay Backdrop -->
+<div aria-hidden="true" class="fixed inset-0 bg-on-background/40 backdrop-blur-sm z-40 transition-opacity"></div>
+<!-- Export Failed Modal -->
+<div aria-labelledby="modal-title" aria-modal="true" class="relative z-50 w-full max-w-md bg-surface-container-lowest rounded-xl border border-outline-variant shadow-[0px_4px_12px_rgba(16,60,53,0.08)] overflow-hidden flex flex-col" role="dialog">
+<!-- Header area with Icon -->
+<div class="p-lg pb-sm flex items-start gap-md">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-error-container flex items-center justify-center">
+<span class="material-symbols-outlined text-error text-[28px]" style="font-variation-settings: 'FILL' 1;">warning</span>
+</div>
+<div class="pt-1">
+<h2 class="font-headline-md text-headline-md text-on-surface" id="modal-title">Export Failed</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-sm">
+                    The request timed out due to a high volume of data for the selected period.
+                </p>
+</div>
+</div>
+<!-- Preserved Settings Context -->
+<div class="px-lg py-md mx-lg mt-md mb-lg bg-surface-container-low rounded-lg border border-outline-variant/50">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider mb-sm">Attempted Export Settings</h3>
+<div class="grid grid-cols-2 gap-sm">
+<div>
+<span class="block font-body-sm text-body-sm text-on-surface-variant/80">Date Range</span>
+<span class="block font-body-sm text-body-sm font-semibold text-on-surface">Oct 2023</span>
+</div>
+<div>
+<span class="block font-body-sm text-body-sm text-on-surface-variant/80">Metrics</span>
+<span class="block font-body-sm text-body-sm font-semibold text-on-surface">All</span>
+</div>
+</div>
+</div>
+<!-- Actions -->
+<div class="px-lg py-md bg-surface-container-lowest border-t border-outline-variant/30 flex flex-col gap-sm">
+<button class="w-full flex items-center justify-center gap-sm bg-primary-container text-on-primary font-title-sm text-title-sm py-sm px-md rounded hover:bg-primary-container/90 active:bg-primary transition-colors focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-2" type="button">
+<span class="material-symbols-outlined text-[20px]">refresh</span>
+                Retry Export
+            </button>
+<div class="flex gap-sm w-full">
+<button class="flex-1 bg-transparent border border-secondary text-secondary font-title-sm text-title-sm py-sm px-md rounded hover:bg-secondary/5 active:bg-secondary/10 transition-colors focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-2" type="button">
+                    Adjust Filters
+                </button>
+</div>
+</div>
+<!-- Footer / Error Ref -->
+<div class="px-lg py-sm bg-surface-container flex items-center justify-between">
+<span class="font-body-sm text-body-sm text-on-surface-variant/60 font-mono text-[12px]">Ref: ERR_TIMEOUT_B18_504</span>
+<button class="text-secondary hover:text-secondary-fixed-dim font-body-sm text-body-sm underline transition-colors" type="button">
+                Contact Admin
+            </button>
+</div>
+</div>
+</body></html>

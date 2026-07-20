@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LIBIF Admin - Barcode Scanner</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@100..900&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed-variant": "#004f51",
+                        "on-primary-fixed-variant": "#244e46",
+                        "surface-tint": "#3d665e",
+                        "secondary-fixed": "#a5eff1",
+                        "on-tertiary": "#ffffff",
+                        "surface-variant": "#dce2f3",
+                        "on-tertiary-fixed-variant": "#004f50",
+                        "surface-container-high": "#e2e8f8",
+                        "surface-container-lowest": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "surface-bright": "#f9f9ff",
+                        "secondary": "#12696b",
+                        "error": "#ba1a1a",
+                        "secondary-fixed-dim": "#89d3d5",
+                        "tertiary-container": "#003c3c",
+                        "background": "#f9f9ff",
+                        "inverse-primary": "#a4cfc5",
+                        "primary-container": "#103c35",
+                        "outline-variant": "#c0c8c5",
+                        "primary-fixed-dim": "#a4cfc5",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed": "#91f3f2",
+                        "surface-dim": "#d3daea",
+                        "on-surface": "#151c27",
+                        "on-primary": "#ffffff",
+                        "surface-container-low": "#f0f3ff",
+                        "on-secondary-fixed": "#002021",
+                        "inverse-on-surface": "#ebf1ff",
+                        "surface-container-highest": "#dce2f3",
+                        "on-error": "#ffffff",
+                        "tertiary": "#002525",
+                        "primary": "#002520",
+                        "on-tertiary-fixed": "#002020",
+                        "on-surface-variant": "#414846",
+                        "on-background": "#151c27",
+                        "on-tertiary-container": "#47adac",
+                        "surface": "#f9f9ff",
+                        "on-secondary-container": "#1a6d6f",
+                        "outline": "#717976",
+                        "on-primary-fixed": "#00201b",
+                        "surface-container": "#e7eefe",
+                        "primary-fixed": "#bfece1",
+                        "inverse-surface": "#2a313d",
+                        "error-container": "#ffdad6",
+                        "on-primary-container": "#7ca79d",
+                        "tertiary-fixed-dim": "#74d6d6",
+                        "secondary-container": "#a2edee"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "gutter": "16px",
+                        "container-max": "1440px",
+                        "xl": "32px",
+                        "md": "16px",
+                        "sm": "8px",
+                        "lg": "24px",
+                        "unit": "8px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Be Vietnam Pro"],
+                        "headline-md": ["Be Vietnam Pro"],
+                        "body-md": ["Be Vietnam Pro"],
+                        "title-sm": ["Be Vietnam Pro"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        .scanner-line {
+            animation: scan 2s linear infinite;
+        }
+        @keyframes scan {
+            0% { top: 20%; opacity: 0.2; }
+            50% { top: 50%; opacity: 1; }
+            100% { top: 80%; opacity: 0.2; }
+        }
+        .shimmer-bg {
+            background: linear-gradient(90deg, #f0f3ff 25%, #e7eefe 50%, #f0f3ff 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+    </style>
+</head>
+<body class="bg-background font-body-md text-on-background overflow-hidden">
+<!-- Sidebar (Shared Component) -->
+<nav class="flex flex-col h-screen bg-primary dark:bg-primary-container text-on-primary dark:text-on-primary-container h-full w-64 fixed left-0 top-0 border-r border-outline-variant shadow-sm z-30">
+<div class="p-lg">
+<h1 class="font-display-lg text-[24px] font-bold text-on-primary">LIBIF Admin</h1>
+<p class="text-[12px] opacity-70">Institutional Access</p>
+</div>
+<div class="flex-grow mt-md">
+<div class="flex items-center gap-3 px-4 py-3 text-on-primary opacity-80 hover:bg-primary-fixed-dim hover:text-on-primary-fixed-dim transition-colors cursor-pointer duration-200 ease-in-out">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-body-md">Dashboard</span>
+</div>
+<div class="flex items-center gap-3 px-4 py-3 text-on-primary opacity-80 hover:bg-primary-fixed-dim hover:text-on-primary-fixed-dim transition-colors cursor-pointer duration-200 ease-in-out">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="font-body-md">Repository</span>
+</div>
+<div class="flex items-center gap-3 px-4 py-3 bg-primary-container text-on-primary-container border-l-4 border-secondary transition-colors cursor-pointer duration-200 ease-in-out">
+<span class="material-symbols-outlined">label</span>
+<span class="font-body-md">Metadata</span>
+</div>
+<div class="flex items-center gap-3 px-4 py-3 text-on-primary opacity-80 hover:bg-primary-fixed-dim hover:text-on-primary-fixed-dim transition-colors cursor-pointer duration-200 ease-in-out">
+<span class="material-symbols-outlined">shopping_cart</span>
+<span class="font-body-md">Acquisitions</span>
+</div>
+<div class="flex items-center gap-3 px-4 py-3 text-on-primary opacity-80 hover:bg-primary-fixed-dim hover:text-on-primary-fixed-dim transition-colors cursor-pointer duration-200 ease-in-out">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-body-md">Settings</span>
+</div>
+</div>
+<div class="mt-auto border-t border-white/10 p-md">
+<button class="w-full bg-secondary text-white py-2 rounded-lg font-semibold mb-md hover:bg-secondary/90 transition-all">Upload Document</button>
+<div class="flex items-center gap-3 px-4 py-2 text-on-primary opacity-80 hover:text-white cursor-pointer">
+<span class="material-symbols-outlined">help</span>
+<span class="text-sm">Help Center</span>
+</div>
+<div class="flex items-center gap-3 px-4 py-2 text-on-primary opacity-80 hover:text-white cursor-pointer">
+<span class="material-symbols-outlined">logout</span>
+<span class="text-sm">Log Out</span>
+</div>
+</div>
+</nav>
+<!-- Main Content Area (Form Backdrop) -->
+<main class="ml-64 min-h-screen">
+<!-- Top Nav (Shared Component) -->
+<header class="w-full h-16 sticky top-0 z-20 flex items-center justify-between px-lg bg-surface dark:bg-surface-dim border-b border-outline-variant">
+<div class="flex items-center space-x-6">
+<span class="font-headline-md text-[20px] font-extrabold text-primary">LIBIF</span>
+<div class="hidden md:flex space-x-6 text-sm">
+<a class="text-on-surface-variant font-medium hover:text-secondary transition-all" href="#">Collections</a>
+<a class="text-on-surface-variant font-medium hover:text-secondary transition-all" href="#">Publishers</a>
+<a class="text-on-surface-variant font-medium hover:text-secondary transition-all" href="#">Archives</a>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button class="bg-surface-container-high px-4 py-2 rounded-full text-sm font-medium text-primary flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px]">search</span>
+                    Quick Search
+                </button>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer">notifications</span>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer">apps</span>
+<div class="w-8 h-8 rounded-full bg-secondary-container overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a librarian in a modern library office, high-quality corporate photography, soft natural lighting, shallow depth of field, sharp focus on the person, professional and intelligent look." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDcuWvwZ-1UHf-ZChiOcEwsbWhHm4t3ercK-KsZOBWJcY3KLKKco50lxF5Xyf1pm6fwcn7Q3Z7Zc0Cei_nTOfBfjvXWevOxoT3pjdQjWW2ExF8ngGiiEEP-WL8S_UDpRVoIC9HEg3HTx3RgZRkhjHFjzCpbracVCEMcw9zHG4CGF4fimhwYtsSL0TTl2QVF8ALOzwpGaVHtYzpeJzOiwQtqwXRK_P5OPeQeJn1nNPAn16UC32zGUHPJz5GB1xpoldAB5svq1Sfd5-s"/>
+</div>
+</div>
+</header>
+<!-- Mock Metadata Form Canvas -->
+<div class="p-lg max-w-5xl mx-auto">
+<div class="bg-white border border-outline-variant rounded-xl p-xl shadow-sm">
+<h2 class="font-headline-md text-primary mb-lg">Add New Resource</h2>
+<div class="grid grid-cols-2 gap-lg opacity-40 select-none">
+<div class="space-y-md">
+<label class="block text-sm font-bold uppercase tracking-wider text-on-surface-variant">Document Title</label>
+<div class="w-full h-10 bg-surface-container rounded border border-outline-variant"></div>
+<label class="block text-sm font-bold uppercase tracking-wider text-on-surface-variant">Author(s)</label>
+<div class="w-full h-10 bg-surface-container rounded border border-outline-variant"></div>
+</div>
+<div class="space-y-md">
+<label class="block text-sm font-bold uppercase tracking-wider text-on-surface-variant">ISBN-13</label>
+<div class="w-full h-10 bg-surface-container rounded border border-outline-variant flex items-center px-sm">
+<span class="material-symbols-outlined text-on-surface-variant">barcode_scanner</span>
+</div>
+<label class="block text-sm font-bold uppercase tracking-wider text-on-surface-variant">Publication Year</label>
+<div class="w-full h-10 bg-surface-container rounded border border-outline-variant"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- MODAL OVERLAY (The Barcode Scanner Interface) -->
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-primary/40 backdrop-blur-sm">
+<div class="bg-white w-[540px] rounded-xl shadow-2xl overflow-hidden border border-outline-variant flex flex-col">
+<!-- Header -->
+<div class="px-lg py-md border-b border-outline-variant flex justify-between items-center bg-surface-bright">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">barcode_scanner</span>
+<h3 class="font-title-sm text-primary">Scan Barcode</h3>
+</div>
+<button class="hover:bg-error-container hover:text-on-error-container p-1 rounded-full transition-colors">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<!-- Main Scanner View -->
+<div class="relative aspect-video bg-black flex items-center justify-center overflow-hidden">
+<!-- Simulated Camera Feed -->
+<div class="absolute inset-0 w-full h-full">
+<img class="w-full h-full object-cover opacity-80" data-alt="A close-up, high-angle view of a physical book's back cover focusing on a clear, high-contrast ISBN barcode and numeric text. The lighting is bright and industrial, simulating a smartphone camera viewfinder. The environment is a professional office setting with soft shadows." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAQT_b21VuVS3jwUOCHWDN-tYqQcymBXsK42dAJhW9TVhPCzNy67hZp9ihioxpt4WFzJr8cd_Yn8qxRB2QJOisGOvwXPQIpXGbqvOJwt4Cw7Ew_PwpTVvzxYr9ewj1ZjpDlEANV-A1kL2AziyjFB0SjugaF87tmnco5Y4yp0_cfcd9vz8L_50PeVrzyrivqFrvu5whUSDvGUaI2Fc9Z2eLSowEBOj8BplJdmBEeSypbKOaDTqf-dh_i-Mm0BF8aLKJ9_PKj8oA7B7Y"/>
+</div>
+<!-- Scanning Guide Frame -->
+<div class="relative z-10 w-3/4 h-1/2 border-2 border-dashed border-secondary/60 flex items-center justify-center rounded-lg">
+<!-- Corner Markers -->
+<div class="absolute -top-1 -left-1 w-6 h-6 border-t-4 border-l-4 border-secondary rounded-tl-sm"></div>
+<div class="absolute -top-1 -right-1 w-6 h-6 border-t-4 border-r-4 border-secondary rounded-tr-sm"></div>
+<div class="absolute -bottom-1 -left-1 w-6 h-6 border-b-4 border-l-4 border-secondary rounded-bl-sm"></div>
+<div class="absolute -bottom-1 -right-1 w-6 h-6 border-b-4 border-r-4 border-secondary rounded-br-sm"></div>
+<!-- Scanning Line Animation -->
+<div class="scanner-line absolute left-0 right-0 h-0.5 bg-secondary shadow-[0_0_10px_#138A8A]"></div>
+</div>
+<!-- Overlay Mask (Darkened outside frame) -->
+<div class="absolute inset-0 border-[40px] border-black/40 pointer-events-none"></div>
+<!-- Detected Result Toast (Bottom of feed) -->
+<div class="absolute bottom-md left-1/2 -translate-x-1/2 w-[90%] bg-surface-container-lowest/95 backdrop-blur-md p-md rounded-lg shadow-lg flex items-center justify-between animate-bounce-short">
+<div class="flex flex-col">
+<span class="text-[10px] font-bold text-secondary uppercase tracking-widest">ISBN Detected</span>
+<span class="font-mono text-lg font-bold text-on-surface">9780141033570</span>
+</div>
+<button class="bg-secondary text-white px-lg py-sm rounded-lg font-semibold hover:bg-secondary/90 transition-all text-sm shadow-sm">
+                            Use this ISBN
+                        </button>
+</div>
+</div>
+<!-- Footer / Instructions -->
+<div class="p-lg bg-surface flex flex-col items-center gap-lg">
+<p class="text-on-surface-variant text-sm text-center">
+                        Align the barcode within the frame to scan.<br/>
+                        Hold the device steady for 2-3 seconds.
+                    </p>
+<div class="flex items-center gap-md w-full">
+<button class="flex-1 border border-outline text-on-surface-variant py-2.5 rounded-lg font-semibold hover:bg-surface-container transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[20px]">keyboard</span>
+                            Enter Manually
+                        </button>
+<button class="flex-1 text-on-surface-variant font-semibold hover:text-error transition-all py-2.5">
+                            Cancel
+                        </button>
+</div>
+</div>
+</div>
+<!-- Side Note: Permission State (Floating) -->
+<div class="absolute left-lg top-1/2 -translate-y-1/2 w-64">
+<div class="bg-white p-lg rounded-xl shadow-xl border-l-4 border-error space-y-md">
+<div class="flex items-center gap-sm text-error">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">no_photography</span>
+<span class="font-bold text-sm">Permission Denied</span>
+</div>
+<p class="text-xs text-on-surface-variant leading-relaxed">
+                        Access to the system camera was blocked. Please enable camera permissions in your browser settings to use the barcode scanner.
+                    </p>
+<button class="w-full bg-error-container text-on-error-container py-2 rounded-lg text-xs font-bold hover:bg-error-container/80 transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[16px]">settings_accessibility</span>
+                        Enable Camera
+                    </button>
+</div>
+</div>
+</div>
+</main>
+<script>
+        // Simple micro-interaction for the "detected" state
+        document.addEventListener('DOMContentLoaded', () => {
+            const useBtn = document.querySelector('button:contains("Use this ISBN")');
+            // This is just a placeholder for logic
+        });
+
+        // Add a small bounce animation to the result toast
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes bounce-short {
+                0%, 100% { transform: translate(-50%, 0); }
+                50% { transform: translate(-50%, -4px); }
+            }
+            .animate-bounce-short {
+                animation: bounce-short 2s ease-in-out infinite;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body></html>

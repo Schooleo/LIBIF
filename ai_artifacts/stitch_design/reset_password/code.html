@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Reset Password - LIBIF Digital Library System</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts: Be Vietnam Pro -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-dim": "#d3daea",
+                    "on-tertiary-fixed-variant": "#004f50",
+                    "inverse-on-surface": "#ebf1ff",
+                    "primary": "#002520",
+                    "primary-fixed-dim": "#a4cfc5",
+                    "inverse-primary": "#a4cfc5",
+                    "tertiary-fixed": "#91f3f2",
+                    "outline": "#717976",
+                    "tertiary": "#002525",
+                    "on-tertiary-container": "#47adac",
+                    "on-error-container": "#93000a",
+                    "surface-container": "#e7eefe",
+                    "surface-bright": "#f9f9ff",
+                    "on-primary-container": "#7ca79d",
+                    "tertiary-fixed-dim": "#74d6d6",
+                    "on-secondary-fixed": "#002021",
+                    "surface-variant": "#dce2f3",
+                    "surface-container-high": "#e2e8f8",
+                    "on-secondary-fixed-variant": "#004f51",
+                    "secondary": "#12696b",
+                    "on-secondary-container": "#1a6d6f",
+                    "error": "#ba1a1a",
+                    "surface-tint": "#3d665e",
+                    "outline-variant": "#c0c8c5",
+                    "on-secondary": "#ffffff",
+                    "on-primary": "#ffffff",
+                    "primary-container": "#103c35",
+                    "on-surface": "#151c27",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary-container": "#a2edee",
+                    "on-primary-fixed-variant": "#244e46",
+                    "tertiary-container": "#003c3c",
+                    "surface-container-low": "#f0f3ff",
+                    "on-surface-variant": "#414846",
+                    "on-error": "#ffffff",
+                    "inverse-surface": "#2a313d",
+                    "surface-container-highest": "#dce2f3",
+                    "on-tertiary": "#ffffff",
+                    "secondary-fixed-dim": "#89d3d5",
+                    "on-tertiary-fixed": "#002020",
+                    "background": "#f9f9ff",
+                    "secondary-fixed": "#a5eff1",
+                    "primary-fixed": "#bfece1",
+                    "on-background": "#151c27",
+                    "on-primary-fixed": "#00201b",
+                    "surface": "#f9f9ff",
+                    "error-container": "#ffdad6"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "unit": "8px",
+                    "container-max": "1440px",
+                    "gutter": "16px",
+                    "xl": "32px",
+                    "md": "16px",
+                    "xs": "4px",
+                    "sm": "8px",
+                    "lg": "24px"
+            },
+            "fontFamily": {
+                    "title-sm": ["Be Vietnam Pro"],
+                    "headline-md": ["Be Vietnam Pro"],
+                    "body-md": ["Be Vietnam Pro"],
+                    "label-caps": ["Be Vietnam Pro"],
+                    "display-lg": ["Be Vietnam Pro"],
+                    "body-sm": ["Be Vietnam Pro"]
+            },
+            "fontSize": {
+                    "title-sm": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                    "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        body {
+            background-color: #F7F9F8; /* Explicitly requested background */
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Custom focus styles for inputs based on guidelines */
+        .academic-input:focus {
+            border-color: #0C6668;
+            outline: none;
+            box-shadow: 0 0 0 2px #E8F3F2;
+        }
+        /* Soft depth shadow for card */
+        .card-shadow {
+            box-shadow: 0px 4px 12px rgba(16, 60, 53, 0.08);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col font-body-md text-on-surface">
+<!-- TopNavBar Suppressed due to Transactional/Linear Intent (Auth) -->
+<!-- Main Content Area -->
+<main class="flex-grow flex items-center justify-center p-md">
+<!-- Reset Password Form Card -->
+<div class="w-full max-w-md bg-surface-container-lowest rounded-lg border border-[#E2E8F0] card-shadow p-lg relative overflow-hidden">
+<!-- Subtle decorative top accent -->
+<div class="absolute top-0 left-0 w-full h-1 bg-primary-container"></div>
+<!-- Header Section -->
+<div class="text-center mb-xl">
+<!-- Brand Anchor -->
+<div class="mb-sm">
+<span class="font-display-lg text-display-lg font-bold text-primary">LIBIF</span>
+</div>
+<h1 class="font-headline-md text-headline-md text-on-surface mb-xs">Reset Password</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Create a new, secure password for your account.</p>
+</div>
+<!-- Success Feedback Placeholder (Hidden by default) -->
+<div class="hidden mb-md p-md bg-[#e7f1ef] border border-[#a4cfc5] rounded flex items-center gap-sm" id="successMessage">
+<span class="material-symbols-outlined text-[#103C35]" data-icon="check_circle">check_circle</span>
+<span class="font-body-sm text-body-sm text-[#103C35]">Password updated successfully. Redirecting...</span>
+</div>
+<!-- Form -->
+<form class="space-y-md" id="resetPasswordForm">
+<!-- New Password Field -->
+<div class="space-y-xs">
+<label class="block font-title-sm text-title-sm text-on-surface" for="newPassword">New Password</label>
+<div class="relative">
+<input class="academic-input w-full p-sm pl-[12px] pr-xl border border-[#E2E8F0] rounded bg-surface-container-lowest text-on-surface font-body-md text-body-md transition-shadow transition-colors" id="newPassword" placeholder="Enter new password" type="password"/>
+<button aria-label="Toggle password visibility" class="absolute right-sm top-1/2 -translate-y-1/2 text-outline-variant hover:text-on-surface-variant transition-colors" type="button">
+<span class="material-symbols-outlined text-[20px]" data-icon="visibility_off">visibility_off</span>
+</button>
+</div>
+</div>
+<!-- Confirm Password Field -->
+<div class="space-y-xs">
+<label class="block font-title-sm text-title-sm text-on-surface" for="confirmPassword">Confirm New Password</label>
+<div class="relative">
+<input class="academic-input w-full p-sm pl-[12px] pr-xl border border-[#E2E8F0] rounded bg-surface-container-lowest text-on-surface font-body-md text-body-md transition-shadow transition-colors" id="confirmPassword" placeholder="Re-enter new password" type="password"/>
+<button aria-label="Toggle confirm password visibility" class="absolute right-sm top-1/2 -translate-y-1/2 text-outline-variant hover:text-on-surface-variant transition-colors" type="button">
+<span class="material-symbols-outlined text-[20px]" data-icon="visibility_off">visibility_off</span>
+</button>
+</div>
+</div>
+<!-- Password Requirements List -->
+<div class="bg-[#F7F9F8] border border-[#E2E8F0] rounded p-md mt-md">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant mb-sm uppercase tracking-wider">Password Requirements</h3>
+<ul class="space-y-xs font-body-sm text-body-sm text-on-surface-variant">
+<li class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-[16px] text-outline-variant" data-icon="radio_button_unchecked">radio_button_unchecked</span>
+<span>At least 12 characters long</span>
+</li>
+<li class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-[16px] text-outline-variant" data-icon="radio_button_unchecked">radio_button_unchecked</span>
+<span>Contains an uppercase letter</span>
+</li>
+<li class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-[16px] text-outline-variant" data-icon="radio_button_unchecked">radio_button_unchecked</span>
+<span>Contains a number or symbol</span>
+</li>
+</ul>
+</div>
+<!-- Primary Action -->
+<div class="pt-sm">
+<button class="w-full bg-primary-container text-on-primary font-title-sm text-title-sm py-sm px-md rounded hover:bg-[#138A8A] transition-colors focus:outline-none focus:ring-2 focus:ring-[#E8F3F2] focus:ring-offset-2" type="submit">
+                        Update Password
+                    </button>
+</div>
+<!-- Return Link -->
+<div class="text-center pt-sm">
+<a class="inline-flex items-center gap-xs font-body-sm text-body-sm text-secondary hover:text-primary transition-colors hover:underline" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="arrow_back">arrow_back</span>
+                        Return to Sign In
+                    </a>
+</div>
+</form>
+</div>
+</main>
+<!-- Footer Suppressed due to Transactional/Linear Intent (Auth) -->
+<script>
+        // Simple script to demonstrate success state toggle
+        document.getElementById('resetPasswordForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const successMsg = document.getElementById('successMessage');
+            successMsg.classList.remove('hidden');
+            // In a real app, this would be an API call followed by a redirect
+            setTimeout(() => {
+                successMsg.classList.add('hidden');
+            }, 3000);
+        });
+    </script>
+</body></html>

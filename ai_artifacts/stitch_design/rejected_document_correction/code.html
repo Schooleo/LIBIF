@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>KnowledgeCenter - Rejected Document Correction</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error-container": "#ffdad6",
+                        "tertiary": "#002525",
+                        "inverse-on-surface": "#ebf1ff",
+                        "on-surface": "#151c27",
+                        "secondary-fixed-dim": "#89d3d5",
+                        "on-tertiary-container": "#47adac",
+                        "on-background": "#151c27",
+                        "surface-container-highest": "#dce2f3",
+                        "on-tertiary-fixed": "#002020",
+                        "primary-fixed": "#bfece1",
+                        "on-primary": "#ffffff",
+                        "primary-container": "#103c35",
+                        "surface-bright": "#f9f9ff",
+                        "on-primary-fixed-variant": "#244e46",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed": "#91f3f2",
+                        "surface": "#f9f9ff",
+                        "on-secondary-fixed-variant": "#004f51",
+                        "inverse-surface": "#2a313d",
+                        "surface-variant": "#dce2f3",
+                        "secondary-fixed": "#a5eff1",
+                        "on-tertiary-fixed-variant": "#004f50",
+                        "surface-container-high": "#e2e8f8",
+                        "on-primary-container": "#7ca79d",
+                        "background": "#f9f9ff",
+                        "surface-container": "#e7eefe",
+                        "primary-fixed-dim": "#a4cfc5",
+                        "primary": "#002520",
+                        "surface-tint": "#3d665e",
+                        "on-tertiary": "#ffffff",
+                        "secondary": "#12696b",
+                        "on-primary-fixed": "#00201b",
+                        "secondary-container": "#a2edee",
+                        "outline": "#717976",
+                        "surface-dim": "#d3daea",
+                        "on-secondary-fixed": "#002021",
+                        "surface-container-low": "#f0f3ff",
+                        "tertiary-container": "#003c3c",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface-variant": "#414846",
+                        "tertiary-fixed-dim": "#74d6d6",
+                        "on-secondary-container": "#1a6d6f",
+                        "inverse-primary": "#a4cfc5",
+                        "on-error-container": "#93000a",
+                        "on-error": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "outline-variant": "#c0c8c5"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xl": "32px",
+                        "xs": "4px",
+                        "gutter": "16px",
+                        "sm": "8px",
+                        "container-max": "1440px",
+                        "lg": "24px",
+                        "unit": "8px",
+                        "md": "16px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["Be Vietnam Pro"],
+                        "headline-md": ["Be Vietnam Pro"],
+                        "display-lg": ["Be Vietnam Pro"],
+                        "body-sm": ["Be Vietnam Pro"],
+                        "title-sm": ["Be Vietnam Pro"],
+                        "display-lg-mobile": ["Be Vietnam Pro"],
+                        "body-md": ["Be Vietnam Pro"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "title-sm": ["18px", { "lineHeight": "24px", "fontWeight": "600" }],
+                        "display-lg-mobile": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            border: 1px solid #E2E8F0;
+        }
+        .reject-alert-glow {
+            box-shadow: inset 4px 0 0 0 var(--color-error);
+        }
+        .tooltip:hover .tooltip-text { visibility: visible; opacity: 1; }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md h-screen flex overflow-hidden">
+<!-- SideNavBar -->
+<nav class="hidden md:flex w-64 h-screen fixed left-0 top-0 bg-tertiary border-r border-outline-variant flex-col overflow-y-auto z-20">
+<div class="p-gutter flex items-center gap-sm">
+<img alt="Institution Logo" class="w-8 h-8 rounded-full bg-primary-container object-cover" data-alt="A minimalist, geometric, vector-style logo suitable for a university digital library, featuring abstract book and data elements in crisp teal and white on a dark background. The design should convey institutional trust and high-end academic rigor, utilizing corporate minimalism principles." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDakeW5mOsyLHrejeqaic4MOEOb6dUay86yQ2R816zU8ptiLZBPFVr-6KPLK6Ykq7n-N9jsKs307fofVTLye-Sd0FYAHTxwycJLInVBGqnS8dSxdGmjrOe1X8mxXK_i_XlyNiYxfYrRXOvNfoJKNOQPN7LOtFwNa54llsK9UneVacH5B1aHEyIKOnbUGTH9a0t49w915S768DwkWgJMzy9Qdj16eeG7MYShiOnHBrcyohaYVHcDwsMmQeaOiz32JMWGBsQyrKItYOs"/>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-on-primary">Admin Workspace</h1>
+<p class="font-body-sm text-body-sm text-on-tertiary opacity-70">University Digital Library</p>
+</div>
+</div>
+<div class="px-gutter mb-lg mt-sm">
+<button class="w-full bg-primary-container text-on-primary font-title-sm text-title-sm py-sm rounded-DEFAULT border border-transparent hover:border-secondary transition-colors flex items-center justify-center gap-xs">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">upload</span>
+                Upload Document
+            </button>
+</div>
+<ul class="flex-1 flex flex-col gap-xs px-sm">
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-DEFAULT text-on-tertiary opacity-70 hover:bg-primary-container hover:text-on-primary-fixed-variant transition-colors hover:scale-[0.98] transition-all duration-150" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-caps text-label-caps">Dashboard</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-DEFAULT border-l-4 border-secondary bg-primary-container text-on-primary-fixed-variant scale-[0.98] transition-all duration-150" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">account_balance</span>
+<span class="font-label-caps text-label-caps">Library</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-DEFAULT text-on-tertiary opacity-70 hover:bg-primary-container hover:text-on-primary-fixed-variant transition-colors hover:scale-[0.98] transition-all duration-150" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="font-label-caps text-label-caps">Archives</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-DEFAULT text-on-tertiary opacity-70 hover:bg-primary-container hover:text-on-primary-fixed-variant transition-colors hover:scale-[0.98] transition-all duration-150" href="#">
+<span class="material-symbols-outlined">supervisor_account</span>
+<span class="font-label-caps text-label-caps">User Roles</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-DEFAULT text-on-tertiary opacity-70 hover:bg-primary-container hover:text-on-primary-fixed-variant transition-colors hover:scale-[0.98] transition-all duration-150" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-caps text-label-caps">Settings</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-DEFAULT text-on-tertiary opacity-70 hover:bg-primary-container hover:text-on-primary-fixed-variant transition-colors hover:scale-[0.98] transition-all duration-150" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-label-caps text-label-caps">Audit Logs</span>
+</a>
+</li>
+</ul>
+<div class="mt-auto border-t border-outline-variant/30 p-sm">
+<ul class="flex flex-col gap-xs">
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-DEFAULT text-on-tertiary opacity-70 hover:bg-primary-container hover:text-on-primary-fixed-variant transition-colors hover:scale-[0.98] transition-all duration-150" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="font-label-caps text-label-caps">Support</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-DEFAULT text-on-tertiary opacity-70 hover:bg-primary-container hover:text-on-primary-fixed-variant transition-colors hover:scale-[0.98] transition-all duration-150" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-label-caps text-label-caps">Logout</span>
+</a>
+</li>
+</ul>
+</div>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col md:ml-64 w-full h-full bg-surface">
+<!-- TopAppBar -->
+<header class="flex justify-between items-center w-full h-16 px-gutter bg-surface-container-lowest border-b border-outline-variant z-10 sticky top-0 shrink-0">
+<div class="flex items-center gap-md">
+<span class="font-headline-md text-headline-md font-bold text-primary hidden md:block">KnowledgeCenter</span>
+<div class="relative hidden sm:block w-64 ml-lg">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-on-surface-variant text-sm">search</span>
+<input class="w-full pl-xl pr-sm py-xs bg-surface text-on-surface border border-outline-variant rounded-DEFAULT focus:outline-none focus:border-secondary focus:ring-2 focus:ring-surface-container font-body-sm text-body-sm placeholder:text-on-surface-variant/70" placeholder="Search archive..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button class="text-on-surface-variant hover:bg-surface-container-low p-xs rounded-full transition-all ease-in-out duration-200">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:bg-surface-container-low p-xs rounded-full transition-all ease-in-out duration-200">
+<span class="material-symbols-outlined">settings_suggest</span>
+</button>
+<button class="hidden md:flex bg-primary-container text-on-primary font-title-sm text-title-sm px-md py-xs rounded-DEFAULT hover:bg-secondary transition-colors items-center gap-xs ml-sm">
+<span class="material-symbols-outlined text-sm">add</span> New Entry
+                </button>
+<img alt="Administrator Avatar" class="w-8 h-8 rounded-full border border-outline-variant object-cover ml-sm cursor-pointer" data-alt="A highly detailed, professional headshot of a mature administrative professional wearing understated academic attire. The background should be a blurred library setting with cool, bright lighting in a corporate minimal style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD9tQqUf5qcyaDAk6c_Ejd5lQbPXK4049geSGvZtSj4AnPyo-YTegb-VfEBbUNp9-rXWpZ0Yt_0KPBsnGsR0WJ9DygGulyCC1FFTfPr_7dziFMSMS3TZGJF-6-49crUYmHJjENRnMqtxay6hYZJEn2cWhUklKmAde2J0RMHBTsMyf-_OomKfcmd_-ZbGBJfyR_-hxs-3WMWuVvVM0UVT9Xr6TYncQNb2RkAvP_bSX9SE-GPAwm7aRjubnH0pc2mutSafTGS6Q99taY"/>
+</div>
+</header>
+<!-- Canvas -->
+<main class="flex-1 overflow-y-auto p-lg">
+<div class="max-w-container-max mx-auto space-y-lg">
+<!-- Breadcrumbs & Context -->
+<div class="flex items-center gap-xs text-on-surface-variant font-body-sm text-body-sm">
+<a class="hover:text-primary transition-colors" href="#">Library</a>
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+<a class="hover:text-primary transition-colors" href="#">Pending Review</a>
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+<span class="text-on-surface font-semibold">Document Correction</span>
+</div>
+<!-- Rejection Alert -->
+<div class="bg-error-container/30 border border-error/20 rounded-lg p-md flex gap-md items-start reject-alert-glow">
+<span class="material-symbols-outlined text-error mt-xs" style="font-variation-settings: 'FILL' 1;">error</span>
+<div class="flex-1">
+<h2 class="font-title-sm text-title-sm text-on-surface mb-xs flex items-center gap-sm">
+                            Submission Rejected
+                            <span class="bg-surface-container px-xs py-[2px] rounded text-on-surface-variant font-label-caps text-label-caps border border-outline-variant/50">ID: DOC-992-A</span>
+</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-sm">
+<strong class="text-on-surface">Reason:</strong> Metadata Conflicts &amp; Poor Scan Quality
+                        </p>
+<div class="bg-surface/50 border border-outline-variant/30 rounded p-sm relative">
+<div class="absolute top-sm right-sm text-on-surface-variant/50 font-label-caps text-[10px]">Reviewer: Senior Curator</div>
+<p class="font-body-sm text-body-sm italic text-on-surface-variant">
+                                "The provided author string does not match standard VIAF formatting. Additionally, pages 42-45 in the PDF payload exhibit severe artifacting, making OCR extraction impossible. Please rectify before re-entering the ingest queue."
+                            </p>
+</div>
+</div>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Left Column: Document Summary & Actions (4 cols) -->
+<div class="lg:col-span-4 flex flex-col gap-gutter">
+<!-- Document Snapshot Card -->
+<div class="glass-panel rounded-lg p-md flex flex-col h-full">
+<h3 class="font-title-sm text-title-sm text-on-surface mb-md pb-xs border-b border-outline-variant">Document Summary</h3>
+<div class="w-full aspect-[3/4] bg-surface-container-low border border-outline-variant rounded mb-md relative overflow-hidden flex items-center justify-center">
+<div class="absolute inset-0 bg-[linear-gradient(45deg,#f0f3ff_25%,transparent_25%,transparent_75%,#f0f3ff_75%,#f0f3ff),linear-gradient(45deg,#f0f3ff_25%,transparent_25%,transparent_75%,#f0f3ff_75%,#f0f3ff)]" style="background-size:20px 20px; background-position:0 0, 10px 10px; opacity:0.3"></div>
+<span class="material-symbols-outlined text-4xl text-outline-variant opacity-50 z-10">description</span>
+<div class="absolute bottom-sm right-sm bg-surface-container-highest px-xs py-[2px] rounded text-on-surface-variant font-label-caps text-[10px] border border-outline-variant z-10 shadow-sm">PDF / 4.2 MB</div>
+</div>
+<div class="space-y-sm flex-1">
+<div>
+<label class="font-label-caps text-label-caps text-on-surface-variant block mb-[2px]">Title</label>
+<p class="font-body-md text-body-md text-on-surface font-medium leading-snug">The Principles of Quantum Mechanics</p>
+</div>
+<div class="grid grid-cols-2 gap-sm">
+<div>
+<label class="font-label-caps text-label-caps text-on-surface-variant block mb-[2px]">Type</label>
+<p class="font-body-sm text-body-sm text-on-surface">Monograph</p>
+</div>
+<div>
+<label class="font-label-caps text-label-caps text-on-surface-variant block mb-[2px]">Date</label>
+<p class="font-body-sm text-body-sm text-on-surface">1930 (First Ed.)</p>
+</div>
+</div>
+</div>
+<div class="mt-md pt-md border-t border-outline-variant flex flex-col gap-sm">
+<button class="w-full bg-surface text-secondary border border-secondary font-title-sm text-title-sm py-sm rounded-DEFAULT hover:bg-surface-container-low transition-colors flex items-center justify-center gap-xs">
+<span class="material-symbols-outlined text-sm">edit_document</span> Edit Metadata
+                                </button>
+<button class="w-full bg-surface text-secondary border border-secondary font-title-sm text-title-sm py-sm rounded-DEFAULT hover:bg-surface-container-low transition-colors flex items-center justify-center gap-xs">
+<span class="material-symbols-outlined text-sm">find_replace</span> Replace PDF
+                                </button>
+</div>
+</div>
+</div>
+<!-- Right Column: Correction Checklist (8 cols) -->
+<div class="lg:col-span-8 flex flex-col gap-gutter">
+<div class="glass-panel rounded-lg flex flex-col h-full overflow-hidden">
+<div class="p-md border-b border-outline-variant bg-surface-container-lowest flex justify-between items-center">
+<div>
+<h3 class="font-title-sm text-title-sm text-on-surface">Correction Checklist</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Resolve all items below to unlock resubmission.</p>
+</div>
+<div class="bg-surface-container-high px-sm py-xs rounded-full font-label-caps text-label-caps text-on-surface border border-outline-variant">
+                                    0 / 3 Resolved
+                                </div>
+</div>
+<div class="flex-1 p-0 overflow-y-auto bg-surface/30">
+<!-- Checklist Item 1 -->
+<div class="p-md border-b border-outline-variant hover:bg-surface-container-lowest transition-colors flex gap-md group">
+<div class="mt-xs">
+<input class="w-5 h-5 rounded border-outline-variant text-secondary focus:ring-secondary focus:ring-offset-0 bg-surface cursor-pointer" type="checkbox"/>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-xs">
+<h4 class="font-title-sm text-title-sm text-on-surface group-hover:text-primary transition-colors">Verify Author Names</h4>
+<span class="bg-error-container text-on-error-container px-xs py-[2px] rounded text-[10px] font-label-caps uppercase border border-error/20">Metadata</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-sm">
+                                            Current entry 'P.A.M. Dirac' lacks standardization. Ensure compliance with institutional authority control (e.g., 'Dirac, P. A. M. (Paul Adrien Maurice), 1902-1984').
+                                        </p>
+<div class="bg-surface-container px-sm py-xs rounded border border-outline-variant flex items-center justify-between text-body-sm font-mono text-sm">
+<span class="text-on-surface-variant line-through opacity-70">P.A.M. Dirac</span>
+<span class="material-symbols-outlined text-outline-variant text-sm">arrow_right_alt</span>
+<span class="text-on-surface font-semibold">Dirac, P. A. M., 1902-1984</span>
+</div>
+</div>
+</div>
+<!-- Checklist Item 2 -->
+<div class="p-md border-b border-outline-variant hover:bg-surface-container-lowest transition-colors flex gap-md group">
+<div class="mt-xs">
+<input class="w-5 h-5 rounded border-outline-variant text-secondary focus:ring-secondary focus:ring-offset-0 bg-surface cursor-pointer" type="checkbox"/>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-xs">
+<h4 class="font-title-sm text-title-sm text-on-surface group-hover:text-primary transition-colors">Correct ISBN / Identifier</h4>
+<span class="bg-error-container text-on-error-container px-xs py-[2px] rounded text-[10px] font-label-caps uppercase border border-error/20">Metadata</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                                            The provided identifier appears to be a 10-digit ISBN. Modernize to standard 13-digit format if applicable, or specify as legacy control number.
+                                        </p>
+</div>
+</div>
+<!-- Checklist Item 3 -->
+<div class="p-md hover:bg-surface-container-lowest transition-colors flex gap-md group">
+<div class="mt-xs">
+<input class="w-5 h-5 rounded border-outline-variant text-secondary focus:ring-secondary focus:ring-offset-0 bg-surface cursor-pointer" type="checkbox"/>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-xs">
+<h4 class="font-title-sm text-title-sm text-on-surface group-hover:text-primary transition-colors">High-DPI scan required (pp. 42-45)</h4>
+<span class="bg-tertiary-fixed text-on-tertiary-fixed-variant px-xs py-[2px] rounded text-[10px] font-label-caps uppercase border border-tertiary/20">Payload</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-sm">
+                                            Artifacting detected during automated OCR processing. Replace pages 42-45 with a minimum 600 DPI greyscale or bitonal scan to ensure archival legibility.
+                                        </p>
+<button class="text-secondary font-title-sm text-sm flex items-center gap-xs hover:underline cursor-pointer">
+<span class="material-symbols-outlined text-sm">pageview</span> View flagged pages
+                                        </button>
+</div>
+</div>
+</div>
+<!-- Resubmit Footer -->
+<div class="p-md border-t border-outline-variant bg-surface-container-lowest flex justify-end items-center">
+<div class="relative tooltip inline-block">
+<button class="bg-outline-variant text-on-surface-variant font-title-sm text-title-sm px-xl py-sm rounded-DEFAULT cursor-not-allowed flex items-center gap-xs opacity-50" disabled="">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">send</span> Resubmit
+                                    </button>
+<div class="tooltip-text invisible opacity-0 absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max px-sm py-xs bg-inverse-surface text-inverse-on-surface text-body-sm rounded shadow-sm transition-all duration-200 z-10 text-center whitespace-nowrap pointer-events-none">
+                                        Complete all required corrections to resubmit
+                                        <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-inverse-surface"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

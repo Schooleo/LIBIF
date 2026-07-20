@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>University Library - Reader Home</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts: Be Vietnam Pro -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-variant": "#dce2f3",
+                    "on-primary-container": "#7ca79d",
+                    "background": "#f9f9ff",
+                    "surface-container": "#e7eefe",
+                    "on-error-container": "#93000a",
+                    "tertiary-fixed-dim": "#74d6d6",
+                    "secondary-container": "#a2edee",
+                    "primary": "#002520",
+                    "outline": "#717976",
+                    "surface-dim": "#d3daea",
+                    "surface-container-low": "#f0f3ff",
+                    "surface": "#f9f9ff",
+                    "on-tertiary": "#ffffff",
+                    "secondary": "#12696b",
+                    "error-container": "#ffdad6",
+                    "secondary-fixed": "#a5eff1",
+                    "surface-tint": "#3d665e",
+                    "on-error": "#ffffff",
+                    "inverse-surface": "#2a313d",
+                    "on-primary-fixed": "#00201b",
+                    "tertiary-fixed": "#91f3f2",
+                    "on-tertiary-fixed": "#002020",
+                    "on-secondary": "#ffffff",
+                    "tertiary-container": "#003c3c",
+                    "primary-container": "#103c35",
+                    "inverse-on-surface": "#ebf1ff",
+                    "primary-fixed": "#bfece1",
+                    "on-surface": "#151c27",
+                    "on-secondary-fixed-variant": "#004f51",
+                    "on-primary-fixed-variant": "#244e46",
+                    "on-background": "#151c27",
+                    "surface-container-highest": "#dce2f3",
+                    "on-secondary-fixed": "#002021",
+                    "on-secondary-container": "#1a6d6f",
+                    "on-primary": "#ffffff",
+                    "inverse-primary": "#a4cfc5",
+                    "on-tertiary-fixed-variant": "#004f50",
+                    "surface-container-high": "#e2e8f8",
+                    "tertiary": "#002525",
+                    "surface-container-lowest": "#ffffff",
+                    "primary-fixed-dim": "#a4cfc5",
+                    "outline-variant": "#c0c8c5",
+                    "error": "#ba1a1a",
+                    "surface-bright": "#f9f9ff",
+                    "on-tertiary-container": "#47adac",
+                    "secondary-fixed-dim": "#89d3d5",
+                    "on-surface-variant": "#414846"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "unit": "8px",
+                    "container-max": "1440px",
+                    "md": "16px",
+                    "lg": "24px",
+                    "gutter": "16px",
+                    "xs": "4px",
+                    "xl": "32px",
+                    "sm": "8px"
+            },
+            "fontFamily": {
+                    "display-lg-mobile": ["Be Vietnam Pro"],
+                    "title-sm": ["Be Vietnam Pro"],
+                    "label-caps": ["Be Vietnam Pro"],
+                    "body-md": ["Be Vietnam Pro"],
+                    "display-lg": ["Be Vietnam Pro"],
+                    "headline-md": ["Be Vietnam Pro"],
+                    "body-sm": ["Be Vietnam Pro"]
+            },
+            "fontSize": {
+                    "display-lg-mobile": ["28px", {"lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "title-sm": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                    "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        body { font-family: 'Be Vietnam Pro', sans-serif; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 16px;
+        }
+        .search-input:focus-within {
+            border-color: #0C6668 !important;
+            box-shadow: 0 0 0 2px #E8F3F2;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface h-full flex flex-col md:flex-row antialiased">
+<!-- TopNavBar (Mobile Only) -->
+<header class="md:hidden flex justify-between items-center w-full px-lg max-w-container-max mx-auto h-16 bg-surface border-b border-outline-variant flat no shadows z-50 sticky top-0">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">account_balance</span>
+<span class="text-title-sm font-title-sm font-bold text-primary">ScholarLib</span>
+</div>
+<div class="flex items-center gap-md">
+<button class="text-on-surface-variant hover:text-secondary transition-colors scale-95 transition-transform duration-150">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-secondary transition-colors scale-95 transition-transform duration-150">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+<img alt="User profile" class="w-8 h-8 rounded-full border border-outline-variant object-cover" data-alt="A small, professional headshot of an academic librarian with glasses, neutral background, sharp focus, corporate minimalism style, soft natural lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDoYs2NY6Pwu3c2PbMHGtddcIoDsMWXS1YBjvvkHhf2lXLOFPUXSlA2o-ZR4L7gD4dQMX4QF2BZPdRgqTbPb9OC2_2n9qbwycqxb4YPqww57726Et-sym63J2fon2hly1FUpftvg6Zsn4u7cBx12gdzxFoxqcwNRTz5e5bGMCttvCabBSbBYfuLzblIrNc3BtjpiNNQ2U3yRuCuErTZI3qBZwxK8El3ev3-jlUiEbfpJ_W9hWZCQr0d4-ecxoekr2Gabkf7y-kFZOo"/>
+</div>
+</header>
+<!-- SideNavBar (Desktop Only) -->
+<nav class="hidden md:flex flex-col h-full py-md w-64 fixed left-0 top-0 bg-surface-container-low border-r border-outline-variant z-40">
+<div class="px-lg pb-lg border-b border-outline-variant mb-md flex flex-col items-start gap-xs">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings: 'FILL' 1;">account_balance</span>
+<span class="text-headline-md font-headline-md text-primary">ScholarLib</span>
+</div>
+<h1 class="text-title-sm font-title-sm text-on-surface">University Library</h1>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Institutional Access</p>
+</div>
+<div class="flex-1 overflow-y-auto px-md">
+<ul class="space-y-sm">
+<!-- Active Item -->
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-DEFAULT border-l-4 border-secondary bg-primary-container text-on-primary-container font-semibold translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">book</span>
+<span class="text-body-md font-body-md">All Books</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-DEFAULT text-on-surface-variant hover:bg-surface-variant transition-all translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined">menu_book</span>
+<span class="text-body-md font-body-md">Journals</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-DEFAULT text-on-surface-variant hover:bg-surface-variant transition-all translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined">school</span>
+<span class="text-body-md font-body-md">Theses</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-DEFAULT text-on-surface-variant hover:bg-surface-variant transition-all translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="text-body-md font-body-md">Archives</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-DEFAULT text-on-surface-variant hover:bg-surface-variant transition-all translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined">bookmark</span>
+<span class="text-body-md font-body-md">Reserved</span>
+</a>
+</li>
+</ul>
+</div>
+<div class="p-md mt-auto">
+<button class="w-full py-2 px-4 bg-primary-container text-on-primary rounded-DEFAULT text-body-sm font-title-sm hover:bg-secondary transition-colors">
+                Reserve Room
+            </button>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-1 md:ml-64 flex flex-col min-h-screen">
+<!-- Top App Bar (Desktop Search & Nav) -->
+<div class="hidden md:flex items-center justify-between px-lg py-md border-b border-outline-variant bg-surface sticky top-0 z-30">
+<nav class="flex gap-lg">
+<a class="text-secondary font-bold border-b-2 border-secondary pb-1 text-label-caps font-label-caps hover:text-secondary transition-colors" href="#">Browse</a>
+<a class="text-on-surface-variant pb-1 text-label-caps font-label-caps hover:text-secondary transition-colors" href="#">Collections</a>
+<a class="text-on-surface-variant pb-1 text-label-caps font-label-caps hover:text-secondary transition-colors" href="#">E-Resources</a>
+</nav>
+<div class="flex items-center gap-md">
+<button class="text-on-surface-variant hover:text-secondary transition-colors"><span class="material-symbols-outlined">notifications</span></button>
+<button class="text-on-surface-variant hover:text-secondary transition-colors"><span class="material-symbols-outlined">help_outline</span></button>
+<button class="text-primary font-title-sm text-body-sm hover:text-secondary transition-colors">Sign In</button>
+<img alt="User profile" class="w-8 h-8 rounded-full border border-outline-variant object-cover" data-alt="A small, professional headshot of an academic librarian with glasses, neutral background, sharp focus, corporate minimalism style, soft natural lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDiBPafO3c5w6HsvnfCXdA8zR-n72lthiYCS4t4Ml_RnlQz7Fzk0DWgl9itGJLPQPV62MWOg1xQhxg_2xVuzIW0K75L13rPTO97jXKJTP-_Qj_DT8qHhm2T6rIRE45Ko3EUdRbl9q5nZLl4CDHgZYPC6mdkv392mozrxjwz0fI25bFCVIMlHF6cw7Uq6_ZSIFGTppPLeuxUo3OGEXyD5PmqtQALYirVcyBKAm5xoicO9V-1Hemv7MLj-_1H4PD7Ph_bKhxwj5zMWyo"/>
+</div>
+</div>
+<div class="p-lg md:p-xl max-w-7xl mx-auto w-full flex-1 space-y-xl">
+<!-- Universal Search Section -->
+<section class="max-w-3xl mx-auto w-full space-y-md text-center pt-lg">
+<h2 class="text-display-lg-mobile md:text-display-lg text-primary">Explore the Archives</h2>
+<div class="flex items-center justify-center gap-md text-body-sm font-body-sm text-on-surface-variant mb-4">
+<label class="flex items-center gap-2 cursor-pointer">
+<input checked="" class="text-secondary focus:ring-secondary border-outline-variant" name="search_mode" type="radio"/>
+                        Catalogue
+                    </label>
+<label class="flex items-center gap-2 cursor-pointer">
+<input class="text-secondary focus:ring-secondary border-outline-variant" name="search_mode" type="radio"/>
+                        Search inside books
+                    </label>
+</div>
+<div class="relative search-input bg-surface-container-lowest border border-outline-variant rounded-DEFAULT flex items-center transition-all">
+<span class="material-symbols-outlined text-on-surface-variant ml-md">search</span>
+<input class="w-full bg-transparent border-none focus:ring-0 text-body-md font-body-md text-on-surface py-3 px-md" placeholder="Search by title, author, keyword, or ISBN..." type="text"/>
+<button class="bg-primary-container text-on-primary px-lg py-3 rounded-r-DEFAULT text-title-sm font-title-sm hover:bg-secondary transition-colors">
+                        Search
+                    </button>
+</div>
+</section>
+<!-- Continue Reading (Bento Style) -->
+<section>
+<div class="flex items-center justify-between mb-md border-b border-outline-variant pb-2">
+<h3 class="text-headline-md font-headline-md text-primary">Continue Reading</h3>
+<a class="text-body-sm font-title-sm text-secondary hover:underline flex items-center" href="#">View all <span class="material-symbols-outlined text-sm ml-1">arrow_forward</span></a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<!-- Book 1 -->
+<div class="glass-card rounded-lg p-md flex gap-md hover:bg-surface-container-low transition-colors cursor-pointer group">
+<div class="w-24 h-32 flex-shrink-0 rounded bg-surface-variant overflow-hidden border border-outline-variant">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="Cover of an academic book titled 'The Architecture of Information'. Minimalist design with geometric lines on a soft off-white background. Corporate minimalism style, high resolution, sharp focus." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDl0UI7ZEs6Hu_XEWuI9gOZwnopnkl1kAqPwpZ-eixHM3NgHJHh5U5yX9yjepWFFDJGJ2Eqha8IkmizeECbVb1makqZ-mT41v8c9pRyBrrKZoM8M2Dum9jV9RE-RIXzMZNMBFGcHlnlC-Aav8Bd4WIJ7GGULumOLdpGm2jv7uHlIWNhxbvOzpGPvglaA-E_o_Cv0CyzmbIZGXc-_NG5WCK-au6lxohTUgVT-eVoflag1Ppv0gboKpjdiQF-67RaUrdL9XXX-Ut0uYM"/>
+</div>
+<div class="flex flex-col justify-between flex-1">
+<div>
+<h4 class="text-title-sm font-title-sm text-primary mb-1">The Architecture of Information</h4>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Abby Covert</p>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between text-label-caps font-label-caps text-on-surface-variant">
+<span>Page 142 of 320</span>
+<span>45%</span>
+</div>
+<div class="w-full bg-surface-variant h-1.5 rounded-full overflow-hidden">
+<div class="bg-secondary h-full" style="width: 45%"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Book 2 -->
+<div class="glass-card rounded-lg p-md flex gap-md hover:bg-surface-container-low transition-colors cursor-pointer group">
+<div class="w-24 h-32 flex-shrink-0 rounded bg-surface-variant overflow-hidden border border-outline-variant">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="Cover of an academic book titled 'Medieval Manuscripts'. Featuring a high-quality photograph of illuminated manuscript text. Corporate minimalism style framing, dark academia aesthetic, sharp focus." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAdHhdarlwe1fT1Gwd-LmAprsy3Jm_V1dQsz5P5azSrPspkjv_1OeB7knuXLR2RKlLScuLb-wo7bgdqDMlq6_x0H5MGudjLX_6S_N85HyORoVrWdTEfy_VQ4dG7amgnyjMrPEh7rJzWdmvdsixTHadrDyCYSk4mrRN09sslwq2dGkY30Cj0Q8jqkP3HGaP_SAWUohZy-SuBg2k6LCI1IEy2EnzHBDmbiEWGx9Di6DWpmdk5efdEYYaGekUnUpeKcOA-XLwjM-e0RYU"/>
+</div>
+<div class="flex flex-col justify-between flex-1">
+<div>
+<h4 class="text-title-sm font-title-sm text-primary mb-1">Medieval Manuscripts in the Digital Age</h4>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Dr. E. Thompson</p>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between text-label-caps font-label-caps text-on-surface-variant">
+<span>Chapter 4</span>
+<span>12%</span>
+</div>
+<div class="w-full bg-surface-variant h-1.5 rounded-full overflow-hidden">
+<div class="bg-secondary h-full" style="width: 12%"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Footer -->
+<footer class="w-full mt-auto bg-surface-container-highest border-t border-outline-variant">
+<div class="flex flex-col md:flex-row justify-between items-center px-lg py-xl max-w-container-max mx-auto text-on-surface-variant">
+<div class="text-label-caps font-label-caps font-bold text-primary mb-4 md:mb-0">
+                    © 2024 University Institutional Knowledge Management. All rights reserved.
+                </div>
+<div class="flex gap-md text-body-sm font-body-sm text-label-caps font-label-caps">
+<a class="hover:text-primary transition-opacity opacity-80 hover:opacity-100" href="#">Privacy Policy</a>
+<a class="hover:text-primary transition-opacity opacity-80 hover:opacity-100" href="#">Terms of Service</a>
+<a class="hover:text-primary transition-opacity opacity-80 hover:opacity-100" href="#">Accessibility</a>
+<a class="hover:text-primary transition-opacity opacity-80 hover:opacity-100" href="#">Contact Librarian</a>
+</div>
+</div>
+</footer>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 w-full bg-surface border-t border-outline-variant z-50 h-16 flex justify-around items-center px-4 pb-safe">
+<a class="flex flex-col items-center text-secondary font-bold" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">book</span>
+<span class="text-[10px] mt-1">All Books</span>
+</a>
+<a class="flex flex-col items-center text-on-surface-variant hover:text-secondary" href="#">
+<span class="material-symbols-outlined">search</span>
+<span class="text-[10px] mt-1">Search</span>
+</a>
+<a class="flex flex-col items-center text-on-surface-variant hover:text-secondary" href="#">
+<span class="material-symbols-outlined">bookmarks</span>
+<span class="text-[10px] mt-1">Saved</span>
+</a>
+<a class="flex flex-col items-center text-on-surface-variant hover:text-secondary" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] mt-1">Profile</span>
+</a>
+</nav>
+</body></html>

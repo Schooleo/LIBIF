@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Processing Queue Filtered - LIBIF Admin</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "primary-fixed-dim": "#a4cfc5",
+                      "on-error-container": "#93000a",
+                      "on-secondary-container": "#1a6d6f",
+                      "on-surface": "#151c27",
+                      "secondary-fixed-dim": "#89d3d5",
+                      "on-primary-container": "#7ca79d",
+                      "tertiary": "#002525",
+                      "surface-container-highest": "#dce2f3",
+                      "primary": "#002520",
+                      "on-secondary-fixed-variant": "#004f51",
+                      "tertiary-fixed-dim": "#74d6d6",
+                      "secondary": "#12696b",
+                      "on-secondary": "#ffffff",
+                      "surface-bright": "#f9f9ff",
+                      "primary-container": "#103c35",
+                      "on-tertiary-fixed": "#002020",
+                      "error-container": "#ffdad6",
+                      "on-background": "#151c27",
+                      "surface-container-high": "#e2e8f8",
+                      "outline-variant": "#c0c8c5",
+                      "primary-fixed": "#bfece1",
+                      "surface": "#f9f9ff",
+                      "surface-container-low": "#f0f3ff",
+                      "on-tertiary": "#ffffff",
+                      "secondary-fixed": "#a5eff1",
+                      "on-error": "#ffffff",
+                      "on-surface-variant": "#414846",
+                      "surface-container-lowest": "#ffffff",
+                      "background": "#f9f9ff",
+                      "on-tertiary-fixed-variant": "#004f50",
+                      "on-primary-fixed-variant": "#244e46",
+                      "surface-container": "#e7eefe",
+                      "error": "#ba1a1a",
+                      "on-primary": "#ffffff",
+                      "on-primary-fixed": "#00201b",
+                      "inverse-surface": "#2a313d",
+                      "surface-tint": "#3d665e",
+                      "secondary-container": "#a2edee",
+                      "tertiary-container": "#003c3c",
+                      "surface-dim": "#d3daea",
+                      "inverse-primary": "#a4cfc5",
+                      "on-tertiary-container": "#47adac",
+                      "on-secondary-fixed": "#002021",
+                      "inverse-on-surface": "#ebf1ff",
+                      "surface-variant": "#dce2f3",
+                      "outline": "#717976",
+                      "tertiary-fixed": "#91f3f2"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "xs": "4px",
+                      "md": "16px",
+                      "sm": "8px",
+                      "lg": "24px",
+                      "unit": "8px",
+                      "gutter": "16px",
+                      "container-max": "1440px",
+                      "xl": "32px"
+              },
+              "fontFamily": {
+                      "title-sm": [
+                              "Be Vietnam Pro"
+                      ],
+                      "headline-md": [
+                              "Be Vietnam Pro"
+                      ],
+                      "display-lg-mobile": [
+                              "Be Vietnam Pro"
+                      ],
+                      "body-md": [
+                              "Be Vietnam Pro"
+                      ],
+                      "body-sm": [
+                              "Be Vietnam Pro"
+                      ],
+                      "label-caps": [
+                              "Be Vietnam Pro"
+                      ],
+                      "display-lg": [
+                              "Be Vietnam Pro"
+                      ]
+              },
+              "fontSize": {
+                      "title-sm": [
+                              "18px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "display-lg-mobile": [
+                              "28px",
+                              {
+                                      "lineHeight": "34px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-caps": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "display-lg": [
+                              "36px",
+                              {
+                                      "lineHeight": "44px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+</head>
+<body class="bg-background text-on-background h-full font-body-md flex">
+<!-- SideNavBar -->
+<aside class="hidden md:flex bg-primary dark:bg-primary-container text-on-primary dark:text-on-primary-container fixed left-0 top-0 h-full w-[248px] shadow-sm flex-col py-lg z-50">
+<div class="px-lg pb-lg">
+<div class="flex items-center gap-sm mb-lg">
+<span class="material-symbols-outlined text-display-lg" style="font-variation-settings: 'FILL' 1;">account_balance</span>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-on-primary dark:text-on-primary-fixed tracking-tight">LIBIF Admin</h1>
+<p class="font-body-sm text-body-sm text-on-primary/70">Institutional Control</p>
+</div>
+</div>
+<button class="w-full bg-on-primary text-primary font-title-sm text-title-sm py-sm px-md rounded flex items-center justify-center gap-sm hover:bg-surface-container-low transition-colors duration-150 active:scale-95 shadow-sm">
+<span class="material-symbols-outlined">upload_file</span>
+                Upload Document
+            </button>
+</div>
+<nav class="flex-1 overflow-y-auto">
+<ul class="flex flex-col font-body-sm text-body-sm">
+<li>
+<a class="text-on-primary-container/70 dark:text-on-primary-fixed-variant hover:bg-primary-fixed-dim/10 flex items-center gap-md px-lg py-md hover:bg-primary-container/20 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+                        Dashboard
+                    </a>
+</li>
+<li>
+<a class="text-on-primary-container/70 dark:text-on-primary-fixed-variant hover:bg-primary-fixed-dim/10 flex items-center gap-md px-lg py-md hover:bg-primary-container/20 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+                        Repository
+                    </a>
+</li>
+<li>
+<a class="bg-primary-container dark:bg-primary border-l-4 border-on-tertiary-container text-on-tertiary-container flex items-center gap-md px-lg py-md hover:bg-primary-container/20 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="label" style="font-variation-settings: 'FILL' 1;">label</span>
+                        Metadata
+                    </a>
+</li>
+<li>
+<a class="text-on-primary-container/70 dark:text-on-primary-fixed-variant hover:bg-primary-fixed-dim/10 flex items-center gap-md px-lg py-md hover:bg-primary-container/20 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="key">key</span>
+                        Access Control
+                    </a>
+</li>
+<li>
+<a class="text-on-primary-container/70 dark:text-on-primary-fixed-variant hover:bg-primary-fixed-dim/10 flex items-center gap-md px-lg py-md hover:bg-primary-container/20 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+                        Analytics
+                    </a>
+</li>
+<li>
+<a class="text-on-primary-container/70 dark:text-on-primary-fixed-variant hover:bg-primary-fixed-dim/10 flex items-center gap-md px-lg py-md hover:bg-primary-container/20 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="terminal">terminal</span>
+                        System Logs
+                    </a>
+</li>
+</ul>
+</nav>
+<div class="mt-auto border-t border-primary-fixed-dim/20 pt-sm">
+<ul class="flex flex-col font-body-sm text-body-sm">
+<li>
+<a class="text-on-primary-container/70 dark:text-on-primary-fixed-variant hover:bg-primary-fixed-dim/10 flex items-center gap-md px-lg py-md hover:bg-primary-container/20 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+                        Settings
+                    </a>
+</li>
+<li>
+<a class="text-on-primary-container/70 dark:text-on-primary-fixed-variant hover:bg-primary-fixed-dim/10 flex items-center gap-md px-lg py-md hover:bg-primary-container/20 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="contact_support">contact_support</span>
+                        Support
+                    </a>
+</li>
+</ul>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 md:ml-[248px] h-full overflow-y-auto bg-surface flex flex-col">
+<!-- Top App Bar for Mobile (Hidden on Desktop) -->
+<header class="md:hidden bg-surface dark:bg-surface-container text-primary dark:text-primary-fixed font-body-md text-body-md border-b border-outline-variant dark:border-outline flex justify-between items-center w-full px-lg py-md sticky top-0 z-40">
+<div class="flex items-center gap-sm">
+<button class="material-symbols-outlined text-primary hover:text-secondary transition-colors duration-200">menu</button>
+<span class="font-display-lg-mobile text-display-lg-mobile font-bold tracking-tight">LIBIF</span>
+</div>
+<div class="flex gap-md text-on-surface-variant hover:text-secondary cursor-pointer duration-200 ease-in-out">
+<span class="material-symbols-outlined">notifications</span>
+<img alt="User Profile Menu" class="w-8 h-8 rounded-full border border-outline-variant object-cover" data-alt="A small, circular avatar portrait of an academic librarian professional, set against a subtle minimalist light-mode background, maintaining a serious and focused expression. The lighting is soft and even, highlighting an atmosphere of institutional trust and reliability." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD1JZISVmiOnczipT6sNagnUU6ri4tyYwPszvmRd05Sc4Tv1Ci1DwIcCOlgt151pFlZH_O_zYJtI3uhYFjCJ6cQEkScyrfCQsew_v4wDwXdYrZnbnnpRLIcIJAQRaQNEW861z21Fk_9cv6hdOURGai9zQyXd7cy1ZgFI0J9x_tBNfgb1Cj4rvrMQriykuJT97DMCdyjcBFpTtzTBFXwPQ0lNH6Z8aGO_QbsGb13ZENuD71PP-EQ-9vrFraQplXIdMjdbALsr60cPgU"/>
+</div>
+</header>
+<div class="p-lg max-w-container-max mx-auto w-full flex-1">
+<!-- Header Section -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-lg gap-sm border-b border-outline-variant pb-md">
+<div>
+<h2 class="font-display-lg text-display-lg text-primary mb-xs">Processing Queue</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Active Filters Applied: Reviewing specific error states in OCR extraction.</p>
+</div>
+<div class="flex gap-sm">
+<button class="bg-surface text-primary border border-outline-variant font-title-sm text-title-sm py-sm px-md rounded hover:bg-surface-container-low transition-colors duration-150 flex items-center gap-xs">
+<span class="material-symbols-outlined text-[20px]">download</span>
+                        Export
+                    </button>
+<button class="bg-primary-container text-on-primary font-title-sm text-title-sm py-sm px-md rounded hover:bg-primary transition-colors duration-150 flex items-center gap-xs">
+<span class="material-symbols-outlined text-[20px]">refresh</span>
+                        Refresh Queue
+                    </button>
+</div>
+</div>
+<!-- Filter Chips Area -->
+<div class="flex flex-wrap items-center gap-sm mb-lg p-sm bg-surface-container-lowest border border-outline-variant rounded-lg">
+<div class="flex items-center gap-sm px-md py-xs bg-error-container text-on-error-container rounded-full text-body-sm font-body-sm border border-error/20">
+<span class="material-symbols-outlined text-[16px]">error</span>
+                    Status: Error
+                    <button class="hover:text-error transition-colors"><span class="material-symbols-outlined text-[16px]">close</span></button>
+</div>
+<div class="flex items-center gap-sm px-md py-xs bg-surface-container text-on-surface-variant rounded-full text-body-sm font-body-sm border border-outline-variant">
+<span class="material-symbols-outlined text-[16px]">text_snippet</span>
+                    Stage: OCR Text
+                    <button class="hover:text-primary transition-colors"><span class="material-symbols-outlined text-[16px]">close</span></button>
+</div>
+<div class="flex items-center gap-sm px-md py-xs bg-surface-container text-on-surface-variant rounded-full text-body-sm font-body-sm border border-outline-variant">
+<span class="material-symbols-outlined text-[16px]">person</span>
+                    Uploader: S. Jenkins
+                    <button class="hover:text-primary transition-colors"><span class="material-symbols-outlined text-[16px]">close</span></button>
+</div>
+<button class="ml-auto text-secondary hover:text-primary font-title-sm text-title-sm text-sm px-md py-xs transition-colors">
+                    Clear all filters
+                </button>
+</div>
+<!-- Data Table -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg overflow-hidden shadow-sm">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low border-b border-outline-variant text-on-surface font-title-sm text-title-sm">
+<th class="p-md cursor-pointer hover:bg-surface-container transition-colors group">
+<div class="flex items-center gap-xs">
+                                        ID
+                                        <span class="material-symbols-outlined text-[16px] text-outline-variant group-hover:text-outline transition-colors">unfold_more</span>
+</div>
+</th>
+<th class="p-md cursor-pointer hover:bg-surface-container transition-colors group">
+<div class="flex items-center gap-xs">
+                                        Document Name
+                                        <span class="material-symbols-outlined text-[16px] text-outline-variant group-hover:text-outline transition-colors">unfold_more</span>
+</div>
+</th>
+<th class="p-md cursor-pointer hover:bg-surface-container transition-colors group">
+<div class="flex items-center gap-xs text-secondary font-bold">
+                                        Upload Time
+                                        <span class="material-symbols-outlined text-[16px] text-secondary">arrow_downward</span>
+</div>
+</th>
+<th class="p-md">Stage</th>
+<th class="p-md">Status</th>
+<th class="p-md text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="font-body-md text-body-md text-on-surface-variant divide-y divide-outline-variant/50">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-low/50 transition-colors">
+<td class="p-md font-mono text-sm text-outline">#DOC-8821</td>
+<td class="p-md">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-outline">picture_as_pdf</span>
+<span class="font-title-sm text-on-surface">1982_Senate_Hearing_Transcript.pdf</span>
+</div>
+</td>
+<td class="p-md font-mono text-sm">Oct 24, 2023 14:32:01</td>
+<td class="p-md">OCR Text</td>
+<td class="p-md">
+<span class="inline-flex items-center gap-xs px-sm py-[2px] rounded text-body-sm font-title-sm bg-error-container text-on-error-container border border-error/20">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+                                        Failed
+                                    </span>
+</td>
+<td class="p-md text-right">
+<button class="text-secondary hover:text-primary transition-colors p-xs" title="View Logs">
+<span class="material-symbols-outlined">receipt_long</span>
+</button>
+<button class="text-secondary hover:text-primary transition-colors p-xs ml-xs" title="Retry">
+<span class="material-symbols-outlined">replay</span>
+</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-low/50 transition-colors">
+<td class="p-md font-mono text-sm text-outline">#DOC-8819</td>
+<td class="p-md">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-outline">description</span>
+<span class="font-title-sm text-on-surface">McCarthy_Correspondence_Vol2.docx</span>
+</div>
+</td>
+<td class="p-md font-mono text-sm">Oct 24, 2023 13:15:44</td>
+<td class="p-md">OCR Text</td>
+<td class="p-md">
+<span class="inline-flex items-center gap-xs px-sm py-[2px] rounded text-body-sm font-title-sm bg-error-container text-on-error-container border border-error/20">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+                                        Timeout
+                                    </span>
+</td>
+<td class="p-md text-right">
+<button class="text-secondary hover:text-primary transition-colors p-xs" title="View Logs">
+<span class="material-symbols-outlined">receipt_long</span>
+</button>
+<button class="text-secondary hover:text-primary transition-colors p-xs ml-xs" title="Retry">
+<span class="material-symbols-outlined">replay</span>
+</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-low/50 transition-colors">
+<td class="p-md font-mono text-sm text-outline">#DOC-8805</td>
+<td class="p-md">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-outline">image</span>
+<span class="font-title-sm text-on-surface">Archival_Scan_00451_HighRes.tiff</span>
+</div>
+</td>
+<td class="p-md font-mono text-sm">Oct 24, 2023 09:05:12</td>
+<td class="p-md">OCR Text</td>
+<td class="p-md">
+<span class="inline-flex items-center gap-xs px-sm py-[2px] rounded text-body-sm font-title-sm bg-error-container text-on-error-container border border-error/20">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+                                        Corrupted
+                                    </span>
+</td>
+<td class="p-md text-right">
+<button class="text-secondary hover:text-primary transition-colors p-xs" title="View Logs">
+<span class="material-symbols-outlined">receipt_long</span>
+</button>
+<button class="text-secondary hover:text-primary transition-colors p-xs ml-xs" title="Retry">
+<span class="material-symbols-outlined">replay</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-md border-t border-outline-variant bg-surface-container-low flex justify-between items-center text-body-sm font-body-sm text-on-surface-variant">
+<div>Showing 1 to 3 of 3 filtered entries</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ScholarLib - Catalogue Grid</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-variant": "#dce2f3",
+                      "on-primary-container": "#7ca79d",
+                      "background": "#f9f9ff",
+                      "surface-container": "#e7eefe",
+                      "on-error-container": "#93000a",
+                      "tertiary-fixed-dim": "#74d6d6",
+                      "secondary-container": "#a2edee",
+                      "primary": "#002520",
+                      "outline": "#717976",
+                      "surface-dim": "#d3daea",
+                      "surface-container-low": "#f0f3ff",
+                      "surface": "#f9f9ff",
+                      "on-tertiary": "#ffffff",
+                      "secondary": "#12696b",
+                      "error-container": "#ffdad6",
+                      "secondary-fixed": "#a5eff1",
+                      "surface-tint": "#3d665e",
+                      "on-error": "#ffffff",
+                      "inverse-surface": "#2a313d",
+                      "on-primary-fixed": "#00201b",
+                      "tertiary-fixed": "#91f3f2",
+                      "on-tertiary-fixed": "#002020",
+                      "on-secondary": "#ffffff",
+                      "tertiary-container": "#003c3c",
+                      "primary-container": "#103c35",
+                      "inverse-on-surface": "#ebf1ff",
+                      "primary-fixed": "#bfece1",
+                      "on-surface": "#151c27",
+                      "on-secondary-fixed-variant": "#004f51",
+                      "on-primary-fixed-variant": "#244e46",
+                      "on-background": "#151c27",
+                      "surface-container-highest": "#dce2f3",
+                      "on-secondary-fixed": "#002021",
+                      "on-secondary-container": "#1a6d6f",
+                      "on-primary": "#ffffff",
+                      "inverse-primary": "#a4cfc5",
+                      "on-tertiary-fixed-variant": "#004f50",
+                      "surface-container-high": "#e2e8f8",
+                      "tertiary": "#002525",
+                      "surface-container-lowest": "#ffffff",
+                      "primary-fixed-dim": "#a4cfc5",
+                      "outline-variant": "#c0c8c5",
+                      "error": "#ba1a1a",
+                      "surface-bright": "#f9f9ff",
+                      "on-tertiary-container": "#47adac",
+                      "secondary-fixed-dim": "#89d3d5",
+                      "on-surface-variant": "#414846"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "unit": "8px",
+                      "container-max": "1440px",
+                      "md": "16px",
+                      "lg": "24px",
+                      "gutter": "16px",
+                      "xs": "4px",
+                      "xl": "32px",
+                      "sm": "8px"
+              },
+              "fontFamily": {
+                      "display-lg-mobile": [
+                              "Be Vietnam Pro"
+                      ],
+                      "title-sm": [
+                              "Be Vietnam Pro"
+                      ],
+                      "label-caps": [
+                              "Be Vietnam Pro"
+                      ],
+                      "body-md": [
+                              "Be Vietnam Pro"
+                      ],
+                      "display-lg": [
+                              "Be Vietnam Pro"
+                      ],
+                      "headline-md": [
+                              "Be Vietnam Pro"
+                      ],
+                      "body-sm": [
+                              "Be Vietnam Pro"
+                      ]
+              },
+              "fontSize": {
+                      "display-lg-mobile": [
+                              "28px",
+                              {
+                                      "lineHeight": "34px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "title-sm": [
+                              "18px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "label-caps": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "display-lg": [
+                              "36px",
+                              {
+                                      "lineHeight": "44px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+            }
+          }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<header class="bg-surface docked full-width top-0 border-b border-outline-variant z-50">
+<div class="flex justify-between items-center w-full px-lg max-w-container-max mx-auto h-16">
+<!-- Left: Brand & Search -->
+<div class="flex items-center gap-lg">
+<a class="text-title-sm font-title-sm font-bold text-primary flex items-center gap-2" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">local_library</span>
+                    ScholarLib
+                </a>
+<div class="hidden md:flex items-center bg-surface-container-low rounded-full px-4 py-2 border border-outline-variant focus-within:border-secondary focus-within:ring-2 focus-within:ring-surface-container transition-all">
+<span class="material-symbols-outlined text-on-surface-variant mr-2">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-body-sm font-body-sm outline-none w-64 text-on-surface placeholder:text-on-surface-variant" placeholder="Search catalogues..." type="text"/>
+</div>
+</div>
+<!-- Center: Navigation -->
+<nav class="hidden lg:flex items-center gap-md">
+<a class="text-secondary font-bold border-b-2 border-secondary pb-1 px-2 text-label-caps font-label-caps uppercase scale-95 transition-transform duration-150" href="#">Browse</a>
+<a class="text-on-surface-variant hover:text-secondary transition-colors pb-1 px-2 text-label-caps font-label-caps uppercase scale-95 transition-transform duration-150" href="#">Collections</a>
+<a class="text-on-surface-variant hover:text-secondary transition-colors pb-1 px-2 text-label-caps font-label-caps uppercase scale-95 transition-transform duration-150" href="#">E-Resources</a>
+</nav>
+<!-- Right: Actions -->
+<div class="flex items-center gap-md">
+<div class="flex gap-2">
+<button class="p-2 text-on-surface-variant hover:text-secondary transition-colors rounded-full hover:bg-surface-variant">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-secondary transition-colors rounded-full hover:bg-surface-variant">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+</div>
+<button class="bg-primary-container text-on-primary-container hover:bg-secondary hover:text-on-secondary px-4 py-2 rounded-lg text-label-caps font-label-caps transition-colors">
+                    Sign In
+                </button>
+<button class="md:hidden p-2 text-on-surface-variant">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+</div>
+</header>
+<div class="flex flex-1 max-w-container-max mx-auto w-full pt-16">
+<!-- SideNavBar (Desktop/Tablet) -->
+<aside class="hidden md:flex flex-col h-[calc(100vh-4rem)] w-64 fixed left-0 top-16 bg-surface-container-low border-r border-outline-variant py-md z-40 overflow-y-auto">
+<div class="px-md mb-lg">
+<div class="flex items-center gap-3 mb-2">
+<div class="w-10 h-10 rounded bg-primary-container flex items-center justify-center text-on-primary-container">
+<span class="material-symbols-outlined">account_balance</span>
+</div>
+<div>
+<h2 class="text-title-sm font-title-sm text-primary">University Library</h2>
+<p class="text-label-caps font-label-caps text-on-surface-variant">Institutional Access</p>
+</div>
+</div>
+</div>
+<nav class="flex flex-col gap-1 px-2 flex-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg border-l-4 border-secondary bg-primary-container text-on-primary-container font-semibold translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">book</span>
+<span class="text-body-sm font-body-sm">All Books</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:bg-surface-variant transition-all translate-x-0 hover:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined">menu_book</span>
+<span class="text-body-sm font-body-sm">Journals</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:bg-surface-variant transition-all translate-x-0 hover:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined">school</span>
+<span class="text-body-sm font-body-sm">Theses</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:bg-surface-variant transition-all translate-x-0 hover:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="text-body-sm font-body-sm">Archives</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:bg-surface-variant transition-all translate-x-0 hover:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined">bookmark</span>
+<span class="text-body-sm font-body-sm">Reserved</span>
+</a>
+</nav>
+<div class="px-md mt-auto pt-lg">
+<button class="w-full bg-secondary text-on-secondary hover:bg-tertiary px-4 py-2 rounded-lg text-body-sm font-body-sm transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]">meeting_room</span>
+                    Reserve Room
+                </button>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 md:ml-64 p-lg w-full">
+<!-- Header Area -->
+<div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-md mb-lg border-b border-outline-variant pb-md">
+<div>
+<h1 class="text-headline-md font-headline-md text-primary mb-1">All Books</h1>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Showing 1-12 of 1,240 results</p>
+</div>
+<div class="flex flex-wrap items-center gap-md">
+<!-- Mobile Search (Visible only on small screens) -->
+<div class="md:hidden flex-1 min-w-[200px] flex items-center bg-surface rounded border border-outline-variant px-3 py-2">
+<span class="material-symbols-outlined text-on-surface-variant text-[18px] mr-2">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-body-sm font-body-sm w-full p-0" placeholder="Search..." type="text"/>
+</div>
+<div class="flex items-center gap-2">
+<label class="text-body-sm font-body-sm text-on-surface-variant hidden sm:block">Sort by:</label>
+<select class="bg-surface border border-outline-variant text-body-sm font-body-sm rounded-lg px-3 py-2 focus:ring-secondary focus:border-secondary">
+<option>Relevance</option>
+<option>Newest Additions</option>
+<option>Title (A-Z)</option>
+<option>Author (A-Z)</option>
+</select>
+</div>
+<div class="flex items-center bg-surface-container-low rounded-lg border border-outline-variant p-1">
+<button class="p-1.5 rounded bg-primary-container text-on-primary-container shadow-sm">
+<span class="material-symbols-outlined text-[20px]">grid_view</span>
+</button>
+<button class="p-1.5 rounded text-on-surface-variant hover:bg-surface-variant">
+<span class="material-symbols-outlined text-[20px]">view_list</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Content Split: Filters + Grid -->
+<div class="flex flex-col lg:flex-row gap-lg">
+<!-- Filters Sidebar -->
+<div class="w-full lg:w-64 flex-shrink-0 flex flex-col gap-md">
+<!-- Active Filters -->
+<div class="mb-2">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-title-sm font-title-sm text-primary">Filters</h3>
+<button class="text-label-caps font-label-caps text-secondary hover:underline">Clear all</button>
+</div>
+<div class="flex flex-wrap gap-2">
+<span class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-secondary-container text-on-secondary-container text-body-sm font-body-sm">
+                                History
+                                <button class="hover:text-error transition-colors"><span class="material-symbols-outlined text-[14px]">close</span></button>
+</span>
+<span class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-secondary-container text-on-secondary-container text-body-sm font-body-sm">
+                                2020-2024
+                                <button class="hover:text-error transition-colors"><span class="material-symbols-outlined text-[14px]">close</span></button>
+</span>
+</div>
+</div>
+<!-- Filter Sections -->
+<div class="border border-outline-variant rounded-lg bg-surface overflow-hidden">
+<!-- Category -->
+<details class="group border-b border-outline-variant last:border-none" open="">
+<summary class="flex justify-between items-center p-3 cursor-pointer hover:bg-surface-variant transition-colors list-none">
+<span class="text-body-md font-body-md font-semibold text-primary">Category</span>
+<span class="material-symbols-outlined group-open:rotate-180 transition-transform">expand_more</span>
+</summary>
+<div class="p-3 pt-0 flex flex-col gap-2">
+<label class="flex items-center gap-2 cursor-pointer">
+<input checked="" class="rounded border-outline-variant text-secondary focus:ring-secondary" type="checkbox"/>
+<span class="text-body-sm font-body-sm text-on-surface">History (124)</span>
+</label>
+<label class="flex items-center gap-2 cursor-pointer">
+<input class="rounded border-outline-variant text-secondary focus:ring-secondary" type="checkbox"/>
+<span class="text-body-sm font-body-sm text-on-surface">Philosophy (89)</span>
+</label>
+<label class="flex items-center gap-2 cursor-pointer">
+<input class="rounded border-outline-variant text-secondary focus:ring-secondary" type="checkbox"/>
+<span class="text-body-sm font-body-sm text-on-surface">Sociology (210)</span>
+</label>
+<button class="text-left text-body-sm font-body-sm text-secondary hover:underline mt-1">+ Show more</button>
+</div>
+</details>
+<!-- Publication Year -->
+<details class="group border-b border-outline-variant last:border-none" open="">
+<summary class="flex justify-between items-center p-3 cursor-pointer hover:bg-surface-variant transition-colors list-none">
+<span class="text-body-md font-body-md font-semibold text-primary">Publication Year</span>
+<span class="material-symbols-outlined group-open:rotate-180 transition-transform">expand_more</span>
+</summary>
+<div class="p-3 pt-0 flex flex-col gap-3">
+<div class="flex items-center gap-2">
+<input class="w-full bg-surface border border-outline-variant rounded px-2 py-1 text-body-sm font-body-sm focus:border-secondary focus:ring-1 focus:ring-secondary" placeholder="From" type="number"/>
+<span class="text-on-surface-variant">-</span>
+<input class="w-full bg-surface border border-outline-variant rounded px-2 py-1 text-body-sm font-body-sm focus:border-secondary focus:ring-1 focus:ring-secondary" placeholder="To" type="number"/>
+</div>
+<label class="flex items-center gap-2 cursor-pointer">
+<input checked="" class="rounded border-outline-variant text-secondary focus:ring-secondary" type="checkbox"/>
+<span class="text-body-sm font-body-sm text-on-surface">Last 5 Years</span>
+</label>
+</div>
+</details>
+</div>
+</div>
+<!-- Book Grid -->
+<div class="flex-1">
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-md">
+<!-- Card 1 -->
+<article class="bg-surface border border-outline-variant rounded-lg overflow-hidden hover:border-secondary hover:shadow-[0_4px_12px_rgba(16,60,53,0.08)] transition-all group flex flex-col">
+<div class="aspect-[2/3] bg-surface-container-high relative overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="A pristine hardcover academic book titled 'Vietnam: A New History' with a minimalist dark green cover design sitting on a clean, light grey reading desk in a modern library. Soft, diffused daylight from a nearby window creates gentle highlights on the matte cover. The overall aesthetic is scholarly, quiet, and institutional." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA3ckCw5_uYnl-3SsEirVrqxsQLTJubCW4bdeLbSHteX-Y-bW8ocUfDxE25p4HFXVGV0Eoad7c-4ffSQg9AHhv4uGadTA1Y8ue1348EihBctwSuu8z2xYRcp7mCGKnjTDENYuUipSEYfoO8n482YPJMtf_0XRNouAShBYTMsYZE6o-4RWXtHtbOpdtV0dGkaPbheYmZYGGkgiLQLTfZ7VksZx8-edRV4VNwzP55EeQncqyi31Dg4J8uKfazNKsmr9FFbeVtuwM5DLA"/>
+<div class="absolute top-2 right-2">
+<span class="bg-[#e8f5e9] text-[#1b5e20] text-xs font-bold px-2 py-1 rounded-full border border-[#c8e6c9]">Available</span>
+</div>
+</div>
+<div class="p-3 flex flex-col flex-1">
+<h4 class="text-body-md font-body-md font-bold text-primary line-clamp-2 mb-1 group-hover:text-secondary transition-colors">Vietnam: A New History</h4>
+<p class="text-body-sm font-body-sm text-on-surface-variant mb-3">Christopher Goscha</p>
+<div class="mt-auto flex justify-between items-center pt-2 border-t border-outline-variant">
+<span class="text-label-caps font-label-caps text-outline">BOOK</span>
+<button class="text-secondary hover:bg-secondary-container p-1 rounded transition-colors" title="Bookmark">
+<span class="material-symbols-outlined text-[20px]">bookmark_add</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Card 2 -->
+<article class="bg-surface border border-outline-variant rounded-lg overflow-hidden hover:border-secondary hover:shadow-[0_4px_12px_rgba(16,60,53,0.08)] transition-all group flex flex-col">
+<div class="aspect-[2/3] bg-surface-container-high relative overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="A thick academic journal volume titled 'Southeast Asian Studies' with a stark white and deep navy blue cover, resting on an archival steel shelf. The lighting is cool, clinical, and even, typical of a university archives room. The design style emphasizes minimalist, high-contrast typography and structural order." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBx39-N5y4GI4fNKAiV8KVhw1al4MT8yPY_UA3-bGiVhKJk6wjHAEz8GFzCH2oFILLPD6wg3_gRCnGpudpL_5lhj245HIeL69Tmo5cdSgQYyUDzm9UJlRsJS-N-K47utpEsHz3YL8BPyDvMefzm4eVtIcUFWB3RKQipPBDR4-baNfvni9fXFZOtc-t-uHDG9yZrmj35660vNAMw1I2BJPeU1KHAfhvfLD2rFBezEfpmQQmjBN_zJP1bs-dw8Om8UEf9Y7bhQldEJhw"/>
+<div class="absolute top-2 right-2">
+<span class="bg-surface-container-highest text-on-surface-variant text-xs font-bold px-2 py-1 rounded-full border border-outline-variant">Restricted</span>
+</div>
+</div>
+<div class="p-3 flex flex-col flex-1">
+<h4 class="text-body-md font-body-md font-bold text-primary line-clamp-2 mb-1 group-hover:text-secondary transition-colors">The Making of Modern Southeast Asia</h4>
+<p class="text-body-sm font-body-sm text-on-surface-variant mb-3">D.R. SarDesai</p>
+<div class="mt-auto flex justify-between items-center pt-2 border-t border-outline-variant">
+<span class="text-label-caps font-label-caps text-outline">JOURNAL</span>
+<button class="text-secondary hover:bg-secondary-container p-1 rounded transition-colors" title="Bookmark">
+<span class="material-symbols-outlined text-[20px]">bookmark_add</span>
+</button>
+</div>
+</div>
+</article>
+</div>
+<!-- Pagination -->
+<div class="mt-xl flex justify-center items-center gap-2">
+<button class="p-2 border border-outline-variant rounded hover:bg-surface-variant text-on-surface-variant disabled:opacity-50">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="w-8 h-8 rounded bg-primary-container text-on-primary-container font-bold text-body-sm">1</button>
+<button class="w-8 h-8 rounded border border-outline-variant hover:bg-surface-variant text-on-surface font-bold text-body-sm">2</button>
+<button class="w-8 h-8 rounded border border-outline-variant hover:bg-surface-variant text-on-surface font-bold text-body-sm">3</button>
+<span class="text-on-surface-variant px-1">...</span>
+<button class="w-8 h-8 rounded border border-outline-variant hover:bg-surface-variant text-on-surface font-bold text-body-sm">104</button>
+<button class="p-2 border border-outline-variant rounded hover:bg-surface-variant text-on-surface-variant">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- Footer -->
+<footer class="bg-surface-container-highest w-full mt-auto border-t border-outline-variant z-40">
+<div class="flex flex-col md:flex-row justify-between items-center px-lg py-xl max-w-container-max mx-auto gap-md text-center md:text-left">
+<div>
+<p class="text-label-caps font-label-caps font-bold text-primary mb-1">ScholarLib</p>
+<p class="text-body-sm font-body-sm text-on-surface-variant">© 2024 University Institutional Knowledge Management. All rights reserved.</p>
+</div>
+<nav class="flex flex-wrap justify-center gap-md">
+<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-opacity opacity-80 hover:opacity-100 text-label-caps font-label-caps" href="#">Privacy Policy</a>
+<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-opacity opacity-80 hover:opacity-100 text-label-caps font-label-caps" href="#">Terms of Service</a>
+<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-opacity opacity-80 hover:opacity-100 text-label-caps font-label-caps" href="#">Accessibility</a>
+<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-opacity opacity-80 hover:opacity-100 text-label-caps font-label-caps" href="#">Contact Librarian</a>
+</nav>
+</div>
+</footer>
+</body></html>

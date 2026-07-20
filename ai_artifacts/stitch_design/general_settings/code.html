@@ -1,0 +1,387 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>LIBIF - General Settings</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "inverse-primary": "#a4cfc5",
+                      "secondary": "#12696b",
+                      "on-secondary-fixed-variant": "#004f51",
+                      "on-secondary-fixed": "#002021",
+                      "on-primary-fixed": "#00201b",
+                      "on-background": "#191c1c",
+                      "outline-variant": "#c0c8c5",
+                      "on-primary-fixed-variant": "#244e46",
+                      "surface-tint": "#3d665e",
+                      "secondary-container": "#a2edee",
+                      "surface-container-highest": "#e1e3e2",
+                      "surface-variant": "#e1e3e2",
+                      "on-secondary-container": "#1a6d6f",
+                      "on-primary": "#ffffff",
+                      "tertiary-container": "#003c3c",
+                      "surface-container-high": "#e6e9e8",
+                      "primary-fixed": "#bfece1",
+                      "inverse-surface": "#2e3131",
+                      "on-tertiary-fixed": "#002020",
+                      "secondary-fixed": "#a5eff1",
+                      "on-surface": "#191c1c",
+                      "on-error-container": "#93000a",
+                      "surface": "#f8faf9",
+                      "on-primary-container": "#7ca79d",
+                      "surface-bright": "#f8faf9",
+                      "on-tertiary-fixed-variant": "#004f50",
+                      "on-tertiary-container": "#47adac",
+                      "on-error": "#ffffff",
+                      "error-container": "#ffdad6",
+                      "tertiary-fixed": "#91f3f2",
+                      "surface-container": "#eceeed",
+                      "primary-container": "#103c35",
+                      "tertiary": "#002525",
+                      "background": "#f8faf9",
+                      "primary-fixed-dim": "#a4cfc5",
+                      "on-secondary": "#ffffff",
+                      "error": "#ba1a1a",
+                      "outline": "#717976",
+                      "inverse-on-surface": "#eff1f0",
+                      "secondary-fixed-dim": "#89d3d5",
+                      "surface-dim": "#d8dada",
+                      "surface-container-low": "#f2f4f3",
+                      "primary": "#002520",
+                      "tertiary-fixed-dim": "#74d6d6",
+                      "on-surface-variant": "#414846",
+                      "surface-container-lowest": "#ffffff",
+                      "on-tertiary": "#ffffff",
+                      
+                      // Brand specific additions based on guidance
+                      "interactive-cyan": "#138A8A",
+                      "card-border": "#D9E1DE",
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px",
+                      "brand-card": "10px",
+                      "brand-input": "8px"
+              },
+              "spacing": {
+                      "lg": "24px",
+                      "md": "16px",
+                      "sm": "8px",
+                      "margin-mobile": "16px",
+                      "margin-desktop": "40px",
+                      "xs": "4px",
+                      "xl": "32px",
+                      "gutter": "24px",
+                      "base": "8px",
+                      "rhythm": "8px"
+              },
+              "fontFamily": {
+                      "headline-lg": ["Be Vietnam Pro"],
+                      "label-md": ["Be Vietnam Pro"],
+                      "label-sm": ["Be Vietnam Pro"],
+                      "headline-xl": ["Be Vietnam Pro"],
+                      "headline-md": ["Be Vietnam Pro"],
+                      "headline-lg-mobile": ["Be Vietnam Pro"],
+                      "body-lg": ["Be Vietnam Pro"],
+                      "body-md": ["Be Vietnam Pro"],
+                      "body-sm": ["Be Vietnam Pro"]
+              },
+              "fontSize": {
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                      "label-md": ["14px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                      "headline-xl": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                      "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        body { background-color: #F7F9F8; } /* Specific base background from guidance */
+        
+        /* Form Element Focus Styles per guidance */
+        .brand-input:focus {
+            outline: none;
+            border-color: #138A8A !important;
+            box-shadow: none;
+        }
+        
+        /* Interactive element hover shadow */
+        .interactive-shadow:hover {
+            box-shadow: 0px 4px 12px rgba(16, 60, 53, 0.08);
+        }
+        
+        /* Custom Toggle Switch */
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #138A8A;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #138A8A;
+        }
+        .toggle-checkbox:checked + .toggle-label:after {
+            transform: translateX(100%);
+            border-color: white;
+        }
+    </style>
+</head>
+<body class="bg-background font-sans antialiased text-on-background flex h-screen overflow-hidden">
+<!-- Desktop Side Navigation -->
+<nav class="hidden md:flex flex-col bg-surface-container-low dark:bg-surface-container-lowest h-screen w-64 border-r border-outline-variant dark:border-outline p-md shrink-0 transition-all duration-200 ease-in-out z-40 relative">
+<div class="mb-lg px-md pt-sm flex flex-col gap-sm">
+<span class="font-headline-md text-headline-md text-primary font-bold tracking-tight">LIBIF Admin</span>
+
+</div>
+<ul class="flex flex-col gap-sm flex-1 mt-md">
+<li class="">
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md group-hover:text-primary">Dashboard</span>
+</a>
+</li>
+<li class="">
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="folder_open">folder_open</span>
+<span class="font-label-md text-label-md group-hover:text-primary">Repository</span>
+</a>
+</li>
+<li class="">
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="database">database</span>
+<span class="font-label-md text-label-md group-hover:text-primary">Metadata</span>
+</a>
+</li>
+<li class="">
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="admin_panel_settings">admin_panel_settings</span>
+<span class="font-label-md text-label-md group-hover:text-primary">Access Control</span>
+</a>
+</li>
+<li class="">
+<a class="flex items-center gap-md px-md py-sm bg-secondary-container text-on-secondary-container dark:bg-secondary dark:text-on-secondary rounded-lg transition-colors group" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="settings" data-weight="fill" style="font-variation-settings: 'FILL' 1;">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</li>
+</ul>
+<ul class="flex flex-col gap-sm mt-auto pt-md border-t border-outline-variant dark:border-outline">
+<li class="">
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="help">help</span>
+<span class="font-label-md text-label-md group-hover:text-primary">Help</span>
+</a>
+</li>
+<li class="">
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="logout">logout</span>
+<span class="font-label-md text-label-md group-hover:text-primary">Logout</span>
+</a>
+</li>
+</ul>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col h-screen overflow-hidden relative">
+<!-- Mobile Top Nav (Hidden on Desktop) -->
+<header class="md:hidden flex items-center justify-between px-margin-mobile w-full h-16 bg-surface dark:bg-surface-dim border-b border-outline-variant dark:border-outline shrink-0">
+<div class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed tracking-tight">LIBIF</div>
+<div class="flex gap-sm">
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-low transition-colors rounded-full cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+
+</div>
+</header>
+<!-- Sub Top Nav for Settings (Desktop & Mobile) -->
+<nav class="flex items-center gap-xl px-margin-desktop md:px-margin-desktop px-margin-mobile w-full h-12 bg-surface-container-lowest dark:bg-surface-dim shrink-0 overflow-x-auto no-scrollbar" style="border-bottom: 1px solid #c0c8c5;"> <!-- Using explicit border-b style as fallback to standard tailwind class to ensure separation -->
+<a class="font-label-md text-label-md text-secondary dark:text-secondary-fixed border-b-2 border-secondary dark:border-secondary-fixed pb-2 mt-[10px] whitespace-nowrap transition-all duration-150" href="#">General</a>
+<a class="font-label-md text-label-md text-on-surface-variant dark:text-on-surface-variant hover:text-secondary dark:hover:text-secondary-fixed pb-2 mt-[10px] whitespace-nowrap transition-all duration-150" href="#">Security</a>
+<a class="font-label-md text-label-md text-on-surface-variant dark:text-on-surface-variant hover:text-secondary dark:hover:text-secondary-fixed pb-2 mt-[10px] whitespace-nowrap transition-all duration-150" href="#">System</a>
+</nav>
+<!-- Main Scrollable Canvas -->
+<main class="flex-1 overflow-y-auto bg-background p-margin-mobile md:p-margin-desktop pb-32">
+<!-- Page Header -->
+<div class="mb-lg">
+<h1 class="font-headline-lg text-headline-lg md:text-headline-lg text-primary tracking-tight">General Settings</h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-xs">Manage administrative preferences for the LIBIF system.</p>
+</div>
+<!-- Bento Grid Layout for Forms -->
+<form class="grid grid-cols-1 md:grid-cols-12 gap-gutter max-w-7xl mx-auto" id="settingsForm">
+<!-- Section 1: Library Identity (Takes full width or spans 8 cols on large screens) -->
+<section class="col-span-1 md:col-span-12 xl:col-span-8 bg-surface-container-lowest rounded-brand-card border border-card-border p-lg interactive-shadow transition-shadow duration-200">
+<div class="flex items-center gap-sm mb-md border-b border-card-border pb-sm">
+<span class="material-symbols-outlined text-secondary" data-icon="account_balance">account_balance</span>
+<h2 class="font-headline-md text-headline-md text-primary">Library Identity</h2>
+</div>
+<div class="flex flex-col gap-lg mt-md">
+<!-- Institution Name -->
+<div class="flex flex-col gap-rhythm">
+<label class="font-label-md text-label-md text-on-surface" for="institutionName">Institution Name</label>
+<input class="brand-input w-full h-12 px-md border border-card-border rounded-brand-input bg-surface-bright font-body-md text-body-md text-on-background focus:ring-0 transition-colors" id="institutionName" name="institutionName" oninput="markUnsaved()" type="text" value="University of Social Sciences and Humanities">
+<p class="font-body-sm text-body-sm text-on-surface-variant">This name appears on official reports and the reader portal header.</p>
+</div>
+<!-- Logo Upload -->
+<div class="flex flex-col gap-rhythm">
+<span class="font-label-md text-label-md text-on-surface">Institution Logo</span>
+<div class="flex items-start gap-md">
+<div class="w-24 h-24 bg-surface-container border border-card-border rounded-brand-input flex items-center justify-center shrink-0 overflow-hidden">
+<!-- Placeholder for current logo -->
+<span class="material-symbols-outlined text-on-surface-variant text-[32px]" data-icon="image">image</span>
+</div>
+<div class="flex flex-col gap-sm">
+<div class="flex gap-sm">
+<button class="px-md py-sm bg-surface-container-lowest border border-[#138A8A] text-[#138A8A] rounded-brand-input font-label-md text-label-md hover:bg-surface-container transition-colors focus:outline-none focus:ring-2 focus:ring-[#138A8A] focus:ring-offset-2" type="button">
+                                            Upload New
+                                        </button>
+<button class="px-md py-sm text-error hover:bg-error-container hover:text-on-error-container rounded-brand-input font-label-md text-label-md transition-colors" type="button">
+                                            Remove
+                                        </button>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Recommended size: 400x400px. Max size: 2MB (PNG, JPG).</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 2: Regional Settings (Spans 4 cols on large screens, beside Identity if space permits) -->
+<section class="col-span-1 md:col-span-12 xl:col-span-4 bg-surface-container-lowest rounded-brand-card border border-card-border p-lg interactive-shadow transition-shadow duration-200 flex flex-col">
+<div class="flex items-center gap-sm mb-md border-b border-card-border pb-sm">
+<span class="material-symbols-outlined text-secondary" data-icon="public">public</span>
+<h2 class="font-headline-md text-headline-md text-primary">Regional</h2>
+</div>
+<div class="flex flex-col gap-lg mt-md flex-1">
+<!-- Default Language -->
+<div class="flex flex-col gap-rhythm">
+<label class="font-label-md text-label-md text-on-surface" for="defaultLanguage">Default Language</label>
+<div class="relative">
+<select class="brand-input appearance-none w-full h-12 px-md pr-10 border border-card-border rounded-brand-input bg-surface-bright font-body-md text-body-md text-on-background focus:ring-0 transition-colors" id="defaultLanguage" name="defaultLanguage" onchange="markUnsaved()">
+<option selected="" value="vi">Vietnamese</option>
+<option value="en">English</option>
+</select>
+<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-md text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="arrow_drop_down">arrow_drop_down</span>
+</div>
+</div>
+</div>
+<!-- Timezone -->
+<div class="flex flex-col gap-rhythm mt-auto">
+<label class="font-label-md text-label-md text-on-surface" for="timezone">System Timezone</label>
+<div class="relative">
+<select class="brand-input appearance-none w-full h-12 px-md pr-10 border border-card-border rounded-brand-input bg-surface-bright font-body-md text-body-md text-on-background focus:ring-0 transition-colors" id="timezone" name="timezone" onchange="markUnsaved()">
+<option selected="" value="UTC+7">UTC+07:00 Bangkok, Hanoi, Jakarta</option>
+<option value="UTC">UTC+00:00 Universal Time</option>
+</select>
+<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-md text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="arrow_drop_down">arrow_drop_down</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 3: Reader Portal Preferences (Spans full width below) -->
+<section class="col-span-1 md:col-span-12 bg-surface-container-lowest rounded-brand-card border border-card-border p-lg interactive-shadow transition-shadow duration-200">
+<div class="flex items-center gap-sm mb-md border-b border-card-border pb-sm">
+<span class="material-symbols-outlined text-secondary" data-icon="visibility">visibility</span>
+<h2 class="font-headline-md text-headline-md text-primary">Reader Portal Preferences</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-lg mt-md">
+<!-- Compact List View Default -->
+<div class="flex items-start justify-between p-md border border-card-border rounded-lg bg-surface hover:bg-surface-container-low transition-colors">
+<div class="flex flex-col gap-xs pr-md">
+<span class="font-label-md text-label-md text-on-surface">Compact List View</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Set compact view as the default layout for catalog search results, prioritizing density.</span>
+</div>
+<!-- Custom Toggle -->
+<div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in mt-1 shrink-0">
+<input checked="" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer border-card-border z-10 top-0 left-0 transition-transform duration-200 checked:translate-x-6 checked:border-[#138A8A]" id="compactView" name="compactView" onchange="markUnsaved()" type="checkbox">
+<label class="toggle-label block overflow-hidden h-6 rounded-full bg-surface-container-highest cursor-pointer transition-colors duration-200" for="compactView"></label>
+</div>
+</div>
+<!-- Enable Full-text Snippets -->
+<div class="flex items-start justify-between p-md border border-card-border rounded-lg bg-surface hover:bg-surface-container-low transition-colors">
+<div class="flex flex-col gap-xs pr-md">
+<span class="font-label-md text-label-md text-on-surface">Full-text Snippets</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Show contextual excerpts from digital documents directly in search results.</span>
+</div>
+<!-- Custom Toggle -->
+<div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in mt-1 shrink-0">
+<input class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer border-card-border z-10 top-0 left-0 transition-transform duration-200 checked:translate-x-6 checked:border-[#138A8A]" id="fulltextSnippets" name="fulltextSnippets" onchange="markUnsaved()" type="checkbox">
+<label class="toggle-label block overflow-hidden h-6 rounded-full bg-surface-container-highest cursor-pointer transition-colors duration-200" for="fulltextSnippets"></label>
+</div>
+</div>
+</div>
+</section>
+</form>
+</main>
+<!-- Unsaved Changes Banner & Action Area (Sticky Bottom) -->
+<div class="absolute bottom-0 left-0 w-full bg-surface-container-lowest border-t border-card-border p-md md:px-margin-desktop flex flex-col sm:flex-row items-center justify-between gap-md transform translate-y-full transition-transform duration-300 ease-in-out shadow-[0_-4px_12px_rgba(16,60,53,0.05)] z-30" id="unsavedBanner">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]" data-icon="info">info</span>
+<span class="font-body-md text-body-md text-on-surface">You have unsaved changes.</span>
+</div>
+<div class="flex items-center gap-md w-full sm:w-auto">
+<button class="flex-1 sm:flex-none px-lg py-2 font-label-md text-label-md text-on-surface-variant hover:bg-surface-container rounded-brand-input transition-colors" onclick="discardChanges()" type="button">
+                    Discard
+                </button>
+<button class="flex-1 sm:flex-none px-lg py-2 font-label-md text-label-md bg-[#138A8A] text-white rounded-brand-input hover:bg-[#0f7070] transition-colors focus:ring-2 focus:ring-offset-2 focus:ring-[#138A8A] shadow-sm" onclick="saveChanges()" type="button">
+                    Save Changes
+                </button>
+</div>
+</div>
+</div>
+<!-- Script for interaction logic -->
+<script>
+        const unsavedBanner = document.getElementById('unsavedBanner');
+        let hasUnsavedChanges = false;
+
+        function markUnsaved() {
+            if (!hasUnsavedChanges) {
+                hasUnsavedChanges = true;
+                unsavedBanner.classList.remove('translate-y-full');
+            }
+        }
+
+        function saveChanges() {
+            // Simulate save action
+            const btn = unsavedBanner.querySelector('button.bg-\\[\\#138A8A\\]');
+            const originalText = btn.innerText;
+            btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[18px]">sync</span> Saving...';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                hasUnsavedChanges = false;
+                unsavedBanner.classList.add('translate-y-full');
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                // Optional: Show success toast
+            }, 800);
+        }
+
+        function discardChanges() {
+            // Reset form
+            document.getElementById('settingsForm').reset();
+            hasUnsavedChanges = false;
+            unsavedBanner.classList.add('translate-y-full');
+        }
+        
+        // Initial setup to fix custom toggle visual state if loaded unchecked
+        document.addEventListener('DOMContentLoaded', () => {
+             // Tailwind handles checked state via classes, but JS can enforce initial styles if needed
+        });
+    </script>
+
+
+</body></html>

@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LIBIF Reader Portal - Compact</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed": "#91f3f2",
+                        "on-tertiary-fixed": "#002020",
+                        "on-primary-fixed": "#00201b",
+                        "on-error": "#ffffff",
+                        "inverse-surface": "#2a313d",
+                        "surface-tint": "#3d665e",
+                        "secondary-fixed": "#a5eff1",
+                        "error-container": "#ffdad6",
+                        "secondary": "#12696b",
+                        "surface": "#f9f9ff",
+                        "on-tertiary": "#ffffff",
+                        "surface-dim": "#d3daea",
+                        "surface-container-low": "#f0f3ff",
+                        "primary": "#002520",
+                        "outline": "#717976",
+                        "tertiary-fixed-dim": "#74d6d6",
+                        "secondary-container": "#a2edee",
+                        "surface-container": "#e7eefe",
+                        "on-error-container": "#93000a",
+                        "on-primary-container": "#7ca79d",
+                        "background": "#f9f9ff",
+                        "surface-variant": "#dce2f3",
+                        "on-surface-variant": "#414846",
+                        "secondary-fixed-dim": "#89d3d5",
+                        "surface-bright": "#f9f9ff",
+                        "on-tertiary-container": "#47adac",
+                        "tertiary": "#002525",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-fixed-dim": "#a4cfc5",
+                        "outline-variant": "#c0c8c5",
+                        "error": "#ba1a1a",
+                        "surface-container-high": "#e2e8f8",
+                        "on-tertiary-fixed-variant": "#004f50",
+                        "inverse-primary": "#a4cfc5",
+                        "surface-container-highest": "#dce2f3",
+                        "on-secondary-fixed": "#002021",
+                        "on-secondary-container": "#1a6d6f",
+                        "on-primary": "#ffffff",
+                        "on-primary-fixed-variant": "#244e46",
+                        "on-background": "#151c27",
+                        "on-secondary-fixed-variant": "#004f51",
+                        "on-surface": "#151c27",
+                        "primary-fixed": "#bfece1",
+                        "tertiary-container": "#003c3c",
+                        "primary-container": "#103c35",
+                        "inverse-on-surface": "#ebf1ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "unit": "8px",
+                        "container-max": "1440px",
+                        "md": "16px",
+                        "lg": "24px",
+                        "gutter": "16px",
+                        "xs": "4px",
+                        "xl": "32px",
+                        "sm": "8px"
+                    },
+                    "fontFamily": {
+                        "display-lg-mobile": ["Be Vietnam Pro"],
+                        "title-sm": ["Be Vietnam Pro"],
+                        "label-caps": ["Be Vietnam Pro"],
+                        "body-md": ["Be Vietnam Pro"],
+                        "display-lg": ["Be Vietnam Pro"],
+                        "headline-md": ["Be Vietnam Pro"],
+                        "body-sm": ["Be Vietnam Pro"]
+                    },
+                    "fontSize": {
+                        "display-lg-mobile": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "title-sm": ["18px", { "lineHeight": "24px", "fontWeight": "600" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Be Vietnam Pro', sans-serif; background-color: #f9f9ff; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface flex flex-col min-h-screen">
+<!-- TopNavBar (Compact/Mobile State) -->
+<header class="bg-surface dark:bg-surface-container font-body-md text-body-md docked full-width top-0 border-b border-outline-variant dark:border-outline flat no shadows flex justify-between items-center w-full px-lg py-md max-w-container-max mx-auto z-50 sticky">
+<div class="flex items-center gap-md">
+<button class="md:hidden text-on-surface-variant hover:text-secondary transition-colors cursor-pointer duration-200 ease-in-out p-xs rounded-full hover:bg-surface-container-low dark:hover:bg-surface-container-high" id="mobile-menu-btn">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<span class="font-display-lg-mobile text-display-lg-mobile font-bold text-primary dark:text-primary-fixed tracking-tight">LIBIF</span>
+</div>
+<!-- Desktop Navigation (Hidden on Mobile) -->
+<nav class="hidden md:flex gap-lg items-center">
+<a class="text-secondary dark:text-secondary-fixed-dim border-b-2 border-secondary font-semibold pb-2 cursor-pointer duration-200 ease-in-out" href="#">Browse</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-secondary cursor-pointer duration-200 ease-in-out hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-colors px-xs py-sm rounded-DEFAULT" href="#">Collections</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-secondary cursor-pointer duration-200 ease-in-out hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-colors px-xs py-sm rounded-DEFAULT" href="#">History</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-secondary cursor-pointer duration-200 ease-in-out hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-colors px-xs py-sm rounded-DEFAULT" href="#">Reserved</a>
+</nav>
+<div class="flex items-center gap-sm">
+<button class="md:hidden text-on-surface-variant hover:text-secondary transition-colors p-xs rounded-full hover:bg-surface-container-low dark:hover:bg-surface-container-high">
+<span class="material-symbols-outlined">search</span>
+</button>
+<div class="hidden md:flex relative">
+<span class="material-symbols-outlined absolute left-sm top-1/2 transform -translate-y-1/2 text-outline-variant">search</span>
+<input class="pl-[32px] pr-sm py-sm rounded-DEFAULT border border-outline-variant bg-surface-container-lowest focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary text-body-sm w-[200px] transition-all" placeholder="Search archive..." type="text"/>
+</div>
+<button class="text-on-surface-variant hover:text-secondary transition-colors p-xs rounded-full hover:bg-surface-container-low dark:hover:bg-surface-container-high relative group">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-1 right-1 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="text-on-surface-variant hover:text-secondary transition-colors p-xs rounded-full hover:bg-surface-container-low dark:hover:bg-surface-container-high">
+<span class="material-symbols-outlined">help</span>
+</button>
+<div class="w-[32px] h-[32px] rounded-full bg-surface-variant overflow-hidden border border-outline-variant ml-sm cursor-pointer">
+<img alt="User Profile Menu" class="w-full h-full object-cover" data-alt="A detailed headshot of an academic researcher with short neat hair wearing glasses and a dark blazer. The lighting is bright and professional, typical of a modern light-mode corporate aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCxiT6M6pTF6jgIsAhVOksf2is6MrEwt1yowPidO9S_a8far7PB-frRSFPSbi13GSEKFnbHwYXYqg-Pt4vEntVElmZzR-EPlYkkt50pvcQAEJmaZj-bxtQ0-VaHb5ID0efI90_XICmoz-9IKoR3Xc_d99cOx57zcXyj-LI0onwaeStd1H6J5zDV9Q56AJqoHgVOEo_TTRpkmwUaDNgV8fU7bmQt5u4ntLwsdiRZJovtdRA_TSKgnNDNTq69uk_RWZopacVLx2stt3I"/>
+</div>
+</div>
+</header>
+<!-- Mobile Side-over Drawer -->
+<div class="fixed inset-0 z-[60] bg-on-background/50 hidden transition-opacity duration-300 opacity-0" id="mobile-drawer">
+<div class="absolute left-0 top-0 h-full w-[280px] bg-surface dark:bg-surface-container shadow-xl transform -translate-x-full transition-transform duration-300 flex flex-col py-lg" id="drawer-content">
+<div class="flex justify-between items-center px-lg mb-lg border-b border-outline-variant pb-md">
+<span class="font-display-lg-mobile text-display-lg-mobile font-bold text-primary tracking-tight">Menu</span>
+<button class="text-on-surface-variant hover:text-secondary p-xs rounded-full hover:bg-surface-container-low" id="close-drawer-btn">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<nav class="flex flex-col px-md gap-sm">
+<a class="text-secondary dark:text-secondary-fixed-dim bg-surface-container-low font-semibold py-md px-md rounded-DEFAULT flex items-center gap-md" href="#">
+<span class="material-symbols-outlined">menu_book</span> Browse
+                </a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-secondary py-md px-md rounded-DEFAULT flex items-center gap-md hover:bg-surface-container-low transition-colors" href="#">
+<span class="material-symbols-outlined">collections_bookmark</span> Collections
+                </a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-secondary py-md px-md rounded-DEFAULT flex items-center gap-md hover:bg-surface-container-low transition-colors" href="#">
+<span class="material-symbols-outlined">history</span> History
+                </a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-secondary py-md px-md rounded-DEFAULT flex items-center gap-md hover:bg-surface-container-low transition-colors" href="#">
+<span class="material-symbols-outlined">bookmark_added</span> Reserved
+                </a>
+</nav>
+</div>
+</div>
+<!-- Main Content Area (Compact/Reflowed) -->
+<main class="flex-1 w-full max-w-container-max mx-auto px-md md:px-lg py-lg flex flex-col gap-lg">
+<!-- Welcome Section -->
+<section class="mb-md">
+<h1 class="font-headline-md text-headline-md text-on-surface mb-xs">Welcome back, Dr. Aris</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Continue your research or explore new archival additions.</p>
+</section>
+<!-- Search Bar (Mobile Prominent) -->
+<section class="md:hidden w-full mb-md">
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-md top-1/2 transform -translate-y-1/2 text-outline-variant">search</span>
+<input class="w-full pl-[40px] pr-md py-md rounded-lg border border-outline-variant bg-surface-container-lowest focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary text-body-md transition-all shadow-sm" placeholder="Search manuscripts, authors, topics..." type="text"/>
+</div>
+</section>
+<!-- Reflowed Content Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-lg">
+<!-- Main Content (8 cols on desktop, full width on mobile) -->
+<div class="lg:col-span-8 flex flex-col gap-lg">
+<!-- Recent Activity Bento -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-md md:p-lg flex flex-col gap-md">
+<div class="flex justify-between items-center border-b border-outline-variant pb-sm">
+<h2 class="font-title-sm text-title-sm text-on-surface flex items-center gap-sm">
+<span class="material-symbols-outlined text-secondary">history</span> Recent Activity
+                        </h2>
+<a class="font-label-caps text-label-caps text-secondary hover:underline" href="#">VIEW ALL</a>
+</div>
+<div class="flex flex-col gap-sm">
+<div class="flex items-start gap-md p-sm hover:bg-surface-container-low rounded-DEFAULT transition-colors cursor-pointer border border-transparent hover:border-outline-variant">
+<div class="w-[48px] h-[64px] bg-surface-variant rounded-sm flex-shrink-0 flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface-variant">article</span>
+</div>
+<div class="flex-1">
+<h3 class="font-body-sm text-body-sm font-semibold text-on-surface line-clamp-1">Analysis of Early 19th Century Trade Routes</h3>
+<p class="font-label-caps text-label-caps text-on-surface-variant mt-xs">ID: MS-1824-A</p>
+<div class="flex gap-xs mt-sm">
+<span class="px-2 py-1 bg-surface-container text-on-surface-variant font-label-caps text-[10px] rounded-sm">Manuscript</span>
+</div>
+</div>
+<span class="font-body-sm text-body-sm text-outline text-xs">2h ago</span>
+</div>
+<div class="flex items-start gap-md p-sm hover:bg-surface-container-low rounded-DEFAULT transition-colors cursor-pointer border border-transparent hover:border-outline-variant">
+<div class="w-[48px] h-[64px] bg-surface-variant rounded-sm flex-shrink-0 flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface-variant">menu_book</span>
+</div>
+<div class="flex-1">
+<h3 class="font-body-sm text-body-sm font-semibold text-on-surface line-clamp-1">Naval Logs: HMS Endeavour</h3>
+<p class="font-label-caps text-label-caps text-on-surface-variant mt-xs">ID: NL-1768-01</p>
+<div class="flex gap-xs mt-sm">
+<span class="px-2 py-1 bg-surface-container text-on-surface-variant font-label-caps text-[10px] rounded-sm">Logbook</span>
+</div>
+</div>
+<span class="font-body-sm text-body-sm text-outline text-xs">1d ago</span>
+</div>
+</div>
+</div>
+<!-- Featured Collections (Horizontal scroll on mobile, grid on desktop) -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-md md:p-lg flex flex-col gap-md">
+<div class="flex justify-between items-center border-b border-outline-variant pb-sm">
+<h2 class="font-title-sm text-title-sm text-on-surface flex items-center gap-sm">
+<span class="material-symbols-outlined text-secondary">star</span> Featured Collections
+                        </h2>
+</div>
+<div class="flex overflow-x-auto pb-sm gap-md snap-x snap-mandatory hide-scrollbar">
+<div class="min-w-[240px] max-w-[240px] flex-shrink-0 snap-start border border-outline-variant rounded-lg overflow-hidden group cursor-pointer hover:border-secondary transition-colors">
+<div class="h-[120px] bg-surface-variant relative overflow-hidden">
+<img alt="Collection Cover" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A vintage collection of leather-bound books stacked neatly on a wooden desk in a well-lit library setting. Soft natural light highlights the gold foil details on the spines. The aesthetic is academic, quiet, and reliable." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-9pUv6XljxdR2rhi9HxpAiVom3xuKF5mAvSOEYxaRcMKwrnRPTrvyXKXYbRXKDwiCmerb5YjBwllHxv9fMRtsMLHfOZoIrjZck5zgrvHiijmBtNXpF5zAZq5Qwby2V5jmqSCLl7jEXaewifLjMRF94vk1jifh40twjFcxbznFTi0dtrrDhz6qSBU0g-dZOa9N0xl4M-kkpESQWWzldCeRI_GwTQsF9V-fmCsiK2Lhm8Bf0D5EdoBox0MiuysguZFOTYeO0DJOGZ4"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent"></div>
+<span class="absolute bottom-sm left-sm font-label-caps text-label-caps text-on-primary bg-primary/50 px-2 py-1 rounded-sm backdrop-blur-sm">New Additions</span>
+</div>
+<div class="p-md">
+<h3 class="font-title-sm text-title-sm text-on-surface mb-xs">Maritime History</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">A curated selection of naval records, maps, and correspondence from the 18th century.</p>
+</div>
+</div>
+<div class="min-w-[240px] max-w-[240px] flex-shrink-0 snap-start border border-outline-variant rounded-lg overflow-hidden group cursor-pointer hover:border-secondary transition-colors">
+<div class="h-[120px] bg-surface-variant relative overflow-hidden">
+<img alt="Collection Cover" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Close up of an ancient manuscript with illuminated letters and faded ink on parchment. The lighting emphasizes the texture of the old paper. Professional, light-mode archival aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCli8dENexaAQtDfEi2D6gkUCudjgqVCPhJeJhE_1_0umMRIwNilCtoUIFJopGjFLYtNuXiEQ8X4wLBUpfBFYx-5cn9rWxnnCkwrJ6uJ6UE9nqvSrylYZVkVpJOkyh9T03qbWuHAg-P9Wo3BRFgYm4OGxhHYsTouRLAOLWP3w8HV5NSe5QKdC3wqh4gbQWdS3mFhDrJBa-WOECzE5PUjbO49EdWVCOEnyibxd3YemTBmuwurpvUxKVW5cukqRyHt0e8czogi5fdpYM"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent"></div>
+<span class="absolute bottom-sm left-sm font-label-caps text-label-caps text-on-primary bg-primary/50 px-2 py-1 rounded-sm backdrop-blur-sm">Featured</span>
+</div>
+<div class="p-md">
+<h3 class="font-title-sm text-title-sm text-on-surface mb-xs">Medieval Manuscripts</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">Digitized religious texts and regional histories from monastic libraries.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Sidebar Utilities (Stacked on mobile) -->
+<div class="lg:col-span-4 flex flex-col gap-lg">
+<!-- Quick Filters / Actions -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-md flex flex-col gap-sm">
+<h2 class="font-title-sm text-title-sm text-on-surface border-b border-outline-variant pb-sm mb-xs">Quick Access</h2>
+<button class="flex items-center justify-between w-full p-sm rounded-DEFAULT hover:bg-surface-container-low transition-colors text-left group">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-secondary">folder_special</span>
+<span class="font-body-sm text-body-sm text-on-surface">My Saved Items</span>
+</div>
+<span class="font-label-caps text-label-caps bg-surface-container px-2 py-1 rounded-full text-on-surface-variant">12</span>
+</button>
+<button class="flex items-center justify-between w-full p-sm rounded-DEFAULT hover:bg-surface-container-low transition-colors text-left group">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-secondary">pending_actions</span>
+<span class="font-body-sm text-body-sm text-on-surface">Active Requests</span>
+</div>
+<span class="font-label-caps text-label-caps bg-surface-container px-2 py-1 rounded-full text-on-surface-variant">3</span>
+</button>
+<button class="flex items-center justify-between w-full p-sm rounded-DEFAULT hover:bg-surface-container-low transition-colors text-left group">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-secondary">manage_search</span>
+<span class="font-body-sm text-body-sm text-on-surface">Advanced Search</span>
+</div>
+<span class="material-symbols-outlined text-outline text-sm">arrow_forward</span>
+</button>
+</div>
+<!-- Notifications/Alerts -->
+<div class="bg-surface-container-low border border-outline-variant rounded-lg p-md flex flex-col gap-sm">
+<h2 class="font-title-sm text-title-sm text-on-surface flex items-center gap-sm pb-xs">
+<span class="material-symbols-outlined text-secondary text-sm">info</span> System Updates
+                    </h2>
+<div class="bg-surface-container-lowest p-sm border-l-2 border-secondary rounded-r-sm shadow-sm">
+<p class="font-body-sm text-body-sm text-on-surface">Scheduled maintenance on <strong>October 15th, 02:00 UTC</strong>. Search services may experience brief interruptions.</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<style>
+        /* Utility to hide scrollbar for horizontal scroll area but keep functionality */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const menuBtn = document.getElementById('mobile-menu-btn');
+            const closeBtn = document.getElementById('close-drawer-btn');
+            const drawer = document.getElementById('mobile-drawer');
+            const drawerContent = document.getElementById('drawer-content');
+
+            function openDrawer() {
+                drawer.classList.remove('hidden');
+                // Small delay to allow display:block to apply before animating opacity/transform
+                setTimeout(() => {
+                    drawer.classList.remove('opacity-0');
+                    drawer.classList.add('opacity-100');
+                    drawerContent.classList.remove('-translate-x-full');
+                    drawerContent.classList.add('translate-x-0');
+                }, 10);
+            }
+
+            function closeDrawer() {
+                drawer.classList.remove('opacity-100');
+                drawer.classList.add('opacity-0');
+                drawerContent.classList.remove('translate-x-0');
+                drawerContent.classList.add('-translate-x-full');
+                
+                // Wait for animation to finish before hiding
+                setTimeout(() => {
+                    drawer.classList.add('hidden');
+                }, 300);
+            }
+
+            menuBtn.addEventListener('click', openDrawer);
+            closeBtn.addEventListener('click', closeDrawer);
+            
+            // Close on click outside
+            drawer.addEventListener('click', (e) => {
+                if (e.target === drawer) {
+                    closeDrawer();
+                }
+            });
+        });
+    </script>
+</body></html>

@@ -1,0 +1,497 @@
+<!DOCTYPE html><html class="h-full" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>LIBIF Admin Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-high": "#e2e8f8",
+                    "secondary-fixed-dim": "#89d3d5",
+                    "on-secondary-fixed": "#002021",
+                    "primary-fixed-dim": "#a4cfc5",
+                    "on-surface": "#151c27",
+                    "outline-variant": "#c0c8c5",
+                    "on-secondary": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "surface-container": "#e7eefe",
+                    "secondary": "#12696b",
+                    "tertiary-fixed-dim": "#74d6d6",
+                    "error": "#ba1a1a",
+                    "primary-container": "#103c35",
+                    "on-tertiary-fixed-variant": "#004f50",
+                    "primary": "#002520",
+                    "surface-variant": "#dce2f3",
+                    "on-error": "#ffffff",
+                    "surface-container-highest": "#dce2f3",
+                    "on-primary-container": "#7ca79d",
+                    "surface-container-low": "#f0f3ff",
+                    "surface-dim": "#d3daea",
+                    "surface-bright": "#f9f9ff",
+                    "tertiary-fixed": "#91f3f2",
+                    "surface": "#f9f9ff",
+                    "secondary-fixed": "#a5eff1",
+                    "on-background": "#151c27",
+                    "tertiary-container": "#003c3c",
+                    "on-primary": "#ffffff",
+                    "inverse-on-surface": "#ebf1ff",
+                    "on-secondary-container": "#1a6d6f",
+                    "primary-fixed": "#bfece1",
+                    "on-primary-fixed": "#00201b",
+                    "surface-container-lowest": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "tertiary": "#002525",
+                    "surface-tint": "#3d665e",
+                    "inverse-primary": "#a4cfc5",
+                    "secondary-container": "#a2edee",
+                    "outline": "#717976",
+                    "error-container": "#ffdad6",
+                    "on-tertiary-container": "#47adac",
+                    "inverse-surface": "#2a313d",
+                    "on-tertiary-fixed": "#002020",
+                    "on-primary-fixed-variant": "#244e46",
+                    "on-secondary-fixed-variant": "#004f51",
+                    "background": "#f9f9ff",
+                    "on-surface-variant": "#414846"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "16px",
+                    "container-max": "1440px",
+                    "lg": "24px",
+                    "xl": "32px",
+                    "sm": "8px",
+                    "xs": "4px",
+                    "unit": "8px",
+                    "md": "16px"
+            },
+            "fontFamily": {
+                    "display-lg-mobile": [
+                            "Be Vietnam Pro"
+                    ],
+                    "headline-md": [
+                            "Be Vietnam Pro"
+                    ],
+                    "body-md": [
+                            "Be Vietnam Pro"
+                    ],
+                    "body-sm": [
+                            "Be Vietnam Pro"
+                    ],
+                    "display-lg": [
+                            "Be Vietnam Pro"
+                    ],
+                    "title-sm": [
+                            "Be Vietnam Pro"
+                    ],
+                    "label-caps": [
+                            "Be Vietnam Pro"
+                    ]
+            },
+            "fontSize": {
+                    "display-lg-mobile": [
+                            "28px",
+                            {
+                                    "lineHeight": "34px",
+                                    "letterSpacing": "-0.01em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "headline-md": [
+                            "24px",
+                            {
+                                    "lineHeight": "32px",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "body-md": [
+                            "16px",
+                            {
+                                    "lineHeight": "24px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "body-sm": [
+                            "14px",
+                            {
+                                    "lineHeight": "20px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "display-lg": [
+                            "36px",
+                            {
+                                    "lineHeight": "44px",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "title-sm": [
+                            "18px",
+                            {
+                                    "lineHeight": "24px",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "label-caps": [
+                            "12px",
+                            {
+                                    "lineHeight": "16px",
+                                    "letterSpacing": "0.05em",
+                                    "fontWeight": "700"
+                            }
+                    ]
+            }
+    },
+        },
+      }
+    </script>
+<style>
+        body { background-color: #F7F9F8; }
+        /* Component specific overrides to enforce json */
+        .side-nav-bar { z-index: 50; }
+        .top-nav-bar { z-index: 40; }
+    </style>
+</head>
+<body class="h-full overflow-hidden flex font-body-md text-body-md text-on-surface">
+<!-- SideNavBar (Shared Component) -->
+<aside aria-label="Sidebar Navigation" class="side-nav-bar h-screen w-64 fixed left-0 top-0 bg-primary dark:bg-primary border-r border-outline-variant flex flex-col py-lg px-md">
+<!-- Header -->
+<div class="flex items-center gap-md mb-xl">
+<div class="h-10 w-10 rounded-full bg-surface-container flex items-center justify-center shrink-0">
+<img alt="LIBIF Institutional Logo" class="h-8 w-8 rounded-full object-cover" data-alt="A stylized minimalist institutional logo for LIBIF, featuring clean geometric lines in dark cyan and soft off-white, conveying a sense of academic permanence and modern archival reliability within a minimal corporate design aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD7tTbh1tC6aSsKJ5k20z5_6w4YJWSB5Fn3lrr_92dMgBdkddxoaVOOATO51bKvC-olrx3YI9E5ppgym1INSaoYTWf6LYNQw5BQhy7_cw-YDLl21zKptW-iRquBoCW78XqWZ3WhgwukqZyaXysxMI96ChtopTcyV6vzd4OygPOGD0XGPmaEkvFrYu7a7VIZ-fprNICI5IyR64eBCv5PdUZ0MzT_jlbTJI25Hsx_pnXNhzVPjXB2PX6Goez1vTdh3GGwfSp9QAox_iY">
+</div>
+<div class="flex flex-col">
+<span class="font-headline-md text-headline-md font-bold text-on-primary">LIBIF</span>
+<span class="font-label-caps text-label-caps text-on-primary-container">Admin Portal</span>
+</div>
+</div>
+<!-- Navigation Tabs -->
+<nav class="flex-1 space-y-sm font-title-sm text-title-sm">
+<a class="flex items-center gap-md px-md py-sm rounded-DEFAULT border-l-4 border-secondary-fixed-dim bg-primary-container text-on-primary-container" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard" data-weight="fill" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center gap-md px-md py-sm rounded-DEFAULT border-l-4 border-transparent text-on-primary-container opacity-80 hover:bg-primary-container hover:opacity-100 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="library_books">library_books</span>
+                Collections
+            </a>
+<a class="flex items-center gap-md px-md py-sm rounded-DEFAULT border-l-4 border-transparent text-on-primary-container opacity-80 hover:bg-primary-container hover:opacity-100 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+                Patrons
+            </a>
+<a class="flex items-center gap-md px-md py-sm rounded-DEFAULT border-l-4 border-transparent text-on-primary-container opacity-80 hover:bg-primary-container hover:opacity-100 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="swap_horiz">swap_horiz</span>
+                Circulation
+            </a>
+<a class="flex items-center gap-md px-md py-sm rounded-DEFAULT border-l-4 border-transparent text-on-primary-container opacity-80 hover:bg-primary-container hover:opacity-100 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+                Analytics
+            </a>
+</nav>
+<!-- Footer Tabs & CTA -->
+<div class="mt-auto flex flex-col gap-md">
+<button class="w-full bg-secondary text-on-secondary py-sm px-md rounded-DEFAULT font-title-sm text-title-sm flex justify-center items-center gap-sm hover:bg-tertiary-container transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[20px]">add</span>
+                New Entry
+            </button>
+<div class="border-t border-outline-variant/30 pt-md space-y-sm font-title-sm text-title-sm">
+<a class="flex items-center gap-md px-md py-sm rounded-DEFAULT border-l-4 border-transparent text-on-primary-container opacity-80 hover:bg-primary-container hover:opacity-100 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+                    Settings
+                </a>
+<a class="flex items-center gap-md px-md py-sm rounded-DEFAULT border-l-4 border-transparent text-on-primary-container opacity-80 hover:bg-primary-container hover:opacity-100 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+                    Support
+                </a>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col ml-64 min-h-screen">
+<!-- TopNavBar (Shared Component) -->
+<header aria-label="Top Navigation" class="top-nav-bar fixed top-0 right-0 w-[calc(100%-16rem)] bg-surface dark:bg-surface-dim border-b border-outline-variant flex justify-between items-center px-lg h-[72px] pl-64">
+<div class="flex items-center gap-xl h-full">
+<div class="flex h-full font-body-md text-body-md space-x-lg">
+<a class="h-full flex items-center text-on-surface-variant hover:text-secondary transition-colors px-xs" href="#">Reports</a>
+<a class="h-full flex items-center text-on-surface-variant hover:text-secondary transition-colors px-xs" href="#">Logs</a>
+<a class="h-full flex items-center text-on-surface-variant hover:text-secondary transition-colors px-xs" href="#">Archive</a>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button class="text-secondary font-title-sm text-title-sm py-sm px-md border border-secondary rounded-DEFAULT hover:bg-surface-container-low transition-colors">
+                    Add Book
+                </button>
+<div class="flex items-center gap-sm text-primary dark:text-primary-fixed-dim">
+<button class="p-xs rounded-full hover:bg-surface-variant transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-xs rounded-full hover:bg-surface-variant transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+<div class="h-8 w-8 rounded-full ml-sm shrink-0 overflow-hidden border border-outline-variant">
+<img alt="Administrator Profile" class="h-full w-full object-cover" data-alt="A professional headshot of an institutional administrator in soft, high-key lighting, maintaining a calm and authoritative presence suitable for a corporate or academic library management portal." src="https://lh3.googleusercontent.com/aida-public/AB6AXuChzxeVC9cRQC-F3DMbjLc1uVgpW6SAvnTPWBUPCfWncroaAHLnFUJwktIKCwj9nkF9-epX7JeyagTpFZ1Ctr1TkpGUvZBSosDAy1ewV6QygB0YIsHUZ8jZYbFMnEZG39-eXwni7lhrN6_4Gnms7c9KGwaU0XlCPwUrUPXy5bDjIbS3BLQ0g5kbaUNcN-Wt5cL8dXRVk1OqSFVTJPVI4wsoaGQNKjihbhtpvMoCaokK-Jb4EAC2WsznR995--0zcQ_QvrohwYDLjdA">
+</div>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="flex-1 p-lg overflow-y-auto mt-[72px]">
+<div class="max-w-container-max mx-auto space-y-lg">
+<!-- Page Header -->
+<div class="flex justify-between items-end pb-sm border-b border-outline-variant">
+<div>
+<h1 class="font-display-lg text-display-lg text-on-surface">Management Dashboard</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-xs">Overview of institutional digitization and engagement metrics.</p>
+</div>
+<div class="flex gap-sm">
+<button class="px-md py-sm bg-surface-container-lowest border border-outline-variant rounded-DEFAULT font-title-sm text-title-sm text-on-surface hover:bg-surface-container-low transition-colors flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px]">calendar_today</span>
+                             This Month
+                         </button>
+</div>
+</div>
+<!-- KPI Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-md">
+<!-- KPI 1 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-md flex flex-col shadow-sm">
+<div class="flex justify-between items-start mb-md">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Total Digitized Books</span>
+<span class="material-symbols-outlined text-secondary text-[20px]">book</span>
+</div>
+<div class="flex items-baseline gap-sm">
+<span class="font-display-lg text-display-lg text-on-surface">42,850</span>
+</div>
+</div>
+<!-- KPI 2 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-md flex flex-col shadow-sm">
+<div class="flex justify-between items-start mb-md">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Reading Sessions</span>
+<span class="material-symbols-outlined text-secondary text-[20px]">local_library</span>
+</div>
+<div class="flex items-baseline gap-sm">
+<span class="font-display-lg text-display-lg text-on-surface">124,200</span>
+<span class="font-body-sm text-body-sm text-[#0C6668] bg-[#E8F3F2] px-xs rounded-sm">+12%</span>
+</div>
+</div>
+<!-- KPI 3 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-md flex flex-col shadow-sm">
+<div class="flex justify-between items-start mb-md">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Registered Readers</span>
+<span class="material-symbols-outlined text-secondary text-[20px]">person</span>
+</div>
+<div class="flex items-baseline gap-sm">
+<span class="font-display-lg text-display-lg text-on-surface">18,400</span>
+</div>
+</div>
+<!-- KPI 4 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-md flex flex-col shadow-sm">
+<div class="flex justify-between items-start mb-md">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Digitized This Month</span>
+<span class="material-symbols-outlined text-secondary text-[20px]">library_add</span>
+</div>
+<div class="flex items-baseline gap-sm">
+<span class="font-display-lg text-display-lg text-on-surface">+1,240</span>
+</div>
+</div>
+<!-- KPI 5 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-md flex flex-col shadow-sm">
+<div class="flex justify-between items-start mb-md">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Avg. Engagement</span>
+<span class="material-symbols-outlined text-secondary text-[20px]">timer</span>
+</div>
+<div class="flex items-baseline gap-sm">
+<span class="font-display-lg text-display-lg text-on-surface">42m</span>
+</div>
+</div>
+<!-- KPI 6 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-md flex flex-col shadow-sm">
+<div class="flex justify-between items-start mb-md">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Most-Read Category</span>
+<span class="material-symbols-outlined text-secondary text-[20px]">category</span>
+</div>
+<div class="flex items-baseline gap-sm">
+<span class="font-headline-md text-headline-md text-on-surface leading-tight">Social Theory</span>
+</div>
+</div>
+</div>
+<!-- Charts Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-md">
+<!-- Line Chart: Weekly Digitization Trend -->
+<div class="lg:col-span-8 bg-surface-container-lowest border border-outline-variant rounded-lg p-md shadow-sm">
+<div class="flex justify-between items-center mb-md border-b border-outline-variant/50 pb-sm">
+<h2 class="font-title-sm text-title-sm text-on-surface">Weekly Digitization Trend</h2>
+<button class="text-on-surface-variant hover:text-secondary"><span class="material-symbols-outlined text-[20px]">more_vert</span></button>
+</div>
+<div class="w-full h-64 relative">
+<canvas id="trendChart" width="672" height="281" style="display: block; box-sizing: border-box; height: 256px; width: 611.5px;"></canvas>
+</div>
+</div>
+<!-- Donut Chart: Collections Distribution -->
+<div class="lg:col-span-4 bg-surface-container-lowest border border-outline-variant rounded-lg p-md shadow-sm flex flex-col">
+<div class="flex justify-between items-center mb-md border-b border-outline-variant/50 pb-sm">
+<h2 class="font-title-sm text-title-sm text-on-surface">Collections Distribution</h2>
+</div>
+<div class="flex-1 relative min-h-[200px] flex items-center justify-center">
+<canvas id="donutChart" width="309" height="330" style="display: block; box-sizing: border-box; height: 300px; width: 280.9px;"></canvas>
+</div>
+</div>
+</div>
+<!-- Bottom Row: Top Publications -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-md">
+<div class="lg:col-span-12 bg-surface-container-lowest border border-outline-variant rounded-lg p-md shadow-sm">
+<div class="flex justify-between items-center mb-md border-b border-outline-variant/50 pb-sm">
+<h2 class="font-title-sm text-title-sm text-on-surface">Top 5 Most Read Publications</h2>
+<a class="font-body-sm text-body-sm text-secondary hover:underline" href="#">View All</a>
+</div>
+<div class="w-full h-64 relative">
+<canvas id="barChart" width="1036" height="281" style="display: block; box-sizing: border-box; height: 256px; width: 942.2px;"></canvas>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<script>
+        // Chart.js Configuration
+        const commonOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    labels: {
+                        font: { family: "'Be Vietnam Pro', sans-serif" },
+                        color: '#414846'
+                    }
+                },
+                tooltip: {
+                    backgroundColor: '#151c27',
+                    titleFont: { family: "'Be Vietnam Pro', sans-serif", size: 14 },
+                    bodyFont: { family: "'Be Vietnam Pro', sans-serif", size: 14 },
+                    padding: 12,
+                    cornerRadius: 4
+                }
+            }
+        };
+
+        // 1. Weekly Digitization Trend (Line Chart)
+        const ctxTrend = document.getElementById('trendChart').getContext('2d');
+        new Chart(ctxTrend, {
+            type: 'line',
+            data: {
+                labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6'],
+                datasets: [{
+                    label: 'Pages Digitized',
+                    data: [12000, 19000, 15000, 25000, 22000, 30000],
+                    borderColor: '#0C6668',
+                    backgroundColor: 'rgba(12, 102, 104, 0.1)',
+                    borderWidth: 2,
+                    tension: 0.4,
+                    fill: true,
+                    pointBackgroundColor: '#FFFFFF',
+                    pointBorderColor: '#0C6668',
+                    pointBorderWidth: 2,
+                    pointRadius: 4
+                }]
+            },
+            options: {
+                ...commonOptions,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: '#e2e8f8', drawBorder: false },
+                        ticks: { color: '#717976', font: { family: "'Be Vietnam Pro', sans-serif" } }
+                    },
+                    x: {
+                        grid: { display: false, drawBorder: false },
+                        ticks: { color: '#717976', font: { family: "'Be Vietnam Pro', sans-serif" } }
+                    }
+                }
+            }
+        });
+
+        // 2. Collections Distribution (Donut Chart)
+        const ctxDonut = document.getElementById('donutChart').getContext('2d');
+        new Chart(ctxDonut, {
+            type: 'doughnut',
+            data: {
+                labels: ['Humanities', 'Sciences', 'Arts', 'Law', 'Special Col.'],
+                datasets: [{
+                    data: [35, 25, 20, 10, 10],
+                    backgroundColor: ['#103C35', '#0C6668', '#138A8A', '#a4cfc5', '#e2e8f8'],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                ...commonOptions,
+                cutout: '70%',
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                             boxWidth: 12,
+                             usePointStyle: true,
+                             font: { family: "'Be Vietnam Pro', sans-serif", size: 12 },
+                             color: '#414846'
+                        }
+                    }
+                }
+            }
+        });
+
+        // 3. Top 5 Most Read Publications (Horizontal Bar Chart)
+        const ctxBar = document.getElementById('barChart').getContext('2d');
+        new Chart(ctxBar, {
+            type: 'bar',
+            data: {
+                labels: [
+                    'The Structure of Scientific Revolutions',
+                    'A Theory of Justice',
+                    'Orientalism',
+                    'The Wretched of the Earth',
+                    'Discipline and Punish'
+                ],
+                datasets: [{
+                    label: 'Reading Sessions',
+                    data: [4500, 3800, 3200, 2900, 2500],
+                    backgroundColor: '#103C35',
+                    borderRadius: 4,
+                    barPercentage: 0.6
+                }]
+            },
+            options: {
+                ...commonOptions,
+                indexAxis: 'y',
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        grid: { color: '#e2e8f8', drawBorder: false },
+                        ticks: { color: '#717976', font: { family: "'Be Vietnam Pro', sans-serif" } }
+                    },
+                    y: {
+                        grid: { display: false, drawBorder: false },
+                        ticks: { color: '#151c27', font: { family: "'Be Vietnam Pro', sans-serif", weight: '500' } }
+                    }
+                },
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+    </script>
+
+
+</body></html>

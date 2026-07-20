@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ScholarLib - Catalogue List View</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-variant": "#dce2f3",
+                    "on-primary-container": "#7ca79d",
+                    "background": "#f9f9ff",
+                    "surface-container": "#e7eefe",
+                    "on-error-container": "#93000a",
+                    "tertiary-fixed-dim": "#74d6d6",
+                    "secondary-container": "#a2edee",
+                    "primary": "#002520",
+                    "outline": "#717976",
+                    "surface-dim": "#d3daea",
+                    "surface-container-low": "#f0f3ff",
+                    "surface": "#f9f9ff",
+                    "on-tertiary": "#ffffff",
+                    "secondary": "#12696b",
+                    "error-container": "#ffdad6",
+                    "secondary-fixed": "#a5eff1",
+                    "surface-tint": "#3d665e",
+                    "on-error": "#ffffff",
+                    "inverse-surface": "#2a313d",
+                    "on-primary-fixed": "#00201b",
+                    "tertiary-fixed": "#91f3f2",
+                    "on-tertiary-fixed": "#002020",
+                    "on-secondary": "#ffffff",
+                    "tertiary-container": "#003c3c",
+                    "primary-container": "#103c35",
+                    "inverse-on-surface": "#ebf1ff",
+                    "primary-fixed": "#bfece1",
+                    "on-surface": "#151c27",
+                    "on-secondary-fixed-variant": "#004f51",
+                    "on-primary-fixed-variant": "#244e46",
+                    "on-background": "#151c27",
+                    "surface-container-highest": "#dce2f3",
+                    "on-secondary-fixed": "#002021",
+                    "on-secondary-container": "#1a6d6f",
+                    "on-primary": "#ffffff",
+                    "inverse-primary": "#a4cfc5",
+                    "on-tertiary-fixed-variant": "#004f50",
+                    "surface-container-high": "#e2e8f8",
+                    "tertiary": "#002525",
+                    "surface-container-lowest": "#ffffff",
+                    "primary-fixed-dim": "#a4cfc5",
+                    "outline-variant": "#c0c8c5",
+                    "error": "#ba1a1a",
+                    "surface-bright": "#f9f9ff",
+                    "on-tertiary-container": "#47adac",
+                    "secondary-fixed-dim": "#89d3d5",
+                    "on-surface-variant": "#414846"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "unit": "8px",
+                    "container-max": "1440px",
+                    "md": "16px",
+                    "lg": "24px",
+                    "gutter": "16px",
+                    "xs": "4px",
+                    "xl": "32px",
+                    "sm": "8px"
+            },
+            "fontFamily": {
+                    "display-lg-mobile": [
+                            "Be Vietnam Pro"
+                    ],
+                    "title-sm": [
+                            "Be Vietnam Pro"
+                    ],
+                    "label-caps": [
+                            "Be Vietnam Pro"
+                    ],
+                    "body-md": [
+                            "Be Vietnam Pro"
+                    ],
+                    "display-lg": [
+                            "Be Vietnam Pro"
+                    ],
+                    "headline-md": [
+                            "Be Vietnam Pro"
+                    ],
+                    "body-sm": [
+                            "Be Vietnam Pro"
+                    ]
+            },
+            "fontSize": {
+                    "display-lg-mobile": [
+                            "28px",
+                            {
+                                    "lineHeight": "34px",
+                                    "letterSpacing": "-0.01em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "title-sm": [
+                            "18px",
+                            {
+                                    "lineHeight": "24px",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "label-caps": [
+                            "12px",
+                            {
+                                    "lineHeight": "16px",
+                                    "letterSpacing": "0.05em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "body-md": [
+                            "16px",
+                            {
+                                    "lineHeight": "24px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "display-lg": [
+                            "36px",
+                            {
+                                    "lineHeight": "44px",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "headline-md": [
+                            "24px",
+                            {
+                                    "lineHeight": "32px",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "body-sm": [
+                            "14px",
+                            {
+                                    "lineHeight": "20px",
+                                    "fontWeight": "400"
+                            }
+                    ]
+            }
+        },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Be Vietnam Pro', sans-serif; }
+    </style>
+</head>
+<body class="bg-surface h-full flex flex-col text-on-surface">
+<!-- TopNavBar -->
+<header class="bg-surface border-b border-outline-variant flex justify-between items-center w-full px-lg max-w-container-max mx-auto h-16 docked full-width top-0 z-50">
+<div class="flex items-center gap-lg">
+<span class="text-title-sm font-title-sm font-bold text-primary">ScholarLib</span>
+<nav class="hidden md:flex gap-md">
+<a class="text-secondary font-bold border-b-2 border-secondary pb-[22px] mt-[24px]" href="#">Browse</a>
+<a class="text-on-surface-variant hover:text-secondary transition-colors pb-[22px] mt-[24px]" href="#">Collections</a>
+<a class="text-on-surface-variant hover:text-secondary transition-colors pb-[22px] mt-[24px]" href="#">E-Resources</a>
+</nav>
+</div>
+<div class="flex items-center gap-md">
+<div class="hidden md:flex relative text-on-surface-variant">
+<span class="material-symbols-outlined absolute left-sm top-1/2 transform -translate-y-1/2">search</span>
+<input class="pl-[36px] pr-sm py-sm border border-outline-variant rounded bg-surface-container-low text-body-sm font-body-sm focus:outline-none focus:border-secondary focus:ring-2 focus:ring-secondary/20 transition-all w-64" placeholder="Search catalogue..." type="text"/>
+</div>
+<button class="text-on-surface-variant hover:text-secondary transition-colors scale-95 duration-150"><span class="material-symbols-outlined">notifications</span></button>
+<button class="text-on-surface-variant hover:text-secondary transition-colors scale-95 duration-150"><span class="material-symbols-outlined">help_outline</span></button>
+<button class="bg-primary-container text-on-primary font-title-sm text-title-sm px-md py-sm rounded hover:bg-tertiary-container transition-colors scale-95 duration-150">Sign In</button>
+</div>
+</header>
+<div class="flex flex-1 overflow-hidden">
+<!-- SideNavBar -->
+<aside class="bg-surface-container-low h-full w-64 fixed left-0 top-16 border-r border-outline-variant flex flex-col py-md z-40 hidden lg:flex">
+<div class="px-md mb-lg flex items-center gap-sm">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-on-primary font-bold">UL</div>
+<div>
+<h2 class="text-title-sm font-title-sm text-primary">University Library</h2>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Institutional Access</p>
+</div>
+</div>
+<nav class="flex-1 flex flex-col gap-xs px-sm">
+<a class="flex items-center gap-sm px-md py-sm rounded border-l-4 border-secondary bg-primary-container text-on-primary-container font-semibold" href="#">
+<span class="material-symbols-outlined">book</span> All Books
+                </a>
+<a class="flex items-center gap-sm px-md py-sm rounded text-on-surface-variant hover:bg-surface-container-high transition-all" href="#">
+<span class="material-symbols-outlined">menu_book</span> Journals
+                </a>
+<a class="flex items-center gap-sm px-md py-sm rounded text-on-surface-variant hover:bg-surface-container-high transition-all" href="#">
+<span class="material-symbols-outlined">school</span> Theses
+                </a>
+<a class="flex items-center gap-sm px-md py-sm rounded text-on-surface-variant hover:bg-surface-container-high transition-all" href="#">
+<span class="material-symbols-outlined">inventory_2</span> Archives
+                </a>
+<a class="flex items-center gap-sm px-md py-sm rounded text-on-surface-variant hover:bg-surface-container-high transition-all" href="#">
+<span class="material-symbols-outlined">bookmark</span> Reserved
+                </a>
+</nav>
+<div class="px-md mt-auto">
+<button class="w-full bg-surface-variant text-on-surface-variant py-sm rounded font-title-sm text-title-sm hover:bg-surface-container-high transition-colors">Reserve Room</button>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 overflow-y-auto lg:ml-64 bg-background p-lg">
+<div class="max-w-container-max mx-auto grid grid-cols-12 gap-gutter">
+<!-- Filters Sidebar (4 Columns) -->
+<div class="hidden md:block col-span-4 lg:col-span-3 space-y-lg">
+<h3 class="text-title-sm font-title-sm text-primary mb-md border-b border-outline-variant pb-xs">Filters</h3>
+<!-- Availability -->
+<div class="space-y-sm">
+<h4 class="text-label-caps font-label-caps text-on-surface-variant uppercase tracking-wider">Availability</h4>
+<label class="flex items-center gap-sm cursor-pointer">
+<input checked="" class="rounded border-outline-variant text-secondary focus:ring-secondary/50" type="checkbox"/>
+<span class="text-body-sm font-body-sm">Available Online</span>
+</label>
+<label class="flex items-center gap-sm cursor-pointer">
+<input class="rounded border-outline-variant text-secondary focus:ring-secondary/50" type="checkbox"/>
+<span class="text-body-sm font-body-sm">Physical Copies</span>
+</label>
+</div>
+<!-- Year -->
+<div class="space-y-sm">
+<h4 class="text-label-caps font-label-caps text-on-surface-variant uppercase tracking-wider">Publication Year</h4>
+<div class="flex gap-sm">
+<input class="w-full border border-outline-variant rounded px-sm py-xs text-body-sm focus:border-secondary focus:ring-1 focus:ring-secondary" placeholder="From" type="text"/>
+<input class="w-full border border-outline-variant rounded px-sm py-xs text-body-sm focus:border-secondary focus:ring-1 focus:ring-secondary" placeholder="To" type="text"/>
+</div>
+</div>
+<!-- Subject -->
+<div class="space-y-sm">
+<h4 class="text-label-caps font-label-caps text-on-surface-variant uppercase tracking-wider">Subject</h4>
+<div class="flex flex-wrap gap-xs">
+<span class="bg-surface-container-high text-on-surface-variant px-sm py-xs rounded-full text-label-caps font-label-caps cursor-pointer hover:bg-surface-variant">Computer Science</span>
+<span class="bg-secondary-container text-on-secondary-container px-sm py-xs rounded-full text-label-caps font-label-caps cursor-pointer">Mathematics</span>
+<span class="bg-surface-container-high text-on-surface-variant px-sm py-xs rounded-full text-label-caps font-label-caps cursor-pointer hover:bg-surface-variant">Physics</span>
+<span class="bg-surface-container-high text-on-surface-variant px-sm py-xs rounded-full text-label-caps font-label-caps cursor-pointer hover:bg-surface-variant">Engineering</span>
+</div>
+</div>
+</div>
+<!-- List Content (8 Columns) -->
+<div class="col-span-12 md:col-span-8 lg:col-span-9 flex flex-col gap-md">
+<!-- Header/Toolbar -->
+<div class="flex justify-between items-center pb-sm border-b border-outline-variant">
+<span class="text-body-md font-body-md text-on-surface-variant">Showing 1-10 of 1,245 results</span>
+<div class="flex items-center gap-md">
+<select class="border border-outline-variant rounded bg-surface text-body-sm px-sm py-xs focus:border-secondary focus:ring-1 focus:ring-secondary">
+<option>Sort by: Relevance</option>
+<option>Date (Newest)</option>
+<option>Title (A-Z)</option>
+</select>
+<!-- View Toggle -->
+<div class="flex bg-surface-container-low rounded border border-outline-variant p-xs">
+<button class="p-xs rounded text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">grid_view</span>
+</button>
+<button class="p-xs rounded bg-surface text-secondary shadow-sm">
+<span class="material-symbols-outlined" data-weight="fill">view_list</span>
+</button>
+</div>
+</div>
+</div>
+<!-- List Items -->
+<div class="space-y-md">
+<!-- Row 1 -->
+<div class="flex gap-md p-md bg-surface border border-outline-variant rounded hover:bg-surface-container-low transition-colors group">
+<div class="w-24 h-32 flex-shrink-0 bg-surface-container-high rounded overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A clean, minimalist cover of an academic textbook on advanced algorithms. The cover features abstract geometric patterns in muted teal and navy colors on a pristine white background. High-quality academic publishing style. Soft, even studio lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDW6j3-dwoxHgfhsRCYNE7w4xc2XqvFAWiQPWix7fB_Vf6c4TkJ_ObkwZAD8VNOrID1vPAKL8ew58432NhllSli7fD6BcX5gA4jlfjXUSp7IBbeNRcLI5AlTzMpCKtRkBU6jmuPX14f6Dgjy4RqtEfM_urHvONYs9raTp_M3rafUGuSSxU3sE8TDrNf_D5irmvq8TycCTL6qzV-Ifc5VHNSSb0KGuFO0RT1QNgSzxHaC76g5hxnsOBpVQSMpS2DHM3NGjthS4w7Fd8"/>
+</div>
+<div class="flex-1 flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-start">
+<h3 class="text-title-sm font-title-sm text-primary group-hover:text-secondary transition-colors">Advanced Algorithms and Data Structures</h3>
+<span class="bg-[#e8f3f2] text-[#004f51] px-sm py-xs rounded-full text-label-caps font-label-caps">Available</span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-xs">Thomas H. Cormen, Charles E. Leiserson · 2023 · Computer Science</p>
+<p class="text-body-sm font-body-sm text-on-surface mt-sm line-clamp-2">A comprehensive overview of modern algorithmic design and analysis techniques, focusing on practical implementation and theoretical foundations for complex systems.</p>
+</div>
+<div class="flex justify-between items-end mt-md">
+<div class="flex gap-xs">
+<span class="text-label-caps font-label-caps border border-outline-variant text-on-surface-variant px-sm py-xs rounded">Algorithms</span>
+<span class="text-label-caps font-label-caps border border-outline-variant text-on-surface-variant px-sm py-xs rounded">Programming</span>
+</div>
+<button class="text-[#138A8A] font-title-sm text-title-sm hover:underline flex items-center gap-xs">Open details <span class="material-symbols-outlined text-[16px]">arrow_forward</span></button>
+</div>
+</div>
+</div>
+<!-- Row 2 -->
+<div class="flex gap-md p-md bg-surface border border-outline-variant rounded hover:bg-surface-container-low transition-colors group">
+<div class="w-24 h-32 flex-shrink-0 bg-surface-container-high rounded overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A sophisticated academic journal cover for theoretical physics. The design is stark and minimal, utilizing deep charcoal gray and subtle silver text. It conveys institutional trust and rigor. Professional flat lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBF3sKf_JAl56OTXb-BdLNSGrToYyw9QDsOknHExPoGk7iBxDue-zAf3zDjMma9qDTBgn6sDrli5YCsjXPl3knPHP3Q5aW6zx8upyABVM7HG2WjohH_UTEP0MJVHdXjJUXpsW0WBs0Phoqlhk6a6CLmobf9dVcpFCHW4-ZE1CVs81aKqNW17Jvvpb0gqLHK79TOEDK43Fv3unnKWZcWZAlDaDR-fhqb3dZZMIds6NANpGCGOTM0yyzGpqyrvCBtx7JeRCJ4Om956_M"/>
+</div>
+<div class="flex-1 flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-start">
+<h3 class="text-title-sm font-title-sm text-primary group-hover:text-secondary transition-colors">Quantum Mechanics: Foundations and Applications</h3>
+<span class="bg-surface-variant text-on-surface-variant px-sm py-xs rounded-full text-label-caps font-label-caps">Checked Out</span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-xs">J.J. Sakurai, Jim Napolitano · 2021 · Physics</p>
+<p class="text-body-sm font-body-sm text-on-surface mt-sm line-clamp-2">An in-depth exploration of quantum mechanical principles, updated with modern experimental results and advanced mathematical formulations.</p>
+</div>
+<div class="flex justify-between items-end mt-md">
+<div class="flex gap-xs">
+<span class="text-label-caps font-label-caps border border-outline-variant text-on-surface-variant px-sm py-xs rounded">Quantum Physics</span>
+<span class="text-label-caps font-label-caps border border-outline-variant text-on-surface-variant px-sm py-xs rounded">Theory</span>
+</div>
+<button class="text-[#138A8A] font-title-sm text-title-sm hover:underline flex items-center gap-xs">Open details <span class="material-symbols-outlined text-[16px]">arrow_forward</span></button>
+</div>
+</div>
+</div>
+</div>
+<!-- Pagination -->
+<div class="flex justify-center items-center gap-sm mt-lg pt-md border-t border-outline-variant">
+<button class="p-xs text-on-surface-variant hover:text-primary disabled:opacity-50"><span class="material-symbols-outlined">chevron_left</span></button>
+<button class="w-8 h-8 rounded bg-primary text-on-primary font-body-sm flex items-center justify-center">1</button>
+<button class="w-8 h-8 rounded hover:bg-surface-container-high text-on-surface font-body-sm flex items-center justify-center">2</button>
+<button class="w-8 h-8 rounded hover:bg-surface-container-high text-on-surface font-body-sm flex items-center justify-center">3</button>
+<span class="text-on-surface-variant">...</span>
+<button class="w-8 h-8 rounded hover:bg-surface-container-high text-on-surface font-body-sm flex items-center justify-center">125</button>
+<button class="p-xs text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined">chevron_right</span></button>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- Footer -->
+<footer class="bg-surface-container-highest w-full mt-auto border-t border-outline-variant flex flex-col md:flex-row justify-between items-center px-lg py-xl max-w-container-max mx-auto lg:ml-64">
+<div class="text-label-caps font-label-caps font-bold text-primary mb-md md:mb-0">ScholarLib</div>
+<div class="flex gap-md mb-md md:mb-0">
+<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Terms of Service</a>
+<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Accessibility</a>
+<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Contact Librarian</a>
+</div>
+<div class="text-body-sm font-body-sm text-on-surface-variant">© 2024 University Institutional Knowledge Management. All rights reserved.</div>
+</footer>
+</body></html>
