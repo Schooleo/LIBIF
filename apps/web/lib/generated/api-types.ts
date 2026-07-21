@@ -79,7 +79,7 @@ export interface components {
     "originalFilename": string;
     "sizeBytes": string;
   };
-    "BookListItemResponseDto": {
+    "AdminBookListItemResponseDto": {
     "id": string;
     "title": string;
     "isbn"?: string | null;
@@ -87,8 +87,24 @@ export interface components {
     "category"?: components['schemas']["CategoryResponseDto"];
     "tags": components['schemas']["TagResponseDto"][];
     "authors": components['schemas']["AuthorResponseDto"][];
-    "file"?: components['schemas']["BookFileSummaryDto"];
     "createdAt": string;
+    "file"?: components['schemas']["BookFileSummaryDto"];
+  };
+    "PublicBookListItemResponseDto": {
+    "id": string;
+    "title": string;
+    "isbn"?: string | null;
+    "status": "DRAFT" | "PENDING_PROCESSING" | "PROCESSING" | "PENDING_APPROVAL" | "PUBLISHED" | "REJECTED";
+    "category"?: components['schemas']["CategoryResponseDto"];
+    "tags": components['schemas']["TagResponseDto"][];
+    "authors": components['schemas']["AuthorResponseDto"][];
+    "createdAt": string;
+  };
+    "PagedPublicBookListResponseDto": {
+    "items"?: components['schemas']["PublicBookListItemResponseDto"][];
+    "totalCount"?: number;
+    "page"?: number;
+    "pageSize"?: number;
   };
     "IsbnMetadataDto": {
     "isbn"?: string;
@@ -285,7 +301,7 @@ export interface paths {
       responses: {
       "200": {
         content: {
-          "application/json": components['schemas']["BookListItemResponseDto"][];
+          "application/json": components['schemas']["AdminBookListItemResponseDto"][];
         };
       };
       "403": {
@@ -309,10 +325,20 @@ export interface paths {
   };
   "/api/catalog/books": {
     get: {
+      parameters: {
+        query: {
+          "q"?: string;
+          "categoryId"?: string;
+          "tagIds"?: string;
+          "page"?: number;
+          "pageSize"?: number;
+          "sort"?: string;
+        };
+      };
       responses: {
       "200": {
         content: {
-          "application/json": components['schemas']["BookListItemResponseDto"][];
+          "application/json": components['schemas']["PagedPublicBookListResponseDto"];
         };
       };
       };
