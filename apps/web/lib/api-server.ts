@@ -1,6 +1,6 @@
 import { headers } from 'next/headers';
 import { createLibifApiClient, apiErrorMessage } from './api-client';
-import type { AdminBookListItemDto, CategoryDto, PagedBookListDto, PublicBookListItemDto, SessionDto } from './api-types';
+import type { AccessDecisionDto, AdminBookListItemDto, BookListItemDto, CategoryDto, PagedBookListDto, PublicBookListItemDto, ReaderLibraryItemDto, ReaderLibraryResponseDto, SessionDto } from './api-types';
 import { getDevAuthHeaders } from './auth/session';
 
 async function createServerClient() {
@@ -36,3 +36,36 @@ export async function fetchPublicBooks(): Promise<PublicBookListItemDto[]> {
   if (error) throw new Error(apiErrorMessage(error, 'Catalog books request failed'));
   return (data as PagedBookListDto).items;
 }
+
+export async function fetchAccessDecision(documentId: string): Promise<AccessDecisionDto> {
+  const client = await createServerClient();
+  const { data, error } = await client.GET('/api/access/documents/{documentId}/decision', {
+    params: { path: { documentId } },
+  });
+  if (error) throw new Error(apiErrorMessage(error, 'Access decision request failed'));
+  return data as AccessDecisionDto;
+}
+
+export async function fetchReaderLibrary(query?: { filter?: 'ALL' | 'READING' | 'BOOKMARKED' | 'COMPLETED'; search?: string; page?: number; limit?: number }): Promise<ReaderLibraryResponseDto> {
+  const client = await createServerClient();
+  const { data, error } = await client.GET('/api/reader/library', {
+    params: { query: query as any },
+  });
+  if (error) throw new Error(apiErrorMessage(error, 'Reader library request failed'));
+  return data as ReaderLibraryResponseDto;
+}
+
+export async function fetchReaderHistory(): Promise<ReaderLibraryItemDto[]> {
+  const client = await createServerClient();
+  const { data, error } = await client.GET('/api/reader/history');
+  if (error) throw new Error(apiErrorMessage(error, 'Reader history request failed'));
+  return data as ReaderLibraryItemDto[];
+}
+
+export async function fetchReaderBookmarks(): Promise<ReaderLibraryItemDto[]> {
+  const client = await createServerClient();
+  const { data, error } = await client.GET('/api/reader/bookmarks');
+  if (error) throw new Error(apiErrorMessage(error, 'Reader bookmarks request failed'));
+  return data as ReaderLibraryItemDto[];
+}
+

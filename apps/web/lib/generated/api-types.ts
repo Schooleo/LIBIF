@@ -124,6 +124,49 @@ export interface components {
     "status": string;
     "service": string;
   };
+    "ReadingProgressStateDto": {
+    "currentPage": number;
+    "totalPages": number;
+    "percentage": number;
+    "lastReadAt": string;
+  };
+    "ReaderLibraryItemDto": {
+    "id": string;
+    "title": string;
+    "subtitle"?: string;
+    "authors": string[];
+    "publisher"?: string;
+    "publishedYear"?: number;
+    "status": string;
+    "bookmarked": boolean;
+    "progress"?: components['schemas']["ReadingProgressStateDto"];
+    "updatedAt": string;
+  };
+    "ReaderLibraryResponseDto": {
+    "items": components['schemas']["ReaderLibraryItemDto"][];
+    "total": number;
+    "readingCount": number;
+    "bookmarkedCount": number;
+  };
+    "BookmarkDto": {
+    "documentId": string;
+  };
+    "ReadingProgressDto": {
+    "currentPage": number;
+    "totalPages"?: number;
+    "percentage"?: number;
+  };
+    "AccessDecisionDto": {
+    "allowed": boolean;
+    "documentId": string;
+    "userRole": string;
+    "reason"?: string;
+  };
+    "ProtectedDocumentUrlDto": {
+    "token": string;
+    "expiresAt": string;
+    "url": string;
+  };
   };
 }
 
@@ -323,6 +366,146 @@ export interface paths {
       "200": {
         content: {
           "application/json": components['schemas']["HealthResponseDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/reader/library": {
+    get: {
+      parameters: {
+        query: {
+          "filter"?: "ALL" | "READING" | "BOOKMARKED" | "COMPLETED";
+          "search"?: string;
+          "page"?: number;
+          "limit"?: number;
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["ReaderLibraryResponseDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/reader/history": {
+    get: {
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["ReaderLibraryItemDto"][];
+        };
+      };
+      };
+    };
+  };
+  "/api/reader/bookmarks": {
+    get: {
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["ReaderLibraryItemDto"][];
+        };
+      };
+      };
+    };
+    post: {
+      requestBody: {
+        content: {
+          "application/json": components['schemas']["BookmarkDto"];
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": unknown;
+        };
+      };
+      };
+    };
+  };
+  "/api/reader/bookmarks/{documentId}": {
+    delete: {
+      parameters: {
+        path: {
+          "documentId": string;
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": unknown;
+        };
+      };
+      };
+    };
+  };
+  "/api/reader/progress/{documentId}": {
+    patch: {
+      parameters: {
+        path: {
+          "documentId": string;
+        };
+      };
+      requestBody: {
+        content: {
+          "application/json": components['schemas']["ReadingProgressDto"];
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["ReadingProgressStateDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/access/documents/{documentId}/decision": {
+    get: {
+      parameters: {
+        path: {
+          "documentId": string;
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["AccessDecisionDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/access/documents/{documentId}/view-token": {
+    post: {
+      parameters: {
+        path: {
+          "documentId": string;
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["ProtectedDocumentUrlDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/access/documents/{documentId}/download-token": {
+    post: {
+      parameters: {
+        path: {
+          "documentId": string;
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["ProtectedDocumentUrlDto"];
         };
       };
       };

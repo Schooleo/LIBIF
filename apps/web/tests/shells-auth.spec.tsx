@@ -31,7 +31,10 @@ describe('route-group shells and auth helper', () => {
   it('renders auth shell boundary navigation', () => {
     render(<AuthShell><h1>Access denied</h1></AuthShell>);
     expect(screen.getByRole('navigation', { name: /access boundary navigation/i })).toBeInTheDocument();
-    expect(screen.getByText(/session boundary/i)).toBeInTheDocument();
+    // Auth shell shows a minimal nav with a Home link (auth actions are in the reader avatar menu)
+    expect(screen.getByRole('link', { name: /^home$/i })).toHaveAttribute('href', '/');
+    // The brand subtitle identifies the shell context
+    expect(screen.getByText(/access boundary/i)).toBeInTheDocument();
   });
 
   it('creates controlled development auth headers with safe role fallback', () => {

@@ -449,6 +449,347 @@
           "Health"
         ]
       }
+    },
+    "/api/reader/library": {
+      "get": {
+        "operationId": "getLibrary",
+        "parameters": [
+          {
+            "name": "filter",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": "ALL",
+              "type": "string",
+              "enum": [
+                "ALL",
+                "READING",
+                "BOOKMARKED",
+                "COMPLETED"
+              ]
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Search term for title or author",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 20,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReaderLibraryResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get reader library items with progress and bookmark status.",
+        "tags": [
+          "Reader"
+        ]
+      }
+    },
+    "/api/reader/history": {
+      "get": {
+        "operationId": "getHistory",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReaderLibraryItemDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get reader recent reading history.",
+        "tags": [
+          "Reader"
+        ]
+      }
+    },
+    "/api/reader/bookmarks": {
+      "get": {
+        "operationId": "getBookmarks",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReaderLibraryItemDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get reader bookmarked documents.",
+        "tags": [
+          "Reader"
+        ]
+      },
+      "post": {
+        "operationId": "addBookmark",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BookmarkDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Bookmark saved successfully."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Add a document bookmark for current reader.",
+        "tags": [
+          "Reader"
+        ]
+      }
+    },
+    "/api/reader/bookmarks/{documentId}": {
+      "delete": {
+        "operationId": "removeBookmark",
+        "parameters": [
+          {
+            "name": "documentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Bookmark removed successfully."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Remove a document bookmark for current reader.",
+        "tags": [
+          "Reader"
+        ]
+      }
+    },
+    "/api/reader/progress/{documentId}": {
+      "patch": {
+        "operationId": "updateProgress",
+        "parameters": [
+          {
+            "name": "documentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReadingProgressDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReadingProgressStateDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update reading progress for a document.",
+        "tags": [
+          "Reader"
+        ]
+      }
+    },
+    "/api/access/documents/{documentId}/decision": {
+      "get": {
+        "operationId": "getDecision",
+        "parameters": [
+          {
+            "name": "documentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccessDecisionDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Check access decision for a document by reader or staff role.",
+        "tags": [
+          "Access"
+        ]
+      }
+    },
+    "/api/access/documents/{documentId}/view-token": {
+      "post": {
+        "operationId": "createViewToken",
+        "parameters": [
+          {
+            "name": "documentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProtectedDocumentUrlDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Obtain a protected viewing URL token for an accessible document.",
+        "tags": [
+          "Access"
+        ]
+      }
+    },
+    "/api/access/documents/{documentId}/download-token": {
+      "post": {
+        "operationId": "createDownloadToken",
+        "parameters": [
+          {
+            "name": "documentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProtectedDocumentUrlDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Obtain a protected download URL token for an accessible document.",
+        "tags": [
+          "Access"
+        ]
+      }
     }
   },
   "info": {
@@ -1037,6 +1378,204 @@
         "required": [
           "status",
           "service"
+        ]
+      },
+      "ReadingProgressStateDto": {
+        "type": "object",
+        "properties": {
+          "currentPage": {
+            "type": "number",
+            "example": 5
+          },
+          "totalPages": {
+            "type": "number",
+            "example": 100
+          },
+          "percentage": {
+            "type": "number",
+            "example": 5
+          },
+          "lastReadAt": {
+            "type": "string",
+            "example": "2026-07-21T10:00:00.000Z"
+          }
+        },
+        "required": [
+          "currentPage",
+          "totalPages",
+          "percentage",
+          "lastReadAt"
+        ]
+      },
+      "ReaderLibraryItemDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "cm123456789"
+          },
+          "title": {
+            "type": "string",
+            "example": "Intro to Algorithms"
+          },
+          "subtitle": {
+            "type": "string",
+            "example": "2nd Edition"
+          },
+          "authors": {
+            "example": [
+              "Thomas H. Cormen"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "publisher": {
+            "type": "string",
+            "example": "MIT Press"
+          },
+          "publishedYear": {
+            "type": "number",
+            "example": 2009
+          },
+          "status": {
+            "type": "string",
+            "example": "PUBLISHED"
+          },
+          "bookmarked": {
+            "type": "boolean",
+            "example": true
+          },
+          "progress": {
+            "$ref": "#/components/schemas/ReadingProgressStateDto"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2026-07-21T10:00:00.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "authors",
+          "status",
+          "bookmarked",
+          "updatedAt"
+        ]
+      },
+      "ReaderLibraryResponseDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReaderLibraryItemDto"
+            }
+          },
+          "total": {
+            "type": "number",
+            "example": 10
+          },
+          "readingCount": {
+            "type": "number",
+            "example": 3
+          },
+          "bookmarkedCount": {
+            "type": "number",
+            "example": 5
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "readingCount",
+          "bookmarkedCount"
+        ]
+      },
+      "BookmarkDto": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "string",
+            "example": "cm123456789",
+            "description": "Document ID to bookmark"
+          }
+        },
+        "required": [
+          "documentId"
+        ]
+      },
+      "ReadingProgressDto": {
+        "type": "object",
+        "properties": {
+          "currentPage": {
+            "type": "number",
+            "example": 5,
+            "description": "Current page number"
+          },
+          "totalPages": {
+            "type": "number",
+            "example": 120,
+            "description": "Total pages in document"
+          },
+          "percentage": {
+            "type": "number",
+            "example": 45.5,
+            "description": "Reading progress percentage"
+          }
+        },
+        "required": [
+          "currentPage"
+        ]
+      },
+      "AccessDecisionDto": {
+        "type": "object",
+        "properties": {
+          "allowed": {
+            "type": "boolean",
+            "example": true,
+            "description": "Whether the current user is eligible to view/download this document"
+          },
+          "documentId": {
+            "type": "string",
+            "example": "cm123456789"
+          },
+          "userRole": {
+            "type": "string",
+            "example": "READER"
+          },
+          "reason": {
+            "type": "string",
+            "example": "Document is published and available."
+          }
+        },
+        "required": [
+          "allowed",
+          "documentId",
+          "userRole"
+        ]
+      },
+      "ProtectedDocumentUrlDto": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "example": "access_token_abc123"
+          },
+          "expiresAt": {
+            "type": "string",
+            "example": "2026-07-21T11:45:00.000Z"
+          },
+          "url": {
+            "type": "string",
+            "example": "/api/access/stream?token=access_token_abc123"
+          }
+        },
+        "required": [
+          "token",
+          "expiresAt",
+          "url"
         ]
       }
     }

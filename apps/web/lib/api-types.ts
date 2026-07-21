@@ -34,3 +34,9 @@ export type CreateBookIntakeDto = {
   categoryId?: string;
   tags: string[];
 };
+
+export type ReaderLibraryItemDto = components['schemas']['ReaderLibraryItemDto'];
+export type ReaderLibraryResponseDto = components['schemas']['ReaderLibraryResponseDto'];
+export type ReadingProgressStateDto = components['schemas']['ReadingProgressStateDto'];
+export type AccessDecisionDto = components['schemas']['AccessDecisionDto'];
+export type ProtectedDocumentUrlDto = components['schemas']['ProtectedDocumentUrlDto'];
