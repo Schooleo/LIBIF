@@ -65,3 +65,45 @@ export function uploadBookIntake(file: File, metadata: CreateBookIntakeDto, onPr
     xhr.send(form);
   });
 }
+
+export async function fetchViewToken(documentId: string): Promise<{ url: string; token: string; expiresAt: string }> {
+  const { data, error } = await client.POST('/api/access/documents/{documentId}/view-token', {
+    params: { path: { documentId } },
+  });
+  if (error) throw new Error(apiErrorMessage(error, 'View token request failed'));
+  return data as { url: string; token: string; expiresAt: string };
+}
+
+export async function fetchDownloadToken(documentId: string): Promise<{ url: string; token: string; expiresAt: string }> {
+  const { data, error } = await client.POST('/api/access/documents/{documentId}/download-token', {
+    params: { path: { documentId } },
+  });
+  if (error) throw new Error(apiErrorMessage(error, 'Download token request failed'));
+  return data as { url: string; token: string; expiresAt: string };
+}
+
+export async function addBookmark(documentId: string): Promise<{ success: boolean }> {
+  const { data, error } = await client.POST('/api/reader/bookmarks', {
+    body: { documentId },
+  });
+  if (error) throw new Error(apiErrorMessage(error, 'Add bookmark failed'));
+  return data as { success: boolean };
+}
+
+export async function removeBookmark(documentId: string): Promise<{ success: boolean }> {
+  const { data, error } = await client.DELETE('/api/reader/bookmarks/{documentId}', {
+    params: { path: { documentId } },
+  });
+  if (error) throw new Error(apiErrorMessage(error, 'Remove bookmark failed'));
+  return data as { success: boolean };
+}
+
+export async function updateReadingProgress(documentId: string, page: number, totalPages: number): Promise<any> {
+  const { data, error } = await client.PATCH('/api/reader/progress/{documentId}', {
+    params: { path: { documentId } },
+    body: { currentPage: page, totalPages },
+  });
+  if (error) throw new Error(apiErrorMessage(error, 'Update progress failed'));
+  return data;
+}
+

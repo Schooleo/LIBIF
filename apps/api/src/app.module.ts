@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { AccessModule } from './modules/access/access.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { BooksModule } from './modules/books/books.module';
 import { CatalogModule } from './modules/catalog/catalog.module';
@@ -7,6 +8,7 @@ import { DatabaseModule } from './modules/database/database.module';
 import { HealthModule } from './modules/health/health.module';
 import { IsbnModule } from './modules/isbn/isbn.module';
 import { ProcessingModule } from './modules/processing/processing.module';
+import { ReaderModule } from './modules/reader/reader.module';
 import { StorageModule } from './modules/storage/storage.module';
 
 @Module({
@@ -22,7 +24,9 @@ import { StorageModule } from './modules/storage/storage.module';
     BooksModule,
     CatalogModule,
     IsbnModule,
-    HealthModule
+    HealthModule,
+    ReaderModule,
+    AccessModule
   ]
 })
 export class AppModule {}
