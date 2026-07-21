@@ -73,3 +73,17 @@ export class BookListItemResponseDto {
   @ApiProperty({ format: 'date-time' })
   createdAt!: string;
 }
+
+export class PagedBookListResponseDto {
+  @ApiPropertyOptional({ type: [BookListItemResponseDto] })
+  items!: BookListItemResponseDto[];
+
+  @ApiPropertyOptional({ description: 'Total number of items matching the query' })
+  totalCount!: number;
+
+  @ApiPropertyOptional({ description: 'Current page (1-based)' })
+  page!: number;
+
+  @ApiPropertyOptional({ description: 'Page size requested' })
+  pageSize!: number;
+}
