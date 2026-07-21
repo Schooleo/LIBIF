@@ -122,7 +122,7 @@ describe('Digital book intake (e2e)', () => {
   it('does not expose pending books in public catalog', async () => {
     await prisma.user.create({ data: { email: 'librarian@libif.local', passwordHash: 'dev-only', role: 'LIBRARIAN' } });
     await prisma.book.create({ data: { title: 'Pending Book', createdBy: { connect: { email: 'librarian@libif.local' } } } });
-    await request(app.getHttpServer()).get('/api/catalog/books').expect(200, []);
+    await request(app.getHttpServer()).get('/api/catalog/books').expect(200).expect((response) => expect(response.body).toMatchObject({ items: [], totalCount: 0 }));
   });
 
   it('rejects admin book access without a development session boundary', async () => {

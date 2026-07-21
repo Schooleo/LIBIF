@@ -11,7 +11,7 @@ import { MAX_PDF_SIZE_BYTES } from '../storage/pdf-validation';
 import { BooksService } from './books.service';
 import { CreateBookIntakeResponseDto } from './dto/book-intake-response.dto';
 import { CreateBookIntakeDto } from './dto/create-book-intake.dto';
-import { BookListItemResponseDto } from '../catalog/dto/catalog-response.dto';
+import { AdminBookListItemResponseDto } from '../catalog/dto/catalog-response.dto';
 
 @ApiTags('Admin Books')
 @Controller('admin/books')
@@ -43,7 +43,7 @@ export class BooksController {
 
   @Get()
   @ApiOperation({ summary: 'List digital book intake records for staff.' })
-  @ApiOkResponse({ type: [BookListItemResponseDto] })
+  @ApiOkResponse({ type: [AdminBookListItemResponseDto] })
   @ApiForbiddenResponse({ type: AuthErrorDto })
   listAdminBooks() {
     return this.books.listAdminBooks();

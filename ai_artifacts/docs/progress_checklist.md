@@ -77,21 +77,19 @@ Latest full Ralph verification for Phase 3 passed:
 
 ## Next recommended planning target
 
-Plan Phase 4 around **Reader discovery and personal library** unless the project priority shifts to staff/user administration. Role-management modules are now technically safer to plan because Phase 3 established trusted session identity and permission enforcement, but reader-facing access flows remain the more natural next product batch from `screen-matrix.md`.
+Phase 4 member work has been merged into `dev`; next recommended execution phase is **Phase 5 — Document Lifecycle, Upload, Metadata, and Taxonomy Integration**. Keep Phase 4 follow-ups limited to integration hardening or bug fixes unless the team reopens a member lane.
 
 ## 80-90% Completion Team Backlog
 
 - Added `ai_artifacts/docs/team_backlog_80_90_completion.md` as the canonical four-member backlog for remaining high-completion work.
 - Added `ai_artifacts/skeletons/` planning skeletons that map future API modules, web route subtrees, and domain components without introducing build-impacting placeholder code.
-- Next recommended execution phase: Phase 4 — Reader Library and Catalog Access Foundation.
 
-## Phase 4 Member D progress
+## Phase 4 merged progress
 
-- [x] Planned and implemented the Member D dashboard/reporting slice from `ai_artifacts/plans/plan-phase-4-member-d-admin-dashboard-integration-2026-07-21.md`.
-- [x] Added `ReportingModule` with guarded `GET /api/admin/dashboard/librarian` real-count summary.
-- [x] Added `/admin/dashboard` using typed OpenAPI-backed server adapters and existing UI primitives.
-- [x] Regenerated OpenAPI JSON and frontend API path types after backend stabilization.
-- [ ] Remaining Phase 4 work from other lanes: reader library/access, catalog contract expansion, processing-status read model, and notification event contracts.
+- [x] Member A (Reader & Access): Reader module, library/history/bookmarks routes, access decisions, and protected document viewer foundations.
+- [x] Member B (Catalog & Document DTOs): Expanded catalog search/filter/sort/pagination contracts (`q`, `categoryId`, `tagIds`, `page`, `pageSize`, `sort`), split public reader vs admin DTOs (`mapPublicBook`, `mapAdminBook`), unit test coverage, and regenerated OpenAPI/API types.
+- [x] Member C (Processing, Approval, Notifications): Processing status surfaces, approval queue shell, notification API/UI foundations, and related tests.
+- [x] Member D (Dashboard & Reporting): Added `ReportingModule` with guarded `GET /api/admin/dashboard/librarian`, `/admin/dashboard` with real-count cards, loading/error/empty states, generated OpenAPI/API types, and dashboard-specific tests.
 
 ### Phase 4 Member D verification
 

@@ -40,6 +40,26 @@ export interface components {
     "token": string;
     "password": string;
   };
+    "ProcessingJobResponseDto": {
+    "id": string;
+    "bookId": string;
+    "type": string;
+    "status": "QUEUED" | "RUNNING" | "SUCCEEDED" | "FAILED";
+    "attempts": number;
+    "errorMessage"?: string | null;
+    "createdAt": string;
+    "updatedAt": string;
+  };
+    "NotificationResponseDto": {
+    "id": string;
+    "recipientId": string;
+    "type": string;
+    "title": string;
+    "body": string;
+    "payload"?: Record<string, unknown> | null;
+    "isRead": boolean;
+    "createdAt": string;
+  };
     "BookStatusCountsDto": {
     "total": number;
     "draft": number;
@@ -118,7 +138,7 @@ export interface components {
     "originalFilename": string;
     "sizeBytes": string;
   };
-    "BookListItemResponseDto": {
+    "AdminBookListItemResponseDto": {
     "id": string;
     "title": string;
     "isbn"?: string | null;
@@ -126,8 +146,24 @@ export interface components {
     "category"?: components['schemas']["CategoryResponseDto"];
     "tags": components['schemas']["TagResponseDto"][];
     "authors": components['schemas']["AuthorResponseDto"][];
-    "file"?: components['schemas']["BookFileSummaryDto"];
     "createdAt": string;
+    "file"?: components['schemas']["BookFileSummaryDto"];
+  };
+    "PublicBookListItemResponseDto": {
+    "id": string;
+    "title": string;
+    "isbn"?: string | null;
+    "status": "DRAFT" | "PENDING_PROCESSING" | "PROCESSING" | "PENDING_APPROVAL" | "PUBLISHED" | "REJECTED";
+    "category"?: components['schemas']["CategoryResponseDto"];
+    "tags": components['schemas']["TagResponseDto"][];
+    "authors": components['schemas']["AuthorResponseDto"][];
+    "createdAt": string;
+  };
+    "PagedPublicBookListResponseDto": {
+    "items"?: components['schemas']["PublicBookListItemResponseDto"][];
+    "totalCount"?: number;
+    "page"?: number;
+    "pageSize"?: number;
   };
     "IsbnMetadataDto": {
     "isbn"?: string;
@@ -146,6 +182,49 @@ export interface components {
     "HealthResponseDto": {
     "status": string;
     "service": string;
+  };
+    "ReadingProgressStateDto": {
+    "currentPage": number;
+    "totalPages": number;
+    "percentage": number;
+    "lastReadAt": string;
+  };
+    "ReaderLibraryItemDto": {
+    "id": string;
+    "title": string;
+    "subtitle"?: string;
+    "authors": string[];
+    "publisher"?: string;
+    "publishedYear"?: number;
+    "status": string;
+    "bookmarked": boolean;
+    "progress"?: components['schemas']["ReadingProgressStateDto"];
+    "updatedAt": string;
+  };
+    "ReaderLibraryResponseDto": {
+    "items": components['schemas']["ReaderLibraryItemDto"][];
+    "total": number;
+    "readingCount": number;
+    "bookmarkedCount": number;
+  };
+    "BookmarkDto": {
+    "documentId": string;
+  };
+    "ReadingProgressDto": {
+    "currentPage": number;
+    "totalPages"?: number;
+    "percentage"?: number;
+  };
+    "AccessDecisionDto": {
+    "allowed": boolean;
+    "documentId": string;
+    "userRole": string;
+    "reason"?: string;
+  };
+    "ProtectedDocumentUrlDto": {
+    "token": string;
+    "expiresAt": string;
+    "url": string;
   };
   };
 }
@@ -252,6 +331,117 @@ export interface paths {
       };
     };
   };
+  "/api/admin/processing/jobs": {
+    get: {
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["ProcessingJobResponseDto"][];
+        };
+      };
+      "403": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/admin/processing/jobs/{id}": {
+    get: {
+      parameters: {
+        path: {
+          "id": string;
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["ProcessingJobResponseDto"];
+        };
+      };
+      "403": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/admin/processing/jobs/{id}/status": {
+    get: {
+      parameters: {
+        path: {
+          "id": string;
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": string;
+        };
+      };
+      "403": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/notifications": {
+    get: {
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["NotificationResponseDto"][];
+        };
+      };
+      "403": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/notifications/{id}/read": {
+    patch: {
+      parameters: {
+        path: {
+          "id": string;
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["NotificationResponseDto"];
+        };
+      };
+      "403": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/notifications/read-all": {
+    patch: {
+      responses: {
+      "200": {
+        content: {
+          "application/json": unknown;
+        };
+      };
+      "403": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      };
+    };
+  };
   "/api/admin/dashboard/librarian": {
     get: {
       responses: {
@@ -297,7 +487,7 @@ export interface paths {
       responses: {
       "200": {
         content: {
-          "application/json": components['schemas']["BookListItemResponseDto"][];
+          "application/json": components['schemas']["AdminBookListItemResponseDto"][];
         };
       };
       "403": {
@@ -321,10 +511,20 @@ export interface paths {
   };
   "/api/catalog/books": {
     get: {
+      parameters: {
+        query: {
+          "q"?: string;
+          "categoryId"?: string;
+          "tagIds"?: string;
+          "page"?: number;
+          "pageSize"?: number;
+          "sort"?: string;
+        };
+      };
       responses: {
       "200": {
         content: {
-          "application/json": components['schemas']["BookListItemResponseDto"][];
+          "application/json": components['schemas']["PagedPublicBookListResponseDto"];
         };
       };
       };
@@ -352,6 +552,146 @@ export interface paths {
       "200": {
         content: {
           "application/json": components['schemas']["HealthResponseDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/reader/library": {
+    get: {
+      parameters: {
+        query: {
+          "filter"?: "ALL" | "READING" | "BOOKMARKED" | "COMPLETED";
+          "search"?: string;
+          "page"?: number;
+          "limit"?: number;
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["ReaderLibraryResponseDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/reader/history": {
+    get: {
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["ReaderLibraryItemDto"][];
+        };
+      };
+      };
+    };
+  };
+  "/api/reader/bookmarks": {
+    get: {
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["ReaderLibraryItemDto"][];
+        };
+      };
+      };
+    };
+    post: {
+      requestBody: {
+        content: {
+          "application/json": components['schemas']["BookmarkDto"];
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": unknown;
+        };
+      };
+      };
+    };
+  };
+  "/api/reader/bookmarks/{documentId}": {
+    delete: {
+      parameters: {
+        path: {
+          "documentId": string;
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": unknown;
+        };
+      };
+      };
+    };
+  };
+  "/api/reader/progress/{documentId}": {
+    patch: {
+      parameters: {
+        path: {
+          "documentId": string;
+        };
+      };
+      requestBody: {
+        content: {
+          "application/json": components['schemas']["ReadingProgressDto"];
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["ReadingProgressStateDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/access/documents/{documentId}/decision": {
+    get: {
+      parameters: {
+        path: {
+          "documentId": string;
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["AccessDecisionDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/access/documents/{documentId}/view-token": {
+    post: {
+      parameters: {
+        path: {
+          "documentId": string;
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["ProtectedDocumentUrlDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/access/documents/{documentId}/download-token": {
+    post: {
+      parameters: {
+        path: {
+          "documentId": string;
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["ProtectedDocumentUrlDto"];
         };
       };
       };

@@ -6,6 +6,7 @@ import { ProcessingQueue } from '../processing/processing.queue';
 import { validatePdfUpload } from '../storage/pdf-validation';
 import { StorageService, StoredPdf } from '../storage/storage.service';
 import { CreateBookIntakeDto } from './dto/create-book-intake.dto';
+import { mapAdminBook } from '../catalog/catalog.mapper';
 
 type IntakeResult = {
   book: { id: string; title: string; status: BookStatus };
@@ -156,18 +157,6 @@ export class BooksService {
         authors: { include: { author: true } }
       }
     });
-    return books.map((book) => ({
-      id: book.id,
-      title: book.title,
-      isbn: book.isbn,
-      status: book.status,
-      category: book.category,
-      tags: book.tags.map(({ tag }) => tag),
-      authors: book.authors.map(({ author }) => author),
-      file: book.files[0]
-        ? { id: book.files[0].id, originalFilename: book.files[0].originalFilename, sizeBytes: book.files[0].sizeBytes.toString() }
-        : null,
-      createdAt: book.createdAt.toISOString()
-    }));
+    return books.map((book) => mapAdminBook(book));
   }
 }

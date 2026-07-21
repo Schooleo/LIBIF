@@ -3,3 +3,4 @@ export * from './upload/UploadWorkflow';
 export * from './processing/processing';
 export * from './users/UserRoleBadge';
 export * from './reporting';
+export * from './reader';
