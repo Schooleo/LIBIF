@@ -77,3 +77,18 @@ export async function fetchReaderBookmarks(): Promise<ReaderLibraryItemDto[]> {
   if (error) throw new Error(apiErrorMessage(error, 'Reader bookmarks request failed'));
   return data as ReaderLibraryItemDto[];
 }
+
+export async function fetchAdminDocuments(query?: { search?: string; status?: string; categoryId?: string; page?: number; limit?: number }) {
+  const client = await createServerClient();
+  const { data, error } = await client.GET('/api/documents' as any, { params: { query: query ?? {} } });
+  if (error) throw new Error(apiErrorMessage(error, 'Admin documents request failed'));
+  return data;
+}
+
+export async function fetchDocumentDetail(id: string) {
+  const client = await createServerClient();
+  const { data, error } = await client.GET('/api/documents/{id}' as any, { params: { path: { id } } });
+  if (error) throw new Error(apiErrorMessage(error, 'Document detail request failed'));
+  return data;
+}
+
