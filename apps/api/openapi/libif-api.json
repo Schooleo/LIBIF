@@ -271,7 +271,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/BookListItemResponseDto"
+                    "$ref": "#/components/schemas/AdminBookListItemResponseDto"
                   }
                 }
               }
@@ -322,17 +322,71 @@
     "/api/catalog/books": {
       "get": {
         "operationId": "listPublicBooks",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "q",
+            "required": false,
+            "in": "query",
+            "description": "Full-text search over title and isbn",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "categoryId",
+            "required": false,
+            "in": "query",
+            "description": "Category id to filter",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tagIds",
+            "required": false,
+            "in": "query",
+            "description": "Comma-separated tag ids to filter",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number (1-based)",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "description": "Page size",
+            "schema": {
+              "example": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "sort",
+            "required": false,
+            "in": "query",
+            "description": "Sort spec, e.g. createdAt_desc or title_asc",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/BookListItemResponseDto"
-                  }
+                  "$ref": "#/components/schemas/PagedPublicBookListResponseDto"
                 }
               }
             }
@@ -772,7 +826,7 @@
           "sizeBytes"
         ]
       },
-      "BookListItemResponseDto": {
+      "AdminBookListItemResponseDto": {
         "type": "object",
         "properties": {
           "id": {
@@ -817,6 +871,10 @@
               "$ref": "#/components/schemas/AuthorResponseDto"
             }
           },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
           "file": {
             "nullable": true,
             "type": "object",
@@ -825,6 +883,61 @@
                 "$ref": "#/components/schemas/BookFileSummaryDto"
               }
             ]
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "status",
+          "tags",
+          "authors",
+          "createdAt"
+        ]
+      },
+      "PublicBookListItemResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "isbn": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "DRAFT",
+              "PENDING_PROCESSING",
+              "PROCESSING",
+              "PENDING_APPROVAL",
+              "PUBLISHED",
+              "REJECTED"
+            ]
+          },
+          "category": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CategoryResponseDto"
+              }
+            ]
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TagResponseDto"
+            }
+          },
+          "authors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AuthorResponseDto"
+            }
           },
           "createdAt": {
             "type": "string",
@@ -839,6 +952,29 @@
           "authors",
           "createdAt"
         ]
+      },
+      "PagedPublicBookListResponseDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PublicBookListItemResponseDto"
+            }
+          },
+          "totalCount": {
+            "type": "number",
+            "description": "Total number of items matching the query"
+          },
+          "page": {
+            "type": "number",
+            "description": "Current page (1-based)"
+          },
+          "pageSize": {
+            "type": "number",
+            "description": "Page size requested"
+          }
+        }
       },
       "IsbnMetadataDto": {
         "type": "object",

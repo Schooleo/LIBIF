@@ -77,8 +77,5 @@ Latest full Ralph verification for Phase 3 passed:
 
 Plan Phase 4 around **Reader discovery and personal library** unless the project priority shifts to staff/user administration. Role-management modules are now technically safer to plan because Phase 3 established trusted session identity and permission enforcement, but reader-facing access flows remain the more natural next product batch from `screen-matrix.md`.
 
-## 80-90% Completion Team Backlog
-
-- Added `ai_artifacts/docs/team_backlog_80_90_completion.md` as the canonical four-member backlog for remaining high-completion work.
-- Added `ai_artifacts/skeletons/` planning skeletons that map future API modules, web route subtrees, and domain components without introducing build-impacting placeholder code.
-- Next recommended execution phase: Phase 4 — Reader Library and Catalog Access Foundation.
+- [x] Phase 4 Member B (Catalog & Document DTOs): Expanded catalog search/filter/sort/pagination contracts (`q`, `categoryId`, `tagIds`, `page`, `pageSize`, `sort`), split public reader vs admin DTOs (`mapPublicBook`, `mapAdminBook`), unit test coverage, and regenerated OpenAPI/API types.
+- Next recommended execution phase: Phase 5 — Document Lifecycle, Upload, Metadata, and Taxonomy Integration.

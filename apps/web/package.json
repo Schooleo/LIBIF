@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "predev": "npm --prefix ../../packages/shared run build",
     "dev": "next dev",
+    "prebuild": "npm --prefix ../../packages/shared run build",
     "build": "next build",
     "api:types": "node scripts/generate-api-types.mjs",
     "lint": "eslint \"app/**/*.{ts,tsx}\" \"components/**/*.{ts,tsx}\" \"lib/**/*.ts\"",
