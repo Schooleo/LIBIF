@@ -40,6 +40,65 @@ export interface components {
     "token": string;
     "password": string;
   };
+    "ProcessingJobResponseDto": {
+    "id": string;
+    "bookId": string;
+    "type": string;
+    "status": "QUEUED" | "RUNNING" | "SUCCEEDED" | "FAILED";
+    "attempts": number;
+    "errorMessage"?: string | null;
+    "createdAt": string;
+    "updatedAt": string;
+  };
+    "NotificationResponseDto": {
+    "id": string;
+    "recipientId": string;
+    "type": string;
+    "title": string;
+    "body": string;
+    "payload"?: Record<string, unknown> | null;
+    "isRead": boolean;
+    "createdAt": string;
+  };
+    "BookStatusCountsDto": {
+    "total": number;
+    "draft": number;
+    "pendingProcessing": number;
+    "processing": number;
+    "pendingApproval": number;
+    "published": number;
+    "rejected": number;
+  };
+    "ProcessingJobStatusCountsDto": {
+    "queued": number;
+    "running": number;
+    "succeeded": number;
+    "failed": number;
+  };
+    "TaxonomyCountsDto": {
+    "categories": number;
+    "tags": number;
+  };
+    "UserRoleCountsDto": {
+    "admins": number;
+    "librarians": number;
+    "readers": number;
+    "total": number;
+  };
+    "RecentBookSummaryDto": {
+    "id": string;
+    "title": string;
+    "status": "DRAFT" | "PENDING_PROCESSING" | "PROCESSING" | "PENDING_APPROVAL" | "PUBLISHED" | "REJECTED";
+    "createdAt": string;
+  };
+    "LibrarianDashboardSummaryDto": {
+    "generatedAt": string;
+    "books": components['schemas']["BookStatusCountsDto"];
+    "processingJobs": components['schemas']["ProcessingJobStatusCountsDto"];
+    "taxonomy": components['schemas']["TaxonomyCountsDto"];
+    "users": components['schemas']["UserRoleCountsDto"];
+    "recentBooks": components['schemas']["RecentBookSummaryDto"][];
+  };
     "IntakeBookSummaryDto": {
     "id": string;
     "title": string;
@@ -265,6 +324,133 @@ export interface paths {
         };
       };
       "400": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/admin/processing/jobs": {
+    get: {
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["ProcessingJobResponseDto"][];
+        };
+      };
+      "403": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/admin/processing/jobs/{id}": {
+    get: {
+      parameters: {
+        path: {
+          "id": string;
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["ProcessingJobResponseDto"];
+        };
+      };
+      "403": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/admin/processing/jobs/{id}/status": {
+    get: {
+      parameters: {
+        path: {
+          "id": string;
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": string;
+        };
+      };
+      "403": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/notifications": {
+    get: {
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["NotificationResponseDto"][];
+        };
+      };
+      "403": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/notifications/{id}/read": {
+    patch: {
+      parameters: {
+        path: {
+          "id": string;
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["NotificationResponseDto"];
+        };
+      };
+      "403": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/notifications/read-all": {
+    patch: {
+      responses: {
+      "200": {
+        content: {
+          "application/json": unknown;
+        };
+      };
+      "403": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/admin/dashboard/librarian": {
+    get: {
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["LibrarianDashboardSummaryDto"];
+        };
+      };
+      "403": {
         content: {
           "application/json": components['schemas']["AuthErrorDto"];
         };

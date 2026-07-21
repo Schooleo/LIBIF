@@ -31,6 +31,53 @@ enum ProcessingJobStatus {
   FAILED
 }
 
+enum BookFileStatus {
+  ACTIVE
+  REPLACED
+  REJECTED
+}
+
+enum ReadingProgressStatus {
+  READING
+  COMPLETED
+}
+
+enum NotificationType {
+  APPROVAL_REQUIRED
+  CORRECTION_REQUESTED
+  DOCUMENT_AVAILABLE
+  PROCESSING_FAILED
+  SYSTEM
+}
+
+enum NotificationStatus {
+  UNREAD
+  READ
+  ARCHIVED
+}
+
+enum ApprovalReviewStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CORRECTION_REQUESTED
+}
+
+enum BookAuditAction {
+  CREATED
+  METADATA_UPDATED
+  FILE_UPLOADED
+  FILE_REPLACED
+  PROCESSING_QUEUED
+  PROCESSING_STARTED
+  PROCESSING_COMPLETED
+  APPROVAL_REQUESTED
+  APPROVED
+  REJECTED
+  CORRECTION_REQUESTED
+  PUBLISHED
+}
+
 model User {
   id                  String               @id @default(cuid())
   email               String               @unique
@@ -42,6 +89,11 @@ model User {
   booksCreated        Book[]               @relation("BookCreator")
   sessions            UserSession[]
   passwordResetTokens PasswordResetToken[]
+  readingProgress     ReadingProgress[]
+  bookmarks           Bookmark[]
+  notifications       Notification[]       @relation("NotificationRecipient")
+  bookAuditEvents     BookAuditEvent[]     @relation("BookAuditActor")
+  approvalReviews     ApprovalReview[]     @relation("ApprovalReviewer")
 }
 
 model UserSession {
@@ -75,25 +127,29 @@ model PasswordResetToken {
 }
 
 model Book {
-  id            String          @id @default(cuid())
-  isbn          String?         @unique
-  title         String
-  subtitle      String?
-  description   String?
-  publisher     String?
-  publishedYear Int?
-  language      String?         @default("vi")
-  status        BookStatus      @default(PENDING_PROCESSING)
-  categoryId    String?
-  category      Category?       @relation(fields: [categoryId], references: [id])
-  createdById   String
-  createdBy     User            @relation("BookCreator", fields: [createdById], references: [id])
-  files         BookFile[]
-  authors       BookAuthor[]
-  tags          BookTag[]
-  jobs          ProcessingJob[]
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
+  id              String            @id @default(cuid())
+  isbn            String?           @unique
+  title           String
+  subtitle        String?
+  description     String?
+  publisher       String?
+  publishedYear   Int?
+  language        String?           @default("vi")
+  status          BookStatus        @default(PENDING_PROCESSING)
+  categoryId      String?
+  category        Category?         @relation(fields: [categoryId], references: [id])
+  createdById     String
+  createdBy       User              @relation("BookCreator", fields: [createdById], references: [id])
+  files           BookFile[]
+  authors         BookAuthor[]
+  tags            BookTag[]
+  jobs            ProcessingJob[]
+  readingProgress ReadingProgress[]
+  bookmarks       Bookmark[]
+  auditEvents     BookAuditEvent[]
+  approvalReviews ApprovalReview[]
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
 
   @@index([title])
   @@index([status])
@@ -101,16 +157,21 @@ model Book {
 }
 
 model BookFile {
-  id               String   @id @default(cuid())
+  id               String         @id @default(cuid())
   bookId           String
-  book             Book     @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  book             Book           @relation(fields: [bookId], references: [id], onDelete: Cascade)
   bucket           String
-  objectKey        String   @unique
+  objectKey        String         @unique
   originalFilename String
   mimeType         String
   sizeBytes        BigInt
   checksumSha256   String
-  createdAt        DateTime @default(now())
+  version          Int            @default(1)
+  status           BookFileStatus @default(ACTIVE)
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @default(now()) @updatedAt
+
+  @@index([bookId, status])
 }
 
 model Author {
@@ -148,22 +209,108 @@ model Tag {
 model BookTag {
   bookId String
   tagId  String
-  book   Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
-  tag    Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  book   Book   @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  tag    Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
 
   @@id([bookId, tagId])
 }
 
 model ProcessingJob {
-  id           String              @id @default(cuid())
-  bookId       String
-  book         Book                @relation(fields: [bookId], references: [id], onDelete: Cascade)
-  type         String              @default("PDF_OCR_PIPELINE")
-  status       ProcessingJobStatus @default(QUEUED)
-  attempts     Int                 @default(0)
-  errorMessage String?
-  createdAt    DateTime            @default(now())
-  updatedAt    DateTime            @updatedAt
+  id              String              @id @default(cuid())
+  bookId          String
+  book            Book                @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  type            String              @default("PDF_OCR_PIPELINE")
+  status          ProcessingJobStatus @default(QUEUED)
+  stage           String?
+  progressPercent Int                 @default(0)
+  attempts        Int                 @default(0)
+  errorMessage    String?
+  startedAt       DateTime?
+  completedAt     DateTime?
+  cancelledAt     DateTime?
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
 
   @@index([bookId, status])
+}
+
+model ReadingProgress {
+  id          String                @id @default(cuid())
+  userId      String
+  bookId      String
+  currentPage Int                   @default(1)
+  totalPages  Int?
+  percentage  Int                   @default(0)
+  status      ReadingProgressStatus @default(READING)
+  lastReadAt  DateTime              @default(now())
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
+  user        User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  book        Book                  @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, bookId])
+  @@index([bookId])
+  @@index([lastReadAt])
+}
+
+model Bookmark {
+  id        String   @id @default(cuid())
+  userId    String
+  bookId    String
+  note      String?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  book      Book     @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, bookId])
+  @@index([bookId])
+}
+
+model Notification {
+  id          String             @id @default(cuid())
+  recipientId String
+  type        NotificationType
+  status      NotificationStatus @default(UNREAD)
+  title       String
+  body        String
+  payload     Json?
+  actionHref  String?
+  readAt      DateTime?
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+  recipient   User               @relation("NotificationRecipient", fields: [recipientId], references: [id], onDelete: Cascade)
+
+  @@index([recipientId, status, createdAt])
+}
+
+model BookAuditEvent {
+  id        String          @id @default(cuid())
+  bookId    String
+  actorId   String?
+  action    BookAuditAction
+  message   String?
+  metadata  Json?
+  createdAt DateTime        @default(now())
+  book      Book            @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  actor     User?           @relation("BookAuditActor", fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([bookId, createdAt])
+  @@index([actorId])
+}
+
+model ApprovalReview {
+  id               String               @id @default(cuid())
+  bookId           String
+  reviewerId       String?
+  status           ApprovalReviewStatus @default(PENDING)
+  reason           String?
+  requestedChanges String?
+  decidedAt        DateTime?
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
+  book             Book                 @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  reviewer         User?                @relation("ApprovalReviewer", fields: [reviewerId], references: [id], onDelete: SetNull)
+
+  @@index([bookId, status])
+  @@index([reviewerId])
 }

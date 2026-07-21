@@ -146,6 +146,7 @@ const readerNav: NavItem[] = [
 
 /** Admin/Librarian workspace: book management only. No public catalogue link. */
 const adminNav: NavItem[] = [
+  { label: 'Dashboard', href: '/admin/dashboard', description: 'Operational summary and phase status' },
   { label: 'Books', href: '/admin/books', description: 'Digital book intake records' },
   { label: 'New intake', href: '/admin/books/new', description: 'Upload and queue a scanned PDF' },
 ];

@@ -10,6 +10,7 @@ import { IsbnModule } from './modules/isbn/isbn.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
 import { ProcessingModule } from './modules/processing/processing.module';
 import { ReaderModule } from './modules/reader/reader.module';
+import { ReportingModule } from './modules/reporting/reporting.module';
 import { StorageModule } from './modules/storage/storage.module';
 
 @Module({
@@ -23,6 +24,7 @@ import { StorageModule } from './modules/storage/storage.module';
     StorageModule,
     ProcessingModule,
     NotificationsModule,
+    ReportingModule,
     BooksModule,
     CatalogModule,
     IsbnModule,

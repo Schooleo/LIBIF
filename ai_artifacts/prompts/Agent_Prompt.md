@@ -46,7 +46,7 @@ The repository is a TypeScript monorepo with:
 - S3/MinIO-compatible object storage.
 - Redis/BullMQ queue infrastructure.
 
-Phase 1, Phase 2, and Phase 3 foundations are already in place:
+Current foundations through Phase 4 and the Phase 5 schema foundation are already in place:
 
 - Tailwind/PostCSS setup via `apps/web/postcss.config.mjs` and `apps/web/app/globals.css`.
 - Semantic tokens/base/component CSS in `apps/web/styles/`.
@@ -61,6 +61,8 @@ Phase 1, Phase 2, and Phase 3 foundations are already in place:
 - Typed frontend API path map in `apps/web/lib/generated/api-types.ts`, OpenAPI response aliases in `apps/web/lib/api-types.ts`, and split API adapters under `apps/web/lib/api-*.ts`.
 - Production auth/access foundation under `apps/api/src/modules/auth/`: reader registration, sign-in/out, database-backed sessions, password reset token flow, secure HTTP-only session cookie, and explicit non-production dev-header fallback.
 - Auth routes under `apps/web/app/(auth)`: `/sign-in`, `/register`, `/forgot-password`, `/reset-password`, `/reset-password/completed`, `/access-denied`, and `/session-expired`.
+- Phase 4 reader/access/catalog/processing/notification/dashboard foundations are merged.
+- Phase 5 schema foundation migration `20260721114643_phase5_domain_foundations` adds persisted reading progress, bookmarks, notifications, approval reviews, document audit events, processing progress fields, and file version/status fields.
 
 Do not rebuild these foundations from scratch. Extend them when a later batch needs a missing variant or domain-specific component.
 
@@ -156,9 +158,10 @@ When assigned to a member lane:
 2. Treat the skeleton README files as the authoritative map for future files in your lane.
 3. Do not edit another member's owned module, route subtree, component family, tests, or docs section to “help” unless your task explicitly lists that shared touchpoint.
 4. Do not regenerate OpenAPI/client files, create Prisma migrations, or alter shared UI primitives unless your task explicitly assigns you that integration responsibility.
-5. If a needed change crosses lanes, stop that part of the work and report the exact cross-lane dependency instead of silently editing another member's files.
-6. Prefer additive DTO/API changes during feature work; breaking renames/removals belong in a dedicated integration PR.
-7. Keep docs updates limited to the smallest relevant section and avoid duplicating status already captured in the backlog, skeletons, screen matrix, or progress checklist.
+5. Prisma schema/migration work is normally locked to the phase migration owner or a dedicated schema-foundation PR. If the accepted feature needs missing persisted data, do not bypass it with hidden in-memory state; report the dependency or implement it only when your task explicitly grants schema ownership.
+6. If a needed change crosses lanes, stop that part of the work and report the exact cross-lane dependency instead of silently editing another member's files.
+7. Prefer additive DTO/API changes during feature work; breaking renames/removals belong in a dedicated integration PR.
+8. Keep docs updates limited to the smallest relevant section and avoid duplicating status already captured in the backlog, skeletons, screen matrix, or progress checklist.
 
 Use this assignment prompt shape for AI agents:
 
@@ -176,9 +179,12 @@ Edit only:
 Do not edit:
 - other member lanes
 - shared UI primitives
-- Prisma schema/migrations
-- generated OpenAPI/client files
+- Prisma schema/migrations unless this assignment explicitly names you as migration owner
+- generated OpenAPI/client files unless this assignment explicitly names you as integrator
 - unrelated docs
+
+Schema rule:
+- If required persisted data is missing, use the approved schema-foundation branch/migration or report the dependency. Do not replace required persistence with private in-memory maps, module-local arrays, or undocumented mock state.
 
 If the task requires cross-lane changes, report the dependency and keep your implementation inside your lane.
 ```
@@ -213,7 +219,7 @@ Use the batch assignments in `screen-matrix.md` as the source of truth.
 7. Dashboards, reports, export, and settings.
 8. Cross-screen integration and hardening.
 
-Phase 3 authentication/access is complete: production credential flows, persisted sessions, password reset, auth screens, cookie-aware API adapters, and updated contracts are in place. Next work should move to Batch 2 / Phase 4 reader discovery and personal-library foundations before protected reader modules depend on entitlement state.
+Phase 4 is merged: reader/access/catalog/processing/notification/dashboard foundations exist. Next work should move to Phase 5 / Batch 3: document lifecycle, upload, metadata editing, reader document-view handoff, processing transition hooks, and taxonomy selectors. Phase 5 begins from the schema-foundation migration rather than ad hoc mocks for required persisted state.
 
 ## 10. Accessibility and interaction requirements
 

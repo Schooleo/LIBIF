@@ -13,6 +13,7 @@ export type RegisterRequestDto = components['schemas']['RegisterRequestDto'];
 export type SignInRequestDto = components['schemas']['SignInRequestDto'];
 export type PasswordResetRequestDto = components['schemas']['PasswordResetRequestDto'];
 export type PasswordResetDto = components['schemas']['PasswordResetDto'];
+export type LibrarianDashboardSummaryDto = components['schemas']['LibrarianDashboardSummaryDto'];
 export type CreateBookIntakeResponse = components['schemas']['CreateBookIntakeResponseDto'];
 export type IsbnLookupResponse = components['schemas']['IsbnLookupResponseDto'];
 

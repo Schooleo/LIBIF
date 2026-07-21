@@ -54,8 +54,9 @@ Last updated: 2026-07-20
 
 ## Database layer
 
-- Prisma schema currently models `User`, `UserSession`, `PasswordResetToken`, `Book`, `BookFile`, `Author`, `BookAuthor`, `Category`, `Tag`, `BookTag`, and `ProcessingJob`.
-- Current enums: `UserRole`, `BookStatus`, `ProcessingJobStatus`.
+- Prisma schema currently models `User`, `UserSession`, `PasswordResetToken`, `Book`, `BookFile`, `Author`, `BookAuthor`, `Category`, `Tag`, `BookTag`, `ProcessingJob`, `ReadingProgress`, `Bookmark`, `Notification`, `BookAuditEvent`, and `ApprovalReview`.
+- Current enums: `UserRole`, `BookStatus`, `ProcessingJobStatus`, `BookFileStatus`, `ReadingProgressStatus`, `NotificationType`, `NotificationStatus`, `ApprovalReviewStatus`, and `BookAuditAction`.
+- Phase 5 schema foundation migration `20260721114643_phase5_domain_foundations` fills the persistence gap that Phase 4 lanes had to work around: reading state/bookmarks, notifications, approval reviews, audit events, processing progress timestamps/percent, and file version/status metadata.
 - PostgreSQL is the configured provider.
 - Future catalogue search must add authoritative backend pagination/filtering/sorting and `pg_trgm` behavior; no direct frontend database access is allowed.
 
@@ -87,14 +88,15 @@ Last updated: 2026-07-20
 - **Notifications capability:** event-driven records and authorized action links, without duplicating workflow truth.
 - **Reporting read layer:** query services over approved module-owned data; no ad hoc frontend database access.
 
-## Architecture gaps to resolve after Phase 3
+## Architecture gaps to resolve after Phase 4 / Phase 5 schema foundation
 
-1. Reader module is not yet present as a first-class module.
-2. Upload ownership is currently folded into `BooksModule` rather than a separate Upload module/application service boundary.
-3. Auth-adjacent administration remains deferred: staff provisioning UX, role changes, account deactivation, MFA/OAuth, production email provider integration, throttling, and security settings.
-4. OpenAPI generation exists, but later batches must keep decorators/generator output current as DTOs expand.
-5. Processing queue exists, but worker entry points and full status endpoints are not implemented.
-6. Current Prisma schema lacks audit records, approval/correction records, notification records, reading state, bookmarks, report export jobs, file versioning, and full-text/search structures.
+1. Reader module exists, but Phase 5/6 must migrate bookmarks and reading progress from temporary in-memory state to the new Prisma models.
+2. Notifications module exists, but Phase 5/6 must migrate module-local arrays to the new persisted `Notification` model and role-aware action links.
+3. Upload ownership is currently folded into `BooksModule` rather than a separate Upload/Documents application service boundary.
+4. Auth-adjacent administration remains deferred: staff provisioning UX, role changes, account deactivation, MFA/OAuth, production email provider integration, throttling, and security settings.
+5. OpenAPI generation exists, but later batches must keep decorators/generator output current as DTOs expand.
+6. Processing queue/status surfaces exist, but worker entry points, transition validation, retry/cancel controls, and full status history are not implemented.
+7. Remaining data gaps after the Phase 5 schema foundation: report export jobs and full-text/search structures.
 
 ## Design inconsistencies and implementation risks
 
@@ -107,10 +109,11 @@ Last updated: 2026-07-20
 1. Phase 1 completed: semantic tokens and shared components are in place without changing business behavior.
 2. Phase 2 completed: role-aware Next.js route groups/layouts, admin session gating, auth/session boundary scaffold, NestJS OpenAPI generation, and typed frontend API client are in place.
 3. Phase 3 completed: production auth/access foundation, persisted sessions, password reset, auth screens, secure cookie transport, and generated auth contracts are in place.
-4. Next batches: add Reader module and protected reader-access contracts before protected reader routes rely on entitlement state.
-5. Move current intake behavior behind Upload/Catalog boundaries while preserving existing endpoint behavior until the new contracts are verified.
-6. Add processing workers and status endpoints before processing queue screens.
-7. Add audit/event records before approval/correction, taxonomy risky actions, and user administration screens.
+4. Phase 4 completed: reader/access/catalog/processing/notification/dashboard foundations and the admin dashboard read model are merged.
+5. Phase 5 starts from a migration-first schema foundation, then completes document lifecycle, upload, metadata, taxonomy selectors, processing transition hooks, and protected viewer handoff.
+6. Move current intake behavior behind Upload/Catalog boundaries while preserving existing endpoint behavior until the new contracts are verified.
+7. Add processing workers and status endpoints before processing queue screens.
+8. Use audit/event records before approval/correction, taxonomy risky actions, and user administration screens.
 
 ## Anti-fragmentation decisions
 

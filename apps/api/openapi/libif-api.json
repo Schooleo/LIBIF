@@ -203,6 +203,256 @@
         ]
       }
     },
+    "/api/admin/processing/jobs": {
+      "get": {
+        "operationId": "listJobs",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProcessingJobResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "List processing jobs.",
+        "tags": [
+          "Admin Processing"
+        ]
+      }
+    },
+    "/api/admin/processing/jobs/{id}": {
+      "get": {
+        "operationId": "getJobById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProcessingJobResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get processing job details.",
+        "tags": [
+          "Admin Processing"
+        ]
+      }
+    },
+    "/api/admin/processing/jobs/{id}/status": {
+      "get": {
+        "operationId": "getJobStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The status of the processing job.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get processing job status only.",
+        "tags": [
+          "Admin Processing"
+        ]
+      }
+    },
+    "/api/notifications": {
+      "get": {
+        "operationId": "listMyNotifications",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NotificationResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "List notifications for the current user.",
+        "tags": [
+          "Notifications"
+        ]
+      }
+    },
+    "/api/notifications/{id}/read": {
+      "patch": {
+        "operationId": "markAsRead",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Mark a notification as read.",
+        "tags": [
+          "Notifications"
+        ]
+      }
+    },
+    "/api/notifications/read-all": {
+      "patch": {
+        "operationId": "markAllAsRead",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "All notifications marked as read."
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Mark all notifications for the current user as read.",
+        "tags": [
+          "Notifications"
+        ]
+      }
+    },
+    "/api/admin/dashboard/librarian": {
+      "get": {
+        "operationId": "getLibrarianDashboardSummary",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LibrarianDashboardSummaryDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Return librarian dashboard summary counts.",
+        "tags": [
+          "Admin Dashboard"
+        ]
+      }
+    },
     "/api/admin/books/intake": {
       "post": {
         "operationId": "createIntake",
@@ -1001,6 +1251,256 @@
         "required": [
           "token",
           "password"
+        ]
+      },
+      "ProcessingJobResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "bookId": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "QUEUED",
+              "RUNNING",
+              "SUCCEEDED",
+              "FAILED"
+            ]
+          },
+          "attempts": {
+            "type": "number"
+          },
+          "errorMessage": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "bookId",
+          "type",
+          "status",
+          "attempts",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "NotificationResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "recipientId": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "body": {
+            "type": "string"
+          },
+          "payload": {
+            "type": "object",
+            "nullable": true
+          },
+          "isRead": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "recipientId",
+          "type",
+          "title",
+          "body",
+          "isRead",
+          "createdAt"
+        ]
+      },
+      "BookStatusCountsDto": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "number"
+          },
+          "draft": {
+            "type": "number"
+          },
+          "pendingProcessing": {
+            "type": "number"
+          },
+          "processing": {
+            "type": "number"
+          },
+          "pendingApproval": {
+            "type": "number"
+          },
+          "published": {
+            "type": "number"
+          },
+          "rejected": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "total",
+          "draft",
+          "pendingProcessing",
+          "processing",
+          "pendingApproval",
+          "published",
+          "rejected"
+        ]
+      },
+      "ProcessingJobStatusCountsDto": {
+        "type": "object",
+        "properties": {
+          "queued": {
+            "type": "number"
+          },
+          "running": {
+            "type": "number"
+          },
+          "succeeded": {
+            "type": "number"
+          },
+          "failed": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "queued",
+          "running",
+          "succeeded",
+          "failed"
+        ]
+      },
+      "TaxonomyCountsDto": {
+        "type": "object",
+        "properties": {
+          "categories": {
+            "type": "number"
+          },
+          "tags": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "categories",
+          "tags"
+        ]
+      },
+      "UserRoleCountsDto": {
+        "type": "object",
+        "properties": {
+          "admins": {
+            "type": "number"
+          },
+          "librarians": {
+            "type": "number"
+          },
+          "readers": {
+            "type": "number"
+          },
+          "total": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "admins",
+          "librarians",
+          "readers",
+          "total"
+        ]
+      },
+      "RecentBookSummaryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "DRAFT",
+              "PENDING_PROCESSING",
+              "PROCESSING",
+              "PENDING_APPROVAL",
+              "PUBLISHED",
+              "REJECTED"
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "status",
+          "createdAt"
+        ]
+      },
+      "LibrarianDashboardSummaryDto": {
+        "type": "object",
+        "properties": {
+          "generatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "books": {
+            "$ref": "#/components/schemas/BookStatusCountsDto"
+          },
+          "processingJobs": {
+            "$ref": "#/components/schemas/ProcessingJobStatusCountsDto"
+          },
+          "taxonomy": {
+            "$ref": "#/components/schemas/TaxonomyCountsDto"
+          },
+          "users": {
+            "$ref": "#/components/schemas/UserRoleCountsDto"
+          },
+          "recentBooks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RecentBookSummaryDto"
+            }
+          }
+        },
+        "required": [
+          "generatedAt",
+          "books",
+          "processingJobs",
+          "taxonomy",
+          "users",
+          "recentBooks"
         ]
       },
       "IntakeBookSummaryDto": {

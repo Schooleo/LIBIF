@@ -1,7 +1,9 @@
 import { headers } from 'next/headers';
 import { createLibifApiClient, apiErrorMessage } from './api-client';
-import type { AccessDecisionDto, AdminBookListItemDto, BookListItemDto, CategoryDto, PagedBookListDto, PublicBookListItemDto, ReaderLibraryItemDto, ReaderLibraryResponseDto, SessionDto } from './api-types';
+import type { AccessDecisionDto, AdminBookListItemDto, CategoryDto, LibrarianDashboardSummaryDto, PagedBookListDto, PublicBookListItemDto, ReaderLibraryItemDto, ReaderLibraryResponseDto, SessionDto } from './api-types';
 import { getDevAuthHeaders } from './auth/session';
+
+type ReaderLibraryQuery = { filter?: 'ALL' | 'READING' | 'BOOKMARKED' | 'COMPLETED'; search?: string; page?: number; limit?: number };
 
 async function createServerClient() {
   const incomingHeaders = await headers();
@@ -37,6 +39,13 @@ export async function fetchPublicBooks(): Promise<PublicBookListItemDto[]> {
   return (data as PagedBookListDto).items;
 }
 
+export async function fetchLibrarianDashboardSummary(): Promise<LibrarianDashboardSummaryDto> {
+  const client = await createServerClient();
+  const { data, error } = await client.GET('/api/admin/dashboard/librarian');
+  if (error) throw new Error(apiErrorMessage(error, 'Dashboard summary request failed'));
+  return data;
+}
+
 export async function fetchAccessDecision(documentId: string): Promise<AccessDecisionDto> {
   const client = await createServerClient();
   const { data, error } = await client.GET('/api/access/documents/{documentId}/decision', {
@@ -46,10 +55,10 @@ export async function fetchAccessDecision(documentId: string): Promise<AccessDec
   return data as AccessDecisionDto;
 }
 
-export async function fetchReaderLibrary(query?: { filter?: 'ALL' | 'READING' | 'BOOKMARKED' | 'COMPLETED'; search?: string; page?: number; limit?: number }): Promise<ReaderLibraryResponseDto> {
+export async function fetchReaderLibrary(query?: ReaderLibraryQuery): Promise<ReaderLibraryResponseDto> {
   const client = await createServerClient();
   const { data, error } = await client.GET('/api/reader/library', {
-    params: { query: query as any },
+    params: { query: query ?? {} },
   });
   if (error) throw new Error(apiErrorMessage(error, 'Reader library request failed'));
   return data as ReaderLibraryResponseDto;
@@ -68,4 +77,3 @@ export async function fetchReaderBookmarks(): Promise<ReaderLibraryItemDto[]> {
   if (error) throw new Error(apiErrorMessage(error, 'Reader bookmarks request failed'));
   return data as ReaderLibraryItemDto[];
 }
-
