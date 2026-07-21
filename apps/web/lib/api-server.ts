@@ -32,7 +32,7 @@ export async function fetchAdminBooks(): Promise<AdminBookListItemDto[]> {
 
 export async function fetchPublicBooks(): Promise<PublicBookListItemDto[]> {
   const client = await createServerClient();
-  const { data, error } = await client.GET('/api/catalog/books');
+  const { data, error } = await client.GET('/api/catalog/books', { params: { query: {} } });
   if (error) throw new Error(apiErrorMessage(error, 'Catalog books request failed'));
   return (data as PagedBookListDto).items;
 }
