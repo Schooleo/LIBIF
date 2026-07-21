@@ -7,6 +7,7 @@ import { DatabaseModule } from './modules/database/database.module';
 import { HealthModule } from './modules/health/health.module';
 import { IsbnModule } from './modules/isbn/isbn.module';
 import { ProcessingModule } from './modules/processing/processing.module';
+import { ReportingModule } from './modules/reporting/reporting.module';
 import { StorageModule } from './modules/storage/storage.module';
 
 @Module({
@@ -19,6 +20,7 @@ import { StorageModule } from './modules/storage/storage.module';
     AuthModule,
     StorageModule,
     ProcessingModule,
+    ReportingModule,
     BooksModule,
     CatalogModule,
     IsbnModule,

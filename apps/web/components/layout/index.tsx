@@ -79,6 +79,7 @@ const readerNav: NavItem[] = [
 ];
 
 const adminNav: NavItem[] = [
+  { label: 'Dashboard', href: '/admin/dashboard', description: 'Operational summary and phase status' },
   { label: 'Admin books', href: '/admin/books', description: 'Digital book intake records' },
   { label: 'New intake', href: '/admin/books/new', description: 'Upload and queue a scanned PDF' },
   { label: 'Public catalogue', href: '/catalogue', description: 'Reader-facing catalogue preview' }

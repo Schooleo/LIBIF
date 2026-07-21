@@ -1,6 +1,6 @@
 import { headers } from 'next/headers';
 import { createLibifApiClient, apiErrorMessage } from './api-client';
-import type { BookListItemDto, CategoryDto, SessionDto } from './api-types';
+import type { BookListItemDto, CategoryDto, LibrarianDashboardSummaryDto, SessionDto } from './api-types';
 import { getDevAuthHeaders } from './auth/session';
 
 async function createServerClient() {
@@ -34,5 +34,12 @@ export async function fetchPublicBooks(): Promise<BookListItemDto[]> {
   const client = await createServerClient();
   const { data, error } = await client.GET('/api/catalog/books');
   if (error) throw new Error(apiErrorMessage(error, 'Catalog books request failed'));
+  return data;
+}
+
+export async function fetchLibrarianDashboardSummary(): Promise<LibrarianDashboardSummaryDto> {
+  const client = await createServerClient();
+  const { data, error } = await client.GET('/api/admin/dashboard/librarian');
+  if (error) throw new Error(apiErrorMessage(error, 'Dashboard summary request failed'));
   return data;
 }

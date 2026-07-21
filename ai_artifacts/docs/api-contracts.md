@@ -1,6 +1,6 @@
 # API Contracts
 
-Last updated: 2026-07-20
+Last updated: 2026-07-21
 
 OpenAPI is now generated for implemented endpoints at `apps/api/openapi/libif-api.json`, with frontend path types generated to `apps/web/lib/generated/api-types.ts`. This document records implemented endpoints plus target contract shapes needed by later Stitch screen batches.
 
@@ -19,6 +19,7 @@ OpenAPI is now generated for implemented endpoints at `apps/api/openapi/libif-ap
 | `GET /api/categories` | `CatalogModule` | `apps/web/app/(admin)/admin/books/new/page.tsx` | Category list. |
 | `GET /api/catalog/books` | `CatalogModule` | `apps/web/app/(reader)/catalogue/page.tsx` | Public published books only. |
 | `GET /api/isbn/:isbn` | `IsbnModule` | `apps/web/components/book-intake/MetadataFields.tsx` | ISBN lookup proxy. |
+| `GET /api/admin/dashboard/librarian` | `ReportingModule` | `apps/web/app/(admin)/admin/dashboard/page.tsx` | Phase 4 Member D dashboard summary; guarded for Admin/Librarian; returns no-migration counts for books, processing jobs, taxonomy, users, and recent books. |
 
 ## Standard error envelope
 
@@ -135,7 +136,7 @@ Deferred auth-adjacent contracts remain in Batch 6/7: user administration, role 
 
 ### Batch 7 — Dashboards, reports, export, and settings
 
-- `GET /api/admin/dashboard/librarian?dateRange`
+- `GET /api/admin/dashboard/librarian?dateRange` — Phase 4 Member D implements the base no-date-range summary response; date filtering remains deferred.
 - `GET /api/admin/dashboard/management?dateRange`
 - `GET /api/admin/reports/{reportId}/rows?page&filters&sort`
 - `POST /api/admin/report-exports`
@@ -159,4 +160,4 @@ Deferred auth-adjacent contracts remain in Batch 6/7: user administration, role 
 
 ## OpenAPI implementation status
 
-Phase 2 added NestJS Swagger setup, stable operation IDs, generated JSON at `apps/api/openapi/libif-api.json`, a dependency-free frontend path-map generator at `apps/web/scripts/generate-api-types.mjs`, OpenAPI-owned response aliases at `apps/web/lib/api-types.ts`, and split `openapi-fetch` transport adapters in `apps/web/lib/api-server.ts` and `apps/web/lib/api-browser.ts`. Phase 3 added generated auth request/response DTOs and cookie-aware frontend calls. Later phases must keep OpenAPI decorators and generated path types aligned whenever endpoints change.
+Phase 2 added NestJS Swagger setup, stable operation IDs, generated JSON at `apps/api/openapi/libif-api.json`, a dependency-free frontend path-map generator at `apps/web/scripts/generate-api-types.mjs`, OpenAPI-owned response aliases at `apps/web/lib/api-types.ts`, and split `openapi-fetch` transport adapters in `apps/web/lib/api-server.ts` and `apps/web/lib/api-browser.ts`. Phase 3 added generated auth request/response DTOs and cookie-aware frontend calls. Phase 4 Member D added the generated `GET /api/admin/dashboard/librarian` reporting summary contract and web server adapter. Later phases must keep OpenAPI decorators and generated path types aligned whenever endpoints change.

@@ -1,6 +1,6 @@
 # LIBIF Progress Checklist
 
-Last updated: 2026-07-20
+Last updated: 2026-07-21
 
 This checklist is the concise current-state tracker for future agents and team members. Detailed design, screen, workflow, and contract notes remain in the other `ai_artifacts/docs/` files.
 
@@ -51,6 +51,7 @@ Latest full Ralph verification for Phase 3 passed:
 - [x] `/catalog` compatibility redirect
 - [x] `/admin/books`
 - [x] `/admin/books/new`
+- [x] `/admin/dashboard`
 - [x] `/sign-in`
 - [x] `/register`
 - [x] `/forgot-password`
@@ -60,6 +61,7 @@ Latest full Ralph verification for Phase 3 passed:
 - [x] `/session-expired`
 - [x] Auth APIs: register, sign-in, sign-out, session, reset request, reset completion.
 - [x] Intake/catalog APIs: admin intake, admin books, categories, public catalog books, ISBN lookup.
+- [x] Reporting API: admin/librarian dashboard summary counts.
 
 ## Remaining high-level work
 
@@ -70,7 +72,7 @@ Latest full Ralph verification for Phase 3 passed:
 - [ ] Processing workers and processing status/retry endpoints.
 - [ ] Approval, correction, and notifications workflows.
 - [ ] Taxonomy/tag management, user administration, role changes, and deactivation.
-- [ ] Dashboards, reports, exports, and settings.
+- [ ] Dashboards, reports, exports, and settings. Phase 4 Member D completed the base dashboard summary only; report exports/settings remain deferred.
 - [ ] Cross-screen integration hardening and responsive/visual QA.
 
 ## Next recommended planning target
@@ -82,3 +84,21 @@ Plan Phase 4 around **Reader discovery and personal library** unless the project
 - Added `ai_artifacts/docs/team_backlog_80_90_completion.md` as the canonical four-member backlog for remaining high-completion work.
 - Added `ai_artifacts/skeletons/` planning skeletons that map future API modules, web route subtrees, and domain components without introducing build-impacting placeholder code.
 - Next recommended execution phase: Phase 4 — Reader Library and Catalog Access Foundation.
+
+## Phase 4 Member D progress
+
+- [x] Planned and implemented the Member D dashboard/reporting slice from `ai_artifacts/plans/plan-phase-4-member-d-admin-dashboard-integration-2026-07-21.md`.
+- [x] Added `ReportingModule` with guarded `GET /api/admin/dashboard/librarian` real-count summary.
+- [x] Added `/admin/dashboard` using typed OpenAPI-backed server adapters and existing UI primitives.
+- [x] Regenerated OpenAPI JSON and frontend API path types after backend stabilization.
+- [ ] Remaining Phase 4 work from other lanes: reader library/access, catalog contract expansion, processing-status read model, and notification event contracts.
+
+### Phase 4 Member D verification
+
+- [x] `npm run openapi:generate`
+- [x] `npm run lint`
+- [x] `npm test`
+- [x] `npm run build`
+- [x] `npm run test:e2e -w apps/api`
+- [x] Architect verification approved after adding route loading UI and dashboard-specific web tests.
+- [x] Ralph deslop pass completed on changed files; post-deslop regression remained green.

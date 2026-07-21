@@ -40,6 +40,45 @@ export interface components {
     "token": string;
     "password": string;
   };
+    "BookStatusCountsDto": {
+    "total": number;
+    "draft": number;
+    "pendingProcessing": number;
+    "processing": number;
+    "pendingApproval": number;
+    "published": number;
+    "rejected": number;
+  };
+    "ProcessingJobStatusCountsDto": {
+    "queued": number;
+    "running": number;
+    "succeeded": number;
+    "failed": number;
+  };
+    "TaxonomyCountsDto": {
+    "categories": number;
+    "tags": number;
+  };
+    "UserRoleCountsDto": {
+    "admins": number;
+    "librarians": number;
+    "readers": number;
+    "total": number;
+  };
+    "RecentBookSummaryDto": {
+    "id": string;
+    "title": string;
+    "status": "DRAFT" | "PENDING_PROCESSING" | "PROCESSING" | "PENDING_APPROVAL" | "PUBLISHED" | "REJECTED";
+    "createdAt": string;
+  };
+    "LibrarianDashboardSummaryDto": {
+    "generatedAt": string;
+    "books": components['schemas']["BookStatusCountsDto"];
+    "processingJobs": components['schemas']["ProcessingJobStatusCountsDto"];
+    "taxonomy": components['schemas']["TaxonomyCountsDto"];
+    "users": components['schemas']["UserRoleCountsDto"];
+    "recentBooks": components['schemas']["RecentBookSummaryDto"][];
+  };
     "IntakeBookSummaryDto": {
     "id": string;
     "title": string;
@@ -206,6 +245,22 @@ export interface paths {
         };
       };
       "400": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/admin/dashboard/librarian": {
+    get: {
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["LibrarianDashboardSummaryDto"];
+        };
+      };
+      "403": {
         content: {
           "application/json": components['schemas']["AuthErrorDto"];
         };
