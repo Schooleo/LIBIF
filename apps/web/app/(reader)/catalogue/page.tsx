@@ -1,11 +1,11 @@
-import type { BookListItemDto } from '../../../lib/api-types';
+import type { PublicBookListItemDto } from '../../../lib/api-types';
 import { DocumentCard } from '../../../components/domain';
 import { EmptyState, InlineAlert } from '../../../components/ui';
 import { PageHeader } from '../../../components/layout';
 import { fetchPublicBooks } from '../../../lib/api-server';
 
 export default async function CatalogPage() {
-  let books: BookListItemDto[] = [];
+  let books: PublicBookListItemDto[] = [];
   let loadError: string | undefined;
   try {
     books = await fetchPublicBooks();

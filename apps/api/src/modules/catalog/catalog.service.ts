@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { BookStatus } from '../../generated/prisma/client';
 import { PrismaService } from '../database/prisma.service';
 import { CatalogQueryDto } from './dto/catalog-query.dto';
+import { mapPagedPublicBooks } from './catalog.mapper';
 
 type SortSpec = { [key: string]: 'asc' | 'desc' };
 
@@ -38,10 +39,11 @@ export class CatalogService {
       }
     }
 
+    const ALLOWED_SORT_FIELDS = ['createdAt', 'title', 'publishedYear'];
     let orderBy: SortSpec = { createdAt: 'desc' };
     if (query.sort) {
       const [field, dir] = query.sort.split('_');
-      if (field && (dir === 'asc' || dir === 'desc')) {
+      if (field && ALLOWED_SORT_FIELDS.includes(field) && (dir === 'asc' || dir === 'desc')) {
         orderBy = { [field]: dir } as SortSpec;
       }
     }
@@ -53,31 +55,10 @@ export class CatalogService {
         skip,
         take: pageSize,
         orderBy,
-        include: { category: true, tags: { include: { tag: true } }, authors: { include: { author: true } }, files: true }
+        include: { category: true, tags: { include: { tag: true } }, authors: { include: { author: true } } }
       })
     ]);
 
-    const items = books.map((book) => ({
-      id: book.id,
-      title: book.title,
-      isbn: book.isbn,
-      status: book.status,
-      category: book.category,
-      tags: book.tags.map(({ tag }) => tag),
-      authors: book.authors.map(({ author }) => author),
-      file: book.files && book.files.length ? {
-        id: book.files[0].id,
-        originalFilename: book.files[0].originalFilename,
-        sizeBytes: book.files[0].sizeBytes.toString()
-      } : null,
-      createdAt: book.createdAt.toISOString()
-    }));
-
-    return {
-      items,
-      totalCount,
-      page,
-      pageSize
-    };
+    return mapPagedPublicBooks(books, page, pageSize, totalCount);
   }
 }

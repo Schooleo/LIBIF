@@ -45,7 +45,7 @@ export class BookFileSummaryDto {
   sizeBytes!: string;
 }
 
-export class BookListItemResponseDto {
+export class PublicBookListItemResponseDto {
   @ApiProperty()
   id!: string;
 
@@ -67,16 +67,18 @@ export class BookListItemResponseDto {
   @ApiProperty({ type: [AuthorResponseDto] })
   authors!: AuthorResponseDto[];
 
-  @ApiPropertyOptional({ type: () => BookFileSummaryDto, nullable: true })
-  file?: BookFileSummaryDto | null;
-
   @ApiProperty({ format: 'date-time' })
   createdAt!: string;
 }
 
-export class PagedBookListResponseDto {
-  @ApiPropertyOptional({ type: [BookListItemResponseDto] })
-  items!: BookListItemResponseDto[];
+export class AdminBookListItemResponseDto extends PublicBookListItemResponseDto {
+  @ApiPropertyOptional({ type: () => BookFileSummaryDto, nullable: true })
+  file?: BookFileSummaryDto | null;
+}
+
+export class PagedPublicBookListResponseDto {
+  @ApiPropertyOptional({ type: [PublicBookListItemResponseDto] })
+  items!: PublicBookListItemResponseDto[];
 
   @ApiPropertyOptional({ description: 'Total number of items matching the query' })
   totalCount!: number;

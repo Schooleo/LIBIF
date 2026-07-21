@@ -1,11 +1,11 @@
-import type { BookListItemDto } from '../../../../lib/api-types';
+import type { AdminBookListItemDto } from '../../../../lib/api-types';
 import { DocumentCard } from '../../../../components/domain';
 import { EmptyState, InlineAlert } from '../../../../components/ui';
 import { PageHeader } from '../../../../components/layout';
 import { fetchAdminBooks } from '../../../../lib/api-server';
 
 export default async function AdminBooksPage() {
-  let books: BookListItemDto[] = [];
+  let books: AdminBookListItemDto[] = [];
   let loadError: string | undefined;
   try {
     books = await fetchAdminBooks();

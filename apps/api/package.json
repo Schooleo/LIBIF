@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "predev": "npm run prisma:generate",
+    "predev": "npm --prefix ../../packages/shared run build && npm run prisma:generate",
     "dev": "nest start --watch",
-    "prebuild": "npm run prisma:generate",
+    "prebuild": "npm --prefix ../../packages/shared run build && npm run prisma:generate",
     "build": "nest build",
     "start": "node dist/src/main.js",
     "openapi:generate": "npm run build && node dist/src/openapi.generate.js",

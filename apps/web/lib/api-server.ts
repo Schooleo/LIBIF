@@ -1,6 +1,6 @@
 import { headers } from 'next/headers';
 import { createLibifApiClient, apiErrorMessage } from './api-client';
-import type { BookListItemDto, CategoryDto, SessionDto } from './api-types';
+import type { AdminBookListItemDto, CategoryDto, PagedBookListDto, PublicBookListItemDto, SessionDto } from './api-types';
 import { getDevAuthHeaders } from './auth/session';
 
 async function createServerClient() {
@@ -23,16 +23,16 @@ export async function fetchCategories(): Promise<CategoryDto[]> {
   return data;
 }
 
-export async function fetchAdminBooks(): Promise<BookListItemDto[]> {
+export async function fetchAdminBooks(): Promise<AdminBookListItemDto[]> {
   const client = await createServerClient();
   const { data, error } = await client.GET('/api/admin/books');
   if (error) throw new Error(apiErrorMessage(error, 'Admin books request failed'));
   return data;
 }
 
-export async function fetchPublicBooks(): Promise<BookListItemDto[]> {
+export async function fetchPublicBooks(): Promise<PublicBookListItemDto[]> {
   const client = await createServerClient();
   const { data, error } = await client.GET('/api/catalog/books');
   if (error) throw new Error(apiErrorMessage(error, 'Catalog books request failed'));
-  return data.items;
+  return (data as PagedBookListDto).items;
 }
