@@ -9,6 +9,7 @@ export type PasswordResetRequestDto = components['schemas']['PasswordResetReques
 export type PasswordResetDto = components['schemas']['PasswordResetDto'];
 export type CategoryDto = components['schemas']['CategoryResponseDto'];
 export type BookListItemDto = components['schemas']['BookListItemResponseDto'];
+export type PagedBookListDto = components['schemas']['PagedBookListResponseDto'];
 export type CreateBookIntakeResponse = components['schemas']['CreateBookIntakeResponseDto'];
 export type IsbnLookupResponse = components['schemas']['IsbnLookupResponseDto'];
 

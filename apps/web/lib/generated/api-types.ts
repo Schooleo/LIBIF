@@ -269,7 +269,7 @@ export interface paths {
       responses: {
       "200": {
         content: {
-          "application/json": components['schemas']["BookListItemResponseDto"][];
+          "application/json": components['schemas']["PagedBookListResponseDto"];
         };
       };
       };

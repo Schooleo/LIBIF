@@ -34,5 +34,5 @@ export async function fetchPublicBooks(): Promise<BookListItemDto[]> {
   const client = await createServerClient();
   const { data, error } = await client.GET('/api/catalog/books');
   if (error) throw new Error(apiErrorMessage(error, 'Catalog books request failed'));
-  return data;
+  return data.items;
 }
