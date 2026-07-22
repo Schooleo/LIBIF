@@ -59,6 +59,7 @@ Latest Phase 5 planning/schema preflight:
 - [x] `npm run db:seed`
 - [x] `git diff --check`
 - [x] Comprehensive Phase 5 plan written to `ai_artifacts/plans/plan-phase-5-document-lifecycle-upload-metadata-taxonomy-2026-07-21.md` and mirrored under `.omx/plans/`.
+- [x] Phase 5 closure fixes verified after authenticated intake/replacement/requeue repair and current-work queue de-duplication: 72 API unit tests, 54 web tests, 24 API e2e tests, lint, builds, and `git diff --check`.
 
 ## Current implemented route/API coverage
 
@@ -90,7 +91,8 @@ Latest Phase 5 planning/schema preflight:
 - [x] Taxonomy APIs: staff category/tag reads plus Admin-only starter create/edit contracts.
 - [x] Document/upload APIs: list, detail, metadata update, upload, replacement, and submit-to-processing contracts.
 - [x] Processing APIs: queue/detail/status plus guarded advance, retry, and cancel transition foundations.
-- [x] Approval/notification APIs: approval queue/detail and persisted notification list/read operations.
+- [x] Approval APIs: current pending queue/detail foundations with one current review row per document.
+- [ ] Notification persistence: list/read API and UI foundations exist, but `NotificationsService` remains process-local until Phase 6 NTF-001.
 
 ## Remaining high-level work
 
@@ -99,14 +101,14 @@ Latest Phase 5 planning/schema preflight:
 - [x] Protected document decision/token handoff and persisted reading progress/bookmarks integration.
 - [x] Upload/Documents boundary and document metadata workflow foundation.
 - [ ] Processing worker implementation and retry history. Phase 5 completed persisted transition/status/retry/cancel foundations; deeper worker execution remains Phase 6.
-- [ ] Full approval decision/correction loop. Phase 5 completed approval queue/detail and persisted notification read workflows; decision commands and correction/resubmission remain Phase 6.
+- [ ] Full approval decision/correction loop and persisted notifications. Phase 5 completed approval queue/detail plus notification API/UI foundations; decision commands, correction/resubmission, persistence, and fanout remain Phase 6.
 - [ ] Taxonomy risky actions (delete/reassign/merge), user administration, role changes, and deactivation. Starter category/tag list/create/edit is complete.
 - [ ] Dashboards, reports, exports, and settings. Phase 4 Member D completed the base dashboard summary only; report exports/settings remain deferred.
 - [ ] Cross-screen integration hardening and responsive/visual QA.
 
 ## Next recommended planning target
 
-Phase 5 member lanes are integrated on the Member D closure branch. The next planning target is **Phase 6 — Processing, Approval, Correction Loop, and Notifications** from `ai_artifacts/docs/team_backlog_80_90_completion.md`. Phase 6 should deepen worker execution, approval decisions, correction/resubmission, retry history, and notification fanout without rebuilding the Phase 5 document, taxonomy, access, or persistence foundations.
+Phase 5 member lanes are integrated on the Member D closure branch. The comprehensive next plan is `ai_artifacts/plans/plan-phase-6-processing-approval-correction-notifications-2026-07-22.md`. Phase 6 adds the real OCR worker, approval decisions, correction/resubmission, retry history, and durable notification fanout without rebuilding the Phase 5 document, taxonomy, access, or processing-transition foundations.
 
 ## 80-90% Completion Team Backlog
 
@@ -145,10 +147,21 @@ Member D Phase 5 is complete and integrated with the merged Member A/B/C lanes; 
 
 - [x] Member A: persisted reader progress/bookmarks plus protected document decision/viewer fallback integration.
 - [x] Member B: document list/detail/edit, PDF upload/replacement, metadata, and submit-to-processing foundations.
-- [x] Member C: persisted processing transitions, approval queue/detail, notification list/read behavior, and staff workflow surfaces.
+- [x] Member C: persisted processing transitions, current approval queue/detail, notification API/UI foundations, and staff workflow surfaces; notification storage remains an explicit Phase 6 gap.
 - [x] Member D: schema foundation, taxonomy reads and starter management, reusable selectors, role-aware staff shell, unified OpenAPI/client regeneration, and phase closure.
-- [x] Canonical `/admin/documents/new` intake and Member D taxonomy selectors are used by the Phase 5 document workflow; `/admin/books` remains an explicit legacy route.
-- [x] Integrated verification passed: Prisma validate/generate, unified OpenAPI/client generation, root lint, 15 API suites/68 tests, 11 web files/49 tests, root production builds, 6 API e2e suites/24 tests, and `git diff --check`.
+- [x] Canonical `/admin/documents/new` intake and Member D taxonomy selectors are used by the Phase 5 workflow; `/admin/books` is compatibility-only and no longer appears in primary staff navigation or staff sign-in routing.
+- [x] Intake, replacement, and requeue browser mutations use the authenticated API boundary; replacement/requeue supersede stale work, and processing/approval queue projections show one current row per document while history remains available through lifecycle records.
+- [x] Integrated verification passed: Prisma validate/generate, unified OpenAPI/client generation, root lint, 15 API suites/72 tests, 13 web files/54 tests, root production builds, 6 API e2e suites/24 tests, and `git diff --check`.
+- [ ] Phase 5 notification persistence acceptance was not met by the merged runtime: the Prisma model exists, but `NotificationsService` remains process-local. The gap is explicitly transferred to Phase 6 NTF-001.
+
+## Phase 6 planning
+
+- [x] Comprehensive Phase 6 plan written to `ai_artifacts/plans/plan-phase-6-processing-approval-correction-notifications-2026-07-22.md` and mirrored under `.omx/plans/`.
+- [ ] D6-000 schema/OCR-lineage foundation.
+- [ ] C6 real worker/OCR, retry history, approval commands, notification persistence/fanout.
+- [ ] B6 correction/resubmission and document workflow history.
+- [ ] A6 publication visibility and reader notification integration.
+- [ ] D6 integration, generated contracts, activity summaries, and phase closure.
 
 ### Phase 4 Member D verification
 

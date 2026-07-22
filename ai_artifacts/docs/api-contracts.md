@@ -29,19 +29,19 @@ OpenAPI is now generated for implemented endpoints at `apps/api/openapi/libif-ap
 | `GET /api/documents` | `DocumentsModule` | `/admin/documents` | Guarded staff document list with query/filter/page foundations. |
 | `GET /api/documents/:id` | `DocumentsModule` | `/admin/documents/[id]` and edit route | Guarded document metadata, category/tags, file, job, and audit summary. |
 | `PATCH /api/documents/:id/metadata` | `DocumentsModule` | `/admin/documents/[id]/edit` | Updates metadata using Member D category/tag options and records an audit event. |
-| `POST /api/documents/:id/submit-processing` | `DocumentsModule` | document detail actions | Creates/queues a processing job and records the transition. |
-| `POST /api/documents/:id/replace-file` | `DocumentsModule` | document detail actions | Validates and stores a replacement PDF version. |
-| `POST /api/uploads` | `UploadModule` | `/admin/documents/new` | Canonical Phase 5 multipart document intake; guarded for Admin/Librarian. |
+| `POST /api/documents/:id/submit-processing` | `DocumentsModule` | document detail actions through `api-browser.ts` | Authenticated requeue handoff; supersedes earlier queued/running work, removes stale pending approval, creates one new job, and records the transition. Real OCR execution remains Phase 6. |
+| `POST /api/documents/:id/replace-file` | `DocumentsModule` | document lifecycle panel through `api-browser.ts` | Authenticated multipart replacement; creates a new active file version and supersedes stale operational work. |
+| `POST /api/uploads` | `UploadModule` | `/admin/documents/new` through `api-browser.ts` | Canonical authenticated Phase 5 multipart intake; browser requests target the Nest API origin rather than a relative Next.js route. |
 | `GET /api/uploads/:id` | `UploadModule` | upload lifecycle UI | Returns persisted upload/file/job state. |
 | `POST /api/uploads/:id/cancel` | `UploadModule` | upload lifecycle UI | Cancels eligible intake processing. |
 | `POST /api/uploads/:id/retry` | `UploadModule` | upload lifecycle UI | Requeues an eligible failed intake. |
-| `GET /api/admin/processing/jobs` | `ProcessingModule` | `/admin/processing` | Guarded persisted processing queue. |
+| `GET /api/admin/processing/jobs` | `ProcessingModule` | `/admin/processing` | Guarded current-work projection returning the latest processing job per document; deeper history remains a Phase 6 contract. |
 | `GET /api/admin/processing/jobs/:id` and `/status` | `ProcessingModule` | `/admin/processing/[id]` | Job detail and polling-safe status projection. |
 | `POST /api/admin/processing/jobs/:id/advance` | `ProcessingModule` | staff transition actions | Validated Phase 5 pipeline transition hook. |
 | `POST /api/admin/processing/jobs/:id/retry` and `/cancel` | `ProcessingModule` | processing actions | Guarded retry/cancel foundations; retry history and real worker depth remain Phase 6. |
-| `GET /api/admin/approvals` and `/:id` | `ApprovalModule` | `/admin/approvals` | Persisted approval queue/detail foundation; decision/correction commands remain Phase 6. |
-| `GET /api/notifications` | `NotificationsModule` | `/admin/notifications` | Role-scoped persisted notifications. |
-| `PATCH /api/notifications/:id/read` and `/read-all` | `NotificationsModule` | notification list actions | Persists notification read state. |
+| `GET /api/admin/approvals` and `/:id` | `ApprovalModule` | `/admin/approvals` | Current pending queue/detail foundation; default queue requires document `PENDING_APPROVAL` and returns one latest pending review per document. Decision/correction commands remain Phase 6. |
+| `GET /api/notifications` | `NotificationsModule` | `/admin/notifications` | Role-scoped API/UI foundation; runtime storage is still process-local and must migrate to Prisma in Phase 6. |
+| `PATCH /api/notifications/:id/read` and `/read-all` | `NotificationsModule` | notification list actions | Updates process-local read state today; recipient ownership plus persistence are Phase 6 requirements. |
 | `GET /api/access/documents/:documentId/decision` | `AccessModule` | reader detail/viewer routes | Reader-safe lifecycle/access decision. |
 | `POST /api/access/documents/:documentId/view-token` and `/download-token` | `AccessModule` | protected reader controls | Short-lived authorized storage handoff. |
 | `GET /api/reader/library`, `/history`, and `/bookmarks` | `ReaderModule` | reader personal-library routes | Persisted reader collections. |
@@ -125,6 +125,8 @@ Deferred auth-adjacent contracts remain in Batch 6/7: user administration, role 
 
 ### Batch 4 — Processing queue and jobs
 
+Phase 5 implements current queue/detail/status and guarded manual transition/retry/cancel foundations. Phase 6 replaces simulated advancement with a real worker and file-scoped retry history.
+
 - `GET /api/admin/processing/jobs?page&filters&sort`
 - `GET /api/admin/processing/jobs/{jobId}`
 - `GET /api/admin/processing/jobs/{jobId}/status`
@@ -133,6 +135,8 @@ Deferred auth-adjacent contracts remain in Batch 6/7: user administration, role 
 - Stable job status schema maps infrastructure to `queued`, `validating`, `compressing`, `performing_ocr`, `indexing`, `retrying`, `completed`, `failed`, `cancelled`.
 
 ### Batch 5 — Approval, correction, and notifications
+
+Phase 5 implements current approval queue/detail plus notification API/UI shells. Notification persistence, decision commands, correction/resubmission, and fanout are Phase 6 work.
 
 - `GET /api/admin/approvals?page&filters&sort`
 - `GET /api/admin/approvals/{documentId}`

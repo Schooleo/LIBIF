@@ -63,8 +63,9 @@ Current foundations through the integrated Phase 5 result are already in place:
 - Auth routes under `apps/web/app/(auth)`: `/sign-in`, `/register`, `/forgot-password`, `/reset-password`, `/reset-password/completed`, `/access-denied`, and `/session-expired`.
 - Phase 4 reader/access/catalog/processing/notification/dashboard foundations are merged.
 - Phase 5 schema foundation migration `20260721114643_phase5_domain_foundations` adds persisted reading progress, bookmarks, notifications, approval reviews, document audit events, processing progress fields, and file version/status fields.
-- Phase 5 adds persisted reader state/access handoff, document/upload/metadata routes and APIs, processing transition foundations, approval queue/detail, persisted notifications, and the Member D taxonomy lane.
+- Phase 5 adds persisted reader state/access handoff, document/upload/metadata routes and APIs, processing transition foundations, approval queue/detail, the notification schema/API/UI foundation, and the Member D taxonomy lane. `NotificationsService` is still process-local and notification persistence is an explicit early Phase 6 gate.
 - Member D adds `TaxonomyModule`, stable staff category/tag reads, Admin-only starter create/edit APIs, `/admin/categories` and `/admin/tags`, reusable taxonomy selectors/managers consumed by both document intake flows, the standardized staff shell, and unified OpenAPI/client contracts. Risky deletion/reassignment/merge workflows remain Phase 7.
+- Phase 5 closure fixes route document intake, PDF replacement, and manual requeue through authenticated API adapters; replacement/requeue supersede stale active work, approval/processing queue projections show one current row per document, and the legacy Books entry is removed from primary navigation while its routes/API remain compatibility-only.
 
 Do not rebuild these foundations from scratch. Extend them when a later batch needs a missing variant or domain-specific component.
 
@@ -221,7 +222,7 @@ Use the batch assignments in `screen-matrix.md` as the source of truth.
 7. Dashboards, reports, export, and settings.
 8. Cross-screen integration and hardening.
 
-Phase 5 is integrated across Members A/B/C/D. The next execution target is Phase 6: deepen processing workers and retry history, approval decisions, correction/resubmission, and notification fanout. Consume the existing Phase 5 document, taxonomy, reader-access, processing-transition, and persistence contracts instead of rebuilding them.
+Phase 5 is integrated across Members A/B/C/D. The next execution target is the canonical Phase 6 plan at `ai_artifacts/plans/plan-phase-6-processing-approval-correction-notifications-2026-07-22.md`: add a real processing/OCR worker, retry history, approval decisions, correction/resubmission, and persisted notification fanout. Consume the existing Phase 5 document, taxonomy, reader-access, and processing-transition contracts instead of rebuilding them.
 
 ## 10. Accessibility and interaction requirements
 

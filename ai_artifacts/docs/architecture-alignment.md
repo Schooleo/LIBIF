@@ -27,7 +27,7 @@ Last updated: 2026-07-22
 ## Current route and component baseline
 
 - Current route groups: `apps/web/app/(reader)`, `apps/web/app/(admin)`, and `apps/web/app/(auth)`.
-- Current routes include `/`, `/catalogue`, `/catalog` compatibility redirect, reader library/history/bookmarks and document-view routes, `/admin/documents` with detail/edit/new flows, processing/approval/notification routes, taxonomy routes, the legacy `/admin/books` intake, `/admin/dashboard`, and the authentication/access routes.
+- Current routes include `/`, `/catalogue`, `/catalog` compatibility redirect, reader library/history/bookmarks and document-view routes, `/admin/documents` with detail/edit/new flows, processing/approval/notification routes, taxonomy routes, `/admin/dashboard`, and authentication/access routes. `/admin/books` remains compatibility-only and is not exposed in primary staff navigation.
 - The root layout owns only document shell/font setup; role-aware navigation now lives in Reader/Admin/Auth shells.
 - Phase 1 styling now uses semantic tokens and shared CSS in `apps/web/styles/`, imported from `apps/web/app/globals.css`.
 - Current book intake components under `apps/web/components/book-intake` have been migrated to shared Phase 1 primitives while preserving existing behavior.
@@ -63,7 +63,7 @@ Last updated: 2026-07-22
 - `CatalogService` currently owns category reads and public published-book list reads.
 - `TaxonomyService` owns stable staff category/tag options plus Admin-only starter create/edit rules; deletion/reassignment/merge remain deferred risky workflows.
 - `DocumentsService` and `UploadService` own the Phase 5 document metadata/file lifecycle boundary and coordinate storage plus processing queue creation.
-- `ProcessingService`, `ApprovalService`, and `NotificationsService` own persisted staff workflow transitions/read models; worker execution and the full correction loop remain Phase 6.
+- `ProcessingService` owns persisted transition/read foundations and `ApprovalService` owns current approval queue/detail reads. `NotificationsService` still uses process-local state despite the Prisma model; persistence, worker execution, approval commands, and the correction loop remain Phase 6.
 
 ## Database layer
 
@@ -82,7 +82,8 @@ Last updated: 2026-07-22
 ## Queue/worker boundary
 
 - `ProcessingQueue` wraps BullMQ and adds `book-uploaded` jobs with three attempts when `REDIS_URL` is configured.
-- No worker entry point was found during Phase 0 inventory; later Processing work must add independently testable processors for Validation -> Compression -> OCR Text -> Search Indexing.
+- No worker entry point exists yet; Phase 6 must add an independently runnable consumer for Validation -> text extraction/OCR -> indexing/finalization. Manual `advance` is a Phase 5 simulation, not OCR evidence.
+- Phase 5 closure repairs route intake/replacement/requeue through authenticated API adapters, supersede earlier active work on replacement/requeue, and project only the latest operational processing/approval row per document while retaining history records.
 - Browser code must use REST status endpoints and bounded polling; it must never connect to Redis/BullMQ.
 
 ## Event ownership
@@ -104,12 +105,14 @@ Last updated: 2026-07-22
 
 ## Architecture gaps after Phase 5 integration
 
-1. Processing worker entry points and full retry/status history remain Phase 6, although guarded transition/status/retry/cancel foundations now exist.
-2. Approval decision commands, correction/resubmission, notification fanout, and richer action links remain Phase 6.
+1. Processing worker entry points, durable OCR artifacts, and full retry/status lineage remain Phase 6, although guarded transition/status/retry/cancel foundations now exist.
+2. Approval decision commands, correction/resubmission, notification persistence/fanout, and richer action links remain Phase 6.
 3. The legacy `BooksModule` intake remains available only as a compatibility surface; it is no longer exposed in primary staff navigation and should be retired through a dedicated API/data migration.
 4. Auth-adjacent administration remains deferred: staff provisioning UX, role changes, account deactivation, MFA/OAuth, production email provider integration, throttling, and security settings.
 5. Later batches must keep OpenAPI decorators and generated clients current as contracts expand.
 6. Remaining data gaps include report export jobs and full-text/search structures.
+
+The detailed Phase 6 execution contract is `ai_artifacts/plans/plan-phase-6-processing-approval-correction-notifications-2026-07-22.md`.
 
 ## Design inconsistencies and implementation risks
 

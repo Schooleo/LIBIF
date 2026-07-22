@@ -18,9 +18,10 @@ This document defines backend-owned workflow truth for later implementation. Nam
 - **States:** idle, validating, validation_failed, uploading, accepted, storage_failed, queued_for_processing, replacement_requested, replacement_accepted, cancelled when supported.
 - **Commands:** validate_pdf, create_upload, complete_upload, replace_pdf, cancel_upload.
 - **Events:** PdfUploadAccepted, BookUploadedEvent, PdfReplacementAccepted, UploadValidationFailed.
-- **Transitions:** idle -> validating -> uploading -> accepted -> queued_for_processing; replacement_requested -> replacement_accepted creates auditable new file version.
+- **Transitions:** idle -> validating -> uploading -> accepted -> queued_for_processing; replacement_requested -> replacement_accepted creates an auditable new file version, supersedes earlier active processing, and invalidates stale pending approval work.
 - **API responses:** asynchronous accepted response with document id, file id, job id, current status, and status endpoint.
 - **Permissions:** Librarian/Admin for intake and replacement; Reader never uploads PDFs.
+- **Current implementation note:** Phase 5 intake/replacement/requeue uses authenticated API adapters and persisted queue handoff. Actual OCR consumption is not implemented until Phase 6.
 
 ## Metadata and ISBN enrichment
 
@@ -39,6 +40,7 @@ This document defines backend-owned workflow truth for later implementation. Nam
 - **Transitions:** queued -> validating -> compressing -> performing_ocr -> indexing -> completed; recoverable failure -> retrying -> current stage; unrecoverable or max attempts -> failed.
 - **API responses:** stable ProcessingJob DTO with stage progress, attempts, safe error message, trace id, retry history endpoint.
 - **Permissions:** Librarian/Admin can view and retry; only system workers process stages.
+- **Current implementation note:** Phase 5 persists jobs and guards manual simulated transitions. Phase 6 adds the system worker, durable OCR artifacts, explicit cancellation/supersession semantics, and retry lineage.
 
 ## Approval and correction
 
@@ -48,6 +50,7 @@ This document defines backend-owned workflow truth for later implementation. Nam
 - **Transitions:** pending_review -> approved or rejected or correction_requested; correction_requested -> correction_in_progress -> resubmitted -> pending_review; approved -> published when publish command is accepted.
 - **API responses:** document review DTO, decision result, audit entry, safe field/reason errors.
 - **Permissions:** Approver/Admin for decisions; Librarian can correct/resubmit own assigned items depending on policy.
+- **Current implementation note:** Phase 5 exposes only the current pending approval queue/detail foundation. Phase 6 implements decision, correction, resubmission, audit, and notification transitions.
 
 ## Protected reader access
 

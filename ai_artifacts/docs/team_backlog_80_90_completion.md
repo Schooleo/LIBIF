@@ -266,6 +266,10 @@ Validation:
 
 Goal: make the core operational workflow explicit, retryable, and visible.
 
+Canonical comprehensive execution plan: `ai_artifacts/plans/plan-phase-6-processing-approval-correction-notifications-2026-07-22.md`.
+
+Phase 6 entry note: Phase 5 now has authenticated intake/replacement/requeue handoffs and current-work queue projections, but no BullMQ worker consumes OCR jobs and `NotificationsService` remains process-local despite the Prisma model. Worker/OCR truth and notification persistence are early Phase 6 gates.
+
 Member A tasks:
 
 - Add reader notifications/read states for newly available or corrected documents.
