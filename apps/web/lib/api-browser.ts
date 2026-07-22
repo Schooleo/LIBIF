@@ -1,5 +1,5 @@
 import { API_BASE_URL, createLibifApiClient, apiErrorMessage } from './api-client';
-import type { AuthMessageDto, CreateBookIntakeDto, CreateBookIntakeResponse, CreateTaxonomyCategoryDto, CreateTaxonomyTagDto, IsbnLookupResponse, PasswordResetDto, PasswordResetRequestDto, RegisterRequestDto, SessionDto, SignInRequestDto, TaxonomyCategoryDto, TaxonomyTagDto, UpdateTaxonomyCategoryDto, UpdateTaxonomyTagDto, UploadResultDto } from './api-types';
+import type { AuthMessageDto, CreateBookIntakeDto, CreateBookIntakeResponse, CreateTaxonomyCategoryDto, CreateTaxonomyTagDto, DocumentDetailResponseDto, IsbnLookupResponse, PasswordResetDto, PasswordResetRequestDto, RegisterRequestDto, SessionDto, SignInRequestDto, TaxonomyCategoryDto, TaxonomyTagDto, UpdateTaxonomyCategoryDto, UpdateTaxonomyTagDto, UploadResultDto } from './api-types';
 import { getDevAuthHeaders } from './auth/session';
 
 const client = createLibifApiClient(getDevAuthHeaders());
@@ -95,15 +95,26 @@ export async function uploadDocumentIntake(file: File, metadata: CreateBookIntak
   form.append('file', file);
   form.append('metadata', JSON.stringify(metadata));
 
-  const response = await fetch(`${API_BASE_URL}/api/uploads`, {
+  return postMultipart('/api/uploads', form, 'Failed to submit document upload intake.');
+}
+
+export async function replaceDocumentFile(documentId: string, file: File): Promise<DocumentDetailResponseDto> {
+  const form = new FormData();
+  form.append('file', file);
+
+  return postMultipart(`/api/documents/${encodeURIComponent(documentId)}/replace-file`, form, 'File replacement failed.');
+}
+
+async function postMultipart<T>(path: string, form: FormData, fallbackMessage: string): Promise<T> {
+  const response = await fetch(`${API_BASE_URL}${path}`, {
     method: 'POST',
     body: form,
     credentials: 'include',
     headers: getDevAuthHeaders()
   });
   const payload: unknown = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(apiErrorMessage(payload, 'Failed to submit document upload intake.'));
-  return payload as UploadResultDto;
+  if (!response.ok) throw new Error(apiErrorMessage(payload, fallbackMessage));
+  return payload as T;
 }
 
 export async function fetchViewToken(documentId: string): Promise<{ url: string; token: string; expiresAt: string }> {
