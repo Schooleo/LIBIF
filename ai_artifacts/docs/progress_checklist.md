@@ -173,3 +173,22 @@ Member D Phase 5 is complete and integrated with the merged Member A/B/C lanes; 
 - [x] `npm run test:e2e -w apps/api`
 - [x] Architect verification approved after adding route loading UI and dashboard-specific web tests.
 - [x] Ralph deslop pass completed on changed files; post-deslop regression remained green.
+
+## Phase 6 Member B progress
+
+- [x] Added `ApprovalReviewSummaryDto` to `document-detail.dto.ts`.
+- [x] Extended `DocumentDetailResponseDto` with `processingHistory`, `approvalHistory`, and `latestApprovalReview`.
+- [x] Updated `listDocuments` and `getDocumentDetail` queries to fetch full `approvalReviews` and all `jobs` (removed `take: 1`).
+- [x] `mapDocumentDetail` populates `processingHistory`, `approvalHistory`, and `latestApprovalReview`.
+- [x] `submitProcessing` audit message distinguishes resubmission from first-time queuing.
+- [x] Added `ApprovalHistoryTimeline` and `CorrectionNotice` to `components/domain/documents/documents.tsx`.
+- [x] `DocumentMetadataForm` accepts and renders `correctionNotice` prop.
+- [x] `/admin/documents/[id]` shows `CorrectionNotice` banner and `ApprovalHistoryTimeline` when correction is required.
+- [x] `/admin/documents/[id]/edit` passes `correctionNotice` through `EditDocumentClient` to `DocumentMetadataForm`.
+
+### Phase 6 Member B verification
+
+- [x] `npm test -w apps/api` — 44/44 passed, 13 suites (including 2 new approval/resubmission tests).
+- [x] `npm run lint` — clean.
+- [x] `npm run build` — all workspaces build cleanly.
+- [ ] OpenAPI/client regeneration deferred to Member D Phase 6 integration PR.

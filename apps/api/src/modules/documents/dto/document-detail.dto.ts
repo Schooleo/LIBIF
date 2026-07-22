@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { BookAuditAction, BookFileStatus, BookStatus, ProcessingJobStatus } from '../../../generated/prisma/client';
+import { ApprovalReviewStatus, BookAuditAction, BookFileStatus, BookStatus, ProcessingJobStatus } from '../../../generated/prisma/client';
 import { AuthorResponseDto, CategoryResponseDto, TagResponseDto } from '../../catalog/dto/catalog-response.dto';
 
 export class BookFileVersionDto {
@@ -62,6 +62,29 @@ export class ProcessingJobSummaryDto {
   updatedAt!: string;
 }
 
+export class ApprovalReviewSummaryDto {
+  @ApiProperty()
+  id!: string;
+
+  @ApiProperty({ enum: ApprovalReviewStatus })
+  status!: ApprovalReviewStatus;
+
+  @ApiPropertyOptional({ type: String, nullable: true })
+  reason?: string | null;
+
+  @ApiPropertyOptional({ type: String, nullable: true })
+  requestedChanges?: string | null;
+
+  @ApiPropertyOptional({ type: String, nullable: true })
+  reviewerEmail?: string | null;
+
+  @ApiPropertyOptional({ format: 'date-time', nullable: true })
+  decidedAt?: string | null;
+
+  @ApiProperty({ format: 'date-time' })
+  createdAt!: string;
+}
+
 export class DocumentDetailResponseDto {
   @ApiProperty()
   id!: string;
@@ -107,6 +130,15 @@ export class DocumentDetailResponseDto {
 
   @ApiPropertyOptional({ type: () => ProcessingJobSummaryDto, nullable: true })
   activeProcessingJob?: ProcessingJobSummaryDto | null;
+
+  @ApiProperty({ type: [ProcessingJobSummaryDto] })
+  processingHistory!: ProcessingJobSummaryDto[];
+
+  @ApiProperty({ type: [ApprovalReviewSummaryDto] })
+  approvalHistory!: ApprovalReviewSummaryDto[];
+
+  @ApiPropertyOptional({ type: () => ApprovalReviewSummaryDto, nullable: true })
+  latestApprovalReview?: ApprovalReviewSummaryDto | null;
 
   @ApiProperty({ type: [BookAuditEventDto] })
   auditHistory!: BookAuditEventDto[];

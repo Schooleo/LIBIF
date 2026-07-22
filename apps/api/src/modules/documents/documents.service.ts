@@ -84,7 +84,8 @@ export class DocumentsService {
           tags: { include: { tag: true } },
           authors: { include: { author: true } },
           files: { orderBy: { version: 'desc' } },
-          jobs: { orderBy: { createdAt: 'desc' }, take: 1 },
+          jobs: { orderBy: { createdAt: 'desc' } },
+          approvalReviews: { orderBy: { createdAt: 'desc' }, include: { reviewer: true } },
           auditEvents: { orderBy: { createdAt: 'desc' }, include: { actor: true } }
         }
       }),
@@ -108,7 +109,8 @@ export class DocumentsService {
         tags: { include: { tag: true } },
         authors: { include: { author: true } },
         files: { orderBy: { version: 'desc' } },
-        jobs: { orderBy: { createdAt: 'desc' }, take: 1 },
+        jobs: { orderBy: { createdAt: 'desc' } },
+        approvalReviews: { orderBy: { createdAt: 'desc' }, include: { reviewer: true } },
         auditEvents: { orderBy: { createdAt: 'desc' }, include: { actor: true } }
       }
     });
@@ -218,7 +220,7 @@ export class DocumentsService {
           bookId: id,
           actorId: actor.id,
           action: BookAuditAction.PROCESSING_QUEUED,
-          message: 'Processing manually queued'
+          message: doc.status === BookStatus.REJECTED ? 'Document resubmitted for processing & approval' : 'Processing manually queued'
         }
       });
 
@@ -335,6 +337,28 @@ export class DocumentsService {
   private mapDocumentDetail(doc: any): DocumentDetailResponseDto {
     const activeFile = doc.files?.find((f: any) => f.status === BookFileStatus.ACTIVE) || doc.files?.[0] || null;
     const latestJob = doc.jobs?.[0] || null;
+    const latestApproval = doc.approvalReviews?.[0] || null;
+
+    const processingHistory =
+      doc.jobs?.map((j: any) => ({
+        id: j.id,
+        status: j.status,
+        stage: j.stage,
+        progressPercent: j.progressPercent ?? 0,
+        errorMessage: j.errorMessage,
+        updatedAt: j.updatedAt.toISOString()
+      })) ?? [];
+
+    const approvalHistory =
+      doc.approvalReviews?.map((ar: any) => ({
+        id: ar.id,
+        status: ar.status,
+        reason: ar.reason,
+        requestedChanges: ar.requestedChanges,
+        reviewerEmail: ar.reviewer?.email ?? null,
+        decidedAt: ar.decidedAt ? ar.decidedAt.toISOString() : null,
+        createdAt: ar.createdAt.toISOString()
+      })) ?? [];
 
     return {
       id: doc.id,
@@ -385,6 +409,19 @@ export class DocumentsService {
             progressPercent: latestJob.progressPercent ?? 0,
             errorMessage: latestJob.errorMessage,
             updatedAt: latestJob.updatedAt.toISOString()
+          }
+        : null,
+      processingHistory,
+      approvalHistory,
+      latestApprovalReview: latestApproval
+        ? {
+            id: latestApproval.id,
+            status: latestApproval.status,
+            reason: latestApproval.reason,
+            requestedChanges: latestApproval.requestedChanges,
+            reviewerEmail: latestApproval.reviewer?.email ?? null,
+            decidedAt: latestApproval.decidedAt ? latestApproval.decidedAt.toISOString() : null,
+            createdAt: latestApproval.createdAt.toISOString()
           }
         : null,
       auditHistory:

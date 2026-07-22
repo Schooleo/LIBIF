@@ -51,6 +51,14 @@ export default async function EditDocumentPage({ params }: EditDocumentPageProps
     tags: doc.tags?.map((t: any) => t.name).join(', ') || ''
   };
 
+  const correctionNotice =
+    doc.status === 'REJECTED' || doc.latestApprovalReview?.status === 'CORRECTION_REQUESTED'
+      ? {
+          reason: doc.latestApprovalReview?.reason,
+          requestedChanges: doc.latestApprovalReview?.requestedChanges
+        }
+      : null;
+
   return (
     <section className="ui-stack ui-stack-lg">
       <PageHeader
@@ -62,8 +70,19 @@ export default async function EditDocumentPage({ params }: EditDocumentPageProps
           </Link>
         }
       />
-      {taxonomyErrors.length > 0 ? <InlineAlert tone="error">Some taxonomy options could not be loaded: {taxonomyErrors.join('; ')}</InlineAlert> : null}
-      <EditDocumentClient documentId={doc.id} initialValues={initialValues} categories={categories} tags={tags} />
+      {taxonomyErrors.length > 0 ? (
+        <InlineAlert tone="error">
+          Some taxonomy options could not be loaded: {taxonomyErrors.join('; ')}
+        </InlineAlert>
+      ) : null}
+
+      <EditDocumentClient
+        documentId={doc.id}
+        initialValues={initialValues}
+        categories={categories}
+        tags={tags}
+        correctionNotice={correctionNotice}
+      />
     </section>
   );
 }
