@@ -1,5 +1,5 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { ApprovalReviewStatus } from '../../generated/prisma/client';
+import { ApprovalReviewStatus, BookStatus } from '../../generated/prisma/client';
 import { PrismaService } from '../database/prisma.service';
 import { ApprovalReviewResponseDto } from './dto/approval-review.dto';
 
@@ -8,8 +8,11 @@ export class ApprovalService {
   constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
 
   async listPendingReviews(status?: ApprovalReviewStatus): Promise<ApprovalReviewResponseDto[]> {
+    const isPendingQueue = !status || status === ApprovalReviewStatus.PENDING;
     const reviews = await this.prisma.approvalReview.findMany({
-      where: status ? { status } : { status: ApprovalReviewStatus.PENDING },
+      where: isPendingQueue
+        ? { status: ApprovalReviewStatus.PENDING, book: { status: BookStatus.PENDING_APPROVAL } }
+        : { status },
       orderBy: { createdAt: 'desc' },
       include: {
         book: {
@@ -18,7 +21,15 @@ export class ApprovalService {
       }
     });
 
-    return reviews.map((r) => this.mapToDto(r));
+    const seenBookIds = new Set<string>();
+    return reviews
+      .filter((review) => {
+        if (!isPendingQueue) return true;
+        if (seenBookIds.has(review.bookId)) return false;
+        seenBookIds.add(review.bookId);
+        return true;
+      })
+      .map((review) => this.mapToDto(review));
   }
 
   async getReviewById(id: string): Promise<ApprovalReviewResponseDto> {

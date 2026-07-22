@@ -21,7 +21,7 @@ export function SignInForm() {
     try {
       const session = await signIn({ email, password });
       const role = session.user?.role;
-      window.location.href = role === 'ADMIN' || role === 'LIBRARIAN' ? '/admin/books' : '/catalogue';
+      window.location.href = role === 'ADMIN' || role === 'LIBRARIAN' ? '/admin/dashboard' : '/catalogue';
     } catch (error) {
       setStatus({ tone: 'error', message: (error as Error).message });
     } finally {

@@ -20,7 +20,14 @@ export class ProcessingService {
         }
       }
     });
-    return jobs.map((job) => this.mapToDto(job));
+    const seenBookIds = new Set<string>();
+    return jobs
+      .filter((job) => {
+        if (seenBookIds.has(job.bookId)) return false;
+        seenBookIds.add(job.bookId);
+        return true;
+      })
+      .map((job) => this.mapToDto(job));
   }
 
   async getJobById(id: string): Promise<ProcessingJobResponseDto> {

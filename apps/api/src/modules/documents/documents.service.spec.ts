@@ -19,6 +19,21 @@ describe('DocumentsService', () => {
         findUnique: jest.fn().mockResolvedValue(null),
         update: jest.fn().mockResolvedValue({ id: 'doc_1' })
       },
+      bookFile: {
+        updateMany: jest.fn(),
+        findMany: jest.fn(),
+        create: jest.fn()
+      },
+      processingJob: {
+        create: jest.fn(),
+        updateMany: jest.fn()
+      },
+      approvalReview: {
+        deleteMany: jest.fn()
+      },
+      bookAuditEvent: {
+        create: jest.fn()
+      },
       user: {
         upsert: jest.fn().mockResolvedValue({ id: 'usr_1', email: 'staff@libif.local' })
       },
@@ -57,5 +72,58 @@ describe('DocumentsService', () => {
 
   it('should throw NotFoundException if document detail is missing', async () => {
     await expect(service.getDocumentDetail('invalid_id')).rejects.toThrow(NotFoundException);
+  });
+
+  it('removes stale pending approvals when replacing the active file', async () => {
+    const now = new Date('2026-07-22T00:00:00Z');
+    const oldFile = {
+      id: 'file-1',
+      originalFilename: 'old.pdf',
+      mimeType: 'application/pdf',
+      sizeBytes: BigInt(100),
+      version: 1,
+      status: 'ACTIVE',
+      createdAt: now
+    };
+    const newFile = { ...oldFile, id: 'file-2', originalFilename: 'new.pdf', version: 2 };
+    const document = {
+      id: 'doc-1',
+      title: 'Document',
+      status: 'PENDING_APPROVAL',
+      files: [oldFile],
+      jobs: [],
+      auditEvents: [],
+      category: null,
+      tags: [],
+      authors: [],
+      createdAt: now,
+      updatedAt: now
+    };
+    prisma.book.findUnique.mockResolvedValue(document);
+    prisma.bookFile.findMany.mockResolvedValue([oldFile]);
+    prisma.bookFile.create.mockResolvedValue(newFile);
+    prisma.processingJob.create.mockResolvedValue({ id: 'job-2' });
+
+    const file = {
+      originalname: 'new.pdf',
+      mimetype: 'application/pdf',
+      size: 8,
+      buffer: Buffer.from('%PDF-1.4')
+    } as Express.Multer.File;
+
+    await service.replaceFile('doc-1', file, 'staff@libif.local');
+
+    expect(prisma.approvalReview.deleteMany).toHaveBeenCalledWith({
+      where: { bookId: 'doc-1', status: 'PENDING' }
+    });
+    expect(prisma.processingJob.updateMany).toHaveBeenCalledWith(expect.objectContaining({
+      where: { bookId: 'doc-1', status: { in: ['QUEUED', 'RUNNING'] } },
+      data: expect.objectContaining({ status: 'FAILED', stage: 'superseded' })
+    }));
+    expect(queue.enqueueBookUploaded).toHaveBeenCalledWith(expect.objectContaining({
+      bookId: 'doc-1',
+      fileId: 'file-2',
+      processingJobId: 'job-2'
+    }));
   });
 });

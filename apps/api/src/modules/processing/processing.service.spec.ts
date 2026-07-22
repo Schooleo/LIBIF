@@ -92,6 +92,27 @@ describe('ProcessingService', () => {
         updatedAt: '2026-07-21T00:00:00.000Z'
       });
     });
+
+    it('returns only the latest processing job for each document', async () => {
+      const baseJob = {
+        book: { title: 'Test Book' },
+        type: 'PDF_OCR_PIPELINE',
+        stage: 'completed',
+        progressPercent: 100,
+        attempts: 1,
+        errorMessage: null,
+        updatedAt: new Date('2026-07-22T00:00:00Z')
+      };
+      mockPrisma.processingJob.findMany.mockResolvedValue([
+        { ...baseJob, id: 'job-new', bookId: 'book-1', status: ProcessingJobStatus.QUEUED, createdAt: new Date('2026-07-22T00:00:00Z') },
+        { ...baseJob, id: 'job-other', bookId: 'book-2', status: ProcessingJobStatus.SUCCEEDED, createdAt: new Date('2026-07-21T00:00:00Z') },
+        { ...baseJob, id: 'job-old', bookId: 'book-1', status: ProcessingJobStatus.SUCCEEDED, createdAt: new Date('2026-07-20T00:00:00Z') }
+      ]);
+
+      const result = await service.listJobs();
+
+      expect(result.map((job) => job.id)).toEqual(['job-new', 'job-other']);
+    });
   });
 
   describe('advanceJob', () => {

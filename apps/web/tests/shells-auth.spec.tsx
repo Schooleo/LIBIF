@@ -37,6 +37,7 @@ describe('route-group shells and auth helper', () => {
     expect(within(navigation).getByRole('link', { name: /processing queue/i })).toHaveAttribute('href', '/admin/processing');
     expect(within(navigation).getByRole('link', { name: /approval queue/i })).toHaveAttribute('href', '/admin/approvals');
     expect(within(navigation).getByRole('link', { name: /notifications/i })).toHaveAttribute('href', '/admin/notifications');
+    expect(within(navigation).queryByRole('link', { name: /books.*legacy/i })).not.toBeInTheDocument();
     expect(screen.getByText('Administrator')).toBeInTheDocument();
   });
 

@@ -357,7 +357,7 @@ Phase 5 is complete when the above flow works without manual database edits and 
 
 - Member A and Member B were merged into `dev`, followed by Member C after resolving the canonical intake navigation regression.
 - Member D then merged the complete Phase 5 `dev` baseline, preserved each lane's module/route ownership, and reconciled the shared staff shell.
-- The canonical staff workflow now uses `/admin/documents`, `/admin/documents/new`, processing/approval/notification routes, and Member D category/tag selectors. `/admin/books` remains explicitly legacy.
+- The canonical staff workflow now uses `/admin/documents`, `/admin/documents/new`, processing/approval/notification routes, and Member D category/tag selectors. `/admin/books` remains compatibility-only and is no longer exposed in primary staff navigation.
 - The phase-end OpenAPI/client generation contains the integrated reader/access, document/upload, processing, approval, notification, reporting, and taxonomy modules.
 - Phase-end verification passed: Prisma validate/generate, OpenAPI/client generation, root lint, 15 API suites/68 tests, 11 web files/49 tests, root production builds, 6 API e2e suites/24 tests, and `git diff --check`.
 - Full worker execution and retry history, approval decision commands, correction/resubmission, and notification fanout remain the documented Phase 6 target. Risky taxonomy deletion/reassignment/merge remains Phase 7.

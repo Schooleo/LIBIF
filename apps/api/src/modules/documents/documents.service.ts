@@ -1,5 +1,5 @@
 import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { BookAuditAction, BookFileStatus, BookStatus, Prisma, UserRole } from '../../generated/prisma/client';
+import { ApprovalReviewStatus, BookAuditAction, BookFileStatus, BookStatus, Prisma, ProcessingJobStatus, UserRole } from '../../generated/prisma/client';
 import slugify from 'slugify';
 import { PrismaService } from '../database/prisma.service';
 import { ProcessingQueue } from '../processing/processing.queue';
@@ -233,6 +233,22 @@ export class DocumentsService {
 
     try {
       const { newFile, job } = await this.prisma.$transaction(async (tx) => {
+        await tx.processingJob.updateMany({
+          where: {
+            bookId: id,
+            status: { in: [ProcessingJobStatus.QUEUED, ProcessingJobStatus.RUNNING] }
+          },
+          data: {
+            status: ProcessingJobStatus.FAILED,
+            stage: 'superseded',
+            errorMessage: 'Superseded by file replacement',
+            cancelledAt: new Date()
+          }
+        });
+        await tx.approvalReview.deleteMany({
+          where: { bookId: id, status: ApprovalReviewStatus.PENDING }
+        });
+
         // Deactivate older active files
         await tx.bookFile.updateMany({
           where: { bookId: id, status: BookFileStatus.ACTIVE },

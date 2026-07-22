@@ -55,6 +55,12 @@ describe('ApprovalService', () => {
       const result = await service.listPendingReviews();
 
       expect(result).toHaveLength(1);
+      expect(mockPrisma.approvalReview.findMany).toHaveBeenCalledWith(expect.objectContaining({
+        where: {
+          status: ApprovalReviewStatus.PENDING,
+          book: { status: 'PENDING_APPROVAL' }
+        }
+      }));
       expect(result[0]).toEqual({
         id: 'review-1',
         bookId: 'book-1',
@@ -67,6 +73,27 @@ describe('ApprovalService', () => {
         createdAt: '2026-07-22T00:00:00.000Z',
         updatedAt: '2026-07-22T00:00:00.000Z'
       });
+    });
+
+    it('returns only the latest pending review for each document', async () => {
+      const baseReview = {
+        bookId: 'book-1',
+        book: { title: 'Clean Architecture' },
+        reviewerId: null,
+        status: ApprovalReviewStatus.PENDING,
+        reason: null,
+        requestedChanges: null,
+        decidedAt: null,
+        updatedAt: new Date('2026-07-22T00:00:00Z')
+      };
+      mockPrisma.approvalReview.findMany.mockResolvedValue([
+        { ...baseReview, id: 'review-new', createdAt: new Date('2026-07-22T00:00:00Z') },
+        { ...baseReview, id: 'review-old', createdAt: new Date('2026-07-21T00:00:00Z') }
+      ]);
+
+      const result = await service.listPendingReviews();
+
+      expect(result.map((review) => review.id)).toEqual(['review-new']);
     });
   });
 

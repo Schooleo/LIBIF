@@ -28,7 +28,6 @@ const staffNavGroups: readonly StaffNavGroup[] = [
       { label: 'Processing Queue', href: '/admin/processing', roles: allStaffRoles },
       { label: 'Approval Queue', href: '/admin/approvals', roles: allStaffRoles },
       { label: 'Notifications', href: '/admin/notifications', roles: allStaffRoles },
-      { label: 'Books (Legacy)', href: '/admin/books', roles: allStaffRoles },
     ]
   },
   {

@@ -106,7 +106,7 @@ Last updated: 2026-07-22
 
 1. Processing worker entry points and full retry/status history remain Phase 6, although guarded transition/status/retry/cancel foundations now exist.
 2. Approval decision commands, correction/resubmission, notification fanout, and richer action links remain Phase 6.
-3. The legacy `BooksModule` intake remains temporarily available beside the canonical Phase 5 `DocumentsModule`/`UploadModule` flow and should be retired only through a dedicated migration.
+3. The legacy `BooksModule` intake remains available only as a compatibility surface; it is no longer exposed in primary staff navigation and should be retired through a dedicated API/data migration.
 4. Auth-adjacent administration remains deferred: staff provisioning UX, role changes, account deactivation, MFA/OAuth, production email provider integration, throttling, and security settings.
 5. Later batches must keep OpenAPI decorators and generated clients current as contracts expand.
 6. Remaining data gaps include report export jobs and full-text/search structures.
