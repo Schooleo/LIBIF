@@ -191,6 +191,7 @@ export class DocumentsService {
     const actor = await this.findOrCreateActor(actorEmail);
 
     const { job, file } = await this.prisma.$transaction(async (tx) => {
+      await this.supersedePendingWork(tx, id);
       await tx.book.update({
         where: { id },
         data: { status: BookStatus.PENDING_PROCESSING }
@@ -233,21 +234,7 @@ export class DocumentsService {
 
     try {
       const { newFile, job } = await this.prisma.$transaction(async (tx) => {
-        await tx.processingJob.updateMany({
-          where: {
-            bookId: id,
-            status: { in: [ProcessingJobStatus.QUEUED, ProcessingJobStatus.RUNNING] }
-          },
-          data: {
-            status: ProcessingJobStatus.FAILED,
-            stage: 'superseded',
-            errorMessage: 'Superseded by file replacement',
-            cancelledAt: new Date()
-          }
-        });
-        await tx.approvalReview.deleteMany({
-          where: { bookId: id, status: ApprovalReviewStatus.PENDING }
-        });
+        await this.supersedePendingWork(tx, id);
 
         // Deactivate older active files
         await tx.bookFile.updateMany({
@@ -312,6 +299,24 @@ export class DocumentsService {
       where: { email },
       update: {},
       create: { email, passwordHash: 'dev-only', role: UserRole.LIBRARIAN }
+    });
+  }
+
+  private async supersedePendingWork(tx: Prisma.TransactionClient, bookId: string): Promise<void> {
+    await tx.processingJob.updateMany({
+      where: {
+        bookId,
+        status: { in: [ProcessingJobStatus.QUEUED, ProcessingJobStatus.RUNNING] }
+      },
+      data: {
+        status: ProcessingJobStatus.FAILED,
+        stage: 'superseded',
+        errorMessage: 'Superseded by a newer processing request',
+        cancelledAt: new Date()
+      }
+    });
+    await tx.approvalReview.deleteMany({
+      where: { bookId, status: ApprovalReviewStatus.PENDING }
     });
   }
 

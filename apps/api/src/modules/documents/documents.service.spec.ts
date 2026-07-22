@@ -22,7 +22,8 @@ describe('DocumentsService', () => {
       bookFile: {
         updateMany: jest.fn(),
         findMany: jest.fn(),
-        create: jest.fn()
+        create: jest.fn(),
+        findUniqueOrThrow: jest.fn()
       },
       processingJob: {
         create: jest.fn(),
@@ -123,6 +124,49 @@ describe('DocumentsService', () => {
     expect(queue.enqueueBookUploaded).toHaveBeenCalledWith(expect.objectContaining({
       bookId: 'doc-1',
       fileId: 'file-2',
+      processingJobId: 'job-2'
+    }));
+  });
+
+  it('supersedes older work before manually requeuing processing', async () => {
+    const now = new Date('2026-07-22T00:00:00Z');
+    const activeFile = {
+      id: 'file-1',
+      originalFilename: 'document.pdf',
+      mimeType: 'application/pdf',
+      sizeBytes: BigInt(100),
+      version: 1,
+      status: 'ACTIVE',
+      createdAt: now
+    };
+    prisma.book.findUnique.mockResolvedValue({
+      id: 'doc-1',
+      title: 'Document',
+      status: 'FAILED',
+      files: [activeFile],
+      jobs: [],
+      auditEvents: [],
+      category: null,
+      tags: [],
+      authors: [],
+      createdAt: now,
+      updatedAt: now
+    });
+    prisma.bookFile.findUniqueOrThrow.mockResolvedValue({ ...activeFile, objectKey: 'pdf1' });
+    prisma.processingJob.create.mockResolvedValue({ id: 'job-2' });
+
+    await service.submitProcessing('doc-1', 'staff@libif.local');
+
+    expect(prisma.processingJob.updateMany).toHaveBeenCalledWith(expect.objectContaining({
+      where: { bookId: 'doc-1', status: { in: ['QUEUED', 'RUNNING'] } },
+      data: expect.objectContaining({ status: 'FAILED', stage: 'superseded' })
+    }));
+    expect(prisma.approvalReview.deleteMany).toHaveBeenCalledWith({
+      where: { bookId: 'doc-1', status: 'PENDING' }
+    });
+    expect(queue.enqueueBookUploaded).toHaveBeenCalledWith(expect.objectContaining({
+      bookId: 'doc-1',
+      fileId: 'file-1',
       processingJobId: 'job-2'
     }));
   });

@@ -105,6 +105,14 @@ export async function replaceDocumentFile(documentId: string, file: File): Promi
   return postMultipart(`/api/documents/${encodeURIComponent(documentId)}/replace-file`, form, 'File replacement failed.');
 }
 
+export async function submitDocumentProcessing(documentId: string): Promise<DocumentDetailResponseDto> {
+  const { data, error } = await client.POST('/api/documents/{id}/submit-processing', {
+    params: { path: { id: documentId } }
+  });
+  if (error) throw new Error(apiErrorMessage(error, 'Submit processing failed.'));
+  return data;
+}
+
 async function postMultipart<T>(path: string, form: FormData, fallbackMessage: string): Promise<T> {
   const response = await fetch(`${API_BASE_URL}${path}`, {
     method: 'POST',

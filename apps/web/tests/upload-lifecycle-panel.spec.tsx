@@ -5,7 +5,8 @@ import { UploadLifecyclePanel } from '../components/domain/upload/UploadLifecycl
 
 const mocks = vi.hoisted(() => ({
   refresh: vi.fn(),
-  replaceDocumentFile: vi.fn()
+  replaceDocumentFile: vi.fn(),
+  submitDocumentProcessing: vi.fn()
 }));
 
 vi.mock('next/navigation', () => ({
@@ -13,13 +14,15 @@ vi.mock('next/navigation', () => ({
 }));
 
 vi.mock('../lib/api-browser', () => ({
-  replaceDocumentFile: mocks.replaceDocumentFile
+  replaceDocumentFile: mocks.replaceDocumentFile,
+  submitDocumentProcessing: mocks.submitDocumentProcessing
 }));
 
 describe('UploadLifecyclePanel', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mocks.replaceDocumentFile.mockResolvedValue({ id: 'document-1' });
+    mocks.submitDocumentProcessing.mockResolvedValue({ id: 'document-1' });
   });
 
   it('replaces the active PDF through the API client and refreshes document state', async () => {
@@ -33,5 +36,28 @@ describe('UploadLifecyclePanel', () => {
     await waitFor(() => expect(mocks.replaceDocumentFile).toHaveBeenCalledWith('document-1', file));
     expect(mocks.refresh).toHaveBeenCalledOnce();
     expect(screen.getByText('File successfully replaced with "replacement.pdf".')).toBeInTheDocument();
+  });
+
+  it('requeues processing through the API client and refreshes document state', async () => {
+    const user = userEvent.setup();
+    render(
+      <UploadLifecyclePanel
+        documentId="document-1"
+        activeFile={{
+          id: 'file-1',
+          originalFilename: 'document.pdf',
+          sizeBytes: '8',
+          version: 1,
+          status: 'ACTIVE',
+          createdAt: '2026-07-22T00:00:00.000Z'
+        }}
+      />
+    );
+
+    await user.click(screen.getByRole('button', { name: /re-queue processing/i }));
+
+    await waitFor(() => expect(mocks.submitDocumentProcessing).toHaveBeenCalledWith('document-1'));
+    expect(mocks.refresh).toHaveBeenCalledOnce();
+    expect(screen.getByText('Processing job queued successfully.')).toBeInTheDocument();
   });
 });

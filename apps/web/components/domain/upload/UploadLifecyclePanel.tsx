@@ -8,7 +8,7 @@ import { ProgressBar } from '../../ui/indicators/ProgressBar';
 import { Button } from '../../ui/actions/Button';
 import { FileDropzone } from '../../ui/forms/FileDropzone';
 import { InlineAlert } from '../../ui/feedback/feedback';
-import { replaceDocumentFile } from '../../../lib/api-browser';
+import { replaceDocumentFile, submitDocumentProcessing } from '../../../lib/api-browser';
 
 export type FileVersionInfo = {
   id: string;
@@ -77,14 +77,9 @@ export function UploadLifecyclePanel({
     setSuccessMsg(null);
 
     try {
-      const res = await fetch(`/api/documents/${documentId}/submit-processing`, {
-        method: 'POST'
-      });
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error((err as { message?: string }).message || 'Submit processing failed.');
-      }
+      await submitDocumentProcessing(documentId);
       setSuccessMsg('Processing job queued successfully.');
+      router.refresh();
       if (onProcessingSubmitted) onProcessingSubmitted();
     } catch (err) {
       setErrorMsg((err as Error).message || 'Failed to submit processing.');
