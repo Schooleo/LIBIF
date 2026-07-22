@@ -111,7 +111,7 @@ export function ReaderNotificationCenter({
   const unreadCount = notifications.filter((n) => !n.isRead).length;
 
   return (
-    <Card variant="default">
+    <Card>
       <div className="ui-stack" style={{ gap: '1rem' }}>
         <div className="ui-cluster" style={{ justifyContent: 'space-between', alignItems: 'center' }}>
           <div className="ui-cluster" style={{ gap: '0.5rem', alignItems: 'center' }}>
