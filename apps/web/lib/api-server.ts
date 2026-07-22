@@ -1,6 +1,6 @@
 import { headers } from 'next/headers';
 import { createLibifApiClient, apiErrorMessage } from './api-client';
-import type { AccessDecisionDto, AdminBookListItemDto, LibrarianDashboardSummaryDto, PagedBookListDto, PublicBookListItemDto, ReaderLibraryItemDto, ReaderLibraryResponseDto, SessionDto, TaxonomyCategoryDto, TaxonomyTagDto } from './api-types';
+import type { AccessDecisionDto, AdminBookListItemDto, DocumentDetailResponseDto, DocumentListQuery, LibrarianDashboardSummaryDto, PagedBookListDto, PagedDocumentListResponseDto, PublicBookListItemDto, ReaderLibraryItemDto, ReaderLibraryResponseDto, SessionDto, TaxonomyCategoryDto, TaxonomyTagDto } from './api-types';
 import { getDevAuthHeaders } from './auth/session';
 
 type ReaderLibraryQuery = { filter?: 'ALL' | 'READING' | 'BOOKMARKED' | 'COMPLETED'; search?: string; page?: number; limit?: number };
@@ -83,4 +83,18 @@ export async function fetchReaderBookmarks(): Promise<ReaderLibraryItemDto[]> {
   const { data, error } = await client.GET('/api/reader/bookmarks');
   if (error) throw new Error(apiErrorMessage(error, 'Reader bookmarks request failed'));
   return data as ReaderLibraryItemDto[];
+}
+
+export async function fetchAdminDocuments(query?: DocumentListQuery): Promise<PagedDocumentListResponseDto> {
+  const client = await createServerClient();
+  const { data, error } = await client.GET('/api/documents', { params: { query: query ?? {} } });
+  if (error) throw new Error(apiErrorMessage(error, 'Admin documents request failed'));
+  return data;
+}
+
+export async function fetchDocumentDetail(id: string): Promise<DocumentDetailResponseDto> {
+  const client = await createServerClient();
+  const { data, error } = await client.GET('/api/documents/{id}', { params: { path: { id } } });
+  if (error) throw new Error(apiErrorMessage(error, 'Document detail request failed'));
+  return data;
 }

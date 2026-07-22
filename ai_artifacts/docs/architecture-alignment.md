@@ -27,14 +27,14 @@ Last updated: 2026-07-22
 ## Current route and component baseline
 
 - Current route groups: `apps/web/app/(reader)`, `apps/web/app/(admin)`, and `apps/web/app/(auth)`.
-- Current routes include `/`, `/catalogue`, `/catalog` compatibility redirect, `/admin/books`, `/admin/books/new`, `/admin/categories`, `/admin/tags`, `/admin/dashboard`, the Phase 4 reader/admin foundations, and the authentication/access routes.
+- Current routes include `/`, `/catalogue`, `/catalog` compatibility redirect, reader library/history/bookmarks and document-view routes, `/admin/documents` with detail/edit/new flows, processing/approval/notification routes, taxonomy routes, the legacy `/admin/books` intake, `/admin/dashboard`, and the authentication/access routes.
 - The root layout owns only document shell/font setup; role-aware navigation now lives in Reader/Admin/Auth shells.
 - Phase 1 styling now uses semantic tokens and shared CSS in `apps/web/styles/`, imported from `apps/web/app/globals.css`.
 - Current book intake components under `apps/web/components/book-intake` have been migrated to shared Phase 1 primitives while preserving existing behavior.
 
 ## Current API/module baseline
 
-- `AppModule` imports the integrated domain modules, including `TaxonomyModule` for staff taxonomy reads and starter Admin mutations.
+- `AppModule` imports the integrated domain modules, including Phase 5 `DocumentsModule`, `UploadModule`, `ApprovalModule`, and `TaxonomyModule` alongside reader, access, processing, and notifications.
 - Current endpoints include:
   - `POST /api/auth/register`
   - `POST /api/auth/sign-in`
@@ -49,6 +49,12 @@ Last updated: 2026-07-22
   - `GET /api/taxonomy/tags`
   - `POST/PATCH /api/admin/categories[/:id]`
   - `POST/PATCH /api/admin/tags[/:id]`
+  - `GET/PATCH/POST /api/documents[/:id]` metadata, submit-processing, and replacement operations
+  - `POST/GET /api/uploads[/:id]` plus cancel/retry operations
+  - `GET/POST /api/admin/processing/jobs[/:id]` queue, status, advance, retry, and cancel operations
+  - `GET /api/admin/approvals[/:id]`
+  - `GET/PATCH /api/notifications[/:id]`
+  - reader library/history/bookmark/progress and access decision/token endpoints
   - `GET /api/catalog/books`
   - `GET /api/isbn/:isbn`
   - health endpoints under `HealthModule`
@@ -56,6 +62,8 @@ Last updated: 2026-07-22
 - `BooksService` currently owns intake persistence and coordinates Prisma, storage, and processing queue; admin book routes are now guarded by the Auth boundary.
 - `CatalogService` currently owns category reads and public published-book list reads.
 - `TaxonomyService` owns stable staff category/tag options plus Admin-only starter create/edit rules; deletion/reassignment/merge remain deferred risky workflows.
+- `DocumentsService` and `UploadService` own the Phase 5 document metadata/file lifecycle boundary and coordinate storage plus processing queue creation.
+- `ProcessingService`, `ApprovalService`, and `NotificationsService` own persisted staff workflow transitions/read models; worker execution and the full correction loop remain Phase 6.
 
 ## Database layer
 
@@ -94,15 +102,14 @@ Last updated: 2026-07-22
 - **Notifications capability:** event-driven records and authorized action links, without duplicating workflow truth.
 - **Reporting read layer:** query services over approved module-owned data; no ad hoc frontend database access.
 
-## Architecture gaps to resolve after Phase 4 / Phase 5 schema foundation
+## Architecture gaps after Phase 5 integration
 
-1. Reader module exists, but Phase 5/6 must migrate bookmarks and reading progress from temporary in-memory state to the new Prisma models.
-2. Notifications module exists, but Phase 5/6 must migrate module-local arrays to the new persisted `Notification` model and role-aware action links.
-3. Upload ownership is currently folded into `BooksModule` rather than a separate Upload/Documents application service boundary.
+1. Processing worker entry points and full retry/status history remain Phase 6, although guarded transition/status/retry/cancel foundations now exist.
+2. Approval decision commands, correction/resubmission, notification fanout, and richer action links remain Phase 6.
+3. The legacy `BooksModule` intake remains temporarily available beside the canonical Phase 5 `DocumentsModule`/`UploadModule` flow and should be retired only through a dedicated migration.
 4. Auth-adjacent administration remains deferred: staff provisioning UX, role changes, account deactivation, MFA/OAuth, production email provider integration, throttling, and security settings.
-5. OpenAPI generation exists, but later batches must keep decorators/generator output current as DTOs expand.
-6. Processing queue/status surfaces exist, but worker entry points, transition validation, retry/cancel controls, and full status history are not implemented.
-7. Remaining data gaps after the Phase 5 schema foundation: report export jobs and full-text/search structures.
+5. Later batches must keep OpenAPI decorators and generated clients current as contracts expand.
+6. Remaining data gaps include report export jobs and full-text/search structures.
 
 ## Design inconsistencies and implementation risks
 

@@ -26,6 +26,26 @@ OpenAPI is now generated for implemented endpoints at `apps/api/openapi/libif-ap
 | `GET /api/catalog/books` | `CatalogModule` | `apps/web/app/(reader)/catalogue/page.tsx` | Public published books only. |
 | `GET /api/isbn/:isbn` | `IsbnModule` | `apps/web/components/book-intake/MetadataFields.tsx` | ISBN lookup proxy. |
 | `GET /api/admin/dashboard/librarian` | `ReportingModule` | `apps/web/app/(admin)/admin/dashboard/page.tsx` | Phase 4 Member D dashboard summary; guarded for Admin/Librarian; returns no-migration counts for books, processing jobs, taxonomy, users, and recent books. |
+| `GET /api/documents` | `DocumentsModule` | `/admin/documents` | Guarded staff document list with query/filter/page foundations. |
+| `GET /api/documents/:id` | `DocumentsModule` | `/admin/documents/[id]` and edit route | Guarded document metadata, category/tags, file, job, and audit summary. |
+| `PATCH /api/documents/:id/metadata` | `DocumentsModule` | `/admin/documents/[id]/edit` | Updates metadata using Member D category/tag options and records an audit event. |
+| `POST /api/documents/:id/submit-processing` | `DocumentsModule` | document detail actions | Creates/queues a processing job and records the transition. |
+| `POST /api/documents/:id/replace-file` | `DocumentsModule` | document detail actions | Validates and stores a replacement PDF version. |
+| `POST /api/uploads` | `UploadModule` | `/admin/documents/new` | Canonical Phase 5 multipart document intake; guarded for Admin/Librarian. |
+| `GET /api/uploads/:id` | `UploadModule` | upload lifecycle UI | Returns persisted upload/file/job state. |
+| `POST /api/uploads/:id/cancel` | `UploadModule` | upload lifecycle UI | Cancels eligible intake processing. |
+| `POST /api/uploads/:id/retry` | `UploadModule` | upload lifecycle UI | Requeues an eligible failed intake. |
+| `GET /api/admin/processing/jobs` | `ProcessingModule` | `/admin/processing` | Guarded persisted processing queue. |
+| `GET /api/admin/processing/jobs/:id` and `/status` | `ProcessingModule` | `/admin/processing/[id]` | Job detail and polling-safe status projection. |
+| `POST /api/admin/processing/jobs/:id/advance` | `ProcessingModule` | staff transition actions | Validated Phase 5 pipeline transition hook. |
+| `POST /api/admin/processing/jobs/:id/retry` and `/cancel` | `ProcessingModule` | processing actions | Guarded retry/cancel foundations; retry history and real worker depth remain Phase 6. |
+| `GET /api/admin/approvals` and `/:id` | `ApprovalModule` | `/admin/approvals` | Persisted approval queue/detail foundation; decision/correction commands remain Phase 6. |
+| `GET /api/notifications` | `NotificationsModule` | `/admin/notifications` | Role-scoped persisted notifications. |
+| `PATCH /api/notifications/:id/read` and `/read-all` | `NotificationsModule` | notification list actions | Persists notification read state. |
+| `GET /api/access/documents/:documentId/decision` | `AccessModule` | reader detail/viewer routes | Reader-safe lifecycle/access decision. |
+| `POST /api/access/documents/:documentId/view-token` and `/download-token` | `AccessModule` | protected reader controls | Short-lived authorized storage handoff. |
+| `GET /api/reader/library`, `/history`, and `/bookmarks` | `ReaderModule` | reader personal-library routes | Persisted reader collections. |
+| `POST/DELETE /api/reader/bookmarks[/:documentId]` and `PATCH /api/reader/progress/:documentId` | `ReaderModule` | reader actions/viewer | Persists bookmark and reading-progress state. |
 
 ## Standard error envelope
 
@@ -94,14 +114,14 @@ Deferred auth-adjacent contracts remain in Batch 6/7: user administration, role 
 
 - `GET /api/taxonomy/categories` — Phase 5 D5-001 implemented staff category options for metadata forms.
 - `GET /api/taxonomy/tags` — Phase 5 D5-001 implemented staff tag options for metadata forms.
-- `GET /api/admin/documents?page&filters&sort`
-- `GET /api/admin/documents/{documentId}`
+- `GET /api/documents?page&filters&sort` — Phase 5 implemented.
+- `GET /api/documents/{documentId}` — Phase 5 implemented.
 - `GET /api/admin/documents/{documentId}/audit`
-- `POST /api/admin/uploads/pdf`
-- `POST /api/admin/documents/{documentId}/files/replacements`
+- `POST /api/uploads` — Phase 5 implemented canonical multipart intake.
+- `POST /api/documents/{documentId}/replace-file` — Phase 5 implemented replacement foundation.
 - `GET /api/isbn/{isbn}` or `POST /api/admin/isbn/lookups`
-- `PATCH /api/admin/documents/{documentId}/metadata`
-- `POST /api/admin/documents/{documentId}/submit-review`
+- `PATCH /api/documents/{documentId}/metadata` — Phase 5 implemented.
+- `POST /api/documents/{documentId}/submit-processing` — Phase 5 implemented processing handoff; review submission remains Phase 6.
 
 ### Batch 4 — Processing queue and jobs
 
@@ -170,4 +190,4 @@ Deferred auth-adjacent contracts remain in Batch 6/7: user administration, role 
 
 ## OpenAPI implementation status
 
-Phase 2 added NestJS Swagger setup, stable operation IDs, generated JSON at `apps/api/openapi/libif-api.json`, a dependency-free frontend path-map generator at `apps/web/scripts/generate-api-types.mjs`, OpenAPI-owned response aliases at `apps/web/lib/api-types.ts`, and split `openapi-fetch` transport adapters in `apps/web/lib/api-server.ts` and `apps/web/lib/api-browser.ts`. Phase 3 added generated auth request/response DTOs and cookie-aware frontend calls. Phase 4 Member D added the dashboard summary contract. Phase 5 D5-004 generated the taxonomy read/create/edit paths and DTOs and added typed server/browser adapters. Later phases must keep OpenAPI decorators and generated path types aligned whenever endpoints change.
+Phase 2 added NestJS Swagger setup, stable operation IDs, generated JSON at `apps/api/openapi/libif-api.json`, a dependency-free frontend path-map generator at `apps/web/scripts/generate-api-types.mjs`, OpenAPI-owned response aliases at `apps/web/lib/api-types.ts`, and split `openapi-fetch` transport adapters. Phase 3 added generated auth contracts, and Phase 4 added the dashboard summary. The Phase 5 Member D integration pass now regenerates one unified contract containing reader/access, document/upload, processing, approval, notification, and taxonomy endpoints from all four member lanes. Later phases must keep OpenAPI decorators and generated path types aligned whenever endpoints change.

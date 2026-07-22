@@ -1,4 +1,4 @@
-import type { components } from './generated/api-types';
+import type { components, paths } from './generated/api-types';
 import type {
   AdminBookListItemDto as SharedAdminBookListItemDto,
   CategoryDto as SharedCategoryDto,
@@ -22,6 +22,14 @@ export type CreateTaxonomyCategoryDto = components['schemas']['CreateTaxonomyCat
 export type UpdateTaxonomyCategoryDto = components['schemas']['UpdateTaxonomyCategoryDto'];
 export type CreateTaxonomyTagDto = components['schemas']['CreateTaxonomyTagDto'];
 export type UpdateTaxonomyTagDto = components['schemas']['UpdateTaxonomyTagDto'];
+export type DocumentDetailResponseDto = components['schemas']['DocumentDetailResponseDto'];
+export type PagedDocumentListResponseDto = components['schemas']['PagedDocumentListResponseDto'];
+export type UpdateDocumentMetadataDto = components['schemas']['UpdateDocumentMetadataDto'];
+export type UploadResultDto = components['schemas']['UploadResultDto'];
+export type ProcessingJobResponseDto = components['schemas']['ProcessingJobResponseDto'];
+export type ApprovalReviewResponseDto = components['schemas']['ApprovalReviewResponseDto'];
+export type NotificationResponseDto = components['schemas']['NotificationResponseDto'];
+export type DocumentListQuery = paths['/api/documents']['get']['parameters']['query'];
 
 export type PublicBookListItemDto = SharedPublicBookListItemDto;
 export type AdminBookListItemDto = SharedAdminBookListItemDto;
@@ -45,5 +53,9 @@ export type CreateBookIntakeDto = {
 export type ReaderLibraryItemDto = components['schemas']['ReaderLibraryItemDto'];
 export type ReaderLibraryResponseDto = components['schemas']['ReaderLibraryResponseDto'];
 export type ReadingProgressStateDto = components['schemas']['ReadingProgressStateDto'];
-export type AccessDecisionDto = components['schemas']['AccessDecisionDto'];
+export type AccessDecisionDto = components['schemas']['AccessDecisionDto'] & {
+  /** Reader-safe lifecycle status of the document. Populated by the access service. */
+  documentStatus?: string;
+};
+
 export type ProtectedDocumentUrlDto = components['schemas']['ProtectedDocumentUrlDto'];

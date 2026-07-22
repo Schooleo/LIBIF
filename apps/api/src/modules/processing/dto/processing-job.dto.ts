@@ -8,11 +8,20 @@ export class ProcessingJobResponseDto {
   @ApiProperty()
   bookId!: string;
 
+  @ApiPropertyOptional({ type: String, nullable: true })
+  bookTitle?: string | null;
+
   @ApiProperty()
   type!: string;
 
   @ApiProperty({ enum: ProcessingJobStatus })
   status!: ProcessingJobStatus;
+
+  @ApiPropertyOptional({ type: String, nullable: true })
+  stage?: string | null;
+
+  @ApiPropertyOptional({ type: Number })
+  progressPercent?: number;
 
   @ApiProperty()
   attempts!: number;

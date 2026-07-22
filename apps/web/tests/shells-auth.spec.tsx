@@ -32,8 +32,8 @@ describe('route-group shells and auth helper', () => {
     const navigation = screen.getByRole('navigation', { name: /staff workspace navigation/i });
     expect(screen.queryByRole('navigation', { name: /admin workspace navigation/i })).not.toBeInTheDocument();
     expect(within(navigation).getByRole('link', { name: /^dashboard$/i })).toHaveAttribute('href', '/admin/dashboard');
-    expect(within(navigation).getByRole('link', { name: /^documents$/i })).toHaveAttribute('href', '/admin/books');
-    expect(within(navigation).getByRole('link', { name: /new intake/i })).toHaveAttribute('href', '/admin/books/new');
+    expect(within(navigation).getByRole('link', { name: /^documents$/i })).toHaveAttribute('href', '/admin/documents');
+    expect(within(navigation).getByRole('link', { name: /new intake/i })).toHaveAttribute('href', '/admin/documents/new');
     expect(within(navigation).getByRole('link', { name: /processing queue/i })).toHaveAttribute('href', '/admin/processing');
     expect(within(navigation).getByRole('link', { name: /approval queue/i })).toHaveAttribute('href', '/admin/approvals');
     expect(within(navigation).getByRole('link', { name: /notifications/i })).toHaveAttribute('href', '/admin/notifications');
@@ -60,7 +60,7 @@ describe('route-group shells and auth helper', () => {
 
     const drawer = screen.getByRole('dialog', { name: /staff navigation/i });
     expect(within(drawer).getByRole('navigation', { name: /mobile staff workspace navigation/i })).toBeInTheDocument();
-    expect(within(drawer).getByRole('link', { name: /^documents$/i })).toHaveAttribute('href', '/admin/books');
+    expect(within(drawer).getByRole('link', { name: /^documents$/i })).toHaveAttribute('href', '/admin/documents');
 
     await user.click(within(drawer).getByRole('button', { name: /close drawer/i }));
     expect(screen.queryByRole('dialog', { name: /staff navigation/i })).not.toBeInTheDocument();

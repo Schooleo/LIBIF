@@ -117,4 +117,4 @@ Deferred auth UI/component work remains in later batches: user administration, r
 
 ## Phase 5 taxonomy selector update — 2026-07-22
 
-`CategorySelector` and `TagSelector` provide controlled, persistence-agnostic taxonomy inputs under `apps/web/components/domain/taxonomy/`; the existing intake form now consumes them while preserving its current tag-name payload contract. `CategoryManager` and `TagManager` add Admin create/edit plus Librarian read-only states. D5-004 generated the typed web adapters used by these routes and components.
+`CategorySelector` and `TagSelector` provide controlled, persistence-agnostic taxonomy inputs under `apps/web/components/domain/taxonomy/`; both the canonical `/admin/documents` metadata workflow and the legacy book-intake form consume them while preserving the current tag-name payload contract. `CategoryManager` and `TagManager` add Admin create/edit plus Librarian read-only states. The Phase 5 closure pass generated the unified typed web adapters used by all member lanes.

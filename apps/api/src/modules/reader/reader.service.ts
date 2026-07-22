@@ -7,15 +7,10 @@ import { ReadingProgressDto } from './dto/reading-progress.dto';
 
 @Injectable()
 export class ReaderService {
-  private readonly bookmarksMap = new Map<string, Set<string>>();
-  private readonly progressMap = new Map<string, Map<string, ReadingProgressStateDto>>();
-
   constructor(private readonly prisma: PrismaService) {}
 
   async getLibrary(userId: string, query: ReaderLibraryQueryDto = {}): Promise<ReaderLibraryResponseDto> {
     const { filter = ReaderLibraryFilter.ALL, search, page = 1, limit = 20 } = query;
-    const userBookmarks = this.getUserBookmarks(userId);
-    const userProgress = this.getUserProgressMap(userId);
 
     // Fetch published books from Prisma
     const books = await this.prisma.book.findMany({
@@ -36,13 +31,30 @@ export class ReaderService {
             author: true,
           },
         },
+        // Fetch only the current user's reading progress and bookmarks
+        readingProgress: {
+          where: { userId },
+          take: 1,
+        },
+        bookmarks: {
+          where: { userId },
+          take: 1,
+        },
       },
       orderBy: { updatedAt: 'desc' },
     });
 
     let allMappedItems: ReaderLibraryItemDto[] = books.map((book) => {
-      const bookmarked = userBookmarks.has(book.id);
-      const progress = userProgress.get(book.id);
+      const bookmarked = book.bookmarks.length > 0;
+      const rp = book.readingProgress[0] ?? null;
+      const progress: ReadingProgressStateDto | undefined = rp
+        ? {
+            currentPage: rp.currentPage,
+            totalPages: rp.totalPages ?? 100,
+            percentage: rp.percentage,
+            lastReadAt: rp.lastReadAt.toISOString(),
+          }
+        : undefined;
       return {
         id: book.id,
         title: book.title,
@@ -57,7 +69,7 @@ export class ReaderService {
       };
     });
 
-    // Calculate metrics
+    // Calculate metrics before filtering
     const readingCount = allMappedItems.filter((item) => item.progress && item.progress.percentage < 100).length;
     const bookmarkedCount = allMappedItems.filter((item) => item.bookmarked).length;
 
@@ -83,68 +95,152 @@ export class ReaderService {
   }
 
   async getHistory(userId: string): Promise<ReaderLibraryItemDto[]> {
-    const response = await this.getLibrary(userId, { filter: ReaderLibraryFilter.ALL, limit: 1000 });
-    return response.items
-      .filter((item) => item.progress !== undefined)
-      .sort((a, b) => new Date(b.progress!.lastReadAt).getTime() - new Date(a.progress!.lastReadAt).getTime());
+    // Fetch all books the user has reading progress for, ordered by lastReadAt desc
+    const progressRecords = await this.prisma.readingProgress.findMany({
+      where: { userId },
+      orderBy: { lastReadAt: 'desc' },
+      include: {
+        book: {
+          include: {
+            authors: { include: { author: true } },
+            bookmarks: { where: { userId }, take: 1 },
+          },
+        },
+      },
+    });
+
+    return progressRecords.map((rp) => {
+      const book = rp.book;
+      return {
+        id: book.id,
+        title: book.title,
+        subtitle: book.subtitle ?? undefined,
+        authors: book.authors.map((ba) => ba.author.name),
+        publisher: book.publisher ?? undefined,
+        publishedYear: book.publishedYear ?? undefined,
+        status: book.status,
+        bookmarked: book.bookmarks.length > 0,
+        progress: {
+          currentPage: rp.currentPage,
+          totalPages: rp.totalPages ?? 100,
+          percentage: rp.percentage,
+          lastReadAt: rp.lastReadAt.toISOString(),
+        },
+        updatedAt: book.updatedAt.toISOString(),
+      };
+    });
   }
 
   async getBookmarks(userId: string): Promise<ReaderLibraryItemDto[]> {
-    const response = await this.getLibrary(userId, { filter: ReaderLibraryFilter.BOOKMARKED, limit: 1000 });
-    return response.items;
+    const bookmarkRecords = await this.prisma.bookmark.findMany({
+      where: { userId },
+      orderBy: { createdAt: 'desc' },
+      include: {
+        book: {
+          include: {
+            authors: { include: { author: true } },
+            readingProgress: { where: { userId }, take: 1 },
+          },
+        },
+      },
+    });
+
+    return bookmarkRecords.map((bm) => {
+      const book = bm.book;
+      const rp = book.readingProgress[0] ?? null;
+      return {
+        id: book.id,
+        title: book.title,
+        subtitle: book.subtitle ?? undefined,
+        authors: book.authors.map((ba) => ba.author.name),
+        publisher: book.publisher ?? undefined,
+        publishedYear: book.publishedYear ?? undefined,
+        status: book.status,
+        bookmarked: true,
+        progress: rp
+          ? {
+              currentPage: rp.currentPage,
+              totalPages: rp.totalPages ?? 100,
+              percentage: rp.percentage,
+              lastReadAt: rp.lastReadAt.toISOString(),
+            }
+          : undefined,
+        updatedAt: book.updatedAt.toISOString(),
+      };
+    });
   }
 
+  /**
+   * A5-004: Add bookmark via Prisma upsert (idempotent — multiple calls do not duplicate).
+   */
   async addBookmark(userId: string, dto: BookmarkDto): Promise<{ success: boolean; documentId: string }> {
     const book = await this.prisma.book.findUnique({ where: { id: dto.documentId } });
     if (!book) {
       throw new NotFoundException(`Document with ID ${dto.documentId} not found`);
     }
-    const bookmarks = this.getUserBookmarks(userId);
-    bookmarks.add(dto.documentId);
+    await this.prisma.bookmark.upsert({
+      where: { userId_bookId: { userId, bookId: dto.documentId } },
+      create: { userId, bookId: dto.documentId },
+      update: {},
+    });
     return { success: true, documentId: dto.documentId };
   }
 
+  /**
+   * A5-004: Remove bookmark via Prisma delete (idempotent — missing bookmark does not throw).
+   */
   async removeBookmark(userId: string, documentId: string): Promise<{ success: boolean; documentId: string }> {
-    const bookmarks = this.getUserBookmarks(userId);
-    bookmarks.delete(documentId);
+    try {
+      await this.prisma.bookmark.delete({
+        where: { userId_bookId: { userId, bookId: documentId } },
+      });
+    } catch {
+      // Bookmark may already not exist — treat as success for idempotent DELETE semantics.
+    }
     return { success: true, documentId };
   }
 
+  /**
+   * A5-003: Upsert reading progress in the Prisma ReadingProgress table.
+   * Automatically sets status to COMPLETED when percentage reaches 100.
+   */
   async updateProgress(userId: string, documentId: string, dto: ReadingProgressDto): Promise<ReadingProgressStateDto> {
     const book = await this.prisma.book.findUnique({ where: { id: documentId } });
     if (!book) {
       throw new NotFoundException(`Document with ID ${documentId} not found`);
     }
     const totalPages = dto.totalPages ?? 100;
-    const percentage = dto.percentage ?? Math.min(100, Math.round((dto.currentPage / totalPages) * 100));
+    const percentage =
+      dto.percentage !== undefined
+        ? Math.min(100, Math.round(dto.percentage))
+        : Math.min(100, Math.round((dto.currentPage / totalPages) * 100));
+    const status = percentage >= 100 ? 'COMPLETED' : 'READING';
 
-    const progressState: ReadingProgressStateDto = {
-      currentPage: dto.currentPage,
-      totalPages,
-      percentage,
-      lastReadAt: new Date().toISOString(),
+    const record = await this.prisma.readingProgress.upsert({
+      where: { userId_bookId: { userId, bookId: documentId } },
+      create: {
+        userId,
+        bookId: documentId,
+        currentPage: dto.currentPage,
+        totalPages,
+        percentage,
+        status,
+        lastReadAt: new Date(),
+      },
+      update: {
+        currentPage: dto.currentPage,
+        totalPages,
+        percentage,
+        status,
+        lastReadAt: new Date(),
+      },
+    });
+
+    return {
+      currentPage: record.currentPage,
+      totalPages: record.totalPages ?? totalPages,
+      percentage: record.percentage,
+      lastReadAt: record.lastReadAt.toISOString(),
     };
-
-    const userProgress = this.getUserProgressMap(userId);
-    userProgress.set(documentId, progressState);
-    return progressState;
-  }
-
-  private getUserBookmarks(userId: string): Set<string> {
-    let bookmarks = this.bookmarksMap.get(userId);
-    if (!bookmarks) {
-      bookmarks = new Set<string>();
-      this.bookmarksMap.set(userId, bookmarks);
-    }
-    return bookmarks;
-  }
-
-  private getUserProgressMap(userId: string): Map<string, ReadingProgressStateDto> {
-    let progress = this.progressMap.get(userId);
-    if (!progress) {
-      progress = new Map<string, ReadingProgressStateDto>();
-      this.progressMap.set(userId, progress);
-    }
-    return progress;
   }
 }

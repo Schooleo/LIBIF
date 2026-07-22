@@ -24,10 +24,11 @@ const staffNavGroups: readonly StaffNavGroup[] = [
     label: 'Librarian Workspace',
     items: [
       { label: 'Dashboard', href: '/admin/dashboard', roles: allStaffRoles },
-      { label: 'Documents', href: '/admin/books', roles: allStaffRoles },
+      { label: 'Documents', href: '/admin/documents', roles: allStaffRoles },
       { label: 'Processing Queue', href: '/admin/processing', roles: allStaffRoles },
       { label: 'Approval Queue', href: '/admin/approvals', roles: allStaffRoles },
       { label: 'Notifications', href: '/admin/notifications', roles: allStaffRoles },
+      { label: 'Books (Legacy)', href: '/admin/books', roles: allStaffRoles },
     ]
   },
   {
@@ -44,8 +45,8 @@ function normalizeRole(role: string): StaffRole {
 }
 
 function isCurrentPath(pathname: string, href: string): boolean {
-  if (href === '/admin/books') {
-    return pathname === href || (pathname.startsWith(`${href}/`) && pathname !== '/admin/books/new');
+  if (href === '/admin/documents') {
+    return pathname === href || (pathname.startsWith(`${href}/`) && pathname !== '/admin/documents/new');
   }
   return pathname === href || pathname.startsWith(`${href}/`);
 }
@@ -59,8 +60,8 @@ function StaffNavigationLinks({ role, label, onNavigate }: { role: string; label
     <nav className="app-shell__staff-nav" aria-label={label}>
       <a
         className="app-shell__sidebar-action ui-button ui-button--primary"
-        href="/admin/books/new"
-        aria-current={pathname === '/admin/books/new' ? 'page' : undefined}
+        href="/admin/documents/new"
+        aria-current={pathname === '/admin/documents/new' ? 'page' : undefined}
         onClick={onNavigate}
       >
         New Intake

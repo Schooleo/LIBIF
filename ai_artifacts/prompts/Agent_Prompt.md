@@ -46,7 +46,7 @@ The repository is a TypeScript monorepo with:
 - S3/MinIO-compatible object storage.
 - Redis/BullMQ queue infrastructure.
 
-Current foundations through Phase 4, the Phase 5 schema foundation, and the Phase 5 Member D taxonomy lane are already in place:
+Current foundations through the integrated Phase 5 result are already in place:
 
 - Tailwind/PostCSS setup via `apps/web/postcss.config.mjs` and `apps/web/app/globals.css`.
 - Semantic tokens/base/component CSS in `apps/web/styles/`.
@@ -63,7 +63,8 @@ Current foundations through Phase 4, the Phase 5 schema foundation, and the Phas
 - Auth routes under `apps/web/app/(auth)`: `/sign-in`, `/register`, `/forgot-password`, `/reset-password`, `/reset-password/completed`, `/access-denied`, and `/session-expired`.
 - Phase 4 reader/access/catalog/processing/notification/dashboard foundations are merged.
 - Phase 5 schema foundation migration `20260721114643_phase5_domain_foundations` adds persisted reading progress, bookmarks, notifications, approval reviews, document audit events, processing progress fields, and file version/status fields.
-- Phase 5 Member D adds `TaxonomyModule`, stable staff category/tag reads, Admin-only starter create/edit APIs, `/admin/categories` and `/admin/tags`, reusable taxonomy selectors/managers, typed adapters, intake-form integration, and generated OpenAPI/client contracts. Risky deletion/reassignment/merge workflows remain Phase 7.
+- Phase 5 adds persisted reader state/access handoff, document/upload/metadata routes and APIs, processing transition foundations, approval queue/detail, persisted notifications, and the Member D taxonomy lane.
+- Member D adds `TaxonomyModule`, stable staff category/tag reads, Admin-only starter create/edit APIs, `/admin/categories` and `/admin/tags`, reusable taxonomy selectors/managers consumed by both document intake flows, the standardized staff shell, and unified OpenAPI/client contracts. Risky deletion/reassignment/merge workflows remain Phase 7.
 
 Do not rebuild these foundations from scratch. Extend them when a later batch needs a missing variant or domain-specific component.
 
@@ -220,7 +221,7 @@ Use the batch assignments in `screen-matrix.md` as the source of truth.
 7. Dashboards, reports, export, and settings.
 8. Cross-screen integration and hardening.
 
-Phase 4 is merged and Phase 5 Member D is complete. Remaining Phase 5 work stays in Members A/B/C: document lifecycle/upload/metadata, reader document-view handoff, processing transition hooks, and persisted notification/approval handoffs. Consume Member D taxonomy contracts and selectors instead of rebuilding category/tag logic. Phase 5 begins from the schema-foundation migration rather than ad hoc mocks for required persisted state.
+Phase 5 is integrated across Members A/B/C/D. The next execution target is Phase 6: deepen processing workers and retry history, approval decisions, correction/resubmission, and notification fanout. Consume the existing Phase 5 document, taxonomy, reader-access, processing-transition, and persistence contracts instead of rebuilding them.
 
 ## 10. Accessibility and interaction requirements
 

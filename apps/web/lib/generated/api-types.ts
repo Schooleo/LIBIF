@@ -43,8 +43,11 @@ export interface components {
     "ProcessingJobResponseDto": {
     "id": string;
     "bookId": string;
+    "bookTitle"?: string | null;
     "type": string;
     "status": "QUEUED" | "RUNNING" | "SUCCEEDED" | "FAILED";
+    "stage"?: string | null;
+    "progressPercent"?: number;
     "attempts": number;
     "errorMessage"?: string | null;
     "createdAt": string;
@@ -59,6 +62,18 @@ export interface components {
     "payload"?: Record<string, unknown> | null;
     "isRead": boolean;
     "createdAt": string;
+  };
+    "ApprovalReviewResponseDto": {
+    "id": string;
+    "bookId": string;
+    "bookTitle"?: string | null;
+    "reviewerId"?: string | null;
+    "status": "PENDING" | "APPROVED" | "REJECTED" | "CORRECTION_REQUESTED";
+    "reason"?: string | null;
+    "requestedChanges"?: string | null;
+    "decidedAt"?: Record<string, unknown> | null;
+    "createdAt": string;
+    "updatedAt": string;
   };
     "BookStatusCountsDto": {
     "total": number;
@@ -165,6 +180,88 @@ export interface components {
     "page"?: number;
     "pageSize"?: number;
   };
+    "BookFileVersionDto": {
+    "id": string;
+    "originalFilename": string;
+    "sizeBytes": string;
+    "mimeType": string;
+    "version": number;
+    "status": "ACTIVE" | "REPLACED" | "REJECTED";
+    "createdAt": string;
+  };
+    "ProcessingJobSummaryDto": {
+    "id": string;
+    "status": "QUEUED" | "RUNNING" | "SUCCEEDED" | "FAILED";
+    "stage"?: string | null;
+    "progressPercent": number;
+    "errorMessage"?: string | null;
+    "updatedAt": string;
+  };
+    "BookAuditEventDto": {
+    "id": string;
+    "action": "CREATED" | "METADATA_UPDATED" | "FILE_UPLOADED" | "FILE_REPLACED" | "PROCESSING_QUEUED" | "PROCESSING_STARTED" | "PROCESSING_COMPLETED" | "APPROVAL_REQUESTED" | "APPROVED" | "REJECTED" | "CORRECTION_REQUESTED" | "PUBLISHED";
+    "message"?: string | null;
+    "actorEmail"?: string | null;
+    "createdAt": string;
+  };
+    "DocumentDetailResponseDto": {
+    "id": string;
+    "title": string;
+    "subtitle"?: string | null;
+    "description"?: string | null;
+    "publisher"?: string | null;
+    "publishedYear"?: number | null;
+    "language"?: string | null;
+    "isbn"?: string | null;
+    "status": "DRAFT" | "PENDING_PROCESSING" | "PROCESSING" | "PENDING_APPROVAL" | "PUBLISHED" | "REJECTED";
+    "category"?: components['schemas']["CategoryResponseDto"];
+    "tags": components['schemas']["TagResponseDto"][];
+    "authors": components['schemas']["AuthorResponseDto"][];
+    "files": components['schemas']["BookFileVersionDto"][];
+    "activeFile"?: components['schemas']["BookFileVersionDto"];
+    "activeProcessingJob"?: components['schemas']["ProcessingJobSummaryDto"];
+    "auditHistory": components['schemas']["BookAuditEventDto"][];
+    "createdAt": string;
+    "updatedAt": string;
+  };
+    "PagedDocumentListResponseDto": {
+    "items": components['schemas']["DocumentDetailResponseDto"][];
+    "totalCount": number;
+    "page": number;
+    "pageSize": number;
+    "totalPages": number;
+  };
+    "UpdateDocumentMetadataDto": {
+    "title": string;
+    "subtitle"?: string;
+    "description"?: string;
+    "publisher"?: string;
+    "publishedYear"?: number;
+    "language"?: string;
+    "isbn"?: string;
+    "categoryId"?: string;
+    "authors": string[];
+    "tags"?: string[];
+  };
+    "UploadResultBookDto": {
+    "id": string;
+    "title": string;
+    "status": "DRAFT" | "PENDING_PROCESSING" | "PROCESSING" | "PENDING_APPROVAL" | "PUBLISHED" | "REJECTED";
+  };
+    "UploadResultFileDto": {
+    "id": string;
+    "originalFilename": string;
+    "sizeBytes": string;
+  };
+    "UploadResultJobDto": {
+    "id": string;
+    "status": "QUEUED" | "RUNNING" | "SUCCEEDED" | "FAILED";
+  };
+    "UploadResultDto": {
+    "book": components['schemas']["UploadResultBookDto"];
+    "file": components['schemas']["UploadResultFileDto"];
+    "processingJob": components['schemas']["UploadResultJobDto"];
+  };
     "IsbnMetadataDto": {
     "isbn"?: string;
     "title"?: string;
@@ -219,6 +316,7 @@ export interface components {
     "allowed": boolean;
     "documentId": string;
     "userRole": string;
+    "documentStatus"?: "DRAFT" | "PENDING_PROCESSING" | "PROCESSING" | "PENDING_APPROVAL" | "PUBLISHED" | "REJECTED";
     "reason"?: string;
   };
     "ProtectedDocumentUrlDto": {
@@ -414,6 +512,69 @@ export interface paths {
       };
     };
   };
+  "/api/admin/processing/jobs/{id}/advance": {
+    post: {
+      parameters: {
+        path: {
+          "id": string;
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["ProcessingJobResponseDto"];
+        };
+      };
+      "403": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/admin/processing/jobs/{id}/retry": {
+    post: {
+      parameters: {
+        path: {
+          "id": string;
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["ProcessingJobResponseDto"];
+        };
+      };
+      "403": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/admin/processing/jobs/{id}/cancel": {
+    post: {
+      parameters: {
+        path: {
+          "id": string;
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["ProcessingJobResponseDto"];
+        };
+      };
+      "403": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      };
+    };
+  };
   "/api/notifications": {
     get: {
       responses: {
@@ -457,6 +618,48 @@ export interface paths {
       "200": {
         content: {
           "application/json": unknown;
+        };
+      };
+      "403": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/admin/approvals": {
+    get: {
+      parameters: {
+        query: {
+          "status"?: "PENDING" | "APPROVED" | "REJECTED" | "CORRECTION_REQUESTED";
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["ApprovalReviewResponseDto"][];
+        };
+      };
+      "403": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/admin/approvals/{id}": {
+    get: {
+      parameters: {
+        path: {
+          "id": string;
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["ApprovalReviewResponseDto"];
         };
       };
       "403": {
@@ -550,6 +753,234 @@ export interface paths {
       "200": {
         content: {
           "application/json": components['schemas']["PagedPublicBookListResponseDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/documents": {
+    get: {
+      parameters: {
+        query: {
+          "search"?: string;
+          "status"?: "DRAFT" | "PENDING_PROCESSING" | "PROCESSING" | "PENDING_APPROVAL" | "PUBLISHED" | "REJECTED";
+          "categoryId"?: string;
+          "page"?: number;
+          "limit"?: number;
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["PagedDocumentListResponseDto"];
+        };
+      };
+      "403": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/documents/{id}": {
+    get: {
+      parameters: {
+        path: {
+          "id": string;
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["DocumentDetailResponseDto"];
+        };
+      };
+      "403": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      "404": {
+        content: {
+          "application/json": unknown;
+        };
+      };
+      };
+    };
+  };
+  "/api/documents/{id}/metadata": {
+    patch: {
+      parameters: {
+        path: {
+          "id": string;
+        };
+      };
+      requestBody: {
+        content: {
+          "application/json": components['schemas']["UpdateDocumentMetadataDto"];
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["DocumentDetailResponseDto"];
+        };
+      };
+      "403": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      "404": {
+        content: {
+          "application/json": unknown;
+        };
+      };
+      };
+    };
+  };
+  "/api/documents/{id}/submit-processing": {
+    post: {
+      parameters: {
+        path: {
+          "id": string;
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["DocumentDetailResponseDto"];
+        };
+      };
+      "403": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      "404": {
+        content: {
+          "application/json": unknown;
+        };
+      };
+      };
+    };
+  };
+  "/api/documents/{id}/replace-file": {
+    post: {
+      parameters: {
+        path: {
+          "id": string;
+        };
+      };
+      requestBody: {
+        content: {
+          "multipart/form-data": {
+    "file": string;
+  };
+        };
+      };
+      responses: {
+      "201": {
+        content: {
+          "application/json": components['schemas']["DocumentDetailResponseDto"];
+        };
+      };
+      "403": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/uploads": {
+    post: {
+      requestBody: {
+        content: {
+          "multipart/form-data": {
+    "file": string;
+    "metadata": string;
+  };
+        };
+      };
+      responses: {
+      "201": {
+        content: {
+          "application/json": components['schemas']["UploadResultDto"];
+        };
+      };
+      "403": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/uploads/{id}": {
+    get: {
+      parameters: {
+        path: {
+          "id": string;
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["UploadResultDto"];
+        };
+      };
+      "403": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      "404": {
+        content: {
+          "application/json": unknown;
+        };
+      };
+      };
+    };
+  };
+  "/api/uploads/{id}/cancel": {
+    post: {
+      parameters: {
+        path: {
+          "id": string;
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": unknown;
+        };
+      };
+      "403": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/uploads/{id}/retry": {
+    post: {
+      parameters: {
+        path: {
+          "id": string;
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["UploadResultDto"];
+        };
+      };
+      "403": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
         };
       };
       };

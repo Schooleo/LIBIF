@@ -2,14 +2,18 @@
 
 import Link from 'next/link';
 import { DataTable, type DataColumn } from '../../ui/data/DataTable';
-import { ProcessingStatusBadge } from './ProcessingStatusBadge';
+import { ProgressBar } from '../../ui/indicators/ProgressBar';
 import { ProcessingActions } from './ProcessingActions';
+import { ProcessingStatusBadge } from './ProcessingStatusBadge';
 
 export interface ProcessingJob {
   id: string;
   bookId: string;
+  bookTitle?: string | null;
   type: string;
   status: string;
+  stage?: string | null;
+  progressPercent?: number;
   attempts: number;
   errorMessage?: string | null;
   createdAt: string;
@@ -21,26 +25,41 @@ interface ProcessingQueueProps {
   loading?: boolean;
 }
 
+function formatStageLabel(stage?: string | null, status?: string): string {
+  if (!stage) {
+    if (status === 'SUCCEEDED') return 'Completed';
+    if (status === 'QUEUED') return 'Queued';
+    return 'Processing';
+  }
+  return stage.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase());
+}
+
 export function ProcessingQueue({ jobs, loading = false }: ProcessingQueueProps) {
   const columns: DataColumn<ProcessingJob>[] = [
     {
-      key: 'id',
-      header: 'Job ID',
+      key: 'bookTitle',
+      header: 'Book Title / Job ID',
       render: (job) => (
-        <Link href={`/admin/processing/${job.id}`} className="ui-link font-medium">
-          {job.id}
-        </Link>
+        <div className="flex flex-col">
+          <Link href={`/admin/processing/${job.id}`} className="ui-link font-medium">
+            {job.bookTitle || job.bookId}
+          </Link>
+          <span className="text-xs text-neutral-500 font-mono">Job #{job.id.slice(-8)}</span>
+        </div>
       )
     },
     {
-      key: 'bookId',
-      header: 'Book ID',
-      render: (job) => <span className="font-mono text-sm">{job.bookId}</span>
-    },
-    {
-      key: 'type',
-      header: 'Pipeline Type',
-      render: (job) => <span>{job.type}</span>
+      key: 'stage',
+      header: 'Stage & Progress',
+      render: (job) => {
+        const stageLabel = formatStageLabel(job.stage, job.status);
+        const percent = job.progressPercent ?? (job.status === 'SUCCEEDED' ? 100 : job.status === 'QUEUED' ? 0 : 50);
+        return (
+          <div className="min-w-[160px]">
+            <ProgressBar value={percent} label={stageLabel} />
+          </div>
+        );
+      }
     },
     {
       key: 'status',
@@ -50,12 +69,12 @@ export function ProcessingQueue({ jobs, loading = false }: ProcessingQueueProps)
     {
       key: 'attempts',
       header: 'Attempts',
-      render: (job) => <span className="text-center">{job.attempts}</span>
+      render: (job) => <span className="text-center font-mono text-sm">{job.attempts}</span>
     },
     {
       key: 'createdAt',
       header: 'Created At',
-      render: (job) => <span>{new Date(job.createdAt).toLocaleString()}</span>
+      render: (job) => <span className="text-sm">{new Date(job.createdAt).toLocaleString()}</span>
     },
     {
       key: 'actions',
