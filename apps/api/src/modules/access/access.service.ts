@@ -3,6 +3,15 @@ import { PrismaService } from '../database/prisma.service';
 import { AccessDecisionDto } from './dto/access-decision.dto';
 import { ProtectedDocumentUrlDto } from './dto/protected-document-url.dto';
 
+/** Reader-safe status denial messages that do not leak admin-only processing internals. */
+const READER_DENIAL_REASONS: Record<string, string> = {
+  DRAFT: 'This document is not yet available for reading.',
+  PENDING_PROCESSING: 'This document is being prepared and will be available shortly.',
+  PROCESSING: 'This document is currently being processed. Please check back later.',
+  PENDING_APPROVAL: 'This document is under review and not yet publicly available.',
+  REJECTED: 'This document is not available for reading.',
+};
+
 @Injectable()
 export class AccessService {
   constructor(private readonly prisma: PrismaService) {}
@@ -24,15 +33,21 @@ export class AccessService {
         allowed: true,
         documentId,
         userRole,
-        reason: isPublished ? 'Document is published and available for reading.' : 'Staff access granted for unpublished document.',
+        documentStatus: book.status,
+        reason: isPublished
+          ? 'Document is published and available for reading.'
+          : 'Staff access granted for unpublished document.',
       };
     }
+
+    const reason = READER_DENIAL_REASONS[book.status] ?? 'Document is not available for reading.';
 
     return {
       allowed: false,
       documentId,
       userRole,
-      reason: 'Document is not published or access is restricted.',
+      documentStatus: book.status,
+      reason,
     };
   }
 

@@ -38,6 +38,8 @@ describe('ReaderModule (e2e)', () => {
 
     await prisma.passwordResetToken.deleteMany();
     await prisma.userSession.deleteMany();
+    await prisma.readingProgress.deleteMany();
+    await prisma.bookmark.deleteMany();
     await prisma.processingJob.deleteMany();
     await prisma.bookFile.deleteMany();
     await prisma.bookTag.deleteMany();
@@ -47,6 +49,7 @@ describe('ReaderModule (e2e)', () => {
     await prisma.author.deleteMany();
     await prisma.category.deleteMany();
     await prisma.user.deleteMany();
+
 
     // Create a reader user
     const readerUser = await prisma.user.create({
