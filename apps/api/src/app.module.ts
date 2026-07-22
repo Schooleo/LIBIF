@@ -14,6 +14,9 @@ import { ReaderModule } from './modules/reader/reader.module';
 import { ReportingModule } from './modules/reporting/reporting.module';
 import { StorageModule } from './modules/storage/storage.module';
 
+import { DocumentsModule } from './modules/documents/documents.module';
+import { UploadModule } from './modules/upload/upload.module';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -29,6 +32,8 @@ import { StorageModule } from './modules/storage/storage.module';
     ReportingModule,
     BooksModule,
     CatalogModule,
+    DocumentsModule,
+    UploadModule,
     IsbnModule,
     HealthModule,
     ReaderModule,

@@ -152,6 +152,7 @@ const adminNav: NavItem[] = [
   { label: 'Processing', href: '/admin/processing', description: 'Processing jobs and pipeline status' },
   { label: 'Approvals', href: '/admin/approvals', description: 'Pending document reviews' },
   { label: 'Notifications', href: '/admin/notifications', description: 'System alerts and required actions' },
+  { label: 'Documents', href: '/admin/documents', description: 'Digital document lifecycle management' }
 ];
 
 /** Auth layout: minimal — just a back-to-home link in the nav. */

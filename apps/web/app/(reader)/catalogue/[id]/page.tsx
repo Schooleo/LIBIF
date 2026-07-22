@@ -9,10 +9,27 @@ interface PageProps {
   params: Promise<{ id: string }>;
 }
 
+/** Icon + label pairs for reader-visible lifecycle states (no admin-only internals). */
+const STATUS_META: Record<string, { icon: string; label: string; tone: 'info' | 'warning' | 'error' | 'success' }> = {
+  PUBLISHED: { icon: 'check_circle', label: 'Available for Reading', tone: 'success' },
+  PROCESSING: { icon: 'autorenew', label: 'Being Processed', tone: 'info' },
+  PENDING_PROCESSING: { icon: 'schedule', label: 'Awaiting Processing', tone: 'info' },
+  PENDING_APPROVAL: { icon: 'pending_actions', label: 'Under Review', tone: 'warning' },
+  DRAFT: { icon: 'edit_note', label: 'Not Yet Available', tone: 'warning' },
+  REJECTED: { icon: 'cancel', label: 'Not Available', tone: 'error' },
+};
+
+function getStatusMeta(status?: string) {
+  return STATUS_META[status ?? ''] ?? { icon: 'help_outline', label: 'Unavailable', tone: 'warning' as const };
+}
+
 export default async function CatalogueDetailPage({ params }: PageProps) {
   const { id } = await params;
 
-  let decision: { allowed: boolean; reason?: string } = { allowed: false, reason: 'Checking access eligibility...' };
+  let decision: { allowed: boolean; reason?: string; documentStatus?: string } = {
+    allowed: false,
+    reason: 'Checking access eligibility...',
+  };
   let books: any[] = [];
   let book: any = null;
   let errorMsg: string | null = null;
@@ -34,6 +51,7 @@ export default async function CatalogueDetailPage({ params }: PageProps) {
   const authors = book?.authors?.map((a: any) => a.name || a) || [];
   const publisher = book?.publisher;
   const publishedYear = book?.publishedYear;
+  const statusMeta = getStatusMeta(decision.documentStatus);
 
   return (
     <section className="ui-stack" style={{ gap: '1.5rem' }}>
@@ -50,8 +68,11 @@ export default async function CatalogueDetailPage({ params }: PageProps) {
             <div className="ui-stack" style={{ gap: '0.5rem' }}>
               <div className="ui-cluster" style={{ alignItems: 'center', gap: '0.5rem' }}>
                 <h2 style={{ margin: 0, fontSize: '1.5rem', color: 'var(--color-text-primary, #151C27)' }}>{title}</h2>
-                <Badge tone={decision.allowed ? 'success' : 'warning'}>
-                  {decision.allowed ? 'Available for Reading' : 'Restricted Access'}
+                <Badge tone={statusMeta.tone}>
+                  <span className="material-symbols-outlined" style={{ fontSize: '15px', verticalAlign: 'middle', marginRight: '4px' }} aria-hidden="true">
+                    {statusMeta.icon}
+                  </span>
+                  {statusMeta.label}
                 </Badge>
               </div>
 
@@ -73,10 +94,22 @@ export default async function CatalogueDetailPage({ params }: PageProps) {
             </div>
           </div>
 
-          {/* Access Status Alert */}
-          <InlineAlert tone={decision.allowed ? 'info' : 'warning'}>
-            <strong>Access Decision:</strong> {decision.reason || (decision.allowed ? 'Document is published and available for reading.' : 'Access restricted.')}
-          </InlineAlert>
+          {/* Lifecycle State Banner */}
+          {decision.allowed ? (
+            <InlineAlert tone="info">
+              <strong>Access Decision:</strong> {decision.reason || 'Document is published and available for reading.'}
+            </InlineAlert>
+          ) : (
+            <InlineAlert tone={statusMeta.tone}>
+              <strong>
+                <span className="material-symbols-outlined" style={{ fontSize: '15px', verticalAlign: 'middle', marginRight: '4px' }} aria-hidden="true">
+                  {statusMeta.icon}
+                </span>
+                {statusMeta.label}:
+              </strong>{' '}
+              {decision.reason || 'This document is not currently available for reading.'}
+            </InlineAlert>
+          )}
 
           {/* Actions Bar */}
           <div className="ui-cluster" style={{ gap: '1rem', paddingTop: '0.5rem' }}>
@@ -88,8 +121,11 @@ export default async function CatalogueDetailPage({ params }: PageProps) {
                 Open Reader Viewer →
               </a>
             ) : (
-              <button type="button" className="ui-button ui-button--secondary" disabled>
-                Access Restricted
+              <button type="button" className="ui-button ui-button--secondary" disabled aria-disabled="true">
+                <span className="material-symbols-outlined" style={{ fontSize: '16px', marginRight: '6px' }} aria-hidden="true">
+                  lock
+                </span>
+                {statusMeta.label}
               </button>
             )}
 
