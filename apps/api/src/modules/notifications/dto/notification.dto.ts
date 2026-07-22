@@ -19,8 +19,14 @@ export class NotificationResponseDto {
   @ApiPropertyOptional({ type: Object, nullable: true })
   payload?: Record<string, any> | null;
 
+  @ApiPropertyOptional({ type: String, nullable: true })
+  actionHref?: string | null;
+
   @ApiProperty()
   isRead!: boolean;
+
+  @ApiPropertyOptional({ format: 'date-time', nullable: true })
+  readAt?: string | null;
 
   @ApiProperty({ format: 'date-time' })
   createdAt!: string;
