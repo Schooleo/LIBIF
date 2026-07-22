@@ -1,13 +1,16 @@
 'use client';
 
+import type { CategoryDto, TagDto } from '@libif/shared';
 import { useState } from 'react';
+import { CategorySelector, TagSelector } from '../taxonomy';
 import { FormField } from '../../ui/forms/FormField';
 import { TextInput, Textarea, Select } from '../../ui/forms/inputs';
 import { Button } from '../../ui/actions/Button';
 import { InlineAlert } from '../../ui/feedback/feedback';
 import { CorrectionNotice } from './documents';
 
-export type CategoryOption = { id: string; name: string };
+export type CategoryOption = CategoryDto;
+export type TagOption = TagDto;
 
 export type DocumentMetadataFormValues = {
   title: string;
@@ -25,6 +28,7 @@ export type DocumentMetadataFormValues = {
 interface DocumentMetadataFormProps {
   initialValues?: Partial<DocumentMetadataFormValues>;
   categories: CategoryOption[];
+  tags: TagOption[];
   onSubmit: (values: DocumentMetadataFormValues) => Promise<void>;
   submitLabel?: string;
   isLoading?: boolean;
@@ -37,6 +41,7 @@ interface DocumentMetadataFormProps {
 export function DocumentMetadataForm({
   initialValues,
   categories,
+  tags,
   onSubmit,
   submitLabel = 'Save Document Metadata',
   isLoading = false,
@@ -58,6 +63,8 @@ export function DocumentMetadataForm({
   const [isbnLookupLoading, setIsbnLookupLoading] = useState(false);
   const [isbnLookupMessage, setIsbnLookupMessage] = useState<string | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const selectedTagNames = form.tags.split(',').map((tag) => tag.trim()).filter(Boolean);
+  const selectedTagIds = tags.filter((tag) => selectedTagNames.includes(tag.name)).map((tag) => tag.id);
 
   const handleChange = (field: keyof DocumentMetadataFormValues, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -178,16 +185,11 @@ export function DocumentMetadataForm({
       </FormField>
 
       <div className="ui-grid ui-grid-cols-2">
-        <FormField label="Category">
-          {(fp) => (
-            <Select {...fp} value={form.categoryId} onChange={(e) => handleChange('categoryId', e.target.value)}>
-              <option value="">Select Category...</option>
-              {categories.map((c) => (
-                <option key={c.id} value={c.id}>{c.name}</option>
-              ))}
-            </Select>
-          )}
-        </FormField>
+        <CategorySelector
+          categories={categories}
+          value={form.categoryId}
+          onChange={(categoryId) => handleChange('categoryId', categoryId ?? '')}
+        />
 
         <FormField label="Language">
           {(fp) => (
@@ -226,16 +228,11 @@ export function DocumentMetadataForm({
         </FormField>
       </div>
 
-      <FormField label="Tags" description="Separate tags with commas">
-        {(fp) => (
-          <TextInput
-            {...fp}
-            value={form.tags}
-            onChange={(e) => handleChange('tags', e.target.value)}
-            placeholder="e.g. ai, machine-learning, algorithms"
-          />
-        )}
-      </FormField>
+      <TagSelector
+        tags={tags}
+        value={selectedTagIds}
+        onChange={(tagIds) => handleChange('tags', tags.filter((tag) => tagIds.includes(tag.id)).map((tag) => tag.name).join(', '))}
+      />
 
       <FormField label="Description">
         {(fp) => (

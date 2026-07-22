@@ -112,7 +112,7 @@ export class UploadService {
           }
         });
 
-        const processingJob = await tx.processingJob.create({ data: { bookId: book.id, type: 'PDF_OCR_PIPELINE' } });
+        const processingJob = await tx.processingJob.create({ data: { bookId: book.id, bookFileId: bookFile.id, type: 'PDF_OCR_PIPELINE' } });
 
         await tx.bookAuditEvent.create({
           data: {
@@ -182,7 +182,13 @@ export class UploadService {
     await this.prisma.$transaction([
       this.prisma.processingJob.updateMany({
         where: { bookId: id, status: ProcessingJobStatus.QUEUED },
-        data: { status: ProcessingJobStatus.FAILED, errorMessage: 'Upload intake cancelled by user', cancelledAt: new Date() }
+        data: {
+          status: ProcessingJobStatus.CANCELLED,
+          stage: 'cancelled',
+          terminalReason: 'Upload intake cancelled by user',
+          cancelledAt: new Date(),
+          completedAt: new Date()
+        }
       }),
       this.prisma.bookAuditEvent.create({
         data: {
@@ -212,8 +218,19 @@ export class UploadService {
     const librarian = await this.prisma.user.findUnique({ where: { email: actorEmail } });
 
     const file = book.files[0];
+    const previousJob = await this.prisma.processingJob.findFirst({
+      where: { bookFileId: file.id },
+      orderBy: [{ attemptNumber: 'desc' }, { createdAt: 'desc' }]
+    });
     const job = await this.prisma.processingJob.create({
-      data: { bookId: id, type: 'PDF_OCR_PIPELINE', status: ProcessingJobStatus.QUEUED }
+      data: {
+        bookId: id,
+        bookFileId: file.id,
+        type: 'PDF_OCR_PIPELINE',
+        status: ProcessingJobStatus.QUEUED,
+        attemptNumber: (previousJob?.attemptNumber ?? 0) + 1,
+        retryOfJobId: previousJob?.id
+      }
     });
 
     await this.prisma.book.update({

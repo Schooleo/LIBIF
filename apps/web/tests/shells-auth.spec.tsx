@@ -1,7 +1,12 @@
-import { render, screen } from '@testing-library/react';
-import { afterEach, describe, expect, it } from 'vitest';
+import { render, screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { AdminShell, AuthShell, ReaderShell } from '../components/layout';
 import { getDevAuthHeaders } from '../lib/auth/session';
+
+vi.mock('next/navigation', () => ({
+  usePathname: () => '/admin/dashboard'
+}));
 
 describe('route-group shells and auth helper', () => {
   const originalEnableDevAuth = process.env.NEXT_PUBLIC_LIBIF_ENABLE_DEV_AUTH;
@@ -21,11 +26,45 @@ describe('route-group shells and auth helper', () => {
     expect(screen.getByRole('main')).toHaveAttribute('id', 'main-content');
   });
 
-  it('renders admin shell with sidebar navigation for staff sections', () => {
+  it('uses the desktop sidebar as the single primary staff navigation', () => {
     render(<AdminShell user={{ name: 'Ada Admin', email: 'ada@example.test', role: 'ADMIN' }}><h1>Admin books</h1></AdminShell>);
-    expect(screen.getByRole('navigation', { name: /admin workspace navigation/i })).toBeInTheDocument();
-    expect(screen.getByLabelText(/admin sections/i)).toBeInTheDocument();
-    expect(screen.getAllByRole('link', { name: /new intake/i })[0]).toHaveAttribute('href', '/admin/documents/new');
+
+    const navigation = screen.getByRole('navigation', { name: /staff workspace navigation/i });
+    expect(screen.queryByRole('navigation', { name: /admin workspace navigation/i })).not.toBeInTheDocument();
+    expect(within(navigation).getByRole('link', { name: /^dashboard$/i })).toHaveAttribute('href', '/admin/dashboard');
+    expect(within(navigation).getByRole('link', { name: /^documents$/i })).toHaveAttribute('href', '/admin/documents');
+    expect(within(navigation).getByRole('link', { name: /new intake/i })).toHaveAttribute('href', '/admin/documents/new');
+    expect(within(navigation).getByRole('link', { name: /processing queue/i })).toHaveAttribute('href', '/admin/processing');
+    expect(within(navigation).getByRole('link', { name: /approval queue/i })).toHaveAttribute('href', '/admin/approvals');
+    expect(within(navigation).getByRole('link', { name: /notifications/i })).toHaveAttribute('href', '/admin/notifications');
+    expect(within(navigation).queryByRole('link', { name: /books.*legacy/i })).not.toBeInTheDocument();
+    expect(screen.getByText('Administrator')).toBeInTheDocument();
+  });
+
+  it('keeps taxonomy discoverable for the Librarian read-only contract', () => {
+    render(<AdminShell user={{ name: 'Lin Librarian', email: 'lin@example.test', role: 'LIBRARIAN' }}><h1>Categories</h1></AdminShell>);
+
+    const navigation = screen.getByRole('navigation', { name: /staff workspace navigation/i });
+    expect(within(navigation).getByRole('link', { name: /^categories$/i })).toHaveAttribute('href', '/admin/categories');
+    expect(within(navigation).getByRole('link', { name: /^tags$/i })).toHaveAttribute('href', '/admin/tags');
+    expect(screen.getByText('Librarian')).toBeInTheDocument();
+    expect(within(navigation).queryByRole('link', { name: /^users$/i })).not.toBeInTheDocument();
+    expect(within(navigation).queryByRole('link', { name: /settings/i })).not.toBeInTheDocument();
+  });
+
+  it('moves staff navigation into a closable mobile drawer', async () => {
+    const user = userEvent.setup();
+    render(<AdminShell user={{ name: 'Ada Admin', email: 'ada@example.test', role: 'ADMIN' }}><h1>Admin books</h1></AdminShell>);
+
+    expect(screen.queryByRole('dialog', { name: /staff navigation/i })).not.toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: /open navigation/i }));
+
+    const drawer = screen.getByRole('dialog', { name: /staff navigation/i });
+    expect(within(drawer).getByRole('navigation', { name: /mobile staff workspace navigation/i })).toBeInTheDocument();
+    expect(within(drawer).getByRole('link', { name: /^documents$/i })).toHaveAttribute('href', '/admin/documents');
+
+    await user.click(within(drawer).getByRole('button', { name: /close drawer/i }));
+    expect(screen.queryByRole('dialog', { name: /staff navigation/i })).not.toBeInTheDocument();
   });
 
   it('renders auth shell boundary navigation', () => {

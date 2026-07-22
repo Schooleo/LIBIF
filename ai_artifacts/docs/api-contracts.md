@@ -1,6 +1,6 @@
 # API Contracts
 
-Last updated: 2026-07-21
+Last updated: 2026-07-22
 
 OpenAPI is now generated for implemented endpoints at `apps/api/openapi/libif-api.json`, with frontend path types generated to `apps/web/lib/generated/api-types.ts`. This document records implemented endpoints plus target contract shapes needed by later Stitch screen batches.
 
@@ -16,10 +16,36 @@ OpenAPI is now generated for implemented endpoints at `apps/api/openapi/libif-ap
 | `POST /api/auth/password-resets` | `AuthModule` | `apps/web/app/(auth)/reset-password/page.tsx` | Consumes a valid reset token once, updates password hash, and revokes existing sessions. |
 | `POST /api/admin/books/intake` | `BooksModule` | `apps/web/components/book-intake/BookIntakeForm.tsx` | Multipart `file` + JSON `metadata`; returns book/file/processingJob; guarded for Admin/Librarian. |
 | `GET /api/admin/books` | `BooksModule` | `apps/web/app/(admin)/admin/books/page.tsx` | Admin list without production pagination/filter/sort yet; guarded for Admin/Librarian. |
-| `GET /api/categories` | `CatalogModule` | `apps/web/app/(admin)/admin/books/new/page.tsx` | Category list. |
+| `GET /api/categories` | `CatalogModule` | Public catalogue compatibility consumers | Legacy public category list; staff metadata uses `TaxonomyModule`. |
+| `GET /api/taxonomy/categories` | `TaxonomyModule` | Intake metadata and `/admin/categories` | Generated stable category options (`id`, `name`, `slug`, `parentId`); guarded for Admin/Librarian. |
+| `POST /api/admin/categories` | `TaxonomyModule` | `/admin/categories` | Admin-only starter category creation with normalized name/slug and validated parent. |
+| `PATCH /api/admin/categories/:id` | `TaxonomyModule` | `/admin/categories` | Admin-only starter category edit; rejects missing parents and parent cycles. |
+| `GET /api/taxonomy/tags` | `TaxonomyModule` | Intake metadata and `/admin/tags` | Generated stable tag options (`id`, `name`, `slug`); guarded for Admin/Librarian. |
+| `POST /api/admin/tags` | `TaxonomyModule` | `/admin/tags` | Admin-only starter tag creation with normalized name/slug. |
+| `PATCH /api/admin/tags/:id` | `TaxonomyModule` | `/admin/tags` | Admin-only starter tag edit. |
 | `GET /api/catalog/books` | `CatalogModule` | `apps/web/app/(reader)/catalogue/page.tsx` | Public published books only. |
 | `GET /api/isbn/:isbn` | `IsbnModule` | `apps/web/components/book-intake/MetadataFields.tsx` | ISBN lookup proxy. |
 | `GET /api/admin/dashboard/librarian` | `ReportingModule` | `apps/web/app/(admin)/admin/dashboard/page.tsx` | Phase 4 Member D dashboard summary; guarded for Admin/Librarian; returns no-migration counts for books, processing jobs, taxonomy, users, and recent books. |
+| `GET /api/documents` | `DocumentsModule` | `/admin/documents` | Guarded staff document list with query/filter/page foundations. |
+| `GET /api/documents/:id` | `DocumentsModule` | `/admin/documents/[id]` and edit route | Guarded document metadata, category/tags, file, job, and audit summary. |
+| `PATCH /api/documents/:id/metadata` | `DocumentsModule` | `/admin/documents/[id]/edit` | Updates metadata using Member D category/tag options and records an audit event. |
+| `POST /api/documents/:id/submit-processing` | `DocumentsModule` | document detail actions through `api-browser.ts` | Authenticated requeue handoff; supersedes earlier queued/running work, removes stale pending approval, creates one new job, and records the transition. Real OCR execution remains Phase 6. |
+| `POST /api/documents/:id/replace-file` | `DocumentsModule` | document lifecycle panel through `api-browser.ts` | Authenticated multipart replacement; creates a new active file version and supersedes stale operational work. |
+| `POST /api/uploads` | `UploadModule` | `/admin/documents/new` through `api-browser.ts` | Canonical authenticated Phase 5 multipart intake; browser requests target the Nest API origin rather than a relative Next.js route. |
+| `GET /api/uploads/:id` | `UploadModule` | upload lifecycle UI | Returns persisted upload/file/job state. |
+| `POST /api/uploads/:id/cancel` | `UploadModule` | upload lifecycle UI | Cancels eligible intake processing. |
+| `POST /api/uploads/:id/retry` | `UploadModule` | upload lifecycle UI | Requeues an eligible failed intake. |
+| `GET /api/admin/processing/jobs` | `ProcessingModule` | `/admin/processing` | Guarded current-work projection returning the latest processing job per document; deeper history remains a Phase 6 contract. |
+| `GET /api/admin/processing/jobs/:id` and `/status` | `ProcessingModule` | `/admin/processing/[id]` | Job detail and polling-safe status projection. |
+| `POST /api/admin/processing/jobs/:id/advance` | `ProcessingModule` | staff transition actions | Validated Phase 5 pipeline transition hook. |
+| `POST /api/admin/processing/jobs/:id/retry` and `/cancel` | `ProcessingModule` | processing actions | Guarded retry/cancel foundations; retry history and real worker depth remain Phase 6. |
+| `GET /api/admin/approvals` and `/:id` | `ApprovalModule` | `/admin/approvals` | Current pending queue/detail foundation; default queue requires document `PENDING_APPROVAL` and returns one latest pending review per document. Decision/correction commands remain Phase 6. |
+| `GET /api/notifications` | `NotificationsModule` | `/admin/notifications` | Role-scoped API/UI foundation; runtime storage is still process-local and must migrate to Prisma in Phase 6. |
+| `PATCH /api/notifications/:id/read` and `/read-all` | `NotificationsModule` | notification list actions | Updates process-local read state today; recipient ownership plus persistence are Phase 6 requirements. |
+| `GET /api/access/documents/:documentId/decision` | `AccessModule` | reader detail/viewer routes | Reader-safe lifecycle/access decision. |
+| `POST /api/access/documents/:documentId/view-token` and `/download-token` | `AccessModule` | protected reader controls | Short-lived authorized storage handoff. |
+| `GET /api/reader/library`, `/history`, and `/bookmarks` | `ReaderModule` | reader personal-library routes | Persisted reader collections. |
+| `POST/DELETE /api/reader/bookmarks[/:documentId]` and `PATCH /api/reader/progress/:documentId` | `ReaderModule` | reader actions/viewer | Persists bookmark and reading-progress state. |
 
 ## Standard error envelope
 
@@ -86,16 +112,20 @@ Deferred auth-adjacent contracts remain in Batch 6/7: user administration, role 
 
 ### Batch 3 — Documents, upload, ISBN, and metadata
 
-- `GET /api/admin/documents?page&filters&sort`
-- `GET /api/admin/documents/{documentId}`
+- `GET /api/taxonomy/categories` — Phase 5 D5-001 implemented staff category options for metadata forms.
+- `GET /api/taxonomy/tags` — Phase 5 D5-001 implemented staff tag options for metadata forms.
+- `GET /api/documents?page&filters&sort` — Phase 5 implemented.
+- `GET /api/documents/{documentId}` — Phase 5 implemented.
 - `GET /api/admin/documents/{documentId}/audit`
-- `POST /api/admin/uploads/pdf`
-- `POST /api/admin/documents/{documentId}/files/replacements`
+- `POST /api/uploads` — Phase 5 implemented canonical multipart intake.
+- `POST /api/documents/{documentId}/replace-file` — Phase 5 implemented replacement foundation.
 - `GET /api/isbn/{isbn}` or `POST /api/admin/isbn/lookups`
-- `PATCH /api/admin/documents/{documentId}/metadata`
-- `POST /api/admin/documents/{documentId}/submit-review`
+- `PATCH /api/documents/{documentId}/metadata` — Phase 5 implemented.
+- `POST /api/documents/{documentId}/submit-processing` — Phase 5 implemented processing handoff; review submission remains Phase 6.
 
 ### Batch 4 — Processing queue and jobs
+
+Phase 5 implements current queue/detail/status and guarded manual transition/retry/cancel foundations. Phase 6 D6-000 now makes the generated job contract file-scoped with `bookFileId`, `attemptNumber`, `retryOfJobId`, `terminalReason`, and explicit `CANCELLED`/`SUPERSEDED` states. The real worker and retry-history route remain unimplemented.
 
 - `GET /api/admin/processing/jobs?page&filters&sort`
 - `GET /api/admin/processing/jobs/{jobId}`
@@ -105,6 +135,8 @@ Deferred auth-adjacent contracts remain in Batch 6/7: user administration, role 
 - Stable job status schema maps infrastructure to `queued`, `validating`, `compressing`, `performing_ocr`, `indexing`, `retrying`, `completed`, `failed`, `cancelled`.
 
 ### Batch 5 — Approval, correction, and notifications
+
+Phase 5 implements current approval queue/detail plus notification API/UI shells. Phase 6 D6-000 now exposes file/job-scoped approval rounds (`bookFileId`, `processingJobId`, `round`, `supersededAt`) and preserves superseded reviews. Notification persistence, decision commands, correction/resubmission, and fanout remain Phase 6 work.
 
 - `GET /api/admin/approvals?page&filters&sort`
 - `GET /api/admin/approvals/{documentId}`
@@ -120,12 +152,14 @@ Deferred auth-adjacent contracts remain in Batch 6/7: user administration, role 
 
 ### Batch 6 — Taxonomy, tags, users, and risky actions
 
-- `GET /api/admin/categories/tree`
-- `POST /api/admin/categories`
-- `PATCH /api/admin/categories/{id}`
+- `GET /api/taxonomy/categories` — implemented staff selector/management read.
+- `POST /api/admin/categories` — implemented starter Admin-only create.
+- `PATCH /api/admin/categories/{id}` — implemented starter Admin-only edit.
 - `DELETE /api/admin/categories/{id}`
 - `POST /api/admin/categories/{id}/reassign-and-delete`
-- `GET /api/admin/tags?page&filters&sort`
+- `GET /api/taxonomy/tags` — implemented staff selector/management read.
+- `POST /api/admin/tags` — implemented starter Admin-only create.
+- `PATCH /api/admin/tags/{id}` — implemented starter Admin-only edit.
 - `GET /api/admin/tags/duplicates`
 - `POST /api/admin/tags/merge-preview`
 - `POST /api/admin/tags/merge`
@@ -160,4 +194,4 @@ Deferred auth-adjacent contracts remain in Batch 6/7: user administration, role 
 
 ## OpenAPI implementation status
 
-Phase 2 added NestJS Swagger setup, stable operation IDs, generated JSON at `apps/api/openapi/libif-api.json`, a dependency-free frontend path-map generator at `apps/web/scripts/generate-api-types.mjs`, OpenAPI-owned response aliases at `apps/web/lib/api-types.ts`, and split `openapi-fetch` transport adapters in `apps/web/lib/api-server.ts` and `apps/web/lib/api-browser.ts`. Phase 3 added generated auth request/response DTOs and cookie-aware frontend calls. Phase 4 Member D added the generated `GET /api/admin/dashboard/librarian` reporting summary contract and web server adapter. Later phases must keep OpenAPI decorators and generated path types aligned whenever endpoints change.
+Phase 2 added NestJS Swagger setup, stable operation IDs, generated JSON at `apps/api/openapi/libif-api.json`, a dependency-free frontend path-map generator at `apps/web/scripts/generate-api-types.mjs`, OpenAPI-owned response aliases at `apps/web/lib/api-types.ts`, and split `openapi-fetch` transport adapters. Phase 3 added generated auth contracts, and Phase 4 added the dashboard summary. The Phase 5 Member D integration pass now regenerates one unified contract containing reader/access, document/upload, processing, approval, notification, and taxonomy endpoints from all four member lanes. Later phases must keep OpenAPI decorators and generated path types aligned whenever endpoints change.

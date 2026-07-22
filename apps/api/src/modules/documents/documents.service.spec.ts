@@ -19,6 +19,23 @@ describe('DocumentsService', () => {
         findUnique: jest.fn().mockResolvedValue(null),
         update: jest.fn().mockResolvedValue({ id: 'doc_1' })
       },
+      bookFile: {
+        updateMany: jest.fn(),
+        findMany: jest.fn(),
+        create: jest.fn(),
+        findUniqueOrThrow: jest.fn()
+      },
+      processingJob: {
+        create: jest.fn(),
+        findFirst: jest.fn().mockResolvedValue(null),
+        updateMany: jest.fn()
+      },
+      approvalReview: {
+        updateMany: jest.fn()
+      },
+      bookAuditEvent: {
+        create: jest.fn()
+      },
       user: {
         upsert: jest.fn().mockResolvedValue({ id: 'usr_1', email: 'staff@libif.local' })
       },
@@ -104,9 +121,16 @@ describe('DocumentsService', () => {
     };
 
     prisma.book.findUnique.mockResolvedValue(mockDoc);
-    prisma.bookFile = { findUniqueOrThrow: jest.fn().mockResolvedValue({ id: 'f1', objectKey: 'key1' }) };
-    prisma.processingJob = { create: jest.fn().mockResolvedValue({ id: 'job_2' }) };
-    prisma.bookAuditEvent = { create: jest.fn().mockResolvedValue({ id: 'evt_1' }) };
+    prisma.bookFile.findUniqueOrThrow.mockResolvedValue({
+      id: 'f1',
+      objectKey: 'key1'
+    });
+    prisma.processingJob.create.mockResolvedValue({
+      id: 'job_2'
+    });
+    prisma.bookAuditEvent.create.mockResolvedValue({
+       id: 'evt_1'
+     });
 
     await service.submitProcessing('doc_1', 'staff@libif.local');
     expect(prisma.book.update).toHaveBeenCalledWith({
@@ -119,5 +143,102 @@ describe('DocumentsService', () => {
       objectKey: 'key1',
       processingJobId: 'job_2'
     });
+
+  it('removes stale pending approvals when replacing the active file', async () => {
+    const now = new Date('2026-07-22T00:00:00Z');
+    const oldFile = {
+      id: 'file-1',
+      originalFilename: 'old.pdf',
+      mimeType: 'application/pdf',
+      sizeBytes: BigInt(100),
+      version: 1,
+      status: 'ACTIVE',
+      createdAt: now
+    };
+    const newFile = { ...oldFile, id: 'file-2', originalFilename: 'new.pdf', version: 2 };
+    const document = {
+      id: 'doc-1',
+      title: 'Document',
+      status: 'PENDING_APPROVAL',
+      files: [oldFile],
+      jobs: [],
+      auditEvents: [],
+      category: null,
+      tags: [],
+      authors: [],
+      createdAt: now,
+      updatedAt: now
+    };
+    prisma.book.findUnique.mockResolvedValue(document);
+    prisma.bookFile.findMany.mockResolvedValue([oldFile]);
+    prisma.bookFile.create.mockResolvedValue(newFile);
+    prisma.processingJob.create.mockResolvedValue({ id: 'job-2' });
+
+    const file = {
+      originalname: 'new.pdf',
+      mimetype: 'application/pdf',
+      size: 8,
+      buffer: Buffer.from('%PDF-1.4')
+    } as Express.Multer.File;
+
+    await service.replaceFile('doc-1', file, 'staff@libif.local');
+
+    expect(prisma.approvalReview.updateMany).toHaveBeenCalledWith({
+      where: { bookId: 'doc-1', status: 'PENDING' },
+      data: expect.objectContaining({ status: 'SUPERSEDED' })
+    });
+    expect(prisma.processingJob.updateMany).toHaveBeenCalledWith(expect.objectContaining({
+      where: { bookId: 'doc-1', status: { in: ['QUEUED', 'RUNNING'] } },
+      data: expect.objectContaining({ status: 'SUPERSEDED', stage: 'superseded' })
+    }));
+    expect(queue.enqueueBookUploaded).toHaveBeenCalledWith(expect.objectContaining({
+      bookId: 'doc-1',
+      fileId: 'file-2',
+      processingJobId: 'job-2'
+    }));
+  });
+
+  it('supersedes older work before manually requeuing processing', async () => {
+    const now = new Date('2026-07-22T00:00:00Z');
+    const activeFile = {
+      id: 'file-1',
+      originalFilename: 'document.pdf',
+      mimeType: 'application/pdf',
+      sizeBytes: BigInt(100),
+      version: 1,
+      status: 'ACTIVE',
+      createdAt: now
+    };
+    prisma.book.findUnique.mockResolvedValue({
+      id: 'doc-1',
+      title: 'Document',
+      status: 'FAILED',
+      files: [activeFile],
+      jobs: [],
+      auditEvents: [],
+      category: null,
+      tags: [],
+      authors: [],
+      createdAt: now,
+      updatedAt: now
+    });
+    prisma.bookFile.findUniqueOrThrow.mockResolvedValue({ ...activeFile, objectKey: 'pdf1' });
+    prisma.processingJob.create.mockResolvedValue({ id: 'job-2' });
+
+    await service.submitProcessing('doc-1', 'staff@libif.local');
+
+    expect(prisma.processingJob.updateMany).toHaveBeenCalledWith(expect.objectContaining({
+      where: { bookId: 'doc-1', status: { in: ['QUEUED', 'RUNNING'] } },
+      data: expect.objectContaining({ status: 'SUPERSEDED', stage: 'superseded' })
+    }));
+    expect(prisma.approvalReview.updateMany).toHaveBeenCalledWith({
+      where: { bookId: 'doc-1', status: 'PENDING' },
+      data: expect.objectContaining({ status: 'SUPERSEDED' })
+    });
+    expect(queue.enqueueBookUploaded).toHaveBeenCalledWith(expect.objectContaining({
+      bookId: 'doc-1',
+      fileId: 'file-1',
+      processingJobId: 'job-2'
+    }));
   });
 });

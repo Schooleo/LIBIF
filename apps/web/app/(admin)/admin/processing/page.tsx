@@ -35,9 +35,19 @@ export default async function AdminProcessingPage() {
     loadError = (error as Error).message;
   }
 
+  const activeCount = jobs.filter((j) => j.status === 'QUEUED' || j.status === 'RUNNING').length;
+
   return (
     <section className="ui-stack">
-      <PageHeader title="Processing Queue" />
+      <div className="flex justify-between items-center">
+        <PageHeader title="Processing Queue" />
+        {!loadError && (
+          <span className="text-sm font-semibold text-neutral-600 bg-neutral-100 px-3 py-1 rounded-full">
+            Active Jobs ({activeCount})
+          </span>
+        )}
+      </div>
+
       {loadError ? (
         <InlineAlert tone="error">
           Processing jobs could not be loaded: {loadError}

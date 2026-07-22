@@ -18,9 +18,10 @@ This document defines backend-owned workflow truth for later implementation. Nam
 - **States:** idle, validating, validation_failed, uploading, accepted, storage_failed, queued_for_processing, replacement_requested, replacement_accepted, cancelled when supported.
 - **Commands:** validate_pdf, create_upload, complete_upload, replace_pdf, cancel_upload.
 - **Events:** PdfUploadAccepted, BookUploadedEvent, PdfReplacementAccepted, UploadValidationFailed.
-- **Transitions:** idle -> validating -> uploading -> accepted -> queued_for_processing; replacement_requested -> replacement_accepted creates auditable new file version.
+- **Transitions:** idle -> validating -> uploading -> accepted -> queued_for_processing; replacement_requested -> replacement_accepted creates an auditable new file version, supersedes earlier active processing, and invalidates stale pending approval work.
 - **API responses:** asynchronous accepted response with document id, file id, job id, current status, and status endpoint.
 - **Permissions:** Librarian/Admin for intake and replacement; Reader never uploads PDFs.
+- **Current implementation note:** Phase 5 intake/replacement/requeue uses authenticated API adapters and persisted queue handoff. Actual OCR consumption is not implemented until Phase 6.
 
 ## Metadata and ISBN enrichment
 
@@ -33,12 +34,13 @@ This document defines backend-owned workflow truth for later implementation. Nam
 
 ## PDF processing
 
-- **States:** queued, validating, compressing, performing_ocr, indexing, retrying, completed, failed, cancelled when supported.
+- **States:** queued, validating, compressing, performing_ocr, indexing, retrying, completed, failed, cancelled, superseded.
 - **Commands:** enqueue_processing, process_stage, retry_job, cancel_job when supported, get_status.
 - **Events:** ProcessingJobQueued, PdfValidated, PdfCompressed, OcrTextExtracted, SearchIndexed, ProcessingJobCompleted, ProcessingJobFailed, ProcessingJobRetrying.
 - **Transitions:** queued -> validating -> compressing -> performing_ocr -> indexing -> completed; recoverable failure -> retrying -> current stage; unrecoverable or max attempts -> failed.
 - **API responses:** stable ProcessingJob DTO with stage progress, attempts, safe error message, trace id, retry history endpoint.
 - **Permissions:** Librarian/Admin can view and retry; only system workers process stages.
+- **Current implementation note:** Phase 6 D6-000 provides exact `BookFile` identity, numbered attempt/self-reference lineage, durable artifact metadata, explicit cancellation/supersession states, and current-work constraints. The Phase 5 manual advance remains a simulation until Member C adds the worker/OCR adapter.
 
 ## Approval and correction
 
@@ -48,6 +50,7 @@ This document defines backend-owned workflow truth for later implementation. Nam
 - **Transitions:** pending_review -> approved or rejected or correction_requested; correction_requested -> correction_in_progress -> resubmitted -> pending_review; approved -> published when publish command is accepted.
 - **API responses:** document review DTO, decision result, audit entry, safe field/reason errors.
 - **Permissions:** Approver/Admin for decisions; Librarian can correct/resubmit own assigned items depending on policy.
+- **Current implementation note:** Phase 6 D6-000 makes review rounds file/job-scoped and preserves superseded pending rounds. Decision, correction, resubmission, audit commands, and notifications remain unimplemented.
 
 ## Protected reader access
 

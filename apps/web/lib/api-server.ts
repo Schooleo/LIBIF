@@ -1,6 +1,6 @@
 import { headers } from 'next/headers';
 import { createLibifApiClient, apiErrorMessage } from './api-client';
-import type { AccessDecisionDto, AdminBookListItemDto, CategoryDto, LibrarianDashboardSummaryDto, PagedBookListDto, PublicBookListItemDto, ReaderLibraryItemDto, ReaderLibraryResponseDto, SessionDto } from './api-types';
+import type { AccessDecisionDto, AdminBookListItemDto, DocumentDetailResponseDto, DocumentListQuery, LibrarianDashboardSummaryDto, PagedBookListDto, PagedDocumentListResponseDto, PublicBookListItemDto, ReaderLibraryItemDto, ReaderLibraryResponseDto, SessionDto, TaxonomyCategoryDto, TaxonomyTagDto } from './api-types';
 import { getDevAuthHeaders } from './auth/session';
 
 type ReaderLibraryQuery = { filter?: 'ALL' | 'READING' | 'BOOKMARKED' | 'COMPLETED'; search?: string; page?: number; limit?: number };
@@ -18,10 +18,17 @@ export async function fetchSession(): Promise<SessionDto> {
   return data;
 }
 
-export async function fetchCategories(): Promise<CategoryDto[]> {
+export async function fetchTaxonomyCategories(): Promise<TaxonomyCategoryDto[]> {
   const client = await createServerClient();
-  const { data, error } = await client.GET('/api/categories');
-  if (error) throw new Error(apiErrorMessage(error, 'Categories request failed'));
+  const { data, error } = await client.GET('/api/taxonomy/categories');
+  if (error) throw new Error(apiErrorMessage(error, 'Taxonomy categories request failed'));
+  return data;
+}
+
+export async function fetchTaxonomyTags(): Promise<TaxonomyTagDto[]> {
+  const client = await createServerClient();
+  const { data, error } = await client.GET('/api/taxonomy/tags');
+  if (error) throw new Error(apiErrorMessage(error, 'Taxonomy tags request failed'));
   return data;
 }
 
@@ -78,17 +85,16 @@ export async function fetchReaderBookmarks(): Promise<ReaderLibraryItemDto[]> {
   return data as ReaderLibraryItemDto[];
 }
 
-export async function fetchAdminDocuments(query?: { search?: string; status?: string; categoryId?: string; page?: number; limit?: number }) {
+export async function fetchAdminDocuments(query?: DocumentListQuery): Promise<PagedDocumentListResponseDto> {
   const client = await createServerClient();
-  const { data, error } = await client.GET('/api/documents' as any, { params: { query: query ?? {} } });
+  const { data, error } = await client.GET('/api/documents', { params: { query: query ?? {} } });
   if (error) throw new Error(apiErrorMessage(error, 'Admin documents request failed'));
   return data;
 }
 
-export async function fetchDocumentDetail(id: string) {
+export async function fetchDocumentDetail(id: string): Promise<DocumentDetailResponseDto> {
   const client = await createServerClient();
-  const { data, error } = await client.GET('/api/documents/{id}' as any, { params: { path: { id } } });
+  const { data, error } = await client.GET('/api/documents/{id}', { params: { path: { id } } });
   if (error) throw new Error(apiErrorMessage(error, 'Document detail request failed'));
   return data;
 }
-

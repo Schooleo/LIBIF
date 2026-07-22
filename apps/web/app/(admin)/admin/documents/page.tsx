@@ -4,6 +4,14 @@ import { Button } from '../../../../components/ui/actions/Button';
 import { InlineAlert } from '../../../../components/ui/feedback/feedback';
 import { DocumentTable } from '../../../../components/domain/documents/DocumentTable';
 import { fetchAdminDocuments } from '../../../../lib/api-server';
+import type { DocumentListQuery, PagedDocumentListResponseDto } from '../../../../lib/api-types';
+
+const documentStatuses = ['DRAFT', 'PENDING_PROCESSING', 'PROCESSING', 'PENDING_APPROVAL', 'PUBLISHED', 'REJECTED'] as const;
+type DocumentStatus = NonNullable<DocumentListQuery['status']>;
+
+function documentStatus(value?: string): DocumentStatus | undefined {
+  return documentStatuses.includes(value as DocumentStatus) ? value as DocumentStatus : undefined;
+}
 
 interface AdminDocumentsPageProps {
   searchParams?: Promise<{ search?: string; status?: string; categoryId?: string; page?: string }>;
@@ -11,26 +19,27 @@ interface AdminDocumentsPageProps {
 
 export default async function AdminDocumentsPage({ searchParams }: AdminDocumentsPageProps) {
   const params = (await searchParams) || {};
-  let pagedData: any = { items: [], totalCount: 0, page: 1, totalPages: 1 };
+  const requestedPage = Number.parseInt(params.page ?? '', 10);
+  let pagedData: PagedDocumentListResponseDto = { items: [], totalCount: 0, page: 1, pageSize: 10, totalPages: 1 };
   let loadError: string | undefined;
 
   try {
     pagedData = await fetchAdminDocuments({
       search: params.search,
-      status: params.status,
+      status: documentStatus(params.status),
       categoryId: params.categoryId,
-      page: params.page ? parseInt(params.page, 10) : 1,
+      page: Number.isFinite(requestedPage) && requestedPage > 0 ? requestedPage : 1,
       limit: 10
     });
   } catch (err) {
     loadError = (err as Error).message;
   }
 
-  const tableItems = pagedData.items.map((doc: any) => ({
+  const tableItems = pagedData.items.map((doc) => ({
     id: doc.id,
     title: doc.title,
     subtitle: doc.subtitle,
-    authors: doc.authors.map((a: any) => a.name),
+    authors: doc.authors.map((author) => author.name),
     category: doc.category?.name ?? null,
     status: doc.status,
     activeFile: doc.activeFile,

@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { PageHeader } from '../../../../../../components/layout';
 import { Button } from '../../../../../../components/ui/actions/Button';
 import { InlineAlert } from '../../../../../../components/ui/feedback/feedback';
-import { fetchCategories, fetchDocumentDetail } from '../../../../../../lib/api-server';
+import { fetchDocumentDetail, fetchTaxonomyCategories, fetchTaxonomyTags } from '../../../../../../lib/api-server';
 import { EditDocumentClient } from './EditDocumentClient';
 
 interface EditDocumentPageProps {
@@ -11,15 +11,20 @@ interface EditDocumentPageProps {
 
 export default async function EditDocumentPage({ params }: EditDocumentPageProps) {
   const { id } = await params;
-  let doc: any = null;
-  let categories: any[] = [];
-  let loadError: string | undefined;
-
-  try {
-    [doc, categories] = await Promise.all([fetchDocumentDetail(id), fetchCategories()]);
-  } catch (err) {
-    loadError = (err as Error).message;
-  }
+  const [documentResult, categoryResult, tagResult] = await Promise.allSettled([
+    fetchDocumentDetail(id),
+    fetchTaxonomyCategories(),
+    fetchTaxonomyTags()
+  ]);
+  const doc: any = documentResult.status === 'fulfilled' ? documentResult.value : null;
+  const categories = categoryResult.status === 'fulfilled' ? categoryResult.value : [];
+  const tags = tagResult.status === 'fulfilled' ? tagResult.value : [];
+  const loadError = documentResult.status === 'rejected'
+    ? (documentResult.reason instanceof Error ? documentResult.reason.message : 'Document request failed')
+    : undefined;
+  const taxonomyErrors = [categoryResult, tagResult]
+    .filter((result): result is PromiseRejectedResult => result.status === 'rejected')
+    .map((result) => result.reason instanceof Error ? result.reason.message : 'Unknown taxonomy error');
 
   if (loadError || !doc) {
     return (
@@ -65,10 +70,17 @@ export default async function EditDocumentPage({ params }: EditDocumentPageProps
           </Link>
         }
       />
+      {taxonomyErrors.length > 0 ? (
+        <InlineAlert tone="error">
+          Some taxonomy options could not be loaded: {taxonomyErrors.join('; ')}
+        </InlineAlert>
+      ) : null}
+
       <EditDocumentClient
         documentId={doc.id}
         initialValues={initialValues}
         categories={categories}
+        tags={tags}
         correctionNotice={correctionNotice}
       />
     </section>

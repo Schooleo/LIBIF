@@ -20,6 +20,7 @@ enum BookStatus {
   PENDING_PROCESSING
   PROCESSING
   PENDING_APPROVAL
+  CORRECTION_REQUIRED
   PUBLISHED
   REJECTED
 }
@@ -29,6 +30,20 @@ enum ProcessingJobStatus {
   RUNNING
   SUCCEEDED
   FAILED
+  CANCELLED
+  SUPERSEDED
+}
+
+enum ProcessingArtifactKind {
+  EXTRACTED_TEXT
+  OCR_TEXT
+  OCR_LAYOUT
+}
+
+enum TextExtractionMethod {
+  EMBEDDED_TEXT
+  OCR
+  HYBRID
 }
 
 enum BookFileStatus {
@@ -61,6 +76,7 @@ enum ApprovalReviewStatus {
   APPROVED
   REJECTED
   CORRECTION_REQUESTED
+  SUPERSEDED
 }
 
 enum BookAuditAction {
@@ -157,20 +173,25 @@ model Book {
 }
 
 model BookFile {
-  id               String         @id @default(cuid())
+  id               String               @id @default(cuid())
   bookId           String
-  book             Book           @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  book             Book                 @relation(fields: [bookId], references: [id], onDelete: Cascade)
   bucket           String
-  objectKey        String         @unique
+  objectKey        String               @unique
   originalFilename String
   mimeType         String
   sizeBytes        BigInt
   checksumSha256   String
-  version          Int            @default(1)
-  status           BookFileStatus @default(ACTIVE)
-  createdAt        DateTime       @default(now())
-  updatedAt        DateTime       @default(now()) @updatedAt
+  version          Int                  @default(1)
+  status           BookFileStatus       @default(ACTIVE)
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @default(now()) @updatedAt
+  processingJobs   ProcessingJob[]
+  approvalReviews  ApprovalReview[]
+  artifacts        ProcessingArtifact[]
 
+  @@unique([id, bookId])
+  @@unique([bookId, version])
   @@index([bookId, status])
 }
 
@@ -216,22 +237,64 @@ model BookTag {
 }
 
 model ProcessingJob {
-  id              String              @id @default(cuid())
-  bookId          String
-  book            Book                @relation(fields: [bookId], references: [id], onDelete: Cascade)
-  type            String              @default("PDF_OCR_PIPELINE")
-  status          ProcessingJobStatus @default(QUEUED)
-  stage           String?
-  progressPercent Int                 @default(0)
-  attempts        Int                 @default(0)
-  errorMessage    String?
-  startedAt       DateTime?
-  completedAt     DateTime?
-  cancelledAt     DateTime?
-  createdAt       DateTime            @default(now())
-  updatedAt       DateTime            @updatedAt
+  id                String               @id @default(cuid())
+  bookId            String
+  bookFileId        String
+  book              Book                 @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  bookFile          BookFile             @relation(fields: [bookFileId, bookId], references: [id, bookId], onDelete: Cascade)
+  type              String               @default("PDF_OCR_PIPELINE")
+  status            ProcessingJobStatus  @default(QUEUED)
+  stage             String?
+  progressPercent   Int                  @default(0)
+  attemptNumber     Int                  @default(1)
+  attempts          Int                  @default(0)
+  queueJobId        String?              @unique
+  retryOfJobId      String?
+  retryOf           ProcessingJob?       @relation("ProcessingJobRetryLineage", fields: [retryOfJobId], references: [id], onDelete: SetNull)
+  retries           ProcessingJob[]      @relation("ProcessingJobRetryLineage")
+  supersededByJobId String?
+  supersededBy      ProcessingJob?       @relation("ProcessingJobSupersession", fields: [supersededByJobId], references: [id], onDelete: SetNull)
+  supersededJobs    ProcessingJob[]      @relation("ProcessingJobSupersession")
+  terminalReason    String?
+  errorMessage      String?
+  startedAt         DateTime?
+  completedAt       DateTime?
+  cancelledAt       DateTime?
+  supersededAt      DateTime?
+  createdAt         DateTime             @default(now())
+  updatedAt         DateTime             @updatedAt
+  artifacts         ProcessingArtifact[]
+  approvalReview    ApprovalReview?
 
+  @@unique([id, bookFileId])
+  @@unique([bookFileId, attemptNumber])
   @@index([bookId, status])
+  @@index([bookFileId, createdAt])
+  @@index([retryOfJobId])
+  @@index([supersededByJobId])
+}
+
+model ProcessingArtifact {
+  id               String                 @id @default(cuid())
+  processingJobId  String
+  bookFileId       String
+  kind             ProcessingArtifactKind
+  extractionMethod TextExtractionMethod?
+  bucket           String
+  objectKey        String                 @unique
+  mimeType         String
+  sizeBytes        BigInt
+  checksumSha256   String
+  language         String?
+  pageCount        Int?
+  metadata         Json?
+  createdAt        DateTime               @default(now())
+  updatedAt        DateTime               @updatedAt
+  processingJob    ProcessingJob          @relation(fields: [processingJobId, bookFileId], references: [id, bookFileId], onDelete: Cascade)
+  bookFile         BookFile               @relation(fields: [bookFileId], references: [id], onDelete: Cascade)
+
+  @@unique([processingJobId, kind])
+  @@index([bookFileId, createdAt])
 }
 
 model ReadingProgress {
@@ -301,16 +364,25 @@ model BookAuditEvent {
 model ApprovalReview {
   id               String               @id @default(cuid())
   bookId           String
+  bookFileId       String
+  processingJobId  String
+  round            Int                  @default(1)
   reviewerId       String?
   status           ApprovalReviewStatus @default(PENDING)
   reason           String?
   requestedChanges String?
   decidedAt        DateTime?
+  supersededAt     DateTime?
   createdAt        DateTime             @default(now())
   updatedAt        DateTime             @updatedAt
   book             Book                 @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  bookFile         BookFile             @relation(fields: [bookFileId, bookId], references: [id, bookId], onDelete: Cascade)
+  processingJob    ProcessingJob        @relation(fields: [processingJobId, bookFileId], references: [id, bookFileId], onDelete: Cascade)
   reviewer         User?                @relation("ApprovalReviewer", fields: [reviewerId], references: [id], onDelete: SetNull)
 
+  @@unique([processingJobId, bookFileId])
+  @@unique([bookId, round])
   @@index([bookId, status])
+  @@index([bookFileId, createdAt])
   @@index([reviewerId])
 }

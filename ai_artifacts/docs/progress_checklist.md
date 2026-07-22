@@ -1,6 +1,6 @@
 # LIBIF Progress Checklist
 
-Last updated: 2026-07-21
+Last updated: 2026-07-22
 
 This checklist is the concise current-state tracker for future agents and team members. Detailed design, screen, workflow, and contract notes remain in the other `ai_artifacts/docs/` files.
 
@@ -59,6 +59,7 @@ Latest Phase 5 planning/schema preflight:
 - [x] `npm run db:seed`
 - [x] `git diff --check`
 - [x] Comprehensive Phase 5 plan written to `ai_artifacts/plans/plan-phase-5-document-lifecycle-upload-metadata-taxonomy-2026-07-21.md` and mirrored under `.omx/plans/`.
+- [x] Phase 5 closure fixes verified after authenticated intake/replacement/requeue repair and current-work queue de-duplication: 72 API unit tests, 54 web tests, 24 API e2e tests, lint, builds, and `git diff --check`.
 
 ## Current implemented route/API coverage
 
@@ -67,6 +68,15 @@ Latest Phase 5 planning/schema preflight:
 - [x] `/catalog` compatibility redirect
 - [x] `/admin/books`
 - [x] `/admin/books/new`
+- [x] `/admin/documents`
+- [x] `/admin/documents/[id]`
+- [x] `/admin/documents/[id]/edit`
+- [x] `/admin/documents/new`
+- [x] `/admin/processing` and `/admin/processing/[id]`
+- [x] `/admin/approvals`
+- [x] `/admin/notifications`
+- [x] `/admin/categories`
+- [x] `/admin/tags`
 - [x] `/admin/dashboard`
 - [x] `/sign-in`
 - [x] `/register`
@@ -78,24 +88,27 @@ Latest Phase 5 planning/schema preflight:
 - [x] Auth APIs: register, sign-in, sign-out, session, reset request, reset completion.
 - [x] Intake/catalog APIs: admin intake, admin books, categories, public catalog books, ISBN lookup.
 - [x] Reporting API: admin/librarian dashboard summary counts.
+- [x] Taxonomy APIs: staff category/tag reads plus Admin-only starter create/edit contracts.
+- [x] Document/upload APIs: list, detail, metadata update, upload, replacement, and submit-to-processing contracts.
+- [x] Processing APIs: queue/detail/status plus guarded advance, retry, and cancel transition foundations.
+- [x] Approval APIs: current pending queue/detail foundations with one current review row per document.
+- [ ] Notification persistence: list/read API and UI foundations exist, but `NotificationsService` remains process-local until Phase 6 NTF-001.
 
 ## Remaining high-level work
 
 - [ ] Production password-reset email provider.
 - [x] Reader module and reader discovery/personal library foundations from Phase 4.
-- [ ] Protected PDF access grants and persisted reading progress/bookmarks integration.
-- [ ] Upload/Catalog boundary deepening for document metadata workflows.
-- [ ] Processing workers and processing status/retry endpoints.
-- [ ] Approval, correction, and notifications workflows. Phase 5 schema now includes persisted notification and approval-review foundations.
-- [ ] Taxonomy/tag management, user administration, role changes, and deactivation.
+- [x] Protected document decision/token handoff and persisted reading progress/bookmarks integration.
+- [x] Upload/Documents boundary and document metadata workflow foundation.
+- [ ] Processing worker implementation and retry history. Phase 5 completed persisted transition/status/retry/cancel foundations; deeper worker execution remains Phase 6.
+- [ ] Full approval decision/correction loop and persisted notifications. Phase 5 completed approval queue/detail plus notification API/UI foundations; decision commands, correction/resubmission, persistence, and fanout remain Phase 6.
+- [ ] Taxonomy risky actions (delete/reassign/merge), user administration, role changes, and deactivation. Starter category/tag list/create/edit is complete.
 - [ ] Dashboards, reports, exports, and settings. Phase 4 Member D completed the base dashboard summary only; report exports/settings remain deferred.
 - [ ] Cross-screen integration hardening and responsive/visual QA.
 
 ## Next recommended planning target
 
-Phase 4 member work has been merged into `dev`; the current next execution target is **Phase 5 — Document Lifecycle, Upload, Metadata, and Taxonomy Integration** using `ai_artifacts/plans/plan-phase-5-document-lifecycle-upload-metadata-taxonomy-2026-07-21.md`. Keep Phase 4 follow-ups limited to integration hardening or bug fixes unless the team reopens a member lane.
-
-Phase 5 must start from the schema-foundation migration and should not reintroduce in-memory persistence for accepted reader state, notification, approval, audit, processing-progress, or file-version behavior.
+Phase 5 member lanes are integrated on the Member D closure branch. The comprehensive next plan is `ai_artifacts/plans/plan-phase-6-processing-approval-correction-notifications-2026-07-22.md`. Phase 6 adds the real OCR worker, approval decisions, correction/resubmission, retry history, and durable notification fanout without rebuilding the Phase 5 document, taxonomy, access, or processing-transition foundations.
 
 ## 80-90% Completion Team Backlog
 
@@ -115,6 +128,41 @@ Phase 5 must start from the schema-foundation migration and should not reintrodu
 - [x] Added `BookFile.version`, `BookFile.status`, `BookFile.updatedAt`, and processing progress/timestamp fields.
 - [x] Updated `Agent_Prompt.md` to clarify that schema changes are normally locked, but approved missing persistence must go through the migration owner instead of being bypassed.
 - [x] Wrote the comprehensive Phase 5 plan with member sections, lanes, merge order, agent rules, and skeleton references.
+
+## Phase 5 Member D progress
+
+- [x] D5-000 schema foundation completed before feature-lane work.
+- [x] D5-001 taxonomy read APIs implemented at `GET /api/taxonomy/categories` and `GET /api/taxonomy/tags` with stable DTO projections and Admin/Librarian role guards.
+- [x] D5-001 targeted API unit tests, API build/lint, and taxonomy e2e authorization coverage pass.
+- [x] D5-002 controlled `CategorySelector` and `TagSelector` components implemented with interaction and automated accessibility coverage.
+- [x] D5-002 typed server/browser adapters generated and the existing intake metadata form consumes Member D category/tag options through reusable selectors.
+- [x] D5-003 `/admin/categories` and `/admin/tags` provide loading/error/empty, Librarian read-only, and Admin create/edit states; risky delete/reassign/merge remains Phase 7.
+- [x] D5-004 generated OpenAPI/API types, reconciled navigation/routes/contracts/docs, and completed Member D cross-lane intake integration.
+- [x] D5-004 full verification passed: Prisma validate/generate, generated OpenAPI/client types, root lint, 12 API suites/47 tests, 10 web files/46 tests, root production builds, 6 API e2e suites/24 tests, and `git diff --check`.
+- [x] Ralph THOROUGH architect verification approved; changed-files deslop and the complete post-deslop regression suite passed.
+
+Member D Phase 5 is complete and integrated with the merged Member A/B/C lanes; full taxonomy deletion/reassignment/merge safeguards remain Phase 7.
+
+## Phase 5 integrated result
+
+- [x] Member A: persisted reader progress/bookmarks plus protected document decision/viewer fallback integration.
+- [x] Member B: document list/detail/edit, PDF upload/replacement, metadata, and submit-to-processing foundations.
+- [x] Member C: persisted processing transitions, current approval queue/detail, notification API/UI foundations, and staff workflow surfaces; notification storage remains an explicit Phase 6 gap.
+- [x] Member D: schema foundation, taxonomy reads and starter management, reusable selectors, role-aware staff shell, unified OpenAPI/client regeneration, and phase closure.
+- [x] Canonical `/admin/documents/new` intake and Member D taxonomy selectors are used by the Phase 5 workflow; `/admin/books` is compatibility-only and no longer appears in primary staff navigation or staff sign-in routing.
+- [x] Intake, replacement, and requeue browser mutations use the authenticated API boundary; replacement/requeue supersede stale work, and processing/approval queue projections show one current row per document while history remains available through lifecycle records.
+- [x] Integrated verification passed: Prisma validate/generate, unified OpenAPI/client generation, root lint, 15 API suites/72 tests, 13 web files/54 tests, root production builds, 6 API e2e suites/24 tests, and `git diff --check`.
+- [ ] Phase 5 notification persistence acceptance was not met by the merged runtime: the Prisma model exists, but `NotificationsService` remains process-local. The gap is explicitly transferred to Phase 6 NTF-001.
+
+## Phase 6 planning
+
+- [x] Comprehensive Phase 6 plan written to `ai_artifacts/plans/plan-phase-6-processing-approval-correction-notifications-2026-07-22.md` and mirrored under `.omx/plans/`.
+- [x] D6-000 schema/OCR-lineage foundation: migration `20260722062955_phase6_processing_foundation`, exact file/job/review lineage, explicit terminal states, retry numbering/self-reference, durable artifact metadata, current-work constraints, generated contracts, and isolated Phase 5 backfill verification.
+- [x] D6-000 verification: Prisma validate/generate/migrate/status, OpenAPI/client generation, 72 API unit tests, and 7 API e2e suites/28 tests including four migration/backfill constraint scenarios.
+- [ ] C6 real worker/OCR, retry history, approval commands, notification persistence/fanout.
+- [ ] B6 correction/resubmission and document workflow history.
+- [ ] A6 publication visibility and reader notification integration.
+- [ ] D6 integration, generated contracts, activity summaries, and phase closure.
 
 ### Phase 4 Member D verification
 

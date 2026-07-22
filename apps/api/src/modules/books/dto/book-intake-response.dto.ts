@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { BookStatus } from '../../../generated/prisma/client';
+import { BookStatus, ProcessingJobStatus } from '../../../generated/prisma/client';
 
 export class IntakeBookSummaryDto {
   @ApiProperty()
@@ -27,8 +27,8 @@ export class IntakeProcessingJobSummaryDto {
   @ApiProperty()
   id!: string;
 
-  @ApiProperty({ enum: ['QUEUED', 'RUNNING', 'SUCCEEDED', 'FAILED'] })
-  status!: 'QUEUED' | 'RUNNING' | 'SUCCEEDED' | 'FAILED';
+  @ApiProperty({ enum: ProcessingJobStatus })
+  status!: ProcessingJobStatus;
 }
 
 export class CreateBookIntakeResponseDto {

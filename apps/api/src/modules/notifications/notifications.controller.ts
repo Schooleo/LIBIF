@@ -2,6 +2,7 @@ import { Controller, Get, Inject, Param, Patch, UseGuards } from '@nestjs/common
 import { ApiForbiddenResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from '../auth/current-user.decorator';
 import { AuthErrorDto, type SessionUserDto } from '../auth/dto/session.dto';
+import { Roles } from '../auth/roles.decorator';
 import { RolesGuard } from '../auth/roles.guard';
 import { NotificationResponseDto } from './dto/notification.dto';
 import { NotificationsService } from './notifications.service';
@@ -9,6 +10,7 @@ import { NotificationsService } from './notifications.service';
 @ApiTags('Notifications')
 @Controller('notifications')
 @UseGuards(RolesGuard)
+@Roles('ADMIN', 'LIBRARIAN', 'READER')
 export class NotificationsController {
   constructor(@Inject(NotificationsService) private readonly notificationsService: NotificationsService) {}
 

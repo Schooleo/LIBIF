@@ -47,8 +47,11 @@ export default async function AdminProcessingJobDetailPage({ params }: PageProps
     loadError = (error as Error).message;
   }
 
-  const getStepperStage = (status: string) => {
-    switch (status.toUpperCase()) {
+  const getStepperStage = (jobObj: ProcessingJob) => {
+    if (jobObj.stage) {
+      return jobObj.stage.toLowerCase();
+    }
+    switch (jobObj.status.toUpperCase()) {
       case 'QUEUED':
         return 'validating';
       case 'RUNNING':
@@ -63,7 +66,7 @@ export default async function AdminProcessingJobDetailPage({ params }: PageProps
   return (
     <section className="ui-stack">
       <div className="flex justify-between items-center">
-        <PageHeader title={`Job Details: ${jobId}`} />
+        <PageHeader title={job?.bookTitle ? `Job: ${job.bookTitle}` : `Job Details: ${jobId}`} />
         <Link href="/admin/processing" className="ui-link text-sm">
           &larr; Back to queue
         </Link>
@@ -78,13 +81,27 @@ export default async function AdminProcessingJobDetailPage({ params }: PageProps
       {job && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="md:col-span-2 ui-stack">
+            {job.status.toUpperCase() === 'SUCCEEDED' && (
+              <InlineAlert tone="success" title="Processing Complete">
+                Document pipeline executed successfully. Succeeded and transformed to <strong>Awaiting Approval</strong> status.
+                <div className="mt-2">
+                  <Link href="/admin/approvals" className="ui-link text-sm font-semibold">
+                    View in Approvals Queue &rarr;
+                  </Link>
+                </div>
+              </InlineAlert>
+            )}
+
             <Card>
-              <h2 className="text-lg font-semibold mb-4">Job Info</h2>
+              <h2 className="text-lg font-semibold mb-4">Job Metadata</h2>
               <DescriptionList
                 items={[
+                  { term: 'Book Title', description: <strong>{job.bookTitle || 'Untitled'}</strong> },
                   { term: 'Job ID', description: <span className="font-mono">{job.id}</span> },
                   { term: 'Book ID', description: <span className="font-mono">{job.bookId}</span> },
                   { term: 'Pipeline Type', description: job.type },
+                  { term: 'Current Stage', description: job.stage || 'N/A' },
+                  { term: 'Progress', description: `${job.progressPercent ?? (job.status === 'SUCCEEDED' ? 100 : 0)}%` },
                   { term: 'Created At', description: new Date(job.createdAt).toLocaleString() },
                   { term: 'Updated At', description: new Date(job.updatedAt).toLocaleString() }
                 ]}
@@ -94,7 +111,7 @@ export default async function AdminProcessingJobDetailPage({ params }: PageProps
             {job.status.toUpperCase() !== 'FAILED' && job.status.toUpperCase() !== 'SUCCEEDED' && (
               <Card>
                 <h2 className="text-lg font-semibold mb-4">Live Progress</h2>
-                <ProcessingStageStepper currentStage={getStepperStage(job.status)} />
+                <ProcessingStageStepper currentStage={getStepperStage(job)} />
               </Card>
             )}
 
