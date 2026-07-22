@@ -1,21 +1,18 @@
-import { BadRequestException, Inject, Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { BookAuditAction, BookStatus, NotificationType, ProcessingJobStatus, UserRole } from '../../generated/prisma/client';
 import { PrismaService } from '../database/prisma.service';
 import { NotificationsService } from '../notifications/notifications.service';
+import { ProcessingJobHistoryDto } from './dto/processing-job-history.dto';
 import { ProcessingJobResponseDto } from './dto/processing-job.dto';
-
-const TERMINAL_PROCESSING_STATUSES: ProcessingJobStatus[] = [
-  ProcessingJobStatus.SUCCEEDED,
-  ProcessingJobStatus.FAILED,
-  ProcessingJobStatus.CANCELLED,
-  ProcessingJobStatus.SUPERSEDED
-];
+import { ProcessingQueue } from './processing.queue';
+import { ProcessingTransitionPolicy } from './processing.transition-policy';
 
 @Injectable()
 export class ProcessingService {
   constructor(
     @Inject(PrismaService) private readonly prisma: PrismaService,
-    @Inject(NotificationsService) private readonly notifications: NotificationsService
+    @Inject(NotificationsService) private readonly notifications: NotificationsService,
+    @Inject(ProcessingQueue) private readonly processingQueue: ProcessingQueue
   ) {}
 
   async listJobs(): Promise<ProcessingJobResponseDto[]> {
@@ -23,7 +20,7 @@ export class ProcessingService {
       orderBy: { createdAt: 'desc' },
       include: {
         book: {
-          select: { title: true }
+          select: { title: true, status: true }
         }
       }
     });
@@ -42,7 +39,7 @@ export class ProcessingService {
       where: { id },
       include: {
         book: {
-          select: { title: true }
+          select: { title: true, status: true }
         }
       }
     });
@@ -50,6 +47,24 @@ export class ProcessingService {
       throw new NotFoundException(`Processing job with ID ${id} not found`);
     }
     return this.mapToDto(job);
+  }
+
+  async getJobHistory(id: string): Promise<ProcessingJobHistoryDto> {
+    const currentJob = await this.getJobById(id);
+    const historyJobs = await this.prisma.processingJob.findMany({
+      where: { bookId: currentJob.bookId },
+      orderBy: { createdAt: 'desc' },
+      include: {
+        book: {
+          select: { title: true, status: true }
+        }
+      }
+    });
+
+    return {
+      current: currentJob,
+      history: historyJobs.map((j) => this.mapToDto(j))
+    };
   }
 
   async advanceJob(id: string): Promise<ProcessingJobResponseDto> {
@@ -63,11 +78,12 @@ export class ProcessingService {
       throw new NotFoundException(`Processing job with ID ${id} not found`);
     }
 
-    if (TERMINAL_PROCESSING_STATUSES.includes(job.status)) {
-      throw new UnprocessableEntityException(`Cannot advance processing job that is already ${job.status}`);
+    if (ProcessingTransitionPolicy.isTerminal(job.status)) {
+      ProcessingTransitionPolicy.assertCanTransition(job.status, ProcessingJobStatus.RUNNING);
     }
 
     if (job.status === ProcessingJobStatus.QUEUED) {
+      ProcessingTransitionPolicy.assertCanTransition(job.status, ProcessingJobStatus.RUNNING);
       await this.prisma.$transaction(async (tx) => {
         await tx.processingJob.update({
           where: { id },
@@ -92,6 +108,7 @@ export class ProcessingService {
         });
       });
     } else if (job.status === ProcessingJobStatus.RUNNING) {
+      ProcessingTransitionPolicy.assertCanTransition(job.status, ProcessingJobStatus.SUCCEEDED);
       await this.prisma.$transaction(async (tx) => {
         const previousReview = await tx.approvalReview.findFirst({
           where: { bookId: job.bookId },
@@ -149,41 +166,66 @@ export class ProcessingService {
 
   async retryJob(id: string): Promise<ProcessingJobResponseDto> {
     const job = await this.prisma.processingJob.findUnique({
-      where: { id }
+      where: { id },
+      include: { bookFile: true }
     });
     if (!job) {
       throw new NotFoundException(`Processing job with ID ${id} not found`);
     }
 
-    if (job.status !== ProcessingJobStatus.FAILED) {
-      throw new BadRequestException(`Only FAILED processing jobs can be retried`);
-    }
+    ProcessingTransitionPolicy.assertCanRetry(job.status);
 
-    await this.prisma.$transaction(async (tx) => {
+    const nextAttemptNumber = (job.attemptNumber ?? 1) + 1;
+
+    const newJob = await this.prisma.$transaction(async (tx) => {
+      // Mark old job as superseded
       await tx.processingJob.update({
         where: { id },
+        data: { supersededAt: new Date() }
+      });
+
+      const created = await tx.processingJob.create({
         data: {
+          bookId: job.bookId,
+          bookFileId: job.bookFileId,
+          type: job.type,
           status: ProcessingJobStatus.QUEUED,
           stage: 'queued',
           progressPercent: 0,
-          errorMessage: null,
-          attempts: { increment: 1 }
+          attemptNumber: nextAttemptNumber,
+          attempts: job.attempts + 1,
+          retryOfJobId: job.id
+        },
+        include: {
+          book: { select: { title: true } }
         }
       });
+
       await tx.book.update({
         where: { id: job.bookId },
         data: { status: BookStatus.PENDING_PROCESSING }
       });
+
       await tx.bookAuditEvent.create({
         data: {
           bookId: job.bookId,
           action: BookAuditAction.PROCESSING_QUEUED,
-          message: 'Processing job retry enqueued'
+          message: `Processing job retry enqueued (attempt ${nextAttemptNumber})`
         }
       });
+
+      return created;
     });
 
-    return this.getJobById(id);
+    // Enqueue queue event for background processing worker
+    await this.processingQueue.enqueueBookUploaded({
+      bookId: job.bookId,
+      fileId: job.bookFileId,
+      objectKey: job.bookFile?.objectKey ?? `documents/${job.bookId}/${job.bookFileId}.pdf`,
+      processingJobId: newJob.id
+    });
+
+    return this.mapToDto(newJob);
   }
 
   async cancelJob(id: string): Promise<ProcessingJobResponseDto> {
@@ -194,9 +236,7 @@ export class ProcessingService {
       throw new NotFoundException(`Processing job with ID ${id} not found`);
     }
 
-    if (TERMINAL_PROCESSING_STATUSES.includes(job.status)) {
-      throw new BadRequestException(`Cannot cancel job that is already ${job.status}`);
-    }
+    ProcessingTransitionPolicy.assertCanCancel(job.status);
 
     await this.prisma.$transaction(async (tx) => {
       await tx.processingJob.update({
@@ -224,6 +264,7 @@ export class ProcessingService {
       bookId: job.bookId,
       bookFileId: job.bookFileId,
       bookTitle: job.book?.title ?? null,
+      bookStatus: job.book?.status ?? null,
       type: job.type,
       status: job.status,
       stage: job.stage ?? null,

@@ -14,6 +14,9 @@ export class ProcessingJobResponseDto {
   @ApiPropertyOptional({ type: String, nullable: true })
   bookTitle?: string | null;
 
+  @ApiPropertyOptional({ type: String, nullable: true })
+  bookStatus?: string | null;
+
   @ApiProperty()
   type!: string;
 

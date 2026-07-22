@@ -3,6 +3,7 @@ import { ApiForbiddenResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nes
 import { AuthErrorDto } from '../auth/dto/session.dto';
 import { Roles } from '../auth/roles.decorator';
 import { RolesGuard } from '../auth/roles.guard';
+import { ProcessingJobHistoryDto } from './dto/processing-job-history.dto';
 import { ProcessingJobResponseDto } from './dto/processing-job.dto';
 import { ProcessingService } from './processing.service';
 
@@ -38,12 +39,12 @@ export class ProcessingController {
     return job.status;
   }
 
-  @Post(':id/advance')
-  @ApiOperation({ summary: 'Advance processing job status (simulate progress).' })
-  @ApiOkResponse({ type: ProcessingJobResponseDto })
+  @Get(':id/history')
+  @ApiOperation({ summary: 'Get processing job history and retry lineage.' })
+  @ApiOkResponse({ type: ProcessingJobHistoryDto })
   @ApiForbiddenResponse({ type: AuthErrorDto })
-  async advanceJob(@Param('id') id: string): Promise<ProcessingJobResponseDto> {
-    return this.processingService.advanceJob(id);
+  async getJobHistory(@Param('id') id: string): Promise<ProcessingJobHistoryDto> {
+    return this.processingService.getJobHistory(id);
   }
 
   @Post(':id/retry')
