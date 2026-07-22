@@ -18,6 +18,9 @@ export class BookStatusCountsDto {
   pendingApproval!: number;
 
   @ApiProperty()
+  correctionRequired!: number;
+
+  @ApiProperty()
   published!: number;
 
   @ApiProperty()
@@ -36,6 +39,12 @@ export class ProcessingJobStatusCountsDto {
 
   @ApiProperty()
   failed!: number;
+
+  @ApiProperty()
+  cancelled!: number;
+
+  @ApiProperty()
+  superseded!: number;
 }
 
 export class TaxonomyCountsDto {
@@ -94,4 +103,12 @@ export class LibrarianDashboardSummaryDto {
   recentBooks!: RecentBookSummaryDto[];
 }
 
-export const DASHBOARD_BOOK_STATUSES = [BookStatus.DRAFT, BookStatus.PENDING_PROCESSING, BookStatus.PROCESSING, BookStatus.PENDING_APPROVAL, BookStatus.PUBLISHED, BookStatus.REJECTED] as const;
+export const DASHBOARD_BOOK_STATUSES = [
+  BookStatus.DRAFT,
+  BookStatus.PENDING_PROCESSING,
+  BookStatus.PROCESSING,
+  BookStatus.PENDING_APPROVAL,
+  BookStatus.CORRECTION_REQUIRED,
+  BookStatus.PUBLISHED,
+  BookStatus.REJECTED
+] as const;

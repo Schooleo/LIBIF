@@ -43,12 +43,16 @@ export interface components {
     "ProcessingJobResponseDto": {
     "id": string;
     "bookId": string;
+    "bookFileId": string;
     "bookTitle"?: string | null;
     "type": string;
-    "status": "QUEUED" | "RUNNING" | "SUCCEEDED" | "FAILED";
+    "status": "QUEUED" | "RUNNING" | "SUCCEEDED" | "FAILED" | "CANCELLED" | "SUPERSEDED";
     "stage"?: string | null;
     "progressPercent"?: number;
+    "attemptNumber": number;
     "attempts": number;
+    "retryOfJobId"?: string | null;
+    "terminalReason"?: string | null;
     "errorMessage"?: string | null;
     "createdAt": string;
     "updatedAt": string;
@@ -66,12 +70,16 @@ export interface components {
     "ApprovalReviewResponseDto": {
     "id": string;
     "bookId": string;
+    "bookFileId": string;
+    "processingJobId": string;
+    "round": number;
     "bookTitle"?: string | null;
     "reviewerId"?: string | null;
-    "status": "PENDING" | "APPROVED" | "REJECTED" | "CORRECTION_REQUESTED";
+    "status": "PENDING" | "APPROVED" | "REJECTED" | "CORRECTION_REQUESTED" | "SUPERSEDED";
     "reason"?: string | null;
     "requestedChanges"?: string | null;
     "decidedAt"?: Record<string, unknown> | null;
+    "supersededAt"?: Record<string, unknown> | null;
     "createdAt": string;
     "updatedAt": string;
   };
@@ -81,6 +89,7 @@ export interface components {
     "pendingProcessing": number;
     "processing": number;
     "pendingApproval": number;
+    "correctionRequired": number;
     "published": number;
     "rejected": number;
   };
@@ -89,6 +98,8 @@ export interface components {
     "running": number;
     "succeeded": number;
     "failed": number;
+    "cancelled": number;
+    "superseded": number;
   };
     "TaxonomyCountsDto": {
     "categories": number;
@@ -103,7 +114,7 @@ export interface components {
     "RecentBookSummaryDto": {
     "id": string;
     "title": string;
-    "status": "DRAFT" | "PENDING_PROCESSING" | "PROCESSING" | "PENDING_APPROVAL" | "PUBLISHED" | "REJECTED";
+    "status": "DRAFT" | "PENDING_PROCESSING" | "PROCESSING" | "PENDING_APPROVAL" | "CORRECTION_REQUIRED" | "PUBLISHED" | "REJECTED";
     "createdAt": string;
   };
     "LibrarianDashboardSummaryDto": {
@@ -117,7 +128,7 @@ export interface components {
     "IntakeBookSummaryDto": {
     "id": string;
     "title": string;
-    "status": "DRAFT" | "PENDING_PROCESSING" | "PROCESSING" | "PENDING_APPROVAL" | "PUBLISHED" | "REJECTED";
+    "status": "DRAFT" | "PENDING_PROCESSING" | "PROCESSING" | "PENDING_APPROVAL" | "CORRECTION_REQUIRED" | "PUBLISHED" | "REJECTED";
   };
     "IntakeFileSummaryDto": {
     "id": string;
@@ -126,7 +137,7 @@ export interface components {
   };
     "IntakeProcessingJobSummaryDto": {
     "id": string;
-    "status": "QUEUED" | "RUNNING" | "SUCCEEDED" | "FAILED";
+    "status": "QUEUED" | "RUNNING" | "SUCCEEDED" | "FAILED" | "CANCELLED" | "SUPERSEDED";
   };
     "CreateBookIntakeResponseDto": {
     "book": components['schemas']["IntakeBookSummaryDto"];
@@ -157,7 +168,7 @@ export interface components {
     "id": string;
     "title": string;
     "isbn"?: string | null;
-    "status": "DRAFT" | "PENDING_PROCESSING" | "PROCESSING" | "PENDING_APPROVAL" | "PUBLISHED" | "REJECTED";
+    "status": "DRAFT" | "PENDING_PROCESSING" | "PROCESSING" | "PENDING_APPROVAL" | "CORRECTION_REQUIRED" | "PUBLISHED" | "REJECTED";
     "category"?: components['schemas']["CategoryResponseDto"];
     "tags": components['schemas']["TagResponseDto"][];
     "authors": components['schemas']["AuthorResponseDto"][];
@@ -168,7 +179,7 @@ export interface components {
     "id": string;
     "title": string;
     "isbn"?: string | null;
-    "status": "DRAFT" | "PENDING_PROCESSING" | "PROCESSING" | "PENDING_APPROVAL" | "PUBLISHED" | "REJECTED";
+    "status": "DRAFT" | "PENDING_PROCESSING" | "PROCESSING" | "PENDING_APPROVAL" | "CORRECTION_REQUIRED" | "PUBLISHED" | "REJECTED";
     "category"?: components['schemas']["CategoryResponseDto"];
     "tags": components['schemas']["TagResponseDto"][];
     "authors": components['schemas']["AuthorResponseDto"][];
@@ -191,7 +202,7 @@ export interface components {
   };
     "ProcessingJobSummaryDto": {
     "id": string;
-    "status": "QUEUED" | "RUNNING" | "SUCCEEDED" | "FAILED";
+    "status": "QUEUED" | "RUNNING" | "SUCCEEDED" | "FAILED" | "CANCELLED" | "SUPERSEDED";
     "stage"?: string | null;
     "progressPercent": number;
     "errorMessage"?: string | null;
@@ -213,7 +224,7 @@ export interface components {
     "publishedYear"?: number | null;
     "language"?: string | null;
     "isbn"?: string | null;
-    "status": "DRAFT" | "PENDING_PROCESSING" | "PROCESSING" | "PENDING_APPROVAL" | "PUBLISHED" | "REJECTED";
+    "status": "DRAFT" | "PENDING_PROCESSING" | "PROCESSING" | "PENDING_APPROVAL" | "CORRECTION_REQUIRED" | "PUBLISHED" | "REJECTED";
     "category"?: components['schemas']["CategoryResponseDto"];
     "tags": components['schemas']["TagResponseDto"][];
     "authors": components['schemas']["AuthorResponseDto"][];
@@ -246,7 +257,7 @@ export interface components {
     "UploadResultBookDto": {
     "id": string;
     "title": string;
-    "status": "DRAFT" | "PENDING_PROCESSING" | "PROCESSING" | "PENDING_APPROVAL" | "PUBLISHED" | "REJECTED";
+    "status": "DRAFT" | "PENDING_PROCESSING" | "PROCESSING" | "PENDING_APPROVAL" | "CORRECTION_REQUIRED" | "PUBLISHED" | "REJECTED";
   };
     "UploadResultFileDto": {
     "id": string;
@@ -255,7 +266,7 @@ export interface components {
   };
     "UploadResultJobDto": {
     "id": string;
-    "status": "QUEUED" | "RUNNING" | "SUCCEEDED" | "FAILED";
+    "status": "QUEUED" | "RUNNING" | "SUCCEEDED" | "FAILED" | "CANCELLED" | "SUPERSEDED";
   };
     "UploadResultDto": {
     "book": components['schemas']["UploadResultBookDto"];
@@ -632,7 +643,7 @@ export interface paths {
     get: {
       parameters: {
         query: {
-          "status"?: "PENDING" | "APPROVED" | "REJECTED" | "CORRECTION_REQUESTED";
+          "status"?: "PENDING" | "APPROVED" | "REJECTED" | "CORRECTION_REQUESTED" | "SUPERSEDED";
         };
       };
       responses: {

@@ -67,9 +67,10 @@ Last updated: 2026-07-22
 
 ## Database layer
 
-- Prisma schema currently models `User`, `UserSession`, `PasswordResetToken`, `Book`, `BookFile`, `Author`, `BookAuthor`, `Category`, `Tag`, `BookTag`, `ProcessingJob`, `ReadingProgress`, `Bookmark`, `Notification`, `BookAuditEvent`, and `ApprovalReview`.
-- Current enums: `UserRole`, `BookStatus`, `ProcessingJobStatus`, `BookFileStatus`, `ReadingProgressStatus`, `NotificationType`, `NotificationStatus`, `ApprovalReviewStatus`, and `BookAuditAction`.
+- Prisma schema currently models `User`, `UserSession`, `PasswordResetToken`, `Book`, `BookFile`, `Author`, `BookAuthor`, `Category`, `Tag`, `BookTag`, `ProcessingJob`, `ProcessingArtifact`, `ReadingProgress`, `Bookmark`, `Notification`, `BookAuditEvent`, and `ApprovalReview`.
+- Current enums: `UserRole`, `BookStatus`, `ProcessingJobStatus`, `ProcessingArtifactKind`, `TextExtractionMethod`, `BookFileStatus`, `ReadingProgressStatus`, `NotificationType`, `NotificationStatus`, `ApprovalReviewStatus`, and `BookAuditAction`.
 - Phase 5 schema foundation migration `20260721114643_phase5_domain_foundations` fills the persistence gap that Phase 4 lanes had to work around: reading state/bookmarks, notifications, approval reviews, audit events, processing progress timestamps/percent, and file version/status metadata.
+- Phase 6 foundation migration `20260722062955_phase6_processing_foundation` backfills exact file/retry/review lineage, replaces generic failure encodings with `CANCELLED`/`SUPERSEDED`, adds durable artifact metadata, and installs partial uniqueness plus range/identity constraints. OCR consumption and notification persistence remain later Phase 6 work.
 - PostgreSQL is the configured provider.
 - Future catalogue search must add authoritative backend pagination/filtering/sorting and `pg_trgm` behavior; no direct frontend database access is allowed.
 
@@ -83,7 +84,7 @@ Last updated: 2026-07-22
 
 - `ProcessingQueue` wraps BullMQ and adds `book-uploaded` jobs with three attempts when `REDIS_URL` is configured.
 - No worker entry point exists yet; Phase 6 must add an independently runnable consumer for Validation -> text extraction/OCR -> indexing/finalization. Manual `advance` is a Phase 5 simulation, not OCR evidence.
-- Phase 5 closure repairs route intake/replacement/requeue through authenticated API adapters, supersede earlier active work on replacement/requeue, and project only the latest operational processing/approval row per document while retaining history records.
+- Phase 5 closure repairs route intake/replacement/requeue through authenticated API adapters. D6-000 now preserves superseded jobs/reviews as file-scoped history and enforces only one active file, current job, and pending review per document.
 - Browser code must use REST status endpoints and bounded polling; it must never connect to Redis/BullMQ.
 
 ## Event ownership

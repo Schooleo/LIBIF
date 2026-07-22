@@ -198,9 +198,19 @@ export class DocumentsService {
       });
 
       const dbFile = await tx.bookFile.findUniqueOrThrow({ where: { id: activeFile.id } });
+      const previousJob = await tx.processingJob.findFirst({
+        where: { bookFileId: dbFile.id },
+        orderBy: [{ attemptNumber: 'desc' }, { createdAt: 'desc' }]
+      });
 
       const processingJob = await tx.processingJob.create({
-        data: { bookId: id, type: 'PDF_OCR_PIPELINE' }
+        data: {
+          bookId: id,
+          bookFileId: dbFile.id,
+          type: 'PDF_OCR_PIPELINE',
+          attemptNumber: (previousJob?.attemptNumber ?? 0) + 1,
+          retryOfJobId: previousJob?.id
+        }
       });
 
       await tx.bookAuditEvent.create({
@@ -265,7 +275,7 @@ export class DocumentsService {
         });
 
         const processingJob = await tx.processingJob.create({
-          data: { bookId: id, type: 'PDF_OCR_PIPELINE' }
+          data: { bookId: id, bookFileId: newBookFile.id, type: 'PDF_OCR_PIPELINE' }
         });
 
         await tx.bookAuditEvent.create({
@@ -309,14 +319,16 @@ export class DocumentsService {
         status: { in: [ProcessingJobStatus.QUEUED, ProcessingJobStatus.RUNNING] }
       },
       data: {
-        status: ProcessingJobStatus.FAILED,
+        status: ProcessingJobStatus.SUPERSEDED,
         stage: 'superseded',
-        errorMessage: 'Superseded by a newer processing request',
-        cancelledAt: new Date()
+        terminalReason: 'Superseded by a newer processing request',
+        supersededAt: new Date(),
+        completedAt: new Date()
       }
     });
-    await tx.approvalReview.deleteMany({
-      where: { bookId, status: ApprovalReviewStatus.PENDING }
+    await tx.approvalReview.updateMany({
+      where: { bookId, status: ApprovalReviewStatus.PENDING },
+      data: { status: ApprovalReviewStatus.SUPERSEDED, supersededAt: new Date() }
     });
   }
 

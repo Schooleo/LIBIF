@@ -157,7 +157,8 @@ Member D Phase 5 is complete and integrated with the merged Member A/B/C lanes; 
 ## Phase 6 planning
 
 - [x] Comprehensive Phase 6 plan written to `ai_artifacts/plans/plan-phase-6-processing-approval-correction-notifications-2026-07-22.md` and mirrored under `.omx/plans/`.
-- [ ] D6-000 schema/OCR-lineage foundation.
+- [x] D6-000 schema/OCR-lineage foundation: migration `20260722062955_phase6_processing_foundation`, exact file/job/review lineage, explicit terminal states, retry numbering/self-reference, durable artifact metadata, current-work constraints, generated contracts, and isolated Phase 5 backfill verification.
+- [x] D6-000 verification: Prisma validate/generate/migrate/status, OpenAPI/client generation, 72 API unit tests, and 7 API e2e suites/28 tests including four migration/backfill constraint scenarios.
 - [ ] C6 real worker/OCR, retry history, approval commands, notification persistence/fanout.
 - [ ] B6 correction/resubmission and document workflow history.
 - [ ] A6 publication visibility and reader notification integration.

@@ -270,6 +270,8 @@ Canonical comprehensive execution plan: `ai_artifacts/plans/plan-phase-6-process
 
 Phase 6 entry note: Phase 5 now has authenticated intake/replacement/requeue handoffs and current-work queue projections, but no BullMQ worker consumes OCR jobs and `NotificationsService` remains process-local despite the Prisma model. Worker/OCR truth and notification persistence are early Phase 6 gates.
 
+D6-000 foundation status: completed on the Phase 5 Member D integration PR through `20260722062955_phase6_processing_foundation`. Member lanes must consume its file-scoped jobs/reviews, explicit terminal statuses, retry lineage, artifact model, and current-work constraints rather than introducing parallel schema shapes.
+
 Member A tasks:
 
 - Add reader notifications/read states for newly available or corrected documents.

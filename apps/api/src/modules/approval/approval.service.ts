@@ -53,12 +53,16 @@ export class ApprovalService {
     return {
       id: review.id,
       bookId: review.bookId,
+      bookFileId: review.bookFileId,
+      processingJobId: review.processingJobId,
+      round: review.round,
       bookTitle: review.book?.title ?? null,
       reviewerId: review.reviewerId ?? null,
       status: review.status,
       reason: review.reason ?? null,
       requestedChanges: review.requestedChanges ?? null,
       decidedAt: review.decidedAt ? review.decidedAt.toISOString() : null,
+      supersededAt: review.supersededAt ? review.supersededAt.toISOString() : null,
       createdAt: review.createdAt.toISOString(),
       updatedAt: review.updatedAt.toISOString()
     };

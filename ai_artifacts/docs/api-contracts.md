@@ -125,7 +125,7 @@ Deferred auth-adjacent contracts remain in Batch 6/7: user administration, role 
 
 ### Batch 4 — Processing queue and jobs
 
-Phase 5 implements current queue/detail/status and guarded manual transition/retry/cancel foundations. Phase 6 replaces simulated advancement with a real worker and file-scoped retry history.
+Phase 5 implements current queue/detail/status and guarded manual transition/retry/cancel foundations. Phase 6 D6-000 now makes the generated job contract file-scoped with `bookFileId`, `attemptNumber`, `retryOfJobId`, `terminalReason`, and explicit `CANCELLED`/`SUPERSEDED` states. The real worker and retry-history route remain unimplemented.
 
 - `GET /api/admin/processing/jobs?page&filters&sort`
 - `GET /api/admin/processing/jobs/{jobId}`
@@ -136,7 +136,7 @@ Phase 5 implements current queue/detail/status and guarded manual transition/ret
 
 ### Batch 5 — Approval, correction, and notifications
 
-Phase 5 implements current approval queue/detail plus notification API/UI shells. Notification persistence, decision commands, correction/resubmission, and fanout are Phase 6 work.
+Phase 5 implements current approval queue/detail plus notification API/UI shells. Phase 6 D6-000 now exposes file/job-scoped approval rounds (`bookFileId`, `processingJobId`, `round`, `supersededAt`) and preserves superseded reviews. Notification persistence, decision commands, correction/resubmission, and fanout remain Phase 6 work.
 
 - `GET /api/admin/approvals?page&filters&sort`
 - `GET /api/admin/approvals/{documentId}`

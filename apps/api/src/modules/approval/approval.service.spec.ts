@@ -39,12 +39,16 @@ describe('ApprovalService', () => {
         {
           id: 'review-1',
           bookId: 'book-1',
+          bookFileId: 'file-1',
+          processingJobId: 'job-1',
+          round: 1,
           book: { title: 'Clean Architecture' },
           reviewerId: null,
           status: ApprovalReviewStatus.PENDING,
           reason: null,
           requestedChanges: null,
           decidedAt: null,
+          supersededAt: null,
           createdAt: new Date('2026-07-22T00:00:00Z'),
           updatedAt: new Date('2026-07-22T00:00:00Z')
         }
@@ -64,12 +68,16 @@ describe('ApprovalService', () => {
       expect(result[0]).toEqual({
         id: 'review-1',
         bookId: 'book-1',
+        bookFileId: 'file-1',
+        processingJobId: 'job-1',
+        round: 1,
         bookTitle: 'Clean Architecture',
         reviewerId: null,
         status: 'PENDING',
         reason: null,
         requestedChanges: null,
         decidedAt: null,
+        supersededAt: null,
         createdAt: '2026-07-22T00:00:00.000Z',
         updatedAt: '2026-07-22T00:00:00.000Z'
       });
@@ -78,12 +86,16 @@ describe('ApprovalService', () => {
     it('returns only the latest pending review for each document', async () => {
       const baseReview = {
         bookId: 'book-1',
+        bookFileId: 'file-1',
+        processingJobId: 'job-1',
+        round: 1,
         book: { title: 'Clean Architecture' },
         reviewerId: null,
         status: ApprovalReviewStatus.PENDING,
         reason: null,
         requestedChanges: null,
         decidedAt: null,
+        supersededAt: null,
         updatedAt: new Date('2026-07-22T00:00:00Z')
       };
       mockPrisma.approvalReview.findMany.mockResolvedValue([

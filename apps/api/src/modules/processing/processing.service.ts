@@ -4,6 +4,13 @@ import { PrismaService } from '../database/prisma.service';
 import { NotificationsService } from '../notifications/notifications.service';
 import { ProcessingJobResponseDto } from './dto/processing-job.dto';
 
+const TERMINAL_PROCESSING_STATUSES: ProcessingJobStatus[] = [
+  ProcessingJobStatus.SUCCEEDED,
+  ProcessingJobStatus.FAILED,
+  ProcessingJobStatus.CANCELLED,
+  ProcessingJobStatus.SUPERSEDED
+];
+
 @Injectable()
 export class ProcessingService {
   constructor(
@@ -56,7 +63,7 @@ export class ProcessingService {
       throw new NotFoundException(`Processing job with ID ${id} not found`);
     }
 
-    if (job.status === ProcessingJobStatus.SUCCEEDED || job.status === ProcessingJobStatus.FAILED) {
+    if (TERMINAL_PROCESSING_STATUSES.includes(job.status)) {
       throw new UnprocessableEntityException(`Cannot advance processing job that is already ${job.status}`);
     }
 
@@ -86,6 +93,10 @@ export class ProcessingService {
       });
     } else if (job.status === ProcessingJobStatus.RUNNING) {
       await this.prisma.$transaction(async (tx) => {
+        const previousReview = await tx.approvalReview.findFirst({
+          where: { bookId: job.bookId },
+          orderBy: { round: 'desc' }
+        });
         await tx.processingJob.update({
           where: { id },
           data: {
@@ -109,6 +120,9 @@ export class ProcessingService {
         await tx.approvalReview.create({
           data: {
             bookId: job.bookId,
+            bookFileId: job.bookFileId,
+            processingJobId: job.id,
+            round: (previousReview?.round ?? 0) + 1,
             status: 'PENDING'
           }
         });
@@ -180,7 +194,7 @@ export class ProcessingService {
       throw new NotFoundException(`Processing job with ID ${id} not found`);
     }
 
-    if (job.status === ProcessingJobStatus.SUCCEEDED || job.status === ProcessingJobStatus.FAILED) {
+    if (TERMINAL_PROCESSING_STATUSES.includes(job.status)) {
       throw new BadRequestException(`Cannot cancel job that is already ${job.status}`);
     }
 
@@ -188,10 +202,11 @@ export class ProcessingService {
       await tx.processingJob.update({
         where: { id },
         data: {
-          status: ProcessingJobStatus.FAILED,
+          status: ProcessingJobStatus.CANCELLED,
           stage: 'cancelled',
-          errorMessage: 'Cancelled by administrator',
-          cancelledAt: new Date()
+          terminalReason: 'Cancelled by administrator',
+          cancelledAt: new Date(),
+          completedAt: new Date()
         }
       });
       await tx.book.update({
@@ -207,12 +222,16 @@ export class ProcessingService {
     return {
       id: job.id,
       bookId: job.bookId,
+      bookFileId: job.bookFileId,
       bookTitle: job.book?.title ?? null,
       type: job.type,
       status: job.status,
       stage: job.stage ?? null,
       progressPercent: job.progressPercent ?? 0,
+      attemptNumber: job.attemptNumber ?? 1,
       attempts: job.attempts,
+      retryOfJobId: job.retryOfJobId ?? null,
+      terminalReason: job.terminalReason ?? null,
       errorMessage: job.errorMessage,
       createdAt: job.createdAt.toISOString(),
       updatedAt: job.updatedAt.toISOString()

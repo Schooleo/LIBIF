@@ -3,8 +3,8 @@ import { mapBookCounts, mapProcessingCounts, mapUserCounts, ReportingService } f
 
 describe('ReportingService dashboard aggregation', () => {
   it('fills missing book, processing, and user buckets with zero', () => {
-    expect(mapBookCounts([])).toEqual({ draft: 0, pendingProcessing: 0, processing: 0, pendingApproval: 0, published: 0, rejected: 0, total: 0 });
-    expect(mapProcessingCounts([])).toEqual({ queued: 0, running: 0, succeeded: 0, failed: 0 });
+    expect(mapBookCounts([])).toEqual({ draft: 0, pendingProcessing: 0, processing: 0, pendingApproval: 0, correctionRequired: 0, published: 0, rejected: 0, total: 0 });
+    expect(mapProcessingCounts([])).toEqual({ queued: 0, running: 0, succeeded: 0, failed: 0, cancelled: 0, superseded: 0 });
     expect(mapUserCounts([])).toEqual({ admins: 0, librarians: 0, readers: 0, total: 0 });
   });
 

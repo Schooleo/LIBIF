@@ -21,6 +21,7 @@ describe('ProcessingService', () => {
       create: jest.fn()
     },
     approvalReview: {
+      findFirst: jest.fn().mockResolvedValue(null),
       create: jest.fn()
     },
     user: {
@@ -62,12 +63,16 @@ describe('ProcessingService', () => {
         {
           id: 'job-1',
           bookId: 'book-1',
+          bookFileId: 'file-1',
           book: { title: 'Test Book' },
           type: 'PDF_OCR_PIPELINE',
           status: ProcessingJobStatus.QUEUED,
           stage: 'queued',
           progressPercent: 0,
+          attemptNumber: 1,
           attempts: 0,
+          retryOfJobId: null,
+          terminalReason: null,
           errorMessage: null,
           createdAt: new Date('2026-07-21T00:00:00Z'),
           updatedAt: new Date('2026-07-21T00:00:00Z')
@@ -81,12 +86,16 @@ describe('ProcessingService', () => {
       expect(result[0]).toEqual({
         id: 'job-1',
         bookId: 'book-1',
+        bookFileId: 'file-1',
         bookTitle: 'Test Book',
         type: 'PDF_OCR_PIPELINE',
         status: 'QUEUED',
         stage: 'queued',
         progressPercent: 0,
+        attemptNumber: 1,
         attempts: 0,
+        retryOfJobId: null,
+        terminalReason: null,
         errorMessage: null,
         createdAt: '2026-07-21T00:00:00.000Z',
         updatedAt: '2026-07-21T00:00:00.000Z'
@@ -120,6 +129,7 @@ describe('ProcessingService', () => {
       const mockJob = {
         id: 'job-1',
         bookId: 'book-1',
+        bookFileId: 'file-1',
         book: { title: 'Test Book' },
         status: ProcessingJobStatus.QUEUED
       };
@@ -149,6 +159,7 @@ describe('ProcessingService', () => {
       const mockJob = {
         id: 'job-1',
         bookId: 'book-1',
+        bookFileId: 'file-1',
         book: { title: 'Test Book' },
         status: ProcessingJobStatus.RUNNING
       };
@@ -173,7 +184,13 @@ describe('ProcessingService', () => {
         data: { status: 'PENDING_APPROVAL' }
       });
       expect(mockPrisma.approvalReview.create).toHaveBeenCalledWith({
-        data: { bookId: 'book-1', status: 'PENDING' }
+        data: {
+          bookId: 'book-1',
+          bookFileId: 'file-1',
+          processingJobId: 'job-1',
+          round: 1,
+          status: 'PENDING'
+        }
       });
       expect(mockNotifications.createNotification).toHaveBeenCalled();
     });

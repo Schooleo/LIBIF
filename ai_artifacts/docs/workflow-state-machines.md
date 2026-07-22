@@ -34,13 +34,13 @@ This document defines backend-owned workflow truth for later implementation. Nam
 
 ## PDF processing
 
-- **States:** queued, validating, compressing, performing_ocr, indexing, retrying, completed, failed, cancelled when supported.
+- **States:** queued, validating, compressing, performing_ocr, indexing, retrying, completed, failed, cancelled, superseded.
 - **Commands:** enqueue_processing, process_stage, retry_job, cancel_job when supported, get_status.
 - **Events:** ProcessingJobQueued, PdfValidated, PdfCompressed, OcrTextExtracted, SearchIndexed, ProcessingJobCompleted, ProcessingJobFailed, ProcessingJobRetrying.
 - **Transitions:** queued -> validating -> compressing -> performing_ocr -> indexing -> completed; recoverable failure -> retrying -> current stage; unrecoverable or max attempts -> failed.
 - **API responses:** stable ProcessingJob DTO with stage progress, attempts, safe error message, trace id, retry history endpoint.
 - **Permissions:** Librarian/Admin can view and retry; only system workers process stages.
-- **Current implementation note:** Phase 5 persists jobs and guards manual simulated transitions. Phase 6 adds the system worker, durable OCR artifacts, explicit cancellation/supersession semantics, and retry lineage.
+- **Current implementation note:** Phase 6 D6-000 provides exact `BookFile` identity, numbered attempt/self-reference lineage, durable artifact metadata, explicit cancellation/supersession states, and current-work constraints. The Phase 5 manual advance remains a simulation until Member C adds the worker/OCR adapter.
 
 ## Approval and correction
 
@@ -50,7 +50,7 @@ This document defines backend-owned workflow truth for later implementation. Nam
 - **Transitions:** pending_review -> approved or rejected or correction_requested; correction_requested -> correction_in_progress -> resubmitted -> pending_review; approved -> published when publish command is accepted.
 - **API responses:** document review DTO, decision result, audit entry, safe field/reason errors.
 - **Permissions:** Approver/Admin for decisions; Librarian can correct/resubmit own assigned items depending on policy.
-- **Current implementation note:** Phase 5 exposes only the current pending approval queue/detail foundation. Phase 6 implements decision, correction, resubmission, audit, and notification transitions.
+- **Current implementation note:** Phase 6 D6-000 makes review rounds file/job-scoped and preserves superseded pending rounds. Decision, correction, resubmission, audit commands, and notifications remain unimplemented.
 
 ## Protected reader access
 

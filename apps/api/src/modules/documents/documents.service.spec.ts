@@ -27,10 +27,11 @@ describe('DocumentsService', () => {
       },
       processingJob: {
         create: jest.fn(),
+        findFirst: jest.fn().mockResolvedValue(null),
         updateMany: jest.fn()
       },
       approvalReview: {
-        deleteMany: jest.fn()
+        updateMany: jest.fn()
       },
       bookAuditEvent: {
         create: jest.fn()
@@ -114,12 +115,13 @@ describe('DocumentsService', () => {
 
     await service.replaceFile('doc-1', file, 'staff@libif.local');
 
-    expect(prisma.approvalReview.deleteMany).toHaveBeenCalledWith({
-      where: { bookId: 'doc-1', status: 'PENDING' }
+    expect(prisma.approvalReview.updateMany).toHaveBeenCalledWith({
+      where: { bookId: 'doc-1', status: 'PENDING' },
+      data: expect.objectContaining({ status: 'SUPERSEDED' })
     });
     expect(prisma.processingJob.updateMany).toHaveBeenCalledWith(expect.objectContaining({
       where: { bookId: 'doc-1', status: { in: ['QUEUED', 'RUNNING'] } },
-      data: expect.objectContaining({ status: 'FAILED', stage: 'superseded' })
+      data: expect.objectContaining({ status: 'SUPERSEDED', stage: 'superseded' })
     }));
     expect(queue.enqueueBookUploaded).toHaveBeenCalledWith(expect.objectContaining({
       bookId: 'doc-1',
@@ -159,10 +161,11 @@ describe('DocumentsService', () => {
 
     expect(prisma.processingJob.updateMany).toHaveBeenCalledWith(expect.objectContaining({
       where: { bookId: 'doc-1', status: { in: ['QUEUED', 'RUNNING'] } },
-      data: expect.objectContaining({ status: 'FAILED', stage: 'superseded' })
+      data: expect.objectContaining({ status: 'SUPERSEDED', stage: 'superseded' })
     }));
-    expect(prisma.approvalReview.deleteMany).toHaveBeenCalledWith({
-      where: { bookId: 'doc-1', status: 'PENDING' }
+    expect(prisma.approvalReview.updateMany).toHaveBeenCalledWith({
+      where: { bookId: 'doc-1', status: 'PENDING' },
+      data: expect.objectContaining({ status: 'SUPERSEDED' })
     });
     expect(queue.enqueueBookUploaded).toHaveBeenCalledWith(expect.objectContaining({
       bookId: 'doc-1',

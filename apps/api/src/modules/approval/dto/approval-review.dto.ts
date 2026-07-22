@@ -8,6 +8,15 @@ export class ApprovalReviewResponseDto {
   @ApiProperty()
   bookId!: string;
 
+  @ApiProperty()
+  bookFileId!: string;
+
+  @ApiProperty()
+  processingJobId!: string;
+
+  @ApiProperty()
+  round!: number;
+
   @ApiPropertyOptional({ type: String, nullable: true })
   bookTitle?: string | null;
 
@@ -25,6 +34,9 @@ export class ApprovalReviewResponseDto {
 
   @ApiPropertyOptional({ format: 'date-time', nullable: true })
   decidedAt?: string | null;
+
+  @ApiPropertyOptional({ format: 'date-time', nullable: true })
+  supersededAt?: string | null;
 
   @ApiProperty({ format: 'date-time' })
   createdAt!: string;

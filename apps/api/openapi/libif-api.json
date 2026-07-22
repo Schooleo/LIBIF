@@ -557,7 +557,8 @@
                 "PENDING",
                 "APPROVED",
                 "REJECTED",
-                "CORRECTION_REQUESTED"
+                "CORRECTION_REQUESTED",
+                "SUPERSEDED"
               ],
               "type": "string"
             }
@@ -2299,6 +2300,9 @@
           "bookId": {
             "type": "string"
           },
+          "bookFileId": {
+            "type": "string"
+          },
           "bookTitle": {
             "type": "string",
             "nullable": true
@@ -2312,7 +2316,9 @@
               "QUEUED",
               "RUNNING",
               "SUCCEEDED",
-              "FAILED"
+              "FAILED",
+              "CANCELLED",
+              "SUPERSEDED"
             ]
           },
           "stage": {
@@ -2322,8 +2328,19 @@
           "progressPercent": {
             "type": "number"
           },
+          "attemptNumber": {
+            "type": "number"
+          },
           "attempts": {
             "type": "number"
+          },
+          "retryOfJobId": {
+            "type": "string",
+            "nullable": true
+          },
+          "terminalReason": {
+            "type": "string",
+            "nullable": true
           },
           "errorMessage": {
             "type": "string",
@@ -2341,8 +2358,10 @@
         "required": [
           "id",
           "bookId",
+          "bookFileId",
           "type",
           "status",
+          "attemptNumber",
           "attempts",
           "createdAt",
           "updatedAt"
@@ -2397,6 +2416,15 @@
           "bookId": {
             "type": "string"
           },
+          "bookFileId": {
+            "type": "string"
+          },
+          "processingJobId": {
+            "type": "string"
+          },
+          "round": {
+            "type": "number"
+          },
           "bookTitle": {
             "type": "string",
             "nullable": true
@@ -2411,7 +2439,8 @@
               "PENDING",
               "APPROVED",
               "REJECTED",
-              "CORRECTION_REQUESTED"
+              "CORRECTION_REQUESTED",
+              "SUPERSEDED"
             ]
           },
           "reason": {
@@ -2423,6 +2452,11 @@
             "nullable": true
           },
           "decidedAt": {
+            "type": "object",
+            "format": "date-time",
+            "nullable": true
+          },
+          "supersededAt": {
             "type": "object",
             "format": "date-time",
             "nullable": true
@@ -2439,6 +2473,9 @@
         "required": [
           "id",
           "bookId",
+          "bookFileId",
+          "processingJobId",
+          "round",
           "status",
           "createdAt",
           "updatedAt"
@@ -2462,6 +2499,9 @@
           "pendingApproval": {
             "type": "number"
           },
+          "correctionRequired": {
+            "type": "number"
+          },
           "published": {
             "type": "number"
           },
@@ -2475,6 +2515,7 @@
           "pendingProcessing",
           "processing",
           "pendingApproval",
+          "correctionRequired",
           "published",
           "rejected"
         ]
@@ -2493,13 +2534,21 @@
           },
           "failed": {
             "type": "number"
+          },
+          "cancelled": {
+            "type": "number"
+          },
+          "superseded": {
+            "type": "number"
           }
         },
         "required": [
           "queued",
           "running",
           "succeeded",
-          "failed"
+          "failed",
+          "cancelled",
+          "superseded"
         ]
       },
       "TaxonomyCountsDto": {
@@ -2556,6 +2605,7 @@
               "PENDING_PROCESSING",
               "PROCESSING",
               "PENDING_APPROVAL",
+              "CORRECTION_REQUIRED",
               "PUBLISHED",
               "REJECTED"
             ]
@@ -2623,6 +2673,7 @@
               "PENDING_PROCESSING",
               "PROCESSING",
               "PENDING_APPROVAL",
+              "CORRECTION_REQUIRED",
               "PUBLISHED",
               "REJECTED"
             ]
@@ -2666,7 +2717,9 @@
               "QUEUED",
               "RUNNING",
               "SUCCEEDED",
-              "FAILED"
+              "FAILED",
+              "CANCELLED",
+              "SUPERSEDED"
             ]
           }
         },
@@ -2791,6 +2844,7 @@
               "PENDING_PROCESSING",
               "PROCESSING",
               "PENDING_APPROVAL",
+              "CORRECTION_REQUIRED",
               "PUBLISHED",
               "REJECTED"
             ]
@@ -2859,6 +2913,7 @@
               "PENDING_PROCESSING",
               "PROCESSING",
               "PENDING_APPROVAL",
+              "CORRECTION_REQUIRED",
               "PUBLISHED",
               "REJECTED"
             ]
@@ -2974,7 +3029,9 @@
               "QUEUED",
               "RUNNING",
               "SUCCEEDED",
-              "FAILED"
+              "FAILED",
+              "CANCELLED",
+              "SUPERSEDED"
             ]
           },
           "stage": {
@@ -3082,6 +3139,7 @@
               "PENDING_PROCESSING",
               "PROCESSING",
               "PENDING_APPROVAL",
+              "CORRECTION_REQUIRED",
               "PUBLISHED",
               "REJECTED"
             ]
@@ -3264,6 +3322,7 @@
               "PENDING_PROCESSING",
               "PROCESSING",
               "PENDING_APPROVAL",
+              "CORRECTION_REQUIRED",
               "PUBLISHED",
               "REJECTED"
             ]
@@ -3306,7 +3365,9 @@
               "QUEUED",
               "RUNNING",
               "SUCCEEDED",
-              "FAILED"
+              "FAILED",
+              "CANCELLED",
+              "SUPERSEDED"
             ]
           }
         },

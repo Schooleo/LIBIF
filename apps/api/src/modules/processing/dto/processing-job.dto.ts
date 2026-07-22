@@ -8,6 +8,9 @@ export class ProcessingJobResponseDto {
   @ApiProperty()
   bookId!: string;
 
+  @ApiProperty()
+  bookFileId!: string;
+
   @ApiPropertyOptional({ type: String, nullable: true })
   bookTitle?: string | null;
 
@@ -24,7 +27,16 @@ export class ProcessingJobResponseDto {
   progressPercent?: number;
 
   @ApiProperty()
+  attemptNumber!: number;
+
+  @ApiProperty()
   attempts!: number;
+
+  @ApiPropertyOptional({ type: String, nullable: true })
+  retryOfJobId?: string | null;
+
+  @ApiPropertyOptional({ type: String, nullable: true })
+  terminalReason?: string | null;
 
   @ApiPropertyOptional({ type: String, nullable: true })
   errorMessage?: string | null;

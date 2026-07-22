@@ -419,7 +419,7 @@ The worker gate must exercise Redis queue delivery, MinIO input/output, PostgreS
 | OCR consumes excessive CPU/memory/time | API degradation or stuck workers | Dedicated worker process, concurrency limits, per-job timeout, page/file caps, safe failure mapping |
 | Notification persistence remains falsely documented | Lost notices after restart | Make NTF-001 an early merge gate and add restart/ownership tests |
 | Approval and correction commands drift across modules | Impossible lifecycle states | One approval transition policy; exported events/services; state table tests; no React business rules |
-| Schema backfill cannot identify exact historical file | Incorrect lineage | Deterministic best-known backfill plus explicit nullable/legacy marker; never guess silently |
+| Schema backfill cannot identify exact historical file | Incorrect lineage | Deterministic best-known backfill with a fail-loud migration guard when a job/review cannot be mapped; never attach it silently |
 | Manual `advance` remains usable in production | False OCR success | Remove it or guard it behind explicit non-production configuration; e2e asserts production denial |
 | Full-text indexing expands Phase 6 uncontrollably | Phase stalls | Persist OCR artifacts and a bounded indexing adapter; defer advanced search/ranking to a separately planned slice |
 
@@ -437,3 +437,15 @@ At Phase 6 completion:
 8. Generated contracts and canonical artifacts accurately describe what is implemented and what remains for Phase 7.
 
 Phase 6 is not complete if OCR is simulated, notifications remain process-local, stale queue payloads can mutate newer file versions, approval decisions are UI-only, or the correction loop requires manual database edits.
+
+## D6-000 Implementation Record — 2026-07-22
+
+D6-000 is complete on the Phase 5 Member D integration PR and is the mandatory base for the remaining Phase 6 lanes.
+
+- Migration `20260722062955_phase6_processing_foundation` deterministically normalizes file versions, maps legacy jobs to their best-known source file, numbers attempts, links retry/supersession lineage, maps reviews to successful jobs/files, and fails loudly when safe mapping is impossible.
+- `ProcessingJobStatus` now distinguishes `CANCELLED` and `SUPERSEDED`; `ApprovalReviewStatus` preserves superseded rounds; `BookStatus` includes `CORRECTION_REQUIRED` for the correction loop.
+- `ProcessingArtifact` persists derived-object identity, checksum, language, page count, extraction method, and exact job/file ownership. This is storage metadata only; no OCR worker is claimed.
+- Partial unique indexes enforce one active file, one current queued/running job, and one pending approval per document. Composite foreign keys prevent jobs, reviews, or artifacts from crossing file/document lineage.
+- Range/self-reference constraints protect file versions, progress, attempt/round numbers, artifact sizes/pages, and direct retry/supersession self-links.
+- Intake, replacement, requeue, cancellation, manual transition, dashboard counts, DTOs, OpenAPI, and frontend generated types were updated to consume the new foundation without implementing later Member A/B/C commands.
+- Verification includes an isolated migration test that creates a Phase 5 schema, seeds stale/duplicate lifecycle rows, applies D6-000, verifies the backfill, and proves uniqueness, foreign-key, and range constraints.
