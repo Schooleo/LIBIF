@@ -10,6 +10,13 @@ export class AccessDecisionDto {
   @ApiProperty({ example: 'READER' })
   userRole!: string;
 
+  @ApiPropertyOptional({
+    example: 'PUBLISHED',
+    description: 'Current lifecycle status of the document (reader-safe subset)',
+    enum: ['DRAFT', 'PENDING_PROCESSING', 'PROCESSING', 'PENDING_APPROVAL', 'PUBLISHED', 'REJECTED'],
+  })
+  documentStatus?: string;
+
   @ApiPropertyOptional({ example: 'Document is published and available.' })
   reason?: string;
 }

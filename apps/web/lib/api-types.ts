@@ -39,5 +39,9 @@ export type CreateBookIntakeDto = {
 export type ReaderLibraryItemDto = components['schemas']['ReaderLibraryItemDto'];
 export type ReaderLibraryResponseDto = components['schemas']['ReaderLibraryResponseDto'];
 export type ReadingProgressStateDto = components['schemas']['ReadingProgressStateDto'];
-export type AccessDecisionDto = components['schemas']['AccessDecisionDto'];
+export type AccessDecisionDto = components['schemas']['AccessDecisionDto'] & {
+  /** Reader-safe lifecycle status of the document. Populated by the access service. */
+  documentStatus?: string;
+};
+
 export type ProtectedDocumentUrlDto = components['schemas']['ProtectedDocumentUrlDto'];

@@ -7,17 +7,21 @@ describe('AccessService', () => {
   let service: AccessService;
   let prisma: { book: { findUnique: jest.Mock } };
 
+  const makeBook = (id: string, status: string) => ({ id, title: `Book ${id}`, status });
+
   beforeEach(async () => {
     prisma = {
       book: {
         findUnique: jest.fn().mockImplementation(({ where: { id } }) => {
-          if (id === 'pub-1') {
-            return Promise.resolve({ id: 'pub-1', title: 'Published Book', status: 'PUBLISHED' });
-          }
-          if (id === 'draft-1') {
-            return Promise.resolve({ id: 'draft-1', title: 'Draft Book', status: 'DRAFT' });
-          }
-          return Promise.resolve(null);
+          const db: Record<string, { id: string; title: string; status: string }> = {
+            'pub-1': makeBook('pub-1', 'PUBLISHED'),
+            'draft-1': makeBook('draft-1', 'DRAFT'),
+            'processing-1': makeBook('processing-1', 'PROCESSING'),
+            'pending-approval-1': makeBook('pending-approval-1', 'PENDING_APPROVAL'),
+            'rejected-1': makeBook('rejected-1', 'REJECTED'),
+            'pending-processing-1': makeBook('pending-processing-1', 'PENDING_PROCESSING'),
+          };
+          return Promise.resolve(db[id] ?? null);
         }),
       },
     };
@@ -32,23 +36,49 @@ describe('AccessService', () => {
     service = module.get<AccessService>(AccessService);
   });
 
-  it('should allow access for published document to reader', async () => {
+  it('should allow access for published document to reader and include documentStatus', async () => {
     const decision = await service.getAccessDecision('user-1', 'READER', 'pub-1');
     expect(decision.allowed).toBe(true);
     expect(decision.documentId).toBe('pub-1');
+    expect(decision.documentStatus).toBe('PUBLISHED');
+    expect(decision.reason).toContain('published');
   });
 
-  it('should deny access for draft document to reader', async () => {
+  it('should deny access for DRAFT document to reader with informative reason', async () => {
     const decision = await service.getAccessDecision('user-1', 'READER', 'draft-1');
     expect(decision.allowed).toBe(false);
+    expect(decision.documentStatus).toBe('DRAFT');
+    expect(decision.reason).toContain('not yet available');
   });
 
-  it('should allow access for draft document to admin or librarian', async () => {
+  it('should deny access for PROCESSING document to reader with informative reason', async () => {
+    const decision = await service.getAccessDecision('user-1', 'READER', 'processing-1');
+    expect(decision.allowed).toBe(false);
+    expect(decision.documentStatus).toBe('PROCESSING');
+    expect(decision.reason).toContain('being processed');
+  });
+
+  it('should deny access for PENDING_APPROVAL document to reader', async () => {
+    const decision = await service.getAccessDecision('user-1', 'READER', 'pending-approval-1');
+    expect(decision.allowed).toBe(false);
+    expect(decision.documentStatus).toBe('PENDING_APPROVAL');
+    expect(decision.reason).toContain('under review');
+  });
+
+  it('should deny access for REJECTED document to reader', async () => {
+    const decision = await service.getAccessDecision('user-1', 'READER', 'rejected-1');
+    expect(decision.allowed).toBe(false);
+    expect(decision.documentStatus).toBe('REJECTED');
+  });
+
+  it('should allow access for draft/processing documents to admin or librarian', async () => {
     const adminDecision = await service.getAccessDecision('user-admin', 'ADMIN', 'draft-1');
     expect(adminDecision.allowed).toBe(true);
+    expect(adminDecision.documentStatus).toBe('DRAFT');
 
-    const librarianDecision = await service.getAccessDecision('user-lib', 'LIBRARIAN', 'draft-1');
+    const librarianDecision = await service.getAccessDecision('user-lib', 'LIBRARIAN', 'processing-1');
     expect(librarianDecision.allowed).toBe(true);
+    expect(librarianDecision.documentStatus).toBe('PROCESSING');
   });
 
   it('should throw NotFoundException for invalid document ID', async () => {
