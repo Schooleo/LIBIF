@@ -18,6 +18,7 @@ describe('AccessService', () => {
             'draft-1': makeBook('draft-1', 'DRAFT'),
             'processing-1': makeBook('processing-1', 'PROCESSING'),
             'pending-approval-1': makeBook('pending-approval-1', 'PENDING_APPROVAL'),
+            'correction-1': makeBook('correction-1', 'CORRECTION_REQUIRED'),
             'rejected-1': makeBook('rejected-1', 'REJECTED'),
             'pending-processing-1': makeBook('pending-processing-1', 'PENDING_PROCESSING'),
           };
@@ -69,6 +70,13 @@ describe('AccessService', () => {
     const decision = await service.getAccessDecision('user-1', 'READER', 'rejected-1');
     expect(decision.allowed).toBe(false);
     expect(decision.documentStatus).toBe('REJECTED');
+  });
+
+  it('should deny access for CORRECTION_REQUIRED document to reader with informative reason', async () => {
+    const decision = await service.getAccessDecision('user-1', 'READER', 'correction-1');
+    expect(decision.allowed).toBe(false);
+    expect(decision.documentStatus).toBe('CORRECTION_REQUIRED');
+    expect(decision.reason).toContain('under revision');
   });
 
   it('should allow access for draft/processing documents to admin or librarian', async () => {

@@ -173,7 +173,7 @@ describe('ReaderService (Prisma-backed)', () => {
     expect(history).toEqual([]);
   });
 
-  it('should return history mapped from Prisma readingProgress records', async () => {
+  it('should return history mapped from Prisma readingProgress records filtering by PUBLISHED status', async () => {
     prisma.readingProgress.findMany.mockResolvedValueOnce([
       {
         currentPage: 15,
@@ -197,5 +197,45 @@ describe('ReaderService (Prisma-backed)', () => {
     expect(history.length).toBe(1);
     expect(history[0].id).toBe('book-1');
     expect(history[0].progress?.currentPage).toBe(15);
+    expect(prisma.readingProgress.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({
+          userId: 'user-1',
+          book: { status: 'PUBLISHED' },
+        }),
+      }),
+    );
+  });
+
+  // ── Bookmarks ─────────────────────────────────────────────────────────────
+
+  it('should return bookmarks mapped from Prisma filtering by PUBLISHED status', async () => {
+    prisma.bookmark.findMany.mockResolvedValueOnce([
+      {
+        createdAt: new Date('2026-07-01'),
+        book: {
+          id: 'book-2',
+          title: 'Bookmarked Book',
+          subtitle: null,
+          status: 'PUBLISHED',
+          publisher: null,
+          publishedYear: null,
+          updatedAt: new Date(),
+          authors: [],
+          readingProgress: [],
+        },
+      },
+    ]);
+    const bookmarks = await service.getBookmarks('user-1');
+    expect(bookmarks.length).toBe(1);
+    expect(bookmarks[0].id).toBe('book-2');
+    expect(prisma.bookmark.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({
+          userId: 'user-1',
+          book: { status: 'PUBLISHED' },
+        }),
+      }),
+    );
   });
 });

@@ -25,6 +25,11 @@ const STATUS_FALLBACK: Record<string, { heading: string; body: string; icon: str
     body: 'This document is currently under librarian review and is not yet publicly available. Check back soon.',
     icon: 'pending_actions',
   },
+  CORRECTION_REQUIRED: {
+    heading: 'Under Revision',
+    body: 'This document is currently undergoing librarian correction and is not yet publicly available.',
+    icon: 'build',
+  },
   DRAFT: {
     heading: 'Not Yet Available',
     body: 'This document has not been published yet. Please return later.',

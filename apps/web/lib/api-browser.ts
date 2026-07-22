@@ -165,3 +165,22 @@ export async function updateReadingProgress(documentId: string, page: number, to
   if (error) throw new Error(apiErrorMessage(error, 'Update progress failed'));
   return data;
 }
+
+export async function fetchMyNotifications(): Promise<any[]> {
+  const { data, error } = await client.GET('/api/notifications');
+  if (error) throw new Error(apiErrorMessage(error, 'Failed to fetch notifications'));
+  return data as any[];
+}
+
+export async function markNotificationAsRead(id: string): Promise<any> {
+  const { data, error } = await client.PATCH('/api/notifications/{id}/read', {
+    params: { path: { id } },
+  });
+  if (error) throw new Error(apiErrorMessage(error, 'Failed to mark notification as read'));
+  return data;
+}
+
+export async function markAllNotificationsAsRead(): Promise<void> {
+  const { error } = await client.PATCH('/api/notifications/read-all');
+  if (error) throw new Error(apiErrorMessage(error, 'Failed to mark all notifications as read'));
+}
