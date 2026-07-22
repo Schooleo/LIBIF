@@ -1,6 +1,6 @@
 # Component Inventory
 
-Last updated: 2026-07-20
+Last updated: 2026-07-22
 
 This file combines the original component contract inventory with the current implementation locations. Treat the tables below as the component source of truth for future phases.
 
@@ -31,7 +31,8 @@ This file combines the original component contract inventory with the current im
 | ApprovalDecisionPanel | Review decision UI | document, allowed actions, onDecision | approve, publish, reject, correction | explicit buttons and reason field labels | stacks actions | `apps/web/components/domain/approval` | approval screens |
 | CorrectionRequestPanel | Correction details/editing | correction DTO, editable | read, edit, resubmit | labelled reason/details | responsive text wrapping | `apps/web/components/domain/approval` | correction screens |
 | CategoryTree | Hierarchical taxonomy | nodes, selected, onSelect | picker, manager, reassignment | tree keyboard support | collapses to drawer/picker | `apps/web/components/domain/taxonomy` | categories, metadata form |
-| TagSelector | Tag selection/merge input | selected, options, create/merge hooks | multi-select, merge | combobox/listbox semantics | wraps chips | `apps/web/components/domain/taxonomy` | tags, metadata |
+| CategorySelector | Controlled document category selection | `categories`, `value`, `onChange`, labels/errors/disabled | optional category | visible label, described-by/error semantics | full-width select on narrow layouts | `apps/web/components/domain/taxonomy` | document metadata forms |
+| TagSelector | Controlled document tag selection | `tags`, `value`, `onChange`, labels/disabled | checkbox multi-select, empty | labelled fieldset, explicit empty status | wraps options through shared cluster layout | `apps/web/components/domain/taxonomy` | document metadata forms |
 | NotificationItem | Notification summary/action | notification DTO, action slot | list, detail, action-required | role/status text, button labels | no horizontal clipping | `apps/web/components/domain/notifications` | notifications |
 | ReaderBookCard | Reader-facing book card | book, progress, actions | home, bookmark, history | title/author/access labels | responsive card grid | `apps/web/components/domain/reader` | reader home, bookmarks |
 | ProtectedPdfViewer | Protected reader UI | accessGrant, book, progress callbacks | compact, full | keyboard controls, no security claims from UI deterrents | controls adapt to viewport | `apps/web/components/domain/reader` | secure reader |
@@ -79,7 +80,7 @@ Current proof UI migrated to shared primitives:
 
 Deferred from Phase 1 and Phase 2 by design:
 
-- Production sign-in/register/password reset UI, protected PDF viewer, approval/correction panels, category tree, tag selector, notification item, reader book card, and job polling behavior remain batch-specific/domain-deepening work unless required by the next batch.
+- Production sign-in/register/password reset UI, protected PDF viewer, approval/correction panels, category tree management, notification item, reader book card, and job polling behavior remain batch-specific/domain-deepening work unless required by the next batch.
 
 Automated accessibility and shell coverage:
 
@@ -109,3 +110,9 @@ Automated accessibility and shell coverage:
 | Auth tests | `apps/web/tests/auth-forms.spec.tsx` | Covers registration validation, sign-in error state, uniform reset-request success, and reset-token API error display. |
 
 Deferred auth UI/component work remains in later batches: user administration, role changes, account deactivation, security settings, OAuth/MFA/passkeys, and production email-provider configuration screens.
+
+---
+
+## Phase 5 taxonomy selector update — 2026-07-22
+
+`CategorySelector` and `TagSelector` now provide controlled, persistence-agnostic taxonomy inputs under `apps/web/components/domain/taxonomy/`. Member B document forms can consume these components without duplicating category/tag interaction logic or writing taxonomy data directly. The generated web adapters remain reserved for D5-004 so the phase performs OpenAPI/client generation only once.

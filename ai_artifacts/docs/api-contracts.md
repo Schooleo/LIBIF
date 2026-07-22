@@ -1,6 +1,6 @@
 # API Contracts
 
-Last updated: 2026-07-21
+Last updated: 2026-07-22
 
 OpenAPI is now generated for implemented endpoints at `apps/api/openapi/libif-api.json`, with frontend path types generated to `apps/web/lib/generated/api-types.ts`. This document records implemented endpoints plus target contract shapes needed by later Stitch screen batches.
 
@@ -17,6 +17,8 @@ OpenAPI is now generated for implemented endpoints at `apps/api/openapi/libif-ap
 | `POST /api/admin/books/intake` | `BooksModule` | `apps/web/components/book-intake/BookIntakeForm.tsx` | Multipart `file` + JSON `metadata`; returns book/file/processingJob; guarded for Admin/Librarian. |
 | `GET /api/admin/books` | `BooksModule` | `apps/web/app/(admin)/admin/books/page.tsx` | Admin list without production pagination/filter/sort yet; guarded for Admin/Librarian. |
 | `GET /api/categories` | `CatalogModule` | `apps/web/app/(admin)/admin/books/new/page.tsx` | Category list. |
+| `GET /api/taxonomy/categories` | `TaxonomyModule` | Phase 5 document metadata selectors | Stable staff-only category options (`id`, `name`, `slug`, `parentId`); guarded for Admin/Librarian. OpenAPI/client regeneration is reserved for D5-004. |
+| `GET /api/taxonomy/tags` | `TaxonomyModule` | Phase 5 document metadata selectors | Stable staff-only tag options (`id`, `name`, `slug`); guarded for Admin/Librarian. OpenAPI/client regeneration is reserved for D5-004. |
 | `GET /api/catalog/books` | `CatalogModule` | `apps/web/app/(reader)/catalogue/page.tsx` | Public published books only. |
 | `GET /api/isbn/:isbn` | `IsbnModule` | `apps/web/components/book-intake/MetadataFields.tsx` | ISBN lookup proxy. |
 | `GET /api/admin/dashboard/librarian` | `ReportingModule` | `apps/web/app/(admin)/admin/dashboard/page.tsx` | Phase 4 Member D dashboard summary; guarded for Admin/Librarian; returns no-migration counts for books, processing jobs, taxonomy, users, and recent books. |
@@ -86,6 +88,8 @@ Deferred auth-adjacent contracts remain in Batch 6/7: user administration, role 
 
 ### Batch 3 — Documents, upload, ISBN, and metadata
 
+- `GET /api/taxonomy/categories` — Phase 5 D5-001 implemented staff category options for metadata forms.
+- `GET /api/taxonomy/tags` — Phase 5 D5-001 implemented staff tag options for metadata forms.
 - `GET /api/admin/documents?page&filters&sort`
 - `GET /api/admin/documents/{documentId}`
 - `GET /api/admin/documents/{documentId}/audit`
@@ -160,4 +164,4 @@ Deferred auth-adjacent contracts remain in Batch 6/7: user administration, role 
 
 ## OpenAPI implementation status
 
-Phase 2 added NestJS Swagger setup, stable operation IDs, generated JSON at `apps/api/openapi/libif-api.json`, a dependency-free frontend path-map generator at `apps/web/scripts/generate-api-types.mjs`, OpenAPI-owned response aliases at `apps/web/lib/api-types.ts`, and split `openapi-fetch` transport adapters in `apps/web/lib/api-server.ts` and `apps/web/lib/api-browser.ts`. Phase 3 added generated auth request/response DTOs and cookie-aware frontend calls. Phase 4 Member D added the generated `GET /api/admin/dashboard/librarian` reporting summary contract and web server adapter. Later phases must keep OpenAPI decorators and generated path types aligned whenever endpoints change.
+Phase 2 added NestJS Swagger setup, stable operation IDs, generated JSON at `apps/api/openapi/libif-api.json`, a dependency-free frontend path-map generator at `apps/web/scripts/generate-api-types.mjs`, OpenAPI-owned response aliases at `apps/web/lib/api-types.ts`, and split `openapi-fetch` transport adapters in `apps/web/lib/api-server.ts` and `apps/web/lib/api-browser.ts`. Phase 3 added generated auth request/response DTOs and cookie-aware frontend calls. Phase 4 Member D added the generated `GET /api/admin/dashboard/librarian` reporting summary contract and web server adapter. Phase 5 D5-001 added decorated taxonomy read endpoints; their generated artifacts intentionally wait for the single D5-004 integration regeneration. Later phases must keep OpenAPI decorators and generated path types aligned whenever endpoints change.

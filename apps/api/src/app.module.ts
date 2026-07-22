@@ -12,6 +12,7 @@ import { ProcessingModule } from './modules/processing/processing.module';
 import { ReaderModule } from './modules/reader/reader.module';
 import { ReportingModule } from './modules/reporting/reporting.module';
 import { StorageModule } from './modules/storage/storage.module';
+import { TaxonomyModule } from './modules/taxonomy/taxonomy.module';
 
 @Module({
   imports: [
@@ -30,7 +31,8 @@ import { StorageModule } from './modules/storage/storage.module';
     IsbnModule,
     HealthModule,
     ReaderModule,
-    AccessModule
+    AccessModule,
+    TaxonomyModule
   ]
 })
 export class AppModule {}

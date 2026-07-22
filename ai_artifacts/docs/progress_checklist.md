@@ -1,6 +1,6 @@
 # LIBIF Progress Checklist
 
-Last updated: 2026-07-21
+Last updated: 2026-07-22
 
 This checklist is the concise current-state tracker for future agents and team members. Detailed design, screen, workflow, and contract notes remain in the other `ai_artifacts/docs/` files.
 
@@ -115,6 +115,16 @@ Phase 5 must start from the schema-foundation migration and should not reintrodu
 - [x] Added `BookFile.version`, `BookFile.status`, `BookFile.updatedAt`, and processing progress/timestamp fields.
 - [x] Updated `Agent_Prompt.md` to clarify that schema changes are normally locked, but approved missing persistence must go through the migration owner instead of being bypassed.
 - [x] Wrote the comprehensive Phase 5 plan with member sections, lanes, merge order, agent rules, and skeleton references.
+
+## Phase 5 Member D progress
+
+- [x] D5-000 schema foundation completed before feature-lane work.
+- [x] D5-001 taxonomy read APIs implemented at `GET /api/taxonomy/categories` and `GET /api/taxonomy/tags` with stable DTO projections and Admin/Librarian role guards.
+- [x] D5-001 targeted API unit tests, API build/lint, and taxonomy e2e authorization coverage pass.
+- [x] D5-002 controlled `CategorySelector` and `TagSelector` components implemented with interaction and automated accessibility coverage.
+- [ ] D5-002 typed web adapters remain blocked by design until the single D5-004 OpenAPI/client regeneration.
+- [x] D5-003 starter management surfaces intentionally deferred to Phase 7; Phase 5 supplies read APIs/selectors while risky delete/reassign/merge workflows stay out of this batch.
+- [ ] D5-004 single phase-end OpenAPI/client regeneration, cross-lane integration, full verification, and closure report.
 
 ### Phase 4 Member D verification
 
