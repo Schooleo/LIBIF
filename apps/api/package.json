@@ -8,6 +8,8 @@
     "prebuild": "npm --prefix ../../packages/shared run build && npm run prisma:generate",
     "build": "nest build",
     "start": "node dist/src/main.js",
+    "start:worker": "node dist/src/worker.main.js",
+    "dev:worker": "nest start --config nest-cli.json --watch --entryFile worker.main",
     "openapi:generate": "npm run build && node dist/src/openapi.generate.js",
     "lint": "eslint \"src/**/*.ts\" \"test/**/*.ts\" \"prisma/**/*.ts\" \"prisma.config.ts\"",
     "pretest": "npm --prefix ../../packages/shared run build && npm run prisma:generate",

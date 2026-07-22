@@ -1,6 +1,7 @@
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaService } from '../database/prisma.service';
+import { StorageService } from '../storage/storage.service';
 import { AccessService } from './access.service';
 
 describe('AccessService', () => {
@@ -27,10 +28,13 @@ describe('AccessService', () => {
       },
     };
 
+    const mockStorage = { getObjectBuffer: jest.fn() };
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AccessService,
         { provide: PrismaService, useValue: prisma },
+        { provide: StorageService, useValue: mockStorage },
       ],
     }).compile();
 

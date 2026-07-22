@@ -1,5 +1,6 @@
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../database/prisma.service';
+import { StorageService } from '../storage/storage.service';
 import { AccessDecisionDto } from './dto/access-decision.dto';
 import { ProtectedDocumentUrlDto } from './dto/protected-document-url.dto';
 
@@ -15,7 +16,10 @@ const READER_DENIAL_REASONS: Record<string, string> = {
 
 @Injectable()
 export class AccessService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly storage: StorageService
+  ) {}
 
   async getAccessDecision(userId: string, userRole: string, documentId: string): Promise<AccessDecisionDto> {
     const book = await this.prisma.book.findUnique({
@@ -84,5 +88,35 @@ export class AccessService {
       expiresAt,
       url,
     };
+  }
+
+  async getDocumentFile(documentId: string, token: string) {
+    if (!token || (!token.startsWith(`view_${documentId}`) && !token.startsWith(`download_${documentId}`))) {
+      throw new ForbiddenException('Invalid or expired view token');
+    }
+
+    const book = await this.prisma.book.findUnique({
+      where: { id: documentId },
+      include: {
+        files: {
+          orderBy: { version: 'desc' }
+        }
+      }
+    });
+
+    if (!book) {
+      throw new NotFoundException(`Document with ID ${documentId} not found`);
+    }
+
+    const file = book.files.find((f) => f.status === 'ACTIVE') || book.files[0];
+    if (!file) {
+      throw new NotFoundException(`Document ${documentId} has no associated file`);
+    }
+
+    return file;
+  }
+
+  async getFileBuffer(bucket: string, objectKey: string): Promise<Buffer> {
+    return this.storage.getObjectBuffer(bucket, objectKey);
   }
 }
