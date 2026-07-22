@@ -1,6 +1,7 @@
 'use client';
 
-import type { CategoryDto, CreateBookIntakeDto, CreateBookIntakeResponse } from '../../lib/api-types';
+import type { CategoryDto, TagDto } from '@libif/shared';
+import type { CreateBookIntakeDto, CreateBookIntakeResponse } from '../../lib/api-types';
 import { useMemo, useState } from 'react';
 import { lookupIsbn, uploadBookIntake } from '../../lib/api-browser';
 import { Button, Card, InlineAlert, ProgressBar, ResultState } from '../ui';
@@ -15,7 +16,7 @@ const initialMetadata: CreateBookIntakeDto = {
   language: 'vi'
 };
 
-export function BookIntakeForm({ categories }: { categories: CategoryDto[] }) {
+export function BookIntakeForm({ categories, tags = [] }: { categories: CategoryDto[]; tags?: TagDto[] }) {
   const [file, setFile] = useState<File | null>(null);
   const [metadata, setMetadata] = useState<CreateBookIntakeDto>(initialMetadata);
   const [progress, setProgress] = useState(0);
@@ -65,7 +66,7 @@ export function BookIntakeForm({ categories }: { categories: CategoryDto[] }) {
       <form className="ui-stack" onSubmit={submit}>
         <PdfDropzone file={file} onFile={setFile} error={fileError} />
         <MetadataFields metadata={metadata} onChange={setMetadata} onLookup={handleLookup} lookupMessage={lookupMessage} />
-        <CategoryTagFields categories={categories} metadata={metadata} onChange={setMetadata} />
+        <CategoryTagFields categories={categories} tags={tags} metadata={metadata} onChange={setMetadata} />
         {progress > 0 ? <ProgressBar label="Upload progress" value={progress} /> : null}
         <Button type="submit" disabled={!canSubmit}>Create digital book intake</Button>
         {error ? <InlineAlert tone="error">{error}</InlineAlert> : null}

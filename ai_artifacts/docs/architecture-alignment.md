@@ -1,6 +1,6 @@
 # Architecture Alignment
 
-Last updated: 2026-07-20
+Last updated: 2026-07-22
 
 ## Current repository structure
 
@@ -27,14 +27,14 @@ Last updated: 2026-07-20
 ## Current route and component baseline
 
 - Current route groups: `apps/web/app/(reader)`, `apps/web/app/(admin)`, and `apps/web/app/(auth)`.
-- Current routes: `/`, `/catalogue`, `/catalog` compatibility redirect, `/admin/books`, `/admin/books/new`, `/sign-in`, `/register`, `/forgot-password`, `/reset-password`, `/reset-password/completed`, `/access-denied`, and `/session-expired`.
+- Current routes include `/`, `/catalogue`, `/catalog` compatibility redirect, `/admin/books`, `/admin/books/new`, `/admin/categories`, `/admin/tags`, `/admin/dashboard`, the Phase 4 reader/admin foundations, and the authentication/access routes.
 - The root layout owns only document shell/font setup; role-aware navigation now lives in Reader/Admin/Auth shells.
 - Phase 1 styling now uses semantic tokens and shared CSS in `apps/web/styles/`, imported from `apps/web/app/globals.css`.
 - Current book intake components under `apps/web/components/book-intake` have been migrated to shared Phase 1 primitives while preserving existing behavior.
 
 ## Current API/module baseline
 
-- `AppModule` imports `DatabaseModule`, `AuthModule`, `StorageModule`, `ProcessingModule`, `BooksModule`, `CatalogModule`, `IsbnModule`, and `HealthModule`.
+- `AppModule` imports the integrated domain modules, including `TaxonomyModule` for staff taxonomy reads and starter Admin mutations.
 - Current endpoints include:
   - `POST /api/auth/register`
   - `POST /api/auth/sign-in`
@@ -45,12 +45,17 @@ Last updated: 2026-07-20
   - `POST /api/admin/books/intake`
   - `GET /api/admin/books`
   - `GET /api/categories`
+  - `GET /api/taxonomy/categories`
+  - `GET /api/taxonomy/tags`
+  - `POST/PATCH /api/admin/categories[/:id]`
+  - `POST/PATCH /api/admin/tags[/:id]`
   - `GET /api/catalog/books`
   - `GET /api/isbn/:isbn`
   - health endpoints under `HealthModule`
 - `AuthModule` owns reader registration, email/password sign-in, sign-out, database-backed sessions, password-reset tokens, role guard scaffolding, and `GET /api/auth/session`. Development auth headers remain available only when both API and web dev-auth flags opt in outside production, so admin UI gates fail closed by default.
 - `BooksService` currently owns intake persistence and coordinates Prisma, storage, and processing queue; admin book routes are now guarded by the Auth boundary.
 - `CatalogService` currently owns category reads and public published-book list reads.
+- `TaxonomyService` owns stable staff category/tag options plus Admin-only starter create/edit rules; deletion/reassignment/merge remain deferred risky workflows.
 
 ## Database layer
 
@@ -82,7 +87,8 @@ Last updated: 2026-07-20
 
 - **Auth module:** authentication, registration, sessions, permissions, user administration, role changes, account deactivation.
 - **Upload module:** PDF intake, validation, storage coordination, file replacement, upload lifecycle.
-- **Catalog module:** metadata, ISBN enrichment, catalogue search, taxonomy, tags, approval/correction workflow.
+- **Catalog module:** metadata, ISBN enrichment, public catalogue search, and approval/correction document integration.
+- **Taxonomy module:** staff category/tag option contracts, starter Admin management, and later guarded risky taxonomy workflows.
 - **Reader module:** reading authorization, presigned access, bookmarks, continue-reading, reading history.
 - **Processing module:** pipeline jobs, stage progress, failures, retry history, workers.
 - **Notifications capability:** event-driven records and authorized action links, without duplicating workflow truth.

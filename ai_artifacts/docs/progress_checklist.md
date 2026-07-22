@@ -67,6 +67,8 @@ Latest Phase 5 planning/schema preflight:
 - [x] `/catalog` compatibility redirect
 - [x] `/admin/books`
 - [x] `/admin/books/new`
+- [x] `/admin/categories`
+- [x] `/admin/tags`
 - [x] `/admin/dashboard`
 - [x] `/sign-in`
 - [x] `/register`
@@ -78,6 +80,7 @@ Latest Phase 5 planning/schema preflight:
 - [x] Auth APIs: register, sign-in, sign-out, session, reset request, reset completion.
 - [x] Intake/catalog APIs: admin intake, admin books, categories, public catalog books, ISBN lookup.
 - [x] Reporting API: admin/librarian dashboard summary counts.
+- [x] Taxonomy APIs: staff category/tag reads plus Admin-only starter create/edit contracts.
 
 ## Remaining high-level work
 
@@ -87,13 +90,13 @@ Latest Phase 5 planning/schema preflight:
 - [ ] Upload/Catalog boundary deepening for document metadata workflows.
 - [ ] Processing workers and processing status/retry endpoints.
 - [ ] Approval, correction, and notifications workflows. Phase 5 schema now includes persisted notification and approval-review foundations.
-- [ ] Taxonomy/tag management, user administration, role changes, and deactivation.
+- [ ] Taxonomy risky actions (delete/reassign/merge), user administration, role changes, and deactivation. Starter category/tag list/create/edit is complete.
 - [ ] Dashboards, reports, exports, and settings. Phase 4 Member D completed the base dashboard summary only; report exports/settings remain deferred.
 - [ ] Cross-screen integration hardening and responsive/visual QA.
 
 ## Next recommended planning target
 
-Phase 4 member work has been merged into `dev`; the current next execution target is **Phase 5 — Document Lifecycle, Upload, Metadata, and Taxonomy Integration** using `ai_artifacts/plans/plan-phase-5-document-lifecycle-upload-metadata-taxonomy-2026-07-21.md`. Keep Phase 4 follow-ups limited to integration hardening or bug fixes unless the team reopens a member lane.
+Phase 4 member work has been merged into `dev`, and Phase 5 Member D is complete. The current execution target remains **Phase 5 — Document Lifecycle, Upload, Metadata, and Taxonomy Integration** for Members A/B/C using `ai_artifacts/plans/plan-phase-5-document-lifecycle-upload-metadata-taxonomy-2026-07-21.md`. Their forms should consume the completed Member D taxonomy contracts/components rather than creating parallel taxonomy logic.
 
 Phase 5 must start from the schema-foundation migration and should not reintroduce in-memory persistence for accepted reader state, notification, approval, audit, processing-progress, or file-version behavior.
 
@@ -122,9 +125,13 @@ Phase 5 must start from the schema-foundation migration and should not reintrodu
 - [x] D5-001 taxonomy read APIs implemented at `GET /api/taxonomy/categories` and `GET /api/taxonomy/tags` with stable DTO projections and Admin/Librarian role guards.
 - [x] D5-001 targeted API unit tests, API build/lint, and taxonomy e2e authorization coverage pass.
 - [x] D5-002 controlled `CategorySelector` and `TagSelector` components implemented with interaction and automated accessibility coverage.
-- [ ] D5-002 typed web adapters remain blocked by design until the single D5-004 OpenAPI/client regeneration.
-- [x] D5-003 starter management surfaces intentionally deferred to Phase 7; Phase 5 supplies read APIs/selectors while risky delete/reassign/merge workflows stay out of this batch.
-- [ ] D5-004 single phase-end OpenAPI/client regeneration, cross-lane integration, full verification, and closure report.
+- [x] D5-002 typed server/browser adapters generated and the existing intake metadata form consumes Member D category/tag options through reusable selectors.
+- [x] D5-003 `/admin/categories` and `/admin/tags` provide loading/error/empty, Librarian read-only, and Admin create/edit states; risky delete/reassign/merge remains Phase 7.
+- [x] D5-004 generated OpenAPI/API types, reconciled navigation/routes/contracts/docs, and completed Member D cross-lane intake integration.
+- [x] D5-004 full verification passed: Prisma validate/generate, generated OpenAPI/client types, root lint, 12 API suites/47 tests, 10 web files/46 tests, root production builds, 6 API e2e suites/24 tests, and `git diff --check`.
+- [x] Ralph THOROUGH architect verification approved; changed-files deslop and the complete post-deslop regression suite passed.
+
+Member D Phase 5 is complete. Remaining Phase 5 work belongs to the documented Member A/B/C lanes; full taxonomy deletion/reassignment/merge safeguards remain Phase 7.
 
 ### Phase 4 Member D verification
 

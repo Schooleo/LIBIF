@@ -1,6 +1,6 @@
 import { headers } from 'next/headers';
 import { createLibifApiClient, apiErrorMessage } from './api-client';
-import type { AccessDecisionDto, AdminBookListItemDto, CategoryDto, LibrarianDashboardSummaryDto, PagedBookListDto, PublicBookListItemDto, ReaderLibraryItemDto, ReaderLibraryResponseDto, SessionDto } from './api-types';
+import type { AccessDecisionDto, AdminBookListItemDto, LibrarianDashboardSummaryDto, PagedBookListDto, PublicBookListItemDto, ReaderLibraryItemDto, ReaderLibraryResponseDto, SessionDto, TaxonomyCategoryDto, TaxonomyTagDto } from './api-types';
 import { getDevAuthHeaders } from './auth/session';
 
 type ReaderLibraryQuery = { filter?: 'ALL' | 'READING' | 'BOOKMARKED' | 'COMPLETED'; search?: string; page?: number; limit?: number };
@@ -18,10 +18,17 @@ export async function fetchSession(): Promise<SessionDto> {
   return data;
 }
 
-export async function fetchCategories(): Promise<CategoryDto[]> {
+export async function fetchTaxonomyCategories(): Promise<TaxonomyCategoryDto[]> {
   const client = await createServerClient();
-  const { data, error } = await client.GET('/api/categories');
-  if (error) throw new Error(apiErrorMessage(error, 'Categories request failed'));
+  const { data, error } = await client.GET('/api/taxonomy/categories');
+  if (error) throw new Error(apiErrorMessage(error, 'Taxonomy categories request failed'));
+  return data;
+}
+
+export async function fetchTaxonomyTags(): Promise<TaxonomyTagDto[]> {
+  const client = await createServerClient();
+  const { data, error } = await client.GET('/api/taxonomy/tags');
+  if (error) throw new Error(apiErrorMessage(error, 'Taxonomy tags request failed'));
   return data;
 }
 

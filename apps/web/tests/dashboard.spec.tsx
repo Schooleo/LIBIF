@@ -78,5 +78,7 @@ describe('admin dashboard', () => {
     render(<AdminShell user={{ name: 'Ada Admin', email: 'ada@example.test', role: 'ADMIN' }}><h1>Admin books</h1></AdminShell>);
 
     expect(screen.getAllByRole('link', { name: /dashboard/i })[0]).toHaveAttribute('href', '/admin/dashboard');
+    expect(screen.getAllByRole('link', { name: /categories/i })[0]).toHaveAttribute('href', '/admin/categories');
+    expect(screen.getAllByRole('link', { name: /^tags/i })[0]).toHaveAttribute('href', '/admin/tags');
   });
 });

@@ -149,6 +149,8 @@ const adminNav: NavItem[] = [
   { label: 'Dashboard', href: '/admin/dashboard', description: 'Operational summary and phase status' },
   { label: 'Books', href: '/admin/books', description: 'Digital book intake records' },
   { label: 'New intake', href: '/admin/books/new', description: 'Upload and queue a scanned PDF' },
+  { label: 'Categories', href: '/admin/categories', description: 'Browse and manage document categories' },
+  { label: 'Tags', href: '/admin/tags', description: 'Browse and manage document tags' },
 ];
 
 /** Auth layout: minimal — just a back-to-home link in the nav. */

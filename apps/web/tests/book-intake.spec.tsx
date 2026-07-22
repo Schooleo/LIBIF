@@ -2,6 +2,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { BookIntakeForm } from '../components/book-intake/BookIntakeForm';
+import { uploadBookIntake } from '../lib/api-browser';
 
 vi.mock('../lib/api-browser', () => ({
   lookupIsbn: vi.fn(async () => ({ found: true, metadata: { title: 'Clean Code', authors: ['Robert C. Martin'], publisher: 'Prentice Hall', publishedYear: 2008 } })),
@@ -24,15 +25,22 @@ describe('BookIntakeForm', () => {
 
   it('uploads a valid intake and renders queued status', async () => {
     const user = userEvent.setup();
-    render(<BookIntakeForm categories={[{ id: 'cat-1', name: 'Giáo trình', slug: 'giao-trinh' }]} />);
+    render(
+      <BookIntakeForm
+        categories={[{ id: 'cat-1', name: 'Giáo trình', slug: 'giao-trinh' }]}
+        tags={[{ id: 'tag-1', name: 'Software engineering', slug: 'software-engineering' }]}
+      />
+    );
 
     const file = new File(['%PDF-1.4'], 'book.pdf', { type: 'application/pdf' });
     await user.upload(screen.getByLabelText(/pdf file/i), file);
     await user.type(screen.getByLabelText(/title/i), 'Clean Code');
     await user.type(screen.getByLabelText(/authors/i), 'Robert C. Martin');
+    await user.click(screen.getByRole('checkbox', { name: 'Software engineering' }));
     await user.click(screen.getByRole('button', { name: /create digital book intake/i }));
 
     await waitFor(() => expect(screen.getByText(/book intake queued/i)).toBeInTheDocument());
+    expect(vi.mocked(uploadBookIntake).mock.calls[0]?.[1].tags).toEqual(['Software engineering']);
     expect(screen.getByText(/Status: PENDING_PROCESSING/)).toBeInTheDocument();
     expect(screen.getByText(/job-1/)).toBeInTheDocument();
   });

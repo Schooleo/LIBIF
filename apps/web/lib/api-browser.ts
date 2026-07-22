@@ -1,5 +1,5 @@
 import { API_BASE_URL, createLibifApiClient, apiErrorMessage } from './api-client';
-import type { AuthMessageDto, CreateBookIntakeDto, CreateBookIntakeResponse, IsbnLookupResponse, PasswordResetDto, PasswordResetRequestDto, RegisterRequestDto, SessionDto, SignInRequestDto } from './api-types';
+import type { AuthMessageDto, CreateBookIntakeDto, CreateBookIntakeResponse, CreateTaxonomyCategoryDto, CreateTaxonomyTagDto, IsbnLookupResponse, PasswordResetDto, PasswordResetRequestDto, RegisterRequestDto, SessionDto, SignInRequestDto, TaxonomyCategoryDto, TaxonomyTagDto, UpdateTaxonomyCategoryDto, UpdateTaxonomyTagDto } from './api-types';
 import { getDevAuthHeaders } from './auth/session';
 
 const client = createLibifApiClient(getDevAuthHeaders());
@@ -37,6 +37,30 @@ export async function resetPassword(payload: PasswordResetDto): Promise<AuthMess
 export async function lookupIsbn(isbn: string): Promise<IsbnLookupResponse> {
   const { data, error } = await client.GET('/api/isbn/{isbn}', { params: { path: { isbn } } });
   if (error) throw new Error(apiErrorMessage(error, 'ISBN lookup failed'));
+  return data;
+}
+
+export async function createCategory(payload: CreateTaxonomyCategoryDto): Promise<TaxonomyCategoryDto> {
+  const { data, error } = await client.POST('/api/admin/categories', { body: payload });
+  if (error) throw new Error(apiErrorMessage(error, 'Category creation failed'));
+  return data;
+}
+
+export async function updateCategory(categoryId: string, payload: UpdateTaxonomyCategoryDto): Promise<TaxonomyCategoryDto> {
+  const { data, error } = await client.PATCH('/api/admin/categories/{id}', { params: { path: { id: categoryId } }, body: payload });
+  if (error) throw new Error(apiErrorMessage(error, 'Category update failed'));
+  return data;
+}
+
+export async function createTag(payload: CreateTaxonomyTagDto): Promise<TaxonomyTagDto> {
+  const { data, error } = await client.POST('/api/admin/tags', { body: payload });
+  if (error) throw new Error(apiErrorMessage(error, 'Tag creation failed'));
+  return data;
+}
+
+export async function updateTag(tagId: string, payload: UpdateTaxonomyTagDto): Promise<TaxonomyTagDto> {
+  const { data, error } = await client.PATCH('/api/admin/tags/{id}', { params: { path: { id: tagId } }, body: payload });
+  if (error) throw new Error(apiErrorMessage(error, 'Tag update failed'));
   return data;
 }
 
@@ -106,4 +130,3 @@ export async function updateReadingProgress(documentId: string, page: number, to
   if (error) throw new Error(apiErrorMessage(error, 'Update progress failed'));
   return data;
 }
-

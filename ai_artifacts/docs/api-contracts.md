@@ -16,9 +16,13 @@ OpenAPI is now generated for implemented endpoints at `apps/api/openapi/libif-ap
 | `POST /api/auth/password-resets` | `AuthModule` | `apps/web/app/(auth)/reset-password/page.tsx` | Consumes a valid reset token once, updates password hash, and revokes existing sessions. |
 | `POST /api/admin/books/intake` | `BooksModule` | `apps/web/components/book-intake/BookIntakeForm.tsx` | Multipart `file` + JSON `metadata`; returns book/file/processingJob; guarded for Admin/Librarian. |
 | `GET /api/admin/books` | `BooksModule` | `apps/web/app/(admin)/admin/books/page.tsx` | Admin list without production pagination/filter/sort yet; guarded for Admin/Librarian. |
-| `GET /api/categories` | `CatalogModule` | `apps/web/app/(admin)/admin/books/new/page.tsx` | Category list. |
-| `GET /api/taxonomy/categories` | `TaxonomyModule` | Phase 5 document metadata selectors | Stable staff-only category options (`id`, `name`, `slug`, `parentId`); guarded for Admin/Librarian. OpenAPI/client regeneration is reserved for D5-004. |
-| `GET /api/taxonomy/tags` | `TaxonomyModule` | Phase 5 document metadata selectors | Stable staff-only tag options (`id`, `name`, `slug`); guarded for Admin/Librarian. OpenAPI/client regeneration is reserved for D5-004. |
+| `GET /api/categories` | `CatalogModule` | Public catalogue compatibility consumers | Legacy public category list; staff metadata uses `TaxonomyModule`. |
+| `GET /api/taxonomy/categories` | `TaxonomyModule` | Intake metadata and `/admin/categories` | Generated stable category options (`id`, `name`, `slug`, `parentId`); guarded for Admin/Librarian. |
+| `POST /api/admin/categories` | `TaxonomyModule` | `/admin/categories` | Admin-only starter category creation with normalized name/slug and validated parent. |
+| `PATCH /api/admin/categories/:id` | `TaxonomyModule` | `/admin/categories` | Admin-only starter category edit; rejects missing parents and parent cycles. |
+| `GET /api/taxonomy/tags` | `TaxonomyModule` | Intake metadata and `/admin/tags` | Generated stable tag options (`id`, `name`, `slug`); guarded for Admin/Librarian. |
+| `POST /api/admin/tags` | `TaxonomyModule` | `/admin/tags` | Admin-only starter tag creation with normalized name/slug. |
+| `PATCH /api/admin/tags/:id` | `TaxonomyModule` | `/admin/tags` | Admin-only starter tag edit. |
 | `GET /api/catalog/books` | `CatalogModule` | `apps/web/app/(reader)/catalogue/page.tsx` | Public published books only. |
 | `GET /api/isbn/:isbn` | `IsbnModule` | `apps/web/components/book-intake/MetadataFields.tsx` | ISBN lookup proxy. |
 | `GET /api/admin/dashboard/librarian` | `ReportingModule` | `apps/web/app/(admin)/admin/dashboard/page.tsx` | Phase 4 Member D dashboard summary; guarded for Admin/Librarian; returns no-migration counts for books, processing jobs, taxonomy, users, and recent books. |
@@ -124,12 +128,14 @@ Deferred auth-adjacent contracts remain in Batch 6/7: user administration, role 
 
 ### Batch 6 — Taxonomy, tags, users, and risky actions
 
-- `GET /api/admin/categories/tree`
-- `POST /api/admin/categories`
-- `PATCH /api/admin/categories/{id}`
+- `GET /api/taxonomy/categories` — implemented staff selector/management read.
+- `POST /api/admin/categories` — implemented starter Admin-only create.
+- `PATCH /api/admin/categories/{id}` — implemented starter Admin-only edit.
 - `DELETE /api/admin/categories/{id}`
 - `POST /api/admin/categories/{id}/reassign-and-delete`
-- `GET /api/admin/tags?page&filters&sort`
+- `GET /api/taxonomy/tags` — implemented staff selector/management read.
+- `POST /api/admin/tags` — implemented starter Admin-only create.
+- `PATCH /api/admin/tags/{id}` — implemented starter Admin-only edit.
 - `GET /api/admin/tags/duplicates`
 - `POST /api/admin/tags/merge-preview`
 - `POST /api/admin/tags/merge`
@@ -164,4 +170,4 @@ Deferred auth-adjacent contracts remain in Batch 6/7: user administration, role 
 
 ## OpenAPI implementation status
 
-Phase 2 added NestJS Swagger setup, stable operation IDs, generated JSON at `apps/api/openapi/libif-api.json`, a dependency-free frontend path-map generator at `apps/web/scripts/generate-api-types.mjs`, OpenAPI-owned response aliases at `apps/web/lib/api-types.ts`, and split `openapi-fetch` transport adapters in `apps/web/lib/api-server.ts` and `apps/web/lib/api-browser.ts`. Phase 3 added generated auth request/response DTOs and cookie-aware frontend calls. Phase 4 Member D added the generated `GET /api/admin/dashboard/librarian` reporting summary contract and web server adapter. Phase 5 D5-001 added decorated taxonomy read endpoints; their generated artifacts intentionally wait for the single D5-004 integration regeneration. Later phases must keep OpenAPI decorators and generated path types aligned whenever endpoints change.
+Phase 2 added NestJS Swagger setup, stable operation IDs, generated JSON at `apps/api/openapi/libif-api.json`, a dependency-free frontend path-map generator at `apps/web/scripts/generate-api-types.mjs`, OpenAPI-owned response aliases at `apps/web/lib/api-types.ts`, and split `openapi-fetch` transport adapters in `apps/web/lib/api-server.ts` and `apps/web/lib/api-browser.ts`. Phase 3 added generated auth request/response DTOs and cookie-aware frontend calls. Phase 4 Member D added the dashboard summary contract. Phase 5 D5-004 generated the taxonomy read/create/edit paths and DTOs and added typed server/browser adapters. Later phases must keep OpenAPI decorators and generated path types aligned whenever endpoints change.

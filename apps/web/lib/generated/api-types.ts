@@ -226,6 +226,31 @@ export interface components {
     "expiresAt": string;
     "url": string;
   };
+    "TaxonomyCategoryDto": {
+    "id": string;
+    "name": string;
+    "slug": string;
+    "parentId": string | null;
+  };
+    "TaxonomyTagDto": {
+    "id": string;
+    "name": string;
+    "slug": string;
+  };
+    "CreateTaxonomyCategoryDto": {
+    "name": string;
+    "parentId"?: string | null;
+  };
+    "UpdateTaxonomyCategoryDto": {
+    "name"?: string;
+    "parentId"?: string | null;
+  };
+    "CreateTaxonomyTagDto": {
+    "name": string;
+  };
+    "UpdateTaxonomyTagDto": {
+    "name"?: string;
+  };
   };
 }
 
@@ -692,6 +717,182 @@ export interface paths {
       "200": {
         content: {
           "application/json": components['schemas']["ProtectedDocumentUrlDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/taxonomy/categories": {
+    get: {
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["TaxonomyCategoryDto"][];
+        };
+      };
+      "403": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/taxonomy/tags": {
+    get: {
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["TaxonomyTagDto"][];
+        };
+      };
+      "403": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/admin/categories": {
+    post: {
+      requestBody: {
+        content: {
+          "application/json": components['schemas']["CreateTaxonomyCategoryDto"];
+        };
+      };
+      responses: {
+      "201": {
+        content: {
+          "application/json": components['schemas']["TaxonomyCategoryDto"];
+        };
+      };
+      "400": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      "403": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      "409": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/admin/categories/{id}": {
+    patch: {
+      parameters: {
+        path: {
+          "id": string;
+        };
+      };
+      requestBody: {
+        content: {
+          "application/json": components['schemas']["UpdateTaxonomyCategoryDto"];
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["TaxonomyCategoryDto"];
+        };
+      };
+      "400": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      "403": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      "404": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      "409": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/admin/tags": {
+    post: {
+      requestBody: {
+        content: {
+          "application/json": components['schemas']["CreateTaxonomyTagDto"];
+        };
+      };
+      responses: {
+      "201": {
+        content: {
+          "application/json": components['schemas']["TaxonomyTagDto"];
+        };
+      };
+      "400": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      "403": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      "409": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/admin/tags/{id}": {
+    patch: {
+      parameters: {
+        path: {
+          "id": string;
+        };
+      };
+      requestBody: {
+        content: {
+          "application/json": components['schemas']["UpdateTaxonomyTagDto"];
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["TaxonomyTagDto"];
+        };
+      };
+      "400": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      "403": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      "404": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      "409": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
         };
       };
       };

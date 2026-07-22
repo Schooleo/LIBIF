@@ -16,6 +16,12 @@ export type PasswordResetDto = components['schemas']['PasswordResetDto'];
 export type LibrarianDashboardSummaryDto = components['schemas']['LibrarianDashboardSummaryDto'];
 export type CreateBookIntakeResponse = components['schemas']['CreateBookIntakeResponseDto'];
 export type IsbnLookupResponse = components['schemas']['IsbnLookupResponseDto'];
+export type TaxonomyCategoryDto = components['schemas']['TaxonomyCategoryDto'];
+export type TaxonomyTagDto = components['schemas']['TaxonomyTagDto'];
+export type CreateTaxonomyCategoryDto = components['schemas']['CreateTaxonomyCategoryDto'];
+export type UpdateTaxonomyCategoryDto = components['schemas']['UpdateTaxonomyCategoryDto'];
+export type CreateTaxonomyTagDto = components['schemas']['CreateTaxonomyTagDto'];
+export type UpdateTaxonomyTagDto = components['schemas']['UpdateTaxonomyTagDto'];
 
 export type PublicBookListItemDto = SharedPublicBookListItemDto;
 export type AdminBookListItemDto = SharedAdminBookListItemDto;
