@@ -2,18 +2,16 @@ import Link from 'next/link';
 import { PageHeader } from '../../../../../components/layout';
 import { Button } from '../../../../../components/ui/actions/Button';
 import { InlineAlert } from '../../../../../components/ui/feedback/feedback';
-import { fetchCategories } from '../../../../../lib/api-server';
+import { fetchTaxonomyCategories, fetchTaxonomyTags } from '../../../../../lib/api-server';
 import { NewDocumentClient } from './NewDocumentClient';
 
 export default async function NewDocumentIntakePage() {
-  let categories: any[] = [];
-  let loadError: string | undefined;
-
-  try {
-    categories = await fetchCategories();
-  } catch (err) {
-    loadError = (err as Error).message;
-  }
+  const [categoryResult, tagResult] = await Promise.allSettled([fetchTaxonomyCategories(), fetchTaxonomyTags()]);
+  const categories = categoryResult.status === 'fulfilled' ? categoryResult.value : [];
+  const tags = tagResult.status === 'fulfilled' ? tagResult.value : [];
+  const loadErrors = [categoryResult, tagResult]
+    .filter((result): result is PromiseRejectedResult => result.status === 'rejected')
+    .map((result) => result.reason instanceof Error ? result.reason.message : 'Unknown taxonomy error');
 
   return (
     <section className="ui-stack ui-stack-lg">
@@ -26,8 +24,8 @@ export default async function NewDocumentIntakePage() {
           </Link>
         }
       />
-      {loadError ? <InlineAlert tone="error">Categories could not be loaded: {loadError}</InlineAlert> : null}
-      <NewDocumentClient categories={categories} />
+      {loadErrors.length > 0 ? <InlineAlert tone="error">Some taxonomy options could not be loaded: {loadErrors.join('; ')}</InlineAlert> : null}
+      <NewDocumentClient categories={categories} tags={tags} />
     </section>
   );
 }

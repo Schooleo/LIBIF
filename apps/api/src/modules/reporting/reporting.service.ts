@@ -41,6 +41,7 @@ export function mapBookCounts(groups: CountGroup<BookStatus>[]): BookStatusCount
     pendingProcessing: counts.get(BookStatus.PENDING_PROCESSING) ?? 0,
     processing: counts.get(BookStatus.PROCESSING) ?? 0,
     pendingApproval: counts.get(BookStatus.PENDING_APPROVAL) ?? 0,
+    correctionRequired: counts.get(BookStatus.CORRECTION_REQUIRED) ?? 0,
     published: counts.get(BookStatus.PUBLISHED) ?? 0,
     rejected: counts.get(BookStatus.REJECTED) ?? 0,
     total: DASHBOARD_BOOK_STATUSES.reduce((total, status) => total + (counts.get(status) ?? 0), 0)
@@ -53,7 +54,9 @@ export function mapProcessingCounts(groups: CountGroup<ProcessingJobStatus>[]): 
     queued: counts.get(ProcessingJobStatus.QUEUED) ?? 0,
     running: counts.get(ProcessingJobStatus.RUNNING) ?? 0,
     succeeded: counts.get(ProcessingJobStatus.SUCCEEDED) ?? 0,
-    failed: counts.get(ProcessingJobStatus.FAILED) ?? 0
+    failed: counts.get(ProcessingJobStatus.FAILED) ?? 0,
+    cancelled: counts.get(ProcessingJobStatus.CANCELLED) ?? 0,
+    superseded: counts.get(ProcessingJobStatus.SUPERSEDED) ?? 0
   };
 }
 

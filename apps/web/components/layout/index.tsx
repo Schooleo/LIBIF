@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { classNames } from '../../lib/classnames';
 import { Badge, Card } from '../ui';
+import { AdminMobileNavigation, AdminSidebarNavigation } from './AdminNavigation';
 import { AvatarMenu } from './AvatarMenu';
 
 type ShellVariant = 'reader' | 'admin' | 'auth';
@@ -47,17 +48,29 @@ export function AppShell({
     <div className={classNames('app-shell', `app-shell--${variant}`)}>
       <a className="app-shell__skip-link" href="#main-content">Skip to main content</a>
       <header className="app-shell__topbar">
-        <a className="app-shell__brand" href="/" aria-label="LIBIF home">
-          <span aria-hidden="true">LIBIF</span>
-          <small>{variantLabel(variant)}</small>
-        </a>
-        <nav className="app-shell__nav" aria-label={`${variantLabel(variant)} navigation`}>
-          {navItems.map((item) => (
-            <a key={item.href} href={item.href} aria-current={item.active ? 'page' : undefined}>
-              {item.label}
+        {variant === 'admin' && user ? (
+          <div className="app-shell__context">
+            <AdminMobileNavigation role={user.role} />
+            <span>
+              <strong>Staff workspace</strong>
+              <small>Operations and administration</small>
+            </span>
+          </div>
+        ) : (
+          <>
+            <a className="app-shell__brand" href="/" aria-label="LIBIF home">
+              <span aria-hidden="true">LIBIF</span>
+              <small>{variantLabel(variant)}</small>
             </a>
-          ))}
-        </nav>
+            <nav className="app-shell__nav" aria-label={`${variantLabel(variant)} navigation`}>
+              {navItems.map((item) => (
+                <a key={item.href} href={item.href} aria-current={item.active ? 'page' : undefined}>
+                  {item.label}
+                </a>
+              ))}
+            </nav>
+          </>
+        )}
         <div className="app-shell__utility">
           {utility}
           {variant === 'reader' ? (
@@ -68,8 +81,9 @@ export function AppShell({
               <AvatarMenu authenticated={false} />
             )
           ) : user ? (
-            /* Admin shell: show identity badge only (sign-out is in utility prop) */
+            /* Staff shell: top bar is utility-only; primary navigation remains in the sidebar/drawer. */
             <div className="app-shell__user">
+              <Badge tone="info">{user.role === 'ADMIN' ? 'Administrator' : 'Librarian'}</Badge>
               <span>
                 <strong>{user.name}</strong>
                 <small>{user.email ?? user.role}</small>
@@ -80,16 +94,7 @@ export function AppShell({
           )}
         </div>
       </header>
-      {variant === 'admin' ? (
-        <aside className="app-shell__sidebar" aria-label="Admin sections">
-          {navItems.map((item) => (
-            <a key={item.href} href={item.href} aria-current={item.active ? 'page' : undefined}>
-              {item.label}
-              <span>{item.description}</span>
-            </a>
-          ))}
-        </aside>
-      ) : null}
+      {variant === 'admin' && user ? <AdminSidebarNavigation role={user.role} /> : null}
       <main id="main-content" className="app-shell__main" tabIndex={-1}>
         {children}
       </main>
@@ -111,7 +116,7 @@ export function ReaderShell({ children, user }: { children: ReactNode; user?: Sh
 
 export function AdminShell({ children, user, utility }: { children: ReactNode; user: ShellUser; utility?: ReactNode }) {
   return (
-    <AppShell variant="admin" navItems={adminNav} user={user} utility={utility}>
+    <AppShell variant="admin" navItems={[]} user={user} utility={utility}>
       {children}
     </AppShell>
   );
@@ -142,17 +147,6 @@ export function AccessBoundaryCard({ title, description, actionHref, actionLabel
 const readerNav: NavItem[] = [
   { label: 'Home', href: '/', description: 'Reader landing' },
   { label: 'Catalogue', href: '/catalogue', description: 'Published books' },
-];
-
-/** Admin/Librarian workspace: book management only. No public catalogue link. */
-const adminNav: NavItem[] = [
-  { label: 'Dashboard', href: '/admin/dashboard', description: 'Operational summary and phase status' },
-  { label: 'Documents', href: '/admin/documents', description: 'Digital document lifecycle management' },
-  { label: 'New Intake', href: '/admin/documents/new', description: 'Upload and queue a scanned PDF' },
-  { label: 'Processing', href: '/admin/processing', description: 'Processing jobs and pipeline status' },
-  { label: 'Approvals', href: '/admin/approvals', description: 'Pending document reviews' },
-  { label: 'Notifications', href: '/admin/notifications', description: 'System alerts and required actions' },
-  { label: 'Books (Legacy)', href: '/admin/books', description: 'Legacy digital book intake records' },
 ];
 
 /** Auth layout: minimal — just a back-to-home link in the nav. */

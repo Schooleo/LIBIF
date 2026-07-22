@@ -1,12 +1,14 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Card } from '../../ui/surfaces/Card';
 import { StatusBadge } from '../../ui/indicators/StatusBadge';
 import { ProgressBar } from '../../ui/indicators/ProgressBar';
 import { Button } from '../../ui/actions/Button';
 import { FileDropzone } from '../../ui/forms/FileDropzone';
 import { InlineAlert } from '../../ui/feedback/feedback';
+import { replaceDocumentFile, submitDocumentProcessing } from '../../../lib/api-browser';
 
 export type FileVersionInfo = {
   id: string;
@@ -43,6 +45,7 @@ export function UploadLifecyclePanel({
   onFileReplaced,
   onProcessingSubmitted
 }: UploadLifecyclePanelProps) {
+  const router = useRouter();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isReplacing, setIsReplacing] = useState(false);
   const [isSubmittingJob, setIsSubmittingJob] = useState(false);
@@ -55,20 +58,11 @@ export function UploadLifecyclePanel({
     setErrorMsg(null);
     setSuccessMsg(null);
 
-    const formData = new FormData();
-    formData.append('file', selectedFile);
-
     try {
-      const res = await fetch(`/api/documents/${documentId}/replace-file`, {
-        method: 'POST',
-        body: formData
-      });
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error((err as { message?: string }).message || 'File replacement failed.');
-      }
+      await replaceDocumentFile(documentId, selectedFile);
       setSuccessMsg(`File successfully replaced with "${selectedFile.name}".`);
       setSelectedFile(null);
+      router.refresh();
       if (onFileReplaced) onFileReplaced();
     } catch (err) {
       setErrorMsg((err as Error).message || 'Failed to replace file.');
@@ -83,14 +77,9 @@ export function UploadLifecyclePanel({
     setSuccessMsg(null);
 
     try {
-      const res = await fetch(`/api/documents/${documentId}/submit-processing`, {
-        method: 'POST'
-      });
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error((err as { message?: string }).message || 'Submit processing failed.');
-      }
+      await submitDocumentProcessing(documentId);
       setSuccessMsg('Processing job queued successfully.');
+      router.refresh();
       if (onProcessingSubmitted) onProcessingSubmitted();
     } catch (err) {
       setErrorMsg((err as Error).message || 'Failed to submit processing.');

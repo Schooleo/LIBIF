@@ -1,5 +1,5 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
-import { BookStatus, Prisma, UserRole } from '../../generated/prisma/client';
+import { BookStatus, Prisma, ProcessingJobStatus, UserRole } from '../../generated/prisma/client';
 import slugify from 'slugify';
 import { PrismaService } from '../database/prisma.service';
 import { ProcessingQueue } from '../processing/processing.queue';
@@ -11,7 +11,7 @@ import { mapAdminBook } from '../catalog/catalog.mapper';
 type IntakeResult = {
   book: { id: string; title: string; status: BookStatus };
   file: { id: string; originalFilename: string; sizeBytes: string };
-  processingJob: { id: string; status: 'QUEUED' | 'RUNNING' | 'SUCCEEDED' | 'FAILED' };
+  processingJob: { id: string; status: ProcessingJobStatus };
 };
 
 function normalizeName(value: string): string {
@@ -139,7 +139,7 @@ export class BooksService {
       }
     });
 
-    const processingJob = await tx.processingJob.create({ data: { bookId: book.id } });
+    const processingJob = await tx.processingJob.create({ data: { bookId: book.id, bookFileId: bookFile.id } });
     return {
       book: { id: book.id, title: book.title, status: book.status },
       file: { id: bookFile.id, originalFilename: bookFile.originalFilename, sizeBytes: bookFile.sizeBytes.toString() },

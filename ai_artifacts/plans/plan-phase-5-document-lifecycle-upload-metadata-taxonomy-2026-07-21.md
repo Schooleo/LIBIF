@@ -352,3 +352,14 @@ At the end of Phase 5, the app should demonstrate this flow from seeded accounts
 6. Admin/librarian can verify taxonomy/status/audit/notification records exist through APIs or admin surfaces.
 
 Phase 5 is complete when the above flow works without manual database edits and the full verification suite passes or has only explicitly documented non-product blockers.
+
+## Completion Record — 2026-07-22
+
+- Member A and Member B were merged into `dev`, followed by Member C after resolving the canonical intake navigation regression.
+- Member D then merged the complete Phase 5 `dev` baseline, preserved each lane's module/route ownership, and reconciled the shared staff shell.
+- The canonical staff workflow now uses `/admin/documents`, `/admin/documents/new`, authenticated intake/replacement/requeue adapters, current-work processing/approval projections, and Member D category/tag selectors. `/admin/books` remains compatibility-only and is no longer exposed in primary staff navigation or staff sign-in routing.
+- The phase-end OpenAPI/client generation contains the integrated reader/access, document/upload, processing, approval, notification, reporting, and taxonomy modules.
+- Phase-end closure verification passed: Prisma validate/generate, OpenAPI/client generation, root lint, 15 API suites/72 tests, 13 web files/54 tests, root production builds, 6 API e2e suites/24 tests, and `git diff --check`.
+- Notification API/UI and Prisma schema foundations merged, but runtime notification persistence did not; this acceptance gap is explicitly carried into Phase 6 as NTF-001 instead of being reported as complete.
+- Actual worker/OCR execution and retry history, approval decision commands, correction/resubmission, and notification persistence/fanout remain the documented Phase 6 target. Risky taxonomy deletion/reassignment/merge remains Phase 7.
+- Comprehensive Phase 6 execution plan: `ai_artifacts/plans/plan-phase-6-processing-approval-correction-notifications-2026-07-22.md`.

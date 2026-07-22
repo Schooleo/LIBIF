@@ -84,7 +84,10 @@ Semantic success, warning, information, error-surface, and muted-surface tokens 
 ## Shell decisions
 
 - Reader Portal uses `ReaderShell` with content-first navigation and compact mobile drawer.
-- Librarian Workspace and Administration use `AdminShell` with sidebar, top bar, breadcrumbs, user menu, and notification control.
+- Librarian Workspace and Administration use one shared `AdminShell`: the desktop sidebar is the sole primary navigation, while the top bar is reserved for workspace context, role/identity, notifications, and session utilities.
+- On narrow screens, `AdminShell` replaces the desktop sidebar with a closed-by-default drawer driven by the same permission-aware navigation model; it does not restore a duplicate horizontal header menu.
+- Navigation visibility follows real route permissions. Categories and Tags remain visible to Librarians because those routes intentionally provide read-only access; Admin-only mutation controls remain enforced inside the feature routes and APIs.
+- Do not add placeholder destinations. Users, settings, security, analytics, and other future entries appear only when their routes and permissions are implemented.
 - Management Analytics may reuse `AdminShell` unless permissions/navigation materially differ.
 - Route groups should separate experiences without changing brand identity.
 

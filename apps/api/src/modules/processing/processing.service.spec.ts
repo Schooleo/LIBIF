@@ -21,6 +21,7 @@ describe('ProcessingService', () => {
       create: jest.fn()
     },
     approvalReview: {
+      findFirst: jest.fn().mockResolvedValue(null),
       create: jest.fn()
     },
     user: {
@@ -62,12 +63,16 @@ describe('ProcessingService', () => {
         {
           id: 'job-1',
           bookId: 'book-1',
+          bookFileId: 'file-1',
           book: { title: 'Test Book' },
           type: 'PDF_OCR_PIPELINE',
           status: ProcessingJobStatus.QUEUED,
           stage: 'queued',
           progressPercent: 0,
+          attemptNumber: 1,
           attempts: 0,
+          retryOfJobId: null,
+          terminalReason: null,
           errorMessage: null,
           createdAt: new Date('2026-07-21T00:00:00Z'),
           updatedAt: new Date('2026-07-21T00:00:00Z')
@@ -81,16 +86,41 @@ describe('ProcessingService', () => {
       expect(result[0]).toEqual({
         id: 'job-1',
         bookId: 'book-1',
+        bookFileId: 'file-1',
         bookTitle: 'Test Book',
         type: 'PDF_OCR_PIPELINE',
         status: 'QUEUED',
         stage: 'queued',
         progressPercent: 0,
+        attemptNumber: 1,
         attempts: 0,
+        retryOfJobId: null,
+        terminalReason: null,
         errorMessage: null,
         createdAt: '2026-07-21T00:00:00.000Z',
         updatedAt: '2026-07-21T00:00:00.000Z'
       });
+    });
+
+    it('returns only the latest processing job for each document', async () => {
+      const baseJob = {
+        book: { title: 'Test Book' },
+        type: 'PDF_OCR_PIPELINE',
+        stage: 'completed',
+        progressPercent: 100,
+        attempts: 1,
+        errorMessage: null,
+        updatedAt: new Date('2026-07-22T00:00:00Z')
+      };
+      mockPrisma.processingJob.findMany.mockResolvedValue([
+        { ...baseJob, id: 'job-new', bookId: 'book-1', status: ProcessingJobStatus.QUEUED, createdAt: new Date('2026-07-22T00:00:00Z') },
+        { ...baseJob, id: 'job-other', bookId: 'book-2', status: ProcessingJobStatus.SUCCEEDED, createdAt: new Date('2026-07-21T00:00:00Z') },
+        { ...baseJob, id: 'job-old', bookId: 'book-1', status: ProcessingJobStatus.SUCCEEDED, createdAt: new Date('2026-07-20T00:00:00Z') }
+      ]);
+
+      const result = await service.listJobs();
+
+      expect(result.map((job) => job.id)).toEqual(['job-new', 'job-other']);
     });
   });
 
@@ -99,6 +129,7 @@ describe('ProcessingService', () => {
       const mockJob = {
         id: 'job-1',
         bookId: 'book-1',
+        bookFileId: 'file-1',
         book: { title: 'Test Book' },
         status: ProcessingJobStatus.QUEUED
       };
@@ -128,6 +159,7 @@ describe('ProcessingService', () => {
       const mockJob = {
         id: 'job-1',
         bookId: 'book-1',
+        bookFileId: 'file-1',
         book: { title: 'Test Book' },
         status: ProcessingJobStatus.RUNNING
       };
@@ -152,7 +184,13 @@ describe('ProcessingService', () => {
         data: { status: 'PENDING_APPROVAL' }
       });
       expect(mockPrisma.approvalReview.create).toHaveBeenCalledWith({
-        data: { bookId: 'book-1', status: 'PENDING' }
+        data: {
+          bookId: 'book-1',
+          bookFileId: 'file-1',
+          processingJobId: 'job-1',
+          round: 1,
+          status: 'PENDING'
+        }
       });
       expect(mockNotifications.createNotification).toHaveBeenCalled();
     });

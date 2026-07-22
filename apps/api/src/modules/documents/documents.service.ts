@@ -1,5 +1,5 @@
 import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { BookAuditAction, BookFileStatus, BookStatus, Prisma, UserRole } from '../../generated/prisma/client';
+import { ApprovalReviewStatus, BookAuditAction, BookFileStatus, BookStatus, Prisma, ProcessingJobStatus, UserRole } from '../../generated/prisma/client';
 import slugify from 'slugify';
 import { PrismaService } from '../database/prisma.service';
 import { ProcessingQueue } from '../processing/processing.queue';
@@ -191,15 +191,26 @@ export class DocumentsService {
     const actor = await this.findOrCreateActor(actorEmail);
 
     const { job, file } = await this.prisma.$transaction(async (tx) => {
+      await this.supersedePendingWork(tx, id);
       await tx.book.update({
         where: { id },
         data: { status: BookStatus.PENDING_PROCESSING }
       });
 
       const dbFile = await tx.bookFile.findUniqueOrThrow({ where: { id: activeFile.id } });
+      const previousJob = await tx.processingJob.findFirst({
+        where: { bookFileId: dbFile.id },
+        orderBy: [{ attemptNumber: 'desc' }, { createdAt: 'desc' }]
+      });
 
       const processingJob = await tx.processingJob.create({
-        data: { bookId: id, type: 'PDF_OCR_PIPELINE' }
+        data: {
+          bookId: id,
+          bookFileId: dbFile.id,
+          type: 'PDF_OCR_PIPELINE',
+          attemptNumber: (previousJob?.attemptNumber ?? 0) + 1,
+          retryOfJobId: previousJob?.id
+        }
       });
 
       await tx.bookAuditEvent.create({
@@ -233,6 +244,8 @@ export class DocumentsService {
 
     try {
       const { newFile, job } = await this.prisma.$transaction(async (tx) => {
+        await this.supersedePendingWork(tx, id);
+
         // Deactivate older active files
         await tx.bookFile.updateMany({
           where: { bookId: id, status: BookFileStatus.ACTIVE },
@@ -262,7 +275,7 @@ export class DocumentsService {
         });
 
         const processingJob = await tx.processingJob.create({
-          data: { bookId: id, type: 'PDF_OCR_PIPELINE' }
+          data: { bookId: id, bookFileId: newBookFile.id, type: 'PDF_OCR_PIPELINE' }
         });
 
         await tx.bookAuditEvent.create({
@@ -296,6 +309,26 @@ export class DocumentsService {
       where: { email },
       update: {},
       create: { email, passwordHash: 'dev-only', role: UserRole.LIBRARIAN }
+    });
+  }
+
+  private async supersedePendingWork(tx: Prisma.TransactionClient, bookId: string): Promise<void> {
+    await tx.processingJob.updateMany({
+      where: {
+        bookId,
+        status: { in: [ProcessingJobStatus.QUEUED, ProcessingJobStatus.RUNNING] }
+      },
+      data: {
+        status: ProcessingJobStatus.SUPERSEDED,
+        stage: 'superseded',
+        terminalReason: 'Superseded by a newer processing request',
+        supersededAt: new Date(),
+        completedAt: new Date()
+      }
+    });
+    await tx.approvalReview.updateMany({
+      where: { bookId, status: ApprovalReviewStatus.PENDING },
+      data: { status: ApprovalReviewStatus.SUPERSEDED, supersededAt: new Date() }
     });
   }
 

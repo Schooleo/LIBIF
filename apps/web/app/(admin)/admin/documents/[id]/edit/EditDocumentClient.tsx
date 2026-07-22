@@ -2,16 +2,17 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { DocumentMetadataForm, DocumentMetadataFormValues, CategoryOption } from '../../../../../../components/domain/documents/DocumentMetadataForm';
+import { DocumentMetadataForm, DocumentMetadataFormValues, CategoryOption, TagOption } from '../../../../../../components/domain/documents/DocumentMetadataForm';
 import { InlineAlert } from '../../../../../../components/ui/feedback/feedback';
 
 interface EditDocumentClientProps {
   documentId: string;
   initialValues: Partial<DocumentMetadataFormValues>;
   categories: CategoryOption[];
+  tags: TagOption[];
 }
 
-export function EditDocumentClient({ documentId, initialValues, categories }: EditDocumentClientProps) {
+export function EditDocumentClient({ documentId, initialValues, categories, tags }: EditDocumentClientProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -58,6 +59,7 @@ export function EditDocumentClient({ documentId, initialValues, categories }: Ed
       <DocumentMetadataForm
         initialValues={initialValues}
         categories={categories}
+        tags={tags}
         onSubmit={handleSubmit}
         submitLabel="Save Metadata Changes"
         isLoading={isLoading}

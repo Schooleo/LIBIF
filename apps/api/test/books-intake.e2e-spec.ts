@@ -103,6 +103,8 @@ describe('Digital book intake (e2e)', () => {
     expect(book?.files[0].objectKey).toBe('raw-books/test/sample.pdf');
     expect(book?.files[0].objectKey).not.toMatch(/^https?:\/\//);
     expect(book?.jobs[0].status).toBe('QUEUED');
+    expect(book?.jobs[0].bookFileId).toBe(book?.files[0].id);
+    expect(book?.jobs[0].attemptNumber).toBe(1);
     expect(book?.tags.map(({ tag }) => tag.slug)).toEqual(['software']);
     expect(book?.authors.map(({ author }) => author.name)).toEqual(['Robert C. Martin']);
     expect(queue.events).toHaveLength(1);

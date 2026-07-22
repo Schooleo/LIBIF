@@ -1,6 +1,6 @@
 # Architecture Alignment
 
-Last updated: 2026-07-20
+Last updated: 2026-07-22
 
 ## Current repository structure
 
@@ -27,14 +27,14 @@ Last updated: 2026-07-20
 ## Current route and component baseline
 
 - Current route groups: `apps/web/app/(reader)`, `apps/web/app/(admin)`, and `apps/web/app/(auth)`.
-- Current routes: `/`, `/catalogue`, `/catalog` compatibility redirect, `/admin/books`, `/admin/books/new`, `/sign-in`, `/register`, `/forgot-password`, `/reset-password`, `/reset-password/completed`, `/access-denied`, and `/session-expired`.
+- Current routes include `/`, `/catalogue`, `/catalog` compatibility redirect, reader library/history/bookmarks and document-view routes, `/admin/documents` with detail/edit/new flows, processing/approval/notification routes, taxonomy routes, `/admin/dashboard`, and authentication/access routes. `/admin/books` remains compatibility-only and is not exposed in primary staff navigation.
 - The root layout owns only document shell/font setup; role-aware navigation now lives in Reader/Admin/Auth shells.
 - Phase 1 styling now uses semantic tokens and shared CSS in `apps/web/styles/`, imported from `apps/web/app/globals.css`.
 - Current book intake components under `apps/web/components/book-intake` have been migrated to shared Phase 1 primitives while preserving existing behavior.
 
 ## Current API/module baseline
 
-- `AppModule` imports `DatabaseModule`, `AuthModule`, `StorageModule`, `ProcessingModule`, `BooksModule`, `CatalogModule`, `IsbnModule`, and `HealthModule`.
+- `AppModule` imports the integrated domain modules, including Phase 5 `DocumentsModule`, `UploadModule`, `ApprovalModule`, and `TaxonomyModule` alongside reader, access, processing, and notifications.
 - Current endpoints include:
   - `POST /api/auth/register`
   - `POST /api/auth/sign-in`
@@ -45,18 +45,32 @@ Last updated: 2026-07-20
   - `POST /api/admin/books/intake`
   - `GET /api/admin/books`
   - `GET /api/categories`
+  - `GET /api/taxonomy/categories`
+  - `GET /api/taxonomy/tags`
+  - `POST/PATCH /api/admin/categories[/:id]`
+  - `POST/PATCH /api/admin/tags[/:id]`
+  - `GET/PATCH/POST /api/documents[/:id]` metadata, submit-processing, and replacement operations
+  - `POST/GET /api/uploads[/:id]` plus cancel/retry operations
+  - `GET/POST /api/admin/processing/jobs[/:id]` queue, status, advance, retry, and cancel operations
+  - `GET /api/admin/approvals[/:id]`
+  - `GET/PATCH /api/notifications[/:id]`
+  - reader library/history/bookmark/progress and access decision/token endpoints
   - `GET /api/catalog/books`
   - `GET /api/isbn/:isbn`
   - health endpoints under `HealthModule`
 - `AuthModule` owns reader registration, email/password sign-in, sign-out, database-backed sessions, password-reset tokens, role guard scaffolding, and `GET /api/auth/session`. Development auth headers remain available only when both API and web dev-auth flags opt in outside production, so admin UI gates fail closed by default.
 - `BooksService` currently owns intake persistence and coordinates Prisma, storage, and processing queue; admin book routes are now guarded by the Auth boundary.
 - `CatalogService` currently owns category reads and public published-book list reads.
+- `TaxonomyService` owns stable staff category/tag options plus Admin-only starter create/edit rules; deletion/reassignment/merge remain deferred risky workflows.
+- `DocumentsService` and `UploadService` own the Phase 5 document metadata/file lifecycle boundary and coordinate storage plus processing queue creation.
+- `ProcessingService` owns persisted transition/read foundations and `ApprovalService` owns current approval queue/detail reads. `NotificationsService` still uses process-local state despite the Prisma model; persistence, worker execution, approval commands, and the correction loop remain Phase 6.
 
 ## Database layer
 
-- Prisma schema currently models `User`, `UserSession`, `PasswordResetToken`, `Book`, `BookFile`, `Author`, `BookAuthor`, `Category`, `Tag`, `BookTag`, `ProcessingJob`, `ReadingProgress`, `Bookmark`, `Notification`, `BookAuditEvent`, and `ApprovalReview`.
-- Current enums: `UserRole`, `BookStatus`, `ProcessingJobStatus`, `BookFileStatus`, `ReadingProgressStatus`, `NotificationType`, `NotificationStatus`, `ApprovalReviewStatus`, and `BookAuditAction`.
+- Prisma schema currently models `User`, `UserSession`, `PasswordResetToken`, `Book`, `BookFile`, `Author`, `BookAuthor`, `Category`, `Tag`, `BookTag`, `ProcessingJob`, `ProcessingArtifact`, `ReadingProgress`, `Bookmark`, `Notification`, `BookAuditEvent`, and `ApprovalReview`.
+- Current enums: `UserRole`, `BookStatus`, `ProcessingJobStatus`, `ProcessingArtifactKind`, `TextExtractionMethod`, `BookFileStatus`, `ReadingProgressStatus`, `NotificationType`, `NotificationStatus`, `ApprovalReviewStatus`, and `BookAuditAction`.
 - Phase 5 schema foundation migration `20260721114643_phase5_domain_foundations` fills the persistence gap that Phase 4 lanes had to work around: reading state/bookmarks, notifications, approval reviews, audit events, processing progress timestamps/percent, and file version/status metadata.
+- Phase 6 foundation migration `20260722062955_phase6_processing_foundation` backfills exact file/retry/review lineage, replaces generic failure encodings with `CANCELLED`/`SUPERSEDED`, adds durable artifact metadata, and installs partial uniqueness plus range/identity constraints. OCR consumption and notification persistence remain later Phase 6 work.
 - PostgreSQL is the configured provider.
 - Future catalogue search must add authoritative backend pagination/filtering/sorting and `pg_trgm` behavior; no direct frontend database access is allowed.
 
@@ -69,7 +83,8 @@ Last updated: 2026-07-20
 ## Queue/worker boundary
 
 - `ProcessingQueue` wraps BullMQ and adds `book-uploaded` jobs with three attempts when `REDIS_URL` is configured.
-- No worker entry point was found during Phase 0 inventory; later Processing work must add independently testable processors for Validation -> Compression -> OCR Text -> Search Indexing.
+- No worker entry point exists yet; Phase 6 must add an independently runnable consumer for Validation -> text extraction/OCR -> indexing/finalization. Manual `advance` is a Phase 5 simulation, not OCR evidence.
+- Phase 5 closure repairs route intake/replacement/requeue through authenticated API adapters. D6-000 now preserves superseded jobs/reviews as file-scoped history and enforces only one active file, current job, and pending review per document.
 - Browser code must use REST status endpoints and bounded polling; it must never connect to Redis/BullMQ.
 
 ## Event ownership
@@ -82,21 +97,23 @@ Last updated: 2026-07-20
 
 - **Auth module:** authentication, registration, sessions, permissions, user administration, role changes, account deactivation.
 - **Upload module:** PDF intake, validation, storage coordination, file replacement, upload lifecycle.
-- **Catalog module:** metadata, ISBN enrichment, catalogue search, taxonomy, tags, approval/correction workflow.
+- **Catalog module:** metadata, ISBN enrichment, public catalogue search, and approval/correction document integration.
+- **Taxonomy module:** staff category/tag option contracts, starter Admin management, and later guarded risky taxonomy workflows.
 - **Reader module:** reading authorization, presigned access, bookmarks, continue-reading, reading history.
 - **Processing module:** pipeline jobs, stage progress, failures, retry history, workers.
 - **Notifications capability:** event-driven records and authorized action links, without duplicating workflow truth.
 - **Reporting read layer:** query services over approved module-owned data; no ad hoc frontend database access.
 
-## Architecture gaps to resolve after Phase 4 / Phase 5 schema foundation
+## Architecture gaps after Phase 5 integration
 
-1. Reader module exists, but Phase 5/6 must migrate bookmarks and reading progress from temporary in-memory state to the new Prisma models.
-2. Notifications module exists, but Phase 5/6 must migrate module-local arrays to the new persisted `Notification` model and role-aware action links.
-3. Upload ownership is currently folded into `BooksModule` rather than a separate Upload/Documents application service boundary.
+1. Processing worker entry points, durable OCR artifacts, and full retry/status lineage remain Phase 6, although guarded transition/status/retry/cancel foundations now exist.
+2. Approval decision commands, correction/resubmission, notification persistence/fanout, and richer action links remain Phase 6.
+3. The legacy `BooksModule` intake remains available only as a compatibility surface; it is no longer exposed in primary staff navigation and should be retired through a dedicated API/data migration.
 4. Auth-adjacent administration remains deferred: staff provisioning UX, role changes, account deactivation, MFA/OAuth, production email provider integration, throttling, and security settings.
-5. OpenAPI generation exists, but later batches must keep decorators/generator output current as DTOs expand.
-6. Processing queue/status surfaces exist, but worker entry points, transition validation, retry/cancel controls, and full status history are not implemented.
-7. Remaining data gaps after the Phase 5 schema foundation: report export jobs and full-text/search structures.
+5. Later batches must keep OpenAPI decorators and generated clients current as contracts expand.
+6. Remaining data gaps include report export jobs and full-text/search structures.
+
+The detailed Phase 6 execution contract is `ai_artifacts/plans/plan-phase-6-processing-approval-correction-notifications-2026-07-22.md`.
 
 ## Design inconsistencies and implementation risks
 

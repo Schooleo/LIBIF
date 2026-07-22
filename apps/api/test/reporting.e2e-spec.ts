@@ -57,7 +57,18 @@ describe('Admin dashboard reporting (e2e)', () => {
     await prisma.tag.create({ data: { name: 'Digital', slug: 'digital' } });
     const published = await prisma.book.create({ data: { title: 'Published Book', status: BookStatus.PUBLISHED, categoryId: category.id, createdById: admin.id } });
     await prisma.book.create({ data: { title: 'Pending Book', status: BookStatus.PENDING_PROCESSING, createdById: admin.id } });
-    await prisma.processingJob.create({ data: { bookId: published.id } });
+    const publishedFile = await prisma.bookFile.create({
+      data: {
+        bookId: published.id,
+        bucket: 'test',
+        objectKey: `reporting/${published.id}.pdf`,
+        originalFilename: 'published.pdf',
+        mimeType: 'application/pdf',
+        sizeBytes: 1,
+        checksumSha256: 'reporting-checksum'
+      }
+    });
+    await prisma.processingJob.create({ data: { bookId: published.id, bookFileId: publishedFile.id } });
 
     const adminResponse = await request(app.getHttpServer()).get('/api/admin/dashboard/librarian').set(adminHeaders).expect(200);
     expect(adminResponse.body).toMatchObject({
