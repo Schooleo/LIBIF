@@ -147,8 +147,9 @@ const readerNav: NavItem[] = [
 /** Admin/Librarian workspace: book management only. No public catalogue link. */
 const adminNav: NavItem[] = [
   { label: 'Dashboard', href: '/admin/dashboard', description: 'Operational summary and phase status' },
-  { label: 'Books', href: '/admin/books', description: 'Digital book intake records' },
-  { label: 'New intake', href: '/admin/books/new', description: 'Upload and queue a scanned PDF' },
+  { label: 'Documents', href: '/admin/documents', description: 'Digital document lifecycle management' },
+  { label: 'Books (Legacy)', href: '/admin/books', description: 'Legacy digital book intake records' },
+  { label: 'New Intake', href: '/admin/documents/new', description: 'Upload and queue a scanned PDF' },
 ];
 
 /** Auth layout: minimal — just a back-to-home link in the nav. */

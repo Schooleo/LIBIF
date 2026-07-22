@@ -25,7 +25,7 @@ describe('route-group shells and auth helper', () => {
     render(<AdminShell user={{ name: 'Ada Admin', email: 'ada@example.test', role: 'ADMIN' }}><h1>Admin books</h1></AdminShell>);
     expect(screen.getByRole('navigation', { name: /admin workspace navigation/i })).toBeInTheDocument();
     expect(screen.getByLabelText(/admin sections/i)).toBeInTheDocument();
-    expect(screen.getAllByRole('link', { name: /new intake/i })[0]).toHaveAttribute('href', '/admin/books/new');
+    expect(screen.getAllByRole('link', { name: /new intake/i })[0]).toHaveAttribute('href', '/admin/documents/new');
   });
 
   it('renders auth shell boundary navigation', () => {
