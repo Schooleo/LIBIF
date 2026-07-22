@@ -97,7 +97,10 @@ export class ReaderService {
   async getHistory(userId: string): Promise<ReaderLibraryItemDto[]> {
     // Fetch all books the user has reading progress for, ordered by lastReadAt desc
     const progressRecords = await this.prisma.readingProgress.findMany({
-      where: { userId },
+      where: {
+        userId,
+        book: { status: 'PUBLISHED' },
+      },
       orderBy: { lastReadAt: 'desc' },
       include: {
         book: {
@@ -133,7 +136,10 @@ export class ReaderService {
 
   async getBookmarks(userId: string): Promise<ReaderLibraryItemDto[]> {
     const bookmarkRecords = await this.prisma.bookmark.findMany({
-      where: { userId },
+      where: {
+        userId,
+        book: { status: 'PUBLISHED' },
+      },
       orderBy: { createdAt: 'desc' },
       include: {
         book: {

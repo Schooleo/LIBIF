@@ -19,6 +19,7 @@ describe('AccessModule (e2e)', () => {
   let adminCookie: string;
   let publishedBookId: string;
   let draftBookId: string;
+  let correctionBookId: string;
 
   beforeAll(async () => {
     process.env.LIBIF_SCRYPT_N = '1024';
@@ -84,7 +85,7 @@ describe('AccessModule (e2e)', () => {
     const aCookie = adminRes.headers['set-cookie'];
     adminCookie = Array.isArray(aCookie) ? aCookie[0].split(';')[0] : (aCookie?.split(';')[0] ?? '');
 
-    // Create published & draft books
+    // Create published & draft & correction books
     const pub = await prisma.book.create({
       data: { title: 'Published Document', status: 'PUBLISHED', createdById: adminUser.id },
     });
@@ -94,6 +95,11 @@ describe('AccessModule (e2e)', () => {
       data: { title: 'Draft Document', status: 'DRAFT', createdById: adminUser.id },
     });
     draftBookId = draft.id;
+
+    const correction = await prisma.book.create({
+      data: { title: 'Correction Document', status: 'CORRECTION_REQUIRED', createdById: adminUser.id },
+    });
+    correctionBookId = correction.id;
   });
 
   afterAll(async () => {
@@ -115,12 +121,28 @@ describe('AccessModule (e2e)', () => {
     expect(draftRes.body.allowed).toBe(false);
   });
 
-  it('GET /api/access/documents/:documentId/decision allows admin for draft doc', async () => {
+  it('GET /api/access/documents/:documentId/decision denies reader for CORRECTION_REQUIRED doc', async () => {
+    const corrRes = await request(app.getHttpServer())
+      .get(`/api/access/documents/${correctionBookId}/decision`)
+      .set('Cookie', readerCookie)
+      .expect(200);
+    expect(corrRes.body.allowed).toBe(false);
+    expect(corrRes.body.documentStatus).toBe('CORRECTION_REQUIRED');
+    expect(corrRes.body.reason).toContain('under revision');
+  });
+
+  it('GET /api/access/documents/:documentId/decision allows admin for draft and correction docs', async () => {
     const adminDraftRes = await request(app.getHttpServer())
       .get(`/api/access/documents/${draftBookId}/decision`)
       .set('Cookie', adminCookie)
       .expect(200);
     expect(adminDraftRes.body.allowed).toBe(true);
+
+    const adminCorrRes = await request(app.getHttpServer())
+      .get(`/api/access/documents/${correctionBookId}/decision`)
+      .set('Cookie', adminCookie)
+      .expect(200);
+    expect(adminCorrRes.body.allowed).toBe(true);
   });
 
   it('POST view-token and download-token succeed when allowed and return 403 when denied', async () => {
@@ -135,6 +157,11 @@ describe('AccessModule (e2e)', () => {
 
     await request(app.getHttpServer())
       .post(`/api/access/documents/${draftBookId}/view-token`)
+      .set('Cookie', readerCookie)
+      .expect(403);
+
+    await request(app.getHttpServer())
+      .post(`/api/access/documents/${correctionBookId}/view-token`)
       .set('Cookie', readerCookie)
       .expect(403);
   });

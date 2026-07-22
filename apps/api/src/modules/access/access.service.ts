@@ -9,6 +9,7 @@ const READER_DENIAL_REASONS: Record<string, string> = {
   PENDING_PROCESSING: 'This document is being prepared and will be available shortly.',
   PROCESSING: 'This document is currently being processed. Please check back later.',
   PENDING_APPROVAL: 'This document is under review and not yet publicly available.',
+  CORRECTION_REQUIRED: 'This document is under revision and not yet publicly available.',
   REJECTED: 'This document is not available for reading.',
 };
 

@@ -98,3 +98,10 @@ export async function fetchDocumentDetail(id: string): Promise<DocumentDetailRes
   if (error) throw new Error(apiErrorMessage(error, 'Document detail request failed'));
   return data;
 }
+
+export async function fetchMyNotifications(): Promise<any[]> {
+  const client = await createServerClient();
+  const { data, error } = await client.GET('/api/notifications');
+  if (error) throw new Error(apiErrorMessage(error, 'Notifications request failed'));
+  return data as any[];
+}
