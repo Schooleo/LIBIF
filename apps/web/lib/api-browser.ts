@@ -1,5 +1,5 @@
 import { API_BASE_URL, createLibifApiClient, apiErrorMessage } from './api-client';
-import type { AuthMessageDto, CreateBookIntakeDto, CreateBookIntakeResponse, CreateTaxonomyCategoryDto, CreateTaxonomyTagDto, IsbnLookupResponse, PasswordResetDto, PasswordResetRequestDto, RegisterRequestDto, SessionDto, SignInRequestDto, TaxonomyCategoryDto, TaxonomyTagDto, UpdateTaxonomyCategoryDto, UpdateTaxonomyTagDto } from './api-types';
+import type { AuthMessageDto, CreateBookIntakeDto, CreateBookIntakeResponse, CreateTaxonomyCategoryDto, CreateTaxonomyTagDto, IsbnLookupResponse, PasswordResetDto, PasswordResetRequestDto, RegisterRequestDto, SessionDto, SignInRequestDto, TaxonomyCategoryDto, TaxonomyTagDto, UpdateTaxonomyCategoryDto, UpdateTaxonomyTagDto, UploadResultDto } from './api-types';
 import { getDevAuthHeaders } from './auth/session';
 
 const client = createLibifApiClient(getDevAuthHeaders());
@@ -88,6 +88,22 @@ export function uploadBookIntake(file: File, metadata: CreateBookIntakeDto, onPr
     xhr.onerror = () => reject(new Error('Network error during upload'));
     xhr.send(form);
   });
+}
+
+export async function uploadDocumentIntake(file: File, metadata: CreateBookIntakeDto): Promise<UploadResultDto> {
+  const form = new FormData();
+  form.append('file', file);
+  form.append('metadata', JSON.stringify(metadata));
+
+  const response = await fetch(`${API_BASE_URL}/api/uploads`, {
+    method: 'POST',
+    body: form,
+    credentials: 'include',
+    headers: getDevAuthHeaders()
+  });
+  const payload: unknown = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(apiErrorMessage(payload, 'Failed to submit document upload intake.'));
+  return payload as UploadResultDto;
 }
 
 export async function fetchViewToken(documentId: string): Promise<{ url: string; token: string; expiresAt: string }> {

@@ -6,6 +6,7 @@ import { FormField } from '../../../../../components/ui/forms/FormField';
 import { FileDropzone } from '../../../../../components/ui/forms/FileDropzone';
 import { DocumentMetadataForm, type DocumentMetadataFormValues, type CategoryOption, type TagOption } from '../../../../../components/domain/documents/DocumentMetadataForm';
 import { InlineAlert } from '../../../../../components/ui/feedback/feedback';
+import { uploadDocumentIntake } from '../../../../../lib/api-browser';
 
 interface NewDocumentClientProps {
   categories: CategoryOption[];
@@ -40,22 +41,8 @@ export function NewDocumentClient({ categories, tags }: NewDocumentClientProps) 
       tags: values.tags.split(',').map((s: string) => s.trim()).filter((s: string) => Boolean(s))
     };
 
-    const formData = new FormData();
-    formData.append('file', selectedFile);
-    formData.append('metadata', JSON.stringify(metadataPayload));
-
     try {
-      const res = await fetch('/api/uploads', {
-        method: 'POST',
-        body: formData
-      });
-
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({})) as { message?: string };
-        throw new Error(err.message || 'Failed to submit document upload intake.');
-      }
-
-      const result = await res.json() as { book: { id: string } };
+      const result = await uploadDocumentIntake(selectedFile, metadataPayload);
       router.push(`/admin/documents/${result.book.id}`);
       router.refresh();
     } catch (err) {
