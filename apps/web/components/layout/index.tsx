@@ -148,8 +148,11 @@ const readerNav: NavItem[] = [
 const adminNav: NavItem[] = [
   { label: 'Dashboard', href: '/admin/dashboard', description: 'Operational summary and phase status' },
   { label: 'Documents', href: '/admin/documents', description: 'Digital document lifecycle management' },
-  { label: 'Books (Legacy)', href: '/admin/books', description: 'Legacy digital book intake records' },
   { label: 'New Intake', href: '/admin/documents/new', description: 'Upload and queue a scanned PDF' },
+  { label: 'Processing', href: '/admin/processing', description: 'Processing jobs and pipeline status' },
+  { label: 'Approvals', href: '/admin/approvals', description: 'Pending document reviews' },
+  { label: 'Notifications', href: '/admin/notifications', description: 'System alerts and required actions' },
+  { label: 'Books (Legacy)', href: '/admin/books', description: 'Legacy digital book intake records' },
 ];
 
 /** Auth layout: minimal — just a back-to-home link in the nav. */

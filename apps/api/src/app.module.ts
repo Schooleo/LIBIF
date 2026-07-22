@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AccessModule } from './modules/access/access.module';
+import { ApprovalModule } from './modules/approval/approval.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { BooksModule } from './modules/books/books.module';
 import { CatalogModule } from './modules/catalog/catalog.module';
@@ -26,6 +27,7 @@ import { UploadModule } from './modules/upload/upload.module';
     AuthModule,
     StorageModule,
     ProcessingModule,
+    ApprovalModule,
     NotificationsModule,
     ReportingModule,
     BooksModule,
@@ -39,3 +41,4 @@ import { UploadModule } from './modules/upload/upload.module';
   ]
 })
 export class AppModule {}
+

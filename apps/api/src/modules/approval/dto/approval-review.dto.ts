@@ -1,7 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { ProcessingJobStatus } from '../../../generated/prisma/client';
+import { ApprovalReviewStatus } from '../../../generated/prisma/client';
 
-export class ProcessingJobResponseDto {
+export class ApprovalReviewResponseDto {
   @ApiProperty()
   id!: string;
 
@@ -11,23 +11,20 @@ export class ProcessingJobResponseDto {
   @ApiPropertyOptional({ type: String, nullable: true })
   bookTitle?: string | null;
 
-  @ApiProperty()
-  type!: string;
+  @ApiPropertyOptional({ type: String, nullable: true })
+  reviewerId?: string | null;
 
-  @ApiProperty({ enum: ProcessingJobStatus })
-  status!: ProcessingJobStatus;
+  @ApiProperty({ enum: ApprovalReviewStatus })
+  status!: ApprovalReviewStatus;
 
   @ApiPropertyOptional({ type: String, nullable: true })
-  stage?: string | null;
-
-  @ApiPropertyOptional({ type: Number })
-  progressPercent?: number;
-
-  @ApiProperty()
-  attempts!: number;
+  reason?: string | null;
 
   @ApiPropertyOptional({ type: String, nullable: true })
-  errorMessage?: string | null;
+  requestedChanges?: string | null;
+
+  @ApiPropertyOptional({ format: 'date-time', nullable: true })
+  decidedAt?: string | null;
 
   @ApiProperty({ format: 'date-time' })
   createdAt!: string;
