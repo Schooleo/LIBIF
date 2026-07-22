@@ -11,6 +11,10 @@ vi.mock('../lib/api-server', () => ({
   fetchLibrarianDashboardSummary: fetchMock
 }));
 
+vi.mock('next/navigation', () => ({
+  usePathname: () => '/admin/dashboard'
+}));
+
 import AdminDashboardPage from '../app/(admin)/admin/dashboard/page';
 
 const dashboardSummary: LibrarianDashboardSummaryDto = {
@@ -77,8 +81,8 @@ describe('admin dashboard', () => {
   it('adds dashboard navigation to the admin shell', () => {
     render(<AdminShell user={{ name: 'Ada Admin', email: 'ada@example.test', role: 'ADMIN' }}><h1>Admin books</h1></AdminShell>);
 
-    expect(screen.getAllByRole('link', { name: /dashboard/i })[0]).toHaveAttribute('href', '/admin/dashboard');
-    expect(screen.getAllByRole('link', { name: /categories/i })[0]).toHaveAttribute('href', '/admin/categories');
-    expect(screen.getAllByRole('link', { name: /^tags/i })[0]).toHaveAttribute('href', '/admin/tags');
+    expect(screen.getByRole('link', { name: /^dashboard$/i })).toHaveAttribute('href', '/admin/dashboard');
+    expect(screen.getByRole('link', { name: /^categories$/i })).toHaveAttribute('href', '/admin/categories');
+    expect(screen.getByRole('link', { name: /^tags$/i })).toHaveAttribute('href', '/admin/tags');
   });
 });

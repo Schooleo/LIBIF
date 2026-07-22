@@ -19,7 +19,7 @@ This file combines the original component contract inventory with the current im
 | StatusBadge / DocumentStatusBadge / UserRoleBadge | Status/role communication | status enum, label override | neutral, info, success, warning, error | not color-only; text visible | wraps without clipping | `apps/web/components/ui` + `domain` | documents, processing, users, approvals |
 | DataTable | Server-backed tabular data | columns, rows, page, sort, selection | selectable, compact, loading | table semantics, sortable headers, keyboard row actions | horizontal strategy without clipping | `apps/web/components/ui/data` | documents, processing, approvals, users, reports |
 | Pagination | Page navigation | page, pageSize, total/cursor, onChange | page, cursor | labelled nav and current page | compact controls on mobile | `apps/web/components/ui/data` | catalogue, lists, reports |
-| AppShell / ReaderShell / AdminShell | Application frames | nav items, user, breadcrumbs, notifications | reader, admin, management | landmarks, skip link, one H1 in page content | mobile drawer and desktop sidebar/header | `apps/web/components/layout` | all route groups |
+| AppShell / ReaderShell / AdminShell | Application frames | nav items, user, role, utilities | reader, admin, management | landmarks, skip link, one H1 in page content; one primary nav source per viewport | Reader header navigation; staff desktop sidebar with utility-only topbar; staff mobile drawer from one permission-aware model | `apps/web/components/layout` | all route groups |
 | Breadcrumbs / Tabs / PageHeader | Page hierarchy | items, active tab, actions | default, compact | ordered nav/list semantics | wraps predictably | `apps/web/components/layout` | admin details, settings, reports |
 | DocumentCard / DocumentRow | Document summary | document view model, actions | grid card, list row, compact | title/author semantics, action labels | grid/list switch by route state | `apps/web/components/domain/documents` | catalogue, bookmarks, admin docs |
 | DocumentMetadataSummary | Metadata details | document metadata DTO | compact, full | description list semantics | stacks fields | `apps/web/components/domain/documents` | details, approval, ISBN result |
@@ -42,7 +42,7 @@ This file combines the original component contract inventory with the current im
 
 ## Remaining UI migration notes
 
-- `apps/web/app/layout.tsx` now owns only root document/font setup; role-aware navigation lives in `ReaderShell`, `AdminShell`, and `AuthShell`.
+- `apps/web/app/layout.tsx` now owns only root document/font setup; role-aware navigation lives in `ReaderShell`, `AdminShell`, and `AuthShell`. The staff shell follows the Stitch application-shell model: desktop primary navigation is sidebar-only, the topbar is contextual/utility-only, and mobile reuses the same destinations in a drawer.
 - `apps/web/components/book-intake/*` now uses shared primitives; later upload/catalog batches should move deeper domain behavior behind Upload/Catalog contracts without duplicating UI primitives.
 
 ---
