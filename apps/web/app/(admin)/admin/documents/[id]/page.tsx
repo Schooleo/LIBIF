@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { PageHeader } from '../../../../../components/layout';
 import { Button } from '../../../../../components/ui/actions/Button';
 import { InlineAlert } from '../../../../../components/ui/feedback/feedback';
-import { DocumentMetadataSummary, AuditTimeline } from '../../../../../components/domain/documents/documents';
+import { DocumentMetadataSummary, AuditTimeline, ApprovalHistoryTimeline, CorrectionNotice } from '../../../../../components/domain/documents/documents';
 import { UploadLifecyclePanel } from '../../../../../components/domain/upload/UploadLifecyclePanel';
 import { fetchDocumentDetail } from '../../../../../lib/api-server';
 
@@ -32,6 +32,8 @@ export default async function DocumentDetailPage({ params }: DocumentDetailPageP
       </section>
     );
   }
+
+  const isCorrectionRequired = doc.status === 'REJECTED' || doc.latestApprovalReview?.status === 'CORRECTION_REQUESTED';
 
   const metadataItems = [
     { label: 'Status', value: doc.status },
@@ -69,9 +71,26 @@ export default async function DocumentDetailPage({ params }: DocumentDetailPageP
         }
       />
 
+      {isCorrectionRequired ? (
+        <CorrectionNotice
+          reason={doc.latestApprovalReview?.reason}
+          requestedChanges={doc.latestApprovalReview?.requestedChanges}
+          actions={
+            <div className="ui-cluster">
+              <Link href={`/admin/documents/${doc.id}/edit`}>
+                <Button variant="primary" size="sm">Edit Metadata to Correct</Button>
+              </Link>
+            </div>
+          }
+        />
+      ) : null}
+
       <div className="ui-grid ui-grid-cols-2">
         <div className="ui-stack ui-stack-md">
           <DocumentMetadataSummary title="Document Metadata" metadata={metadataItems} />
+          {doc.approvalHistory?.length > 0 ? (
+            <ApprovalHistoryTimeline reviews={doc.approvalHistory} />
+          ) : null}
           {auditEvents.length > 0 ? (
             <div className="ui-stack ui-stack-tight">
               <h3>Audit History Timeline</h3>
@@ -92,3 +111,4 @@ export default async function DocumentDetailPage({ params }: DocumentDetailPageP
     </section>
   );
 }
+

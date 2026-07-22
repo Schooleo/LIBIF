@@ -5,6 +5,7 @@ import { FormField } from '../../ui/forms/FormField';
 import { TextInput, Textarea, Select } from '../../ui/forms/inputs';
 import { Button } from '../../ui/actions/Button';
 import { InlineAlert } from '../../ui/feedback/feedback';
+import { CorrectionNotice } from './documents';
 
 export type CategoryOption = { id: string; name: string };
 
@@ -27,6 +28,10 @@ interface DocumentMetadataFormProps {
   onSubmit: (values: DocumentMetadataFormValues) => Promise<void>;
   submitLabel?: string;
   isLoading?: boolean;
+  correctionNotice?: {
+    reason?: string | null;
+    requestedChanges?: string | null;
+  } | null;
 }
 
 export function DocumentMetadataForm({
@@ -34,7 +39,8 @@ export function DocumentMetadataForm({
   categories,
   onSubmit,
   submitLabel = 'Save Document Metadata',
-  isLoading = false
+  isLoading = false,
+  correctionNotice
 }: DocumentMetadataFormProps) {
   const [form, setForm] = useState<DocumentMetadataFormValues>({
     title: initialValues?.title ?? '',
@@ -100,6 +106,12 @@ export function DocumentMetadataForm({
 
   return (
     <form onSubmit={handleSubmit} className="ui-stack ui-stack-lg" noValidate>
+      {correctionNotice ? (
+        <CorrectionNotice
+          reason={correctionNotice.reason}
+          requestedChanges={correctionNotice.requestedChanges}
+        />
+      ) : null}
       {errorMsg ? <InlineAlert tone="error">{errorMsg}</InlineAlert> : null}
       {isbnLookupMessage ? (
         <InlineAlert tone={isbnLookupMessage.includes('prefilled') ? 'success' : 'info'}>

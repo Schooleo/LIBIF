@@ -9,9 +9,13 @@ interface EditDocumentClientProps {
   documentId: string;
   initialValues: Partial<DocumentMetadataFormValues>;
   categories: CategoryOption[];
+  correctionNotice?: {
+    reason?: string | null;
+    requestedChanges?: string | null;
+  } | null;
 }
 
-export function EditDocumentClient({ documentId, initialValues, categories }: EditDocumentClientProps) {
+export function EditDocumentClient({ documentId, initialValues, categories, correctionNotice }: EditDocumentClientProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -61,6 +65,7 @@ export function EditDocumentClient({ documentId, initialValues, categories }: Ed
         onSubmit={handleSubmit}
         submitLabel="Save Metadata Changes"
         isLoading={isLoading}
+        correctionNotice={correctionNotice}
       />
     </div>
   );
