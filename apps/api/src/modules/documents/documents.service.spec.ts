@@ -143,6 +143,7 @@ describe('DocumentsService', () => {
       objectKey: 'key1',
       processingJobId: 'job_2'
     });
+  });
 
   it('removes stale pending approvals when replacing the active file', async () => {
     const now = new Date('2026-07-22T00:00:00Z');
