@@ -1,9 +1,23 @@
+import { Transform } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsEmail, IsLocale, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
+
+function trimString({ value }: { value: unknown }): unknown {
+  if (typeof value !== 'string') return value;
+  return value.trim();
+}
+
+function trimNullableToNull({ value }: { value: unknown }): unknown {
+  if (value === null || value === undefined) return value;
+  if (typeof value !== 'string') return value;
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : null;
+}
 
 export class UpdateGeneralSettingsDto {
   @ApiPropertyOptional({ maxLength: 120 })
   @IsOptional()
+  @Transform(trimString)
   @IsString()
   @MinLength(1)
   @MaxLength(120)
@@ -11,18 +25,21 @@ export class UpdateGeneralSettingsDto {
 
   @ApiPropertyOptional({ type: String, nullable: true, maxLength: 254 })
   @IsOptional()
+  @Transform(trimNullableToNull)
   @IsEmail()
   @MaxLength(254)
   supportEmail?: string | null;
 
   @ApiPropertyOptional({ example: 'vi' })
   @IsOptional()
+  @Transform(trimString)
   @IsLocale()
   @MaxLength(16)
   defaultLocale?: string;
 
   @ApiPropertyOptional({ type: String, nullable: true, maxLength: 500 })
   @IsOptional()
+  @Transform(trimNullableToNull)
   @IsString()
   @MinLength(1)
   @MaxLength(500)
