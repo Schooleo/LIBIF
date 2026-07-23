@@ -90,8 +90,8 @@ Last updated: 2026-07-23
 6. Catalogue cards have no functional detail link, and detail/viewer routes scan the first catalogue list page instead of using direct detail contracts.
 7. The Reader viewer embeds the raw PDF, exposes a download action, and has a separate hard-coded page tracker that does not control the embedded viewer.
 8. Catalogue detail and viewer bookmark controls default to false because they do not hydrate one-document persisted state.
-9. `User` has no deactivation marker or user-administration audit history; Phase 7 D7-000 owns that schema foundation and AuthModule integration.
-10. Category deletion/reassignment, tag duplicate review/merge, management reporting/CSV, and persisted settings do not yet have runtime contracts.
+9. Phase 7 D7-000 now supplies `User` lifecycle state, append-only user-administration history, append-only bounded Reader access facts, and typed singleton product settings. Auth enforcement and administration/reporting/settings controllers remain later tasks.
+10. Category deletion/reassignment, tag duplicate review/merge, management reporting/CSV, and settings controllers do not yet have runtime routes. Reader-security report and settings DTOs are frozen but are not live endpoints.
 11. Settings must distinguish safe database-backed product settings from deployment-owned secrets and security configuration; Phase 7 must not create an undocumented environment override.
 
 ## Migration strategy status
@@ -103,7 +103,7 @@ Last updated: 2026-07-23
 5. Phase 5 document lifecycle, taxonomy selectors, upload boundary, and persisted workflow tables remain the base consumed by the completed Phase 6 workflow and planned Phase 7 work.
 6. Phase 6 adds an isolated worker bootstrap, real embedded-text/OCR extraction, persisted notification reads, approval commands, processing lineage/artifacts, and runtime correction-loop reuse.
 7. The Phase 6 worker/OCR closure gate is reproducible through `npm run test:worker -w apps/api` and its CI job.
-8. Phase 7 follows `ai_artifacts/plans/plan-phase-7-admin-operations-users-reporting-settings-2026-07-23.md` and the validated DRM research: Reader POC gates come first; `CatalogModule` adds published-only detail, `RenderingModule` produces private raster bases and server-burned traceable watermarks, `AccessModule` authorizes/audits/rate-limits delivery, `ReaderModule` hydrates bookmark/progress state, and the web viewer draws pages on canvas without a Reader raw-PDF/download path.
+8. Phase 7 follows `ai_artifacts/plans/plan-phase-7-admin-operations-users-reporting-settings-2026-07-23.md` and the validated DRM research. Waves 1–2 are complete and recorded in `ai_artifacts/docs/phase-7-wave-1-2-foundation-contract-freeze.md`; Reader POC implementation comes next from the frozen catalogue, rendering, access, state, audit, reporting, and settings shapes.
 9. Existing Phase 7 admin decisions remain: one schema foundation precedes user administration/settings, risky taxonomy actions remain in `TaxonomyModule`, reporting remains read-only, and exports are bounded synchronous CSV rather than a second worker subsystem.
 
 ## Anti-fragmentation decisions

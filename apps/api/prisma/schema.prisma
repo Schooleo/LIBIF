@@ -15,6 +15,45 @@ enum UserRole {
   READER
 }
 
+enum UserAccountStatus {
+  ACTIVE
+  DEACTIVATED
+}
+
+enum UserAdministrationAction {
+  ROLE_CHANGED
+  DEACTIVATED
+  REACTIVATED
+}
+
+enum ReaderAccessEventType {
+  VIEWER_OPENED
+  PAGE_SERVED
+  PAGE_DENIED
+  RATE_LIMITED
+  SCRAPE_SUSPECTED
+}
+
+enum ReaderAccessRiskLevel {
+  NONE
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum ReaderAccessReasonCode {
+  ACCESS_DENIED
+  DOCUMENT_UNAVAILABLE
+  PAGE_OUT_OF_RANGE
+  RATE_LIMIT_EXCEEDED
+  CONCURRENCY_LIMIT_EXCEEDED
+  PAGE_ENUMERATION
+  IMPOSSIBLE_READING_RATE
+  REPEATED_INVALID_PAGE
+  PARALLEL_SESSION_ABUSE
+  DEPENDENCY_UNAVAILABLE
+}
+
 enum BookStatus {
   DRAFT
   PENDING_PROCESSING
@@ -95,21 +134,29 @@ enum BookAuditAction {
 }
 
 model User {
-  id                  String               @id @default(cuid())
-  email               String               @unique
-  passwordHash        String
-  role                UserRole
-  lastSignInAt        DateTime?
-  createdAt           DateTime             @default(now())
-  updatedAt           DateTime             @updatedAt
-  booksCreated        Book[]               @relation("BookCreator")
-  sessions            UserSession[]
-  passwordResetTokens PasswordResetToken[]
-  readingProgress     ReadingProgress[]
-  bookmarks           Bookmark[]
-  notifications       Notification[]       @relation("NotificationRecipient")
-  bookAuditEvents     BookAuditEvent[]     @relation("BookAuditActor")
-  approvalReviews     ApprovalReview[]     @relation("ApprovalReviewer")
+  id                           String                    @id @default(cuid())
+  email                        String                    @unique
+  passwordHash                 String
+  role                         UserRole
+  status                       UserAccountStatus         @default(ACTIVE)
+  deactivatedAt                DateTime?
+  lastSignInAt                 DateTime?
+  createdAt                    DateTime                  @default(now())
+  updatedAt                    DateTime                  @updatedAt
+  booksCreated                 Book[]                    @relation("BookCreator")
+  sessions                     UserSession[]
+  passwordResetTokens          PasswordResetToken[]
+  readingProgress              ReadingProgress[]
+  bookmarks                    Bookmark[]
+  notifications                Notification[]            @relation("NotificationRecipient")
+  bookAuditEvents              BookAuditEvent[]          @relation("BookAuditActor")
+  approvalReviews              ApprovalReview[]          @relation("ApprovalReviewer")
+  administrationEventsAsTarget UserAdministrationEvent[] @relation("UserAdministrationTarget")
+  administrationEventsAsActor  UserAdministrationEvent[] @relation("UserAdministrationActor")
+  readerAccessEvents           ReaderAccessEvent[]
+  settingsUpdates              SystemSettings[]          @relation("SystemSettingsUpdater")
+
+  @@index([status])
 }
 
 model UserSession {
@@ -143,29 +190,30 @@ model PasswordResetToken {
 }
 
 model Book {
-  id              String            @id @default(cuid())
-  isbn            String?           @unique
-  title           String
-  subtitle        String?
-  description     String?
-  publisher       String?
-  publishedYear   Int?
-  language        String?           @default("vi")
-  status          BookStatus        @default(PENDING_PROCESSING)
-  categoryId      String?
-  category        Category?         @relation(fields: [categoryId], references: [id])
-  createdById     String
-  createdBy       User              @relation("BookCreator", fields: [createdById], references: [id])
-  files           BookFile[]
-  authors         BookAuthor[]
-  tags            BookTag[]
-  jobs            ProcessingJob[]
-  readingProgress ReadingProgress[]
-  bookmarks       Bookmark[]
-  auditEvents     BookAuditEvent[]
-  approvalReviews ApprovalReview[]
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
+  id                 String              @id @default(cuid())
+  isbn               String?             @unique
+  title              String
+  subtitle           String?
+  description        String?
+  publisher          String?
+  publishedYear      Int?
+  language           String?             @default("vi")
+  status             BookStatus          @default(PENDING_PROCESSING)
+  categoryId         String?
+  category           Category?           @relation(fields: [categoryId], references: [id])
+  createdById        String
+  createdBy          User                @relation("BookCreator", fields: [createdById], references: [id])
+  files              BookFile[]
+  authors            BookAuthor[]
+  tags               BookTag[]
+  jobs               ProcessingJob[]
+  readingProgress    ReadingProgress[]
+  bookmarks          Bookmark[]
+  auditEvents        BookAuditEvent[]
+  approvalReviews    ApprovalReview[]
+  readerAccessEvents ReaderAccessEvent[]
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
 
   @@index([title])
   @@index([status])
@@ -385,4 +433,58 @@ model ApprovalReview {
   @@index([bookId, status])
   @@index([bookFileId, createdAt])
   @@index([reviewerId])
+}
+
+model UserAdministrationEvent {
+  id           String                   @id @default(cuid())
+  targetUserId String
+  actorUserId  String?
+  action       UserAdministrationAction
+  previousRole UserRole?
+  nextRole     UserRole?
+  reason       String?                  @db.VarChar(500)
+  createdAt    DateTime                 @default(now())
+  targetUser   User                     @relation("UserAdministrationTarget", fields: [targetUserId], references: [id], onDelete: Restrict)
+  actorUser    User?                    @relation("UserAdministrationActor", fields: [actorUserId], references: [id], onDelete: Restrict)
+
+  @@index([targetUserId, createdAt])
+  @@index([actorUserId, createdAt])
+  @@index([action, createdAt])
+}
+
+model ReaderAccessEvent {
+  id               String                  @id @default(cuid())
+  eventType        ReaderAccessEventType
+  riskLevel        ReaderAccessRiskLevel   @default(NONE)
+  reasonCode       ReaderAccessReasonCode?
+  userId           String
+  sessionId        String?
+  bookId           String
+  bookFileId       String?
+  pageNumber       Int?
+  traceFingerprint String?                 @unique @db.VarChar(64)
+  createdAt        DateTime                @default(now())
+  user             User                    @relation(fields: [userId], references: [id], onDelete: Restrict)
+  book             Book                    @relation(fields: [bookId], references: [id], onDelete: Restrict)
+
+  @@index([userId, createdAt])
+  @@index([sessionId, createdAt])
+  @@index([bookId, createdAt])
+  @@index([bookFileId, createdAt])
+  @@index([eventType, createdAt])
+  @@index([riskLevel, createdAt])
+}
+
+model SystemSettings {
+  id            String   @id @default("default")
+  libraryName   String   @default("LIBIF") @db.VarChar(120)
+  supportEmail  String?  @db.VarChar(254)
+  defaultLocale String   @default("vi") @db.VarChar(16)
+  readerNotice  String?  @db.VarChar(500)
+  updatedById   String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  updatedBy     User?    @relation("SystemSettingsUpdater", fields: [updatedById], references: [id], onDelete: SetNull)
+
+  @@index([updatedById])
 }

@@ -204,7 +204,13 @@ Member D Phase 5 is complete and integrated with the merged Member A/B/C lanes; 
 - [x] Validated research recorded at `ai_artifacts/research/document-drm-and-screenshot-prevention-2026-07-23.md`; Phase 7 now requires server-burned traceable watermarks, append-only Reader access events, Redis-backed scrape/rate/concurrency controls, and deduplicated staff alerts.
 - [x] Phase 7 workload is explicitly balanced by planning points: A=11 access/viewer, B=11 catalogue/taxonomy, C=10 rendering/alerts, D=12 schema/users/reporting/settings/integration.
 - [x] Phase 7 locks one D7-000 schema migration, transactional user/taxonomy safeguards, bounded synchronous CSV instead of a second worker subsystem, and explicit persisted-versus-deployment-managed settings boundaries.
-- [ ] Phase 7 implementation has not started; completion boxes must be updated only from fresh execution evidence.
+- [x] Wave 1 / D7-000 implemented in `20260723143000_phase7_administration_reader_security_foundation`: active/deactivated accounts, immutable user-administration events, bounded append-only Reader access facts, and typed singleton settings.
+- [x] Wave 1 isolated PostgreSQL proof passes 1 suite / 5 tests, including backfill, audit immutability, non-content Reader columns, event constraints, and singleton settings.
+- [x] Wave 2 frozen code contracts cover public catalogue detail, Reader state, manifest/429 shapes, `ProtectedPageRenderer`, committed risk facts, Reader-access reporting, and product-owned settings.
+- [x] Wave 1–2 evidence and ownership handoffs are recorded in `ai_artifacts/docs/phase-7-wave-1-2-foundation-contract-freeze.md`.
+- [x] Wave 1–2 full regression: migration deploy/status and seed, empty Prisma diff, root lint, 20 API suites/91 tests, 15 web files/62 tests, API/web/shared builds, 8 API e2e suites/36 tests, worker suite/5 scenarios, OpenAPI/client generation, and `git diff --check`.
+- [x] The canonical plan now dispatches every member by Wave 1–7 with task IDs, dependency gates, handoffs, current focus, and explicit cross-lane stop boundaries.
+- [ ] Wave 3 parallel P0 implementation is next; no planned Reader page/detail/state route is marked live yet.
 
 ### Phase 4 Member D verification
 

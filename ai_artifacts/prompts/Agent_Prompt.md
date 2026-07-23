@@ -16,6 +16,7 @@ All AI-produced planning and design-reference artifacts are centralized under `a
 | `ai_artifacts/docs/component-inventory.md` | Shared component contracts and current implementation inventory. |
 | `ai_artifacts/docs/workflow-state-machines.md` | Workflow states, commands, events, permissions, and response expectations. |
 | `ai_artifacts/docs/api-contracts.md` | Current and target API/OpenAPI contract notes by batch. |
+| `ai_artifacts/docs/phase-7-wave-1-2-foundation-contract-freeze.md` | Implemented Phase 7 schema foundation, frozen cross-lane code contracts, ownership boundaries, and verification evidence. |
 | `ai_artifacts/docs/team_backlog_80_90_completion.md` | Canonical four-member backlog for reaching 80-90% application completion, including phase roadmap, ownership lanes, merge rules, task IDs, expected results, and validation. |
 | `ai_artifacts/plans/` | Approved execution plans by phase. |
 | `ai_artifacts/skeletons/` | Planning skeleton maps for future API modules, web routes, and domain components. These are not runtime placeholders; use them to determine expected files and ownership before generating implementation files. |

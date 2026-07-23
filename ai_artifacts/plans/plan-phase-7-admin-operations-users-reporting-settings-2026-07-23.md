@@ -3,7 +3,7 @@
 Date: 2026-07-23
 Planning mode: repository-grounded execution plan
 Phase owner / integration lane: Member D
-Implementation status: ready for execution; implementation evidence must be added from fresh Phase 7 work
+Implementation status: Waves 1–2 complete; Wave 3 parallel P0 implementation is next
 
 ## Target Result and Stop Condition
 
@@ -37,6 +37,8 @@ Stop only when every **P0 Reader POC Gate** below passes, the admin acceptance c
   - `ai_artifacts/skeletons/api-modules/taxonomy/README.md`
   - `ai_artifacts/skeletons/api-modules/reporting/README.md`
   - `ai_artifacts/skeletons/api-modules/settings/README.md`
+- Waves 1–2 implementation record:
+  - `ai_artifacts/docs/phase-7-wave-1-2-foundation-contract-freeze.md`
 
 ## Repository-Grounded Entry Baseline
 
@@ -57,7 +59,8 @@ Stop only when every **P0 Reader POC Gate** below passes, the admin acceptance c
 - `AccessModule` already owns access decisions and active-file resolution; it remains the owner of protected content delivery.
 - `ReaderModule` already owns idempotent bookmark writes and persisted reading progress.
 - `AuthModule`, `TaxonomyModule`, and `ReportingModule` remain the established owners for authentication, taxonomy, and read-only operational metrics.
-- The Prisma `User` model still lacks deactivation and user-administration audit state; no persisted settings model exists.
+- D7-000 now provides account lifecycle state, append-only user-administration and Reader-access facts, and typed singleton settings through one verified Phase 7 migration.
+- Wave 2 code contracts are frozen for public catalogue detail, Reader document state, protected manifest/rate-limit responses, `ProtectedPageRenderer`, committed risk facts, Reader-access reporting, and safe general settings. Their planned HTTP routes remain absent until their owning Wave 3/P1 tasks implement controllers.
 
 ## Priority and Scope
 
@@ -177,6 +180,27 @@ Stop only when every **P0 Reader POC Gate** below passes, the admin acceptance c
 - One member owns each write surface. Cross-lane work happens through frozen DTO/service ports and explicit handoffs; no member edits another lane's implementation to “help.”
 - P0 contract freeze and D7-000 land first. After that, A/B/C implementation streams and D administration streams may proceed in parallel.
 
+### Wave-by-wave member focus
+
+Members work only in the current wave unless the dependency and handoff named below are complete. A task may begin early when marked parallel, but it is counted complete only at the wave gate. Contract producers fix their own surfaces; consumers do not patch another lane to unblock themselves.
+
+| Wave | Status / gate | Member A focus | Member B focus | Member C focus | Member D focus |
+|---|---|---|---|---|---|
+| 1 — Foundation | **Complete.** Migration deployed, seeded, and proven in isolation. | Review access-event needs; no schema edits. | Review catalogue metadata needs; no schema edits. | Review file/version needs; no schema edits. | **D7-000 complete:** account lifecycle, immutable administration facts, bounded `ReaderAccessEvent`, typed singleton settings, migration/seed/tests. |
+| 2 — Contract freeze | **Complete.** Frozen shapes are recorded in `ai_artifacts/docs/phase-7-wave-1-2-foundation-contract-freeze.md`. | Freeze manifest, page-delivery, stable 429, Reader-state, audit-write, and committed-risk shapes. | Freeze `PublicBookDetailDto` and published-only lookup semantics. | Freeze `ProtectedPageRenderer`, render profiles, image result, watermark input, and trace fingerprint. | Freeze Prisma enums/models, Reader-access report DTOs, safe settings DTOs, handoff matrix, and canonical documentation. |
+| 3 — Parallel P0 build | **Active next wave.** Each lane passes targeted tests before integration. | **A7-001 → A7-004 → A7-002**; implement guarded manifest/page delivery, required audit/rate/scrape enforcement, then canvas integration. **A7-003** may run in parallel; finish **A7-005** before the P0 gate. | **B7-001 → B7-002**; implement direct published-only detail, then catalogue URL-state discovery/navigation. Publish tested detail DTO behavior to A. | **C7-001 → C7-002**; implement bounded Poppler raster bases, then per-request watermarks/private cache invalidation. Export only the frozen port. | Begin **D7-001** and **D7-004** independently. Guard frozen contracts and migration ownership; do not regenerate the shared client while A/B/C routes are still moving. |
+| 4 — P0 integration | Starts only after A7-001/A7-004, B7-001, and C7-001/C7-002 targeted gates pass. | Integrate B detail and C renderer; finish canvas/state behavior; emit committed risk facts; own the end-to-end Reader gate. | Fix only catalogue/detail contract defects found by integration; do not enter Access/viewer files. | **C7-003**; consume committed risk facts for deduplicated staff alerts and fix only renderer contract defects. | Add the Reader-access portion of **D7-003**, seed trace/risk scenarios, and verify audit/report projections without implementing allow/deny logic. |
+| 5 — Parallel P1 administration | Starts after the Reader POC integration gate is green. | Reader regression, accessibility, and integration fixes only; no new administration scope. | **B7-003 → B7-004 → B7-005**; risky taxonomy transactions, UI reconciliation, then documented bulk-action decision. | **C7-004**; notification/read-state and approval-confirmation polish. | Finish **D7-001 → D7-002**, complete **D7-003**, and finish **D7-004** users/roles/status/reporting/CSV/settings with authorization and transaction tests. |
+| 6 — Cross-lane security gate | All P0/P1 task tests must be green; failures return to the owning lane. | Prove authorization, fail-closed audit/detectors, sequential-reading allowance, canvas/state behavior, and Reader PDF/download denial. | Prove published-only detail, catalogue navigation, taxonomy atomicity, and no unsafe metadata exposure. | Prove real-PDF bounds, unique watermark/trace resolution, private cache isolation/invalidation, and alert deduplication. | Prove migration/status invariants, reporting/CSV safety, settings boundaries, full regression, worker/OCR privacy, and evidence reconciliation. |
+| 7 — Phase closure | Starts only after Wave 6 evidence is accepted. | Freeze Reader routes and provide final smoke evidence. | Freeze catalogue/taxonomy routes and provide final smoke evidence. | Freeze renderer/notification routes and provide final smoke evidence. | **D7-005:** one OpenAPI/client regeneration, module/navigation/seed/docs reconciliation, final verification, and Phase 8 handoff. |
+
+#### Current member instruction
+
+- **Member A:** start Wave 3 with A7-001 and A7-004; coordinate renderer inputs with C before A7-002.
+- **Member B:** start Wave 3 with B7-001; hand the tested published-only detail behavior to A before expanding B7-002.
+- **Member C:** start Wave 3 with C7-001; do not start watermark/cache work until page/profile bounds and real-PDF tests are stable.
+- **Member D:** start D7-001/D7-004 without changing frozen Reader contracts; retain integration ownership and defer generated-client refresh to D7-005.
+
 ### Member A — Reader Session, Access, and Viewer
 
 Owned scope: `apps/api/src/modules/reader/**`, `apps/api/src/modules/access/**`, `apps/web/app/(reader)/**`, `apps/web/components/domain/reader/**`, and reader/access tests. Member A consumes, but does not implement, Member C's renderer.
@@ -290,9 +314,9 @@ If a handoff shape changes after freeze, its producer updates tests and notifies
 
 ## Merge Order
 
-1. **D7-000 foundation** — one migration for user administration, `ReaderAccessEvent`, and settings; Prisma generation and isolated migration proof.
-2. **P0 contract freeze** — A defines access/event needs, B freezes catalogue detail, C freezes `ProtectedPageRenderer`, and D freezes audit/reporting DTOs.
-3. **Parallel P0 implementation** — B catalogue detail/discovery; C bounded renderer/watermark/cache; A access/audit/rate enforcement and canvas integration.
+1. **D7-000 foundation — complete** — one migration for user administration, `ReaderAccessEvent`, and settings; Prisma generation and isolated migration proof.
+2. **P0 contract freeze — complete** — A defines access/event needs, B freezes catalogue detail, C freezes `ProtectedPageRenderer`, and D freezes audit/reporting DTOs. Frozen shapes are recorded in `ai_artifacts/docs/phase-7-wave-1-2-foundation-contract-freeze.md`.
+3. **Parallel P0 implementation — active next** — follow the Wave 3 row above: B catalogue detail/discovery; C bounded renderer/watermark/cache; A access/audit/rate enforcement and canvas integration; D independent users/settings foundations.
 4. **P0 integration gate** — A consumes B/C outputs, C consumes committed risk facts for alerts, D verifies audit/report projections and seeded trace scenarios.
 5. **Parallel P1 implementation** — B risky taxonomy; C notification/approval polish; D users/reporting/settings.
 6. **Cross-lane security gate** — real-PDF rendering, watermark uniqueness/trace resolution, fail-closed audit, rate/concurrency/scrape behavior, source-PDF denial, and OCR privacy regression.
@@ -371,4 +395,7 @@ At completion, a Reader can discover a book, open a real detail page, see correc
 - [x] Security limitations and truthful UI language are explicit.
 - [x] Existing user/taxonomy/reporting/settings goals are preserved.
 - [x] A/B/C/D ownership, weighted workload, write boundaries, handoffs, merge order, contracts, risks, and verification are explicit.
-- [ ] Implementation evidence will be appended only after Phase 7 execution begins.
+- [x] Wave 1 D7-000 is implemented as one migration with seed integration, database constraints, append-only triggers, and isolated PostgreSQL proof.
+- [x] Wave 2 code contracts and handoff ownership are frozen and recorded without falsely claiming planned routes as live.
+- [x] Wave 1–2 regression passes: empty Prisma diff, migration/seed, lint, 20 API suites/91 tests, 15 web files/62 tests, builds, 8 API e2e suites/36 tests, worker suite/5 scenarios, OpenAPI/client generation, and diff checks.
+- [ ] Wave 3 and later implementation evidence remains pending.

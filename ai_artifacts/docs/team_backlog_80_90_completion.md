@@ -313,7 +313,7 @@ Goal: close the demo-critical reader gaps while preserving the planned operation
 
 Canonical execution plan: `ai_artifacts/plans/plan-phase-7-admin-operations-users-reporting-settings-2026-07-23.md`.
 
-Planning status: ready for execution. Reader POC gates are P0. Weighted work is split A=11, B=11, C=10, D=12 planning points. Member D owns the single migration and final integration; Phase 7 explicitly transfers risky taxonomy implementation to Member B and secure rendering/watermark implementation to Member C.
+Execution status: Waves 1–2 are complete; Wave 3 parallel P0 implementation is next. Reader POC gates are P0. Weighted work is split A=11, B=11, C=10, D=12 planning points. Member D owns the single migration and final integration; Phase 7 explicitly transfers risky taxonomy implementation to Member B and secure rendering/watermark implementation to Member C. Foundation and contract evidence is recorded in `ai_artifacts/docs/phase-7-wave-1-2-foundation-contract-freeze.md`; the canonical plan's Wave 1–7 member-focus table is the authoritative dispatch order.
 
 Member A tasks:
 

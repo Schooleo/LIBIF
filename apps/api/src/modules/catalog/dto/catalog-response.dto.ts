@@ -71,6 +71,23 @@ export class PublicBookListItemResponseDto {
   createdAt!: string;
 }
 
+export class PublicBookDetailResponseDto extends PublicBookListItemResponseDto {
+  @ApiPropertyOptional({ type: String, nullable: true })
+  subtitle?: string | null;
+
+  @ApiPropertyOptional({ type: String, nullable: true })
+  description?: string | null;
+
+  @ApiPropertyOptional({ type: String, nullable: true })
+  publisher?: string | null;
+
+  @ApiPropertyOptional({ type: Number, nullable: true })
+  publishedYear?: number | null;
+
+  @ApiPropertyOptional({ type: String, nullable: true })
+  language?: string | null;
+}
+
 export class AdminBookListItemResponseDto extends PublicBookListItemResponseDto {
   @ApiPropertyOptional({ type: () => BookFileSummaryDto, nullable: true })
   file?: BookFileSummaryDto | null;

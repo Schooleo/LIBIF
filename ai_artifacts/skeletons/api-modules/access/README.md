@@ -9,6 +9,8 @@ Future runtime files:
 - `apps/api/src/modules/access/access.service.ts`
 - `apps/api/src/modules/access/dto/access-decision.dto.ts`
 - `apps/api/src/modules/access/dto/protected-document-url.dto.ts`
+- `apps/api/src/modules/access/contracts/reader-access.contract.ts` — Phase 7 contract frozen
+- `apps/api/src/modules/access/dto/protected-document-manifest.dto.ts` — Phase 7 contract frozen
 - `apps/api/src/modules/access/access.service.spec.ts`
 - `apps/api/test/access.e2e-spec.ts`
 
@@ -28,3 +30,4 @@ Notes:
 - Persist bounded Reader access events, enforce Redis-backed rate/concurrency/scrape rules, and fail closed when required authorization/watermark/audit controls are unavailable.
 - Do not deliver source-PDF bytes, object keys, or OCR plaintext to Reader viewers.
 - Canvas rendering is copy deterrence, not absolute DRM or screenshot prevention.
+- Frozen contracts do not make the manifest/page routes live; Member A must add controller/service behavior and tests in Wave 3.

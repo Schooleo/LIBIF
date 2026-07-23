@@ -155,7 +155,7 @@ Source of truth: `apps/api/src/common/http-error.filter.ts`.
 - View/download token routes return application URLs, not storage-provider credentials.
 - Stream and file delivery always resolve the active file version for the document at request time.
 - The current Reader viewer still receives the source PDF through the application stream and exposes the download-token route. This is a documented Phase 7 P0 gap, not the target content-protection design.
-- Planned Phase 7 contracts are `GET /api/catalog/books/:documentId`, `GET /api/reader/documents/:documentId/state`, `GET /api/access/documents/:documentId/manifest`, and `GET /api/access/documents/:documentId/pages/:pageNumber`.
+- Frozen Phase 7 code contracts cover `GET /api/catalog/books/:documentId`, `GET /api/reader/documents/:documentId/state`, `GET /api/access/documents/:documentId/manifest`, and `GET /api/access/documents/:documentId/pages/:pageNumber`. The DTO/port shapes exist, but these routes remain non-live until their owning controllers and tests land.
 - The planned Reader page route returns an authorized, bounded, individually server-watermarked raster image with private/no-store caching and never returns object keys, source-PDF bytes/URLs, or extracted OCR text. The web viewer draws it on canvas without a selectable text layer.
 - Every successful/denied page attempt produces a bounded `ReaderAccessEvent`; Redis-backed rate/concurrency/scrape enforcement returns stable `429` + `Retry-After` where applicable and emits committed risk facts for deduplicated staff alerts.
 - Planned Admin-only security projections are `GET /api/admin/reports/reader-access?from&to&risk` and the bounded `.csv` equivalent.
@@ -172,4 +172,4 @@ These routes are not implemented in the current runtime code and must not be tre
 - Management dashboard, report-export, and settings endpoints.
 - Published catalogue detail, one-document reader state, and protected manifest/raster-page endpoints.
 
-The approved next-contract source is `ai_artifacts/plans/plan-phase-7-admin-operations-users-reporting-settings-2026-07-23.md`. Its endpoint outline is planning-only until controllers, tests, and regenerated OpenAPI prove the runtime shapes.
+The approved contract sources are `ai_artifacts/plans/plan-phase-7-admin-operations-users-reporting-settings-2026-07-23.md` and `ai_artifacts/docs/phase-7-wave-1-2-foundation-contract-freeze.md`. Frozen TypeScript/Prisma shapes are not live endpoint evidence; controllers, tests, and regenerated OpenAPI remain required.
