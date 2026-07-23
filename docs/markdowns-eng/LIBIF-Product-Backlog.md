@@ -12,8 +12,8 @@
 | Field | Content |
 |---|---|
 | **Project Name** | LIBIF — Intelligent Library Digitization System |
-| **Version** | v1.0 (Standardized Product Backlog) |
-| **Date** | July 10, 2026 |
+| **Version** | v2.0 (Aligned with Tesseract OCR vie & Project Charter) |
+| **Date** | July 19, 2026 |
 | **Author** | LIBIF Engineering & Product Team |
 
 ---
@@ -67,7 +67,7 @@ Focuses on librarian features, solving fragmented file storage and manual metada
 - **Acceptance Criteria (AC):**
   - **AC1:** Compression and OCR executed asynchronously via Redis + BullMQ queue.
   - **AC2:** Compressed PDF reduces file size by at least **40%** while maintaining visual legibility.
-  - **AC3:** VietOCR engine recognizes Vietnamese diacritics with at least **92%** accuracy on standard printed books.
+  - **AC3:** **Tesseract OCR (`vie`)** engine recognizes Vietnamese diacritics with at least **92%** accuracy on standard printed books.
   - **AC4:** Extracted text layer stored in PostgreSQL database for full-text search indexing.
 
 ---
@@ -98,7 +98,7 @@ Focuses on reader features, enabling self-service digital access.
 - **Acceptance Criteria (AC):**
   - **AC1:** Reader renders dynamically using HTML5 Canvas (PDF.js), concealing raw file tags.
   - **AC2:** Disables right-click, F12 DevTools, text copying (Ctrl+C), and printing shortcuts (Ctrl+P).
-  - **AC3:** Raw PDF access secured via temporary AWS S3 Presigned URLs expiring in **15 minutes**.
+  - **AC3:** Raw PDF access secured via temporary AWS S3 Presigned URLs expiring in **15 minutes** (and < 60s in production).
   - **AC4:** Automatically bookmarks current reading page for subsequent sessions.
 
 ---
@@ -136,6 +136,6 @@ Focuses on library management statistics.
 | Timeline | User Story Items | MoSCoW Priority | Milestone Deliverables |
 |---|---|:---:|---|
 | **Sprint 1** <br>*(Weeks 1-2)* | • US-01: Upload PDF <br>• US-02: Smart Metadata <br>• Framework Setup | **MUST HAVE** | Functional file upload and metadata auto-fill forms. |
-| **Sprint 2** <br>*(Weeks 3-4)* | • US-03: OCR & Compression <br>• US-04: Online Catalog <br>• Auth & RBAC | **MUST HAVE** | Stable background OCR queue, active online catalog portal. |
+| **Sprint 2** <br>*(Weeks 3-4)* | • US-03: Tesseract OCR & Compression <br>• US-04: Online Catalog <br>• Auth & RBAC | **MUST HAVE** | Stable background OCR queue, active online catalog portal. |
 | **Sprint 3** <br>*(Weeks 5-6)* | • US-05: Full-text Search <br>• US-06: DRM Secure Viewer <br>• US-08: Book Approval | **MUST HAVE / SHOULD** | Anti-download secure viewer, full-text content snippet search. |
 | **Sprint 4** <br>*(Weeks 7-8)* | • US-07: Management Dashboard <br>• US-09: Category/Tag Admin <br>• QA Testing & Fixes | **SHOULD HAVE / COULD** | Real-time management analytics, fully tested production build. |

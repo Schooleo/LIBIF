@@ -23,7 +23,7 @@
 
 As of **Sprint 2 end (Week 4)**, the LIBIF project has completed 100% of Phase 1 core deliverables on schedule:
 - **Sprint 1 (Weeks 1-2):** Project framework setup, raw PDF upload (US-01), smart ISBN metadata auto-fill (US-02).
-- **Sprint 2 (Weeks 3-4):** Background Async VietOCR Worker Queue & Compression (US-03), Online Catalog Portal (US-04), and JWT Auth/RBAC authorization.
+- **Sprint 2 (Weeks 3-4):** Background Async Tesseract OCR Worker Queue & Compression (US-03), Online Catalog Portal (US-04), and JWT Auth/RBAC authorization.
 
 ```
 PROJECT PROGRESS TIMELINE (WEEK 1 - WEEK 8)
@@ -81,7 +81,7 @@ Story Points
 |---|---|:---:|:---:|---|
 | **US-01** | Upload Raw PDF | 5 SP | 🟢 Complete (Done) | Backend Dev + MinIO Storage |
 | **US-02** | Smart Metadata via ISBN | 5 SP | 🟢 Complete (Done) | Frontend Engineer (Google Books API) |
-| **US-03** | Processing & VietOCR | 13 SP | 🟢 Complete (Done) | AI Specialist + Redis BullMQ Queue |
+| **US-03** | Processing & Tesseract OCR | 13 SP | 🟢 Complete (Done) | AI Specialist + Redis BullMQ Queue |
 | **US-04** | Online Catalog Portal | 8 SP | 🟢 Complete (Done) | Frontend & Backend Engineers |
 | **US-05** | Full-text Content Search | 8 SP | 🟡 In Progress (50%) | Indexing done, wiring API Viewer |
 | **US-06** | DRM Canvas Reader | 13 SP | 🟡 In Progress (40%) | PoC verified, packaging UI |
@@ -95,7 +95,7 @@ Story Points
 
 | Risk ID | Description | Impact | Likelihood | Control & Mitigation Action |
 |---|---|:---:|:---:|---|
-| **R-01** | Poor scan quality reduces VietOCR accuracy | High | Medium | Add pre-processing image binarization & contrast filters prior to OCR. |
+| **R-01** | Poor scan quality reduces Tesseract OCR accuracy | High | Medium | Add pre-processing image binarization & contrast filters prior to OCR. |
 | **R-02** | Mobile Safari browser lag on heavy Canvas rendering | Medium | Medium | Implement page-by-page lazy Canvas rendering instead of rendering full document at once. |
 | **R-03** | Textbook copyright legal compliance | High | Low | Enforce default `Internal Read Only` state requiring institutional SSO login. |
 

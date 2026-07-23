@@ -5,136 +5,173 @@
 
 # PROJECT VISION & SCOPE DOCUMENT
 
-> Document analyzing current state and manual workflows of Librarians, Readers, and Library Management; proposing core features and defining the future state for the Library Digitization system.
+> Comprehensive analysis of the current state, manual library workflows, and stakeholder pain points; defining the target vision, technical architecture, and 8-week MVP project scope aligned directly with the **Project Proposal**.
 
 ---
 
 | Field | Content |
 |---|---|
-| **Project Name** | LIBIF — Intelligent Library Digitization System |
-| **Version** | v1.0 (Detailed Manual Workflow Analysis) |
-| **Date** | July 10, 2026 |
-| **Author** | LIBIF Development Team |
+| **Project Name** | LIBIF — Intelligent Library Digitization & Document Management System |
+| **Document Type** | Project Vision & Scope Document |
+| **Status** | Approved v2.0 (Aligned with Project Proposal) |
+| **Date** | July 19, 2026 |
+| **Development Team** | 6 Senior Students, Faculty of Computer Science & Engineering — HCMUS |
+| **Technical Support** | Antigravity AI Assistant · GitHub Copilot |
 
 ---
 
 ## 1. PROJECT OVERVIEW
 
-The Library Digitization System was established to address the challenge of converting massive physical book collections in universities, research institutes, and community libraries into digital formats (e-books, PDFs) for seamless online search, management, and reading. The system not only stores files but also standardizes librarian upload workflows, automatically processing file content using Optical Character Recognition (OCR) to enhance reader searchability and learning experiences.
+The **LIBIF** Library Digitization System addresses the urgent institutional challenge of converting physical book collections in university faculties into secure, searchable digital assets (e-books, PDFs). The system automates librarian upload workflows, processes document contents via open-source **Tesseract OCR (`vie`)**, centralizes metadata cataloging, and provides a secure online discovery portal for readers.
 
-### 1.1 Core Idea
-
-The workflow begins by physically scanning printed books into raw PDF format. Librarians upload these PDF files to the system and complete a metadata entry form (book title, category, tags, ISBN, author...). The system then automates storage, file optimization, and provides a full-text online discovery portal for readers.
-
----
-
-## 2. PROJECT VISION
-
-To become a comprehensive, reliable, and intelligent library digitization management platform. **LIBIF** aims to eliminate geographical and physical barriers, preserving knowledge in rare, antique paper books or academic materials for long-term distribution under secure digital formats.
-
-### 2.1 Closed-Loop Digitization Lifecycle
-
-The system encompasses all steps in the library digitization value chain:
+### 1.1 Core Value Proposition
+The end-to-end digitized lifecycle replaces error-prone manual tasks with an automated pipeline:
 
 ```
-[SCAN]        →  [UPLOAD]    →  [METADATA]   →  [PROCESS]      →  [ACCESS]
-(Physical Scan)   (File Upload)  (Entry/Ingest) (Optimize & OCR)  (Online Reader)
+[PHYSICAL SCAN]  →  [DRAG-DROP UPLOAD]  →  [SMART METADATA]  →  [ASYNC OCR QUEUE]  →  [DRM CANVAS READER]
+ (Flatbed Scan)      (Raw PDF Ingest)     (ISBN Auto-fill)       (Tesseract vie)       (24/7 Secure Access)
 ```
 
 ---
 
-## 3. CURRENT STATE & MANUAL WORKFLOW ANALYSIS
+## 2. PROJECT VISION & STRATEGIC GOALS
 
-The current management and access process for non-digitized or ad-hoc digitized books exhibits severe limitations for all participating stakeholders:
+To serve as a comprehensive, highly secure, and cost-effective library digitization management platform. **LIBIF** aims to eliminate physical learning barriers, preserve rare academic materials, and protect intellectual property while establishing a baseline digital transformation standard for educational institutions.
 
-### 3.1 Librarian Workflow
-- **Scanning & Storage:** Librarians use handheld or flatbed scanners to scan book pages into raw PDF files. These PDFs are manually saved on local PCs or uploaded to personal/library Google Drive folders.
-- **Metadata Management:** Supplementary metadata like category, ISBN, author, and keywords are recorded in separate Excel spreadsheets or physical logbooks with no direct linking to the PDF files.
-- **Reader Support:** When a reader requests a document, the librarian searches for the book title in Excel, locates the corresponding PDF in Google Drive, and sends it via email or Zalo messaging.
-- **⚠️ Bottlenecks / Pain Points:** Scattered PDF files subject to loss. Manual Excel data entry is time-consuming and error-prone. No automated quality control for uploaded files.
-
-### 3.2 Borrower / Reader Workflow
-- **Document Request:** Readers must physically visit the library or message librarians to check if a book has been digitized.
-- **Access & Reading:** Readers await responses, receiving attached PDF files via email or download links. They must download files to personal devices to read using external PDF software.
-- **⚠️ Bottlenecks / Pain Points:** Readers are passive, dependent on librarian response times. No online full-text search. File downloads consume local device storage and pose severe copyright infringement risks due to uncontrolled redistribution.
-
-### 3.3 Management Workflow
-- **Reporting & Evaluation:** At period end, management requests librarians to manually compile statistics on digitization progress, borrow counts, and newly digitized assets.
-- **⚠️ Bottlenecks / Pain Points:** Inaccurate statistics due to manual tallying, delayed reports, and lack of real-time visibility into actual student reading demand.
+### 2.1 Strategic Alignment & Objectives
+1. **Operational Efficiency:** Reduce librarian manual data entry time by **70%**, cutting book processing overhead from 45–60 minutes down to automated ingest.
+2. **Instant Student Access:** Eliminate document access delays, shifting student access time from **24–72 hours** down to instant 24/7 self-service.
+3. **Copyright Protection:** Prevent raw PDF leakage and unauthorized file sharing via Zalo/Telegram through dynamic in-browser DRM rendering.
+4. **Economic Viability:** Maintain cloud operational expenses under **~1.2M – 2.0M VND/month** (~70.44M VND/year), saving over 80% compared to commercial enterprise software.
 
 ---
 
-## 4. FEATURE PROPOSALS FROM WORKFLOW ANALYSIS
+## 3. CURRENT STATE & PAIN POINT ANALYSIS
 
-### 4.1 Feature Mapping Table
+Manual digitization workflows in academic faculty libraries cause **three measurable types of institutional losses**:
 
-| Manual Workflow Pain Point | Corresponding System Feature |
-|---|---|
-| Scattered PDF storage, lost linkage with metadata. | **Centralized Document Management System (DMS):** PDF uploads linked directly to book metadata records. |
-| Manual Excel data entry for catalog, tags, ISBN. | **Smart Metadata Form:** Auto-fills author, publisher, and summary via Google Books API ISBN lookup. |
-| Readers cannot self-serve, fully dependent on librarians. | **Online Catalog Portal:** Advanced search by title, author, category, tags, and full-text search. |
-| Forced PDF downloads increase copyright leakage risks. | **Secure In-App DRM Canvas Reader:** Secure online reading disabling copy and direct file downloads. |
-| Lack of accurate metrics for management evaluation. | **Automated Reporting Dashboard:** Real-time metrics on read counts, average reading time, and popular categories. |
+### 3.1 Three Measurable Institutional Losses
+1. **Workforce Loss (Librarians trapped in low-value manual tasks):**
+   Scanning, manual renaming, Excel logging, and Zalo messaging consume 45–60 minutes per book. Digitizing a catalog of 500 books requires **375–500 labor hours** (over 46 full-time working days), preventing staff from engaging in knowledge advisory or management.
+2. **Access Loss (Students unable to learn when needed):**
+   Students wait **24–72 hours** from sending a document request via email/Zalo to receiving files, directly impairing exam preparation and academic performance.
+3. **Copyright Loss (Uncontrolled IP infringement):**
+   Distributing raw PDF files via email or messaging apps bypasses all copyright controls. Files spread across student groups without readership tracking or access revocation mechanisms.
 
 ---
 
-### 4.2 WORKFLOW-LEVEL COMPARISON WITH COMPETITORS
+## 4. STAKEHOLDER ANALYSIS & GOVERNANCE
 
-| Workflow Step | Current Manual Workflow | DSpace / Koha / Vebrary | Future State on **LIBIF** |
+To ensure institutional alignment, stakeholders are categorized into 7 distinct groups mapped across Mendelow's Grid and a RACI Governance Matrix.
+
+### 4.1 Mendelow's Power vs. Interest Matrix
+
+```
+                  HIGH POWER
+                      │
+   [KEEP SATISFIED]   │   [MANAGE CLOSELY]
+   • Legal & Copyright│   • Executive Board
+     Officers         │   • Library Management
+   • IT & Infra Team  │
+                      │
+──────────────────────┼──────────────────────
+                      │
+      [MONITOR]       │   [KEEP INFORMED]
+   • External QA &    │   • Librarians & Staff
+     Accreditation    │   • Faculty & Researchers
+                      │   • Students & Learners
+                      │
+                  LOW POWER ──────────► HIGH INTEREST
+```
+
+### 4.2 RACI Matrix (Responsibility, Accountability, Consulted, Informed)
+
+| Project Phase / Deliverable | Executive Board | Library Management | Librarians | Faculty | Students | Legal Officers | IT Team |
+|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| **Project Charter & Budget Approval** | **A** | C | I | I | I | C | C |
+| **Raw PDF Ingest & Cataloging** | I | **A** | **R** | I | I | I | I |
+| **Async Tesseract OCR Pipeline** | I | I | I | I | I | I | **R/A** |
+| **DRM Canvas Reader Security** | I | C | I | C | I | **A** | **R** |
+| **Online Discovery & Reading** | I | I | I | C | **R/A** | I | I |
+| **Analytics & Reporting Dashboard** | C | **R/A** | I | I | I | I | I |
+
+*Legend: **R** = Responsible (Does the work), **A** = Accountable (Final decision/approver), **C** = Consulted (Provides input), **I** = Informed (Kept updated).*
+
+---
+
+## 5. FEATURE MAPPING & WORKFLOW COMPARISONS
+
+### 5.1 Feature Alignment Table
+
+| Current Manual Pain Point | Corresponding LIBIF System Feature | Target Impact Metrics |
+|---|---|---|
+| Scattered PDF storage, lost metadata linkage. | **Centralized Document Management System (DMS):** Raw PDF linked to Postgres metadata records. | 100% centralized asset indexing. |
+| Time-consuming manual Excel data entry. | **Smart Metadata Form:** Auto-populates title, author, and publisher via Google Books ISBN lookup API. | 80% reduction in entry time. |
+| Passive student wait times (24–72 hours). | **Online Catalog Portal:** Advanced search by title, author, category, tags, and full-text OCR content. | Instant 24/7 self-service access. |
+| Raw PDF downloads cause copyright leakage. | **Secure DRM Canvas Reader:** In-browser canvas rendering with expiring presigned S3 URLs (< 60s). | Zero raw PDF download exposure. |
+| Lack of visibility into reading metrics. | **Real-Time Reporting Dashboard:** Automated statistics on reads, top categories, and peak access hours. | 1-click management report export. |
+
+---
+
+### 5.2 Workflow Comparison with Competitors
+
+| Workflow Step | Current Manual Workflow | Enterprise Systems (DSpace / Koha) | Optimized Workflow on **LIBIF** |
 |---|---|---|---|
-| **1. File Ingest** | Save raw PDFs on local disk or personal Google Drive. | Multi-step complex admin upload interface in open-source systems. | **Drag-and-drop raw PDF to Web Admin Portal**; automated async S3 ingest & compression queue. |
+| **1. File Ingest** | Save raw PDFs on local disk or personal Google Drive. | Multi-step complex admin upload interface in open-source systems. | **Drag-and-drop raw PDF to Admin Portal**; automated async S3 ingest & compression. |
 | **2. Metadata Entry** | Manually log title, author, ISBN in disconnected Excel sheets. | Complex manual entry using MARC21/Dublin Core standards. | **Scan/Type ISBN**: Automated Google Books API call pre-fills 80% metadata. |
-| **3. OCR & Compression** | No OCR. Raw image PDFs non-searchable. | Dependent on external batch OCR plugins; complex setup, server overload risks. | **Automated Pipe & Filter VietOCR Worker Queue**; 50%+ size reduction, searchable text layer generation. |
-| **4. Discovery & Reading** | Readers message librarians; receive files via email/Zalo. | Search via OPAC, download PDF file to local device (copyright risk). | **Online Catalog Portal**: Full-text search & read directly via **DRM Canvas Reader** (anti-copy/download). |
+| **3. OCR & Processing** | No OCR. Raw image PDFs non-searchable. | Dependent on external batch OCR plugins; complex setup, server overload risks. | **Automated Pipe & Filter Tesseract OCR (`vie`) Queue**; 50%+ compression, searchable text layer. |
+| **4. Discovery & Access** | Readers message librarians; receive files via email/Zalo. | Search via OPAC, download PDF file to local device (copyright risk). | **Online Catalog Portal**: Full-text search & read directly via **DRM Canvas Reader** (anti-copy/download). |
 | **5. Reporting** | Manual tallying of borrow logs, delayed paper reports. | Basic file download counts; lacks granular reading behavior charts. | **Real-time Dashboard**: Automated statistics on total reads, reading time, popular categories, Excel export. |
 
 ---
 
-### 4.3 WORKFLOW COMPARISON WITH TOOL COMBINATIONS
+### 5.3 Workflow Comparison with Tool Combinations
 
-| Workflow Step | Tool Combination (Nextcloud + Paperless-ngx + Google Drive) | Optimized Workflow on **LIBIF** |
+| Workflow Dimension | Tool Combination (Nextcloud + Paperless-ngx + Drive) | Optimized Workflow on **LIBIF** |
 |---|---|---|
-| **File Storage & Management** | Must configure sync across 3 distinct services; fragmented data, permission errors. | **Single All-in-One Platform**: Centralized PDF, Metadata, OCR, and Access Control management. |
-| **Vietnamese OCR Workflow** | Paperless-ngx uses basic Tesseract OCR; low accuracy on Vietnamese diacritics (< 80%). | **Integrated VietOCR Deep Learning Model**: > 94% accuracy on Vietnamese diacritical text. |
+| **File Management** | Must configure sync across 3 distinct services; fragmented data, permission errors. | **Single All-in-One Platform**: Centralized PDF, Metadata, OCR, and Access Control management. |
+| **Vietnamese OCR Engine** | Paperless-ngx uses basic OCR without image preprocessing; lower diacritic accuracy. | **Tailored Tesseract OCR (`vie`)**: Grayscale, thresholding, and deskewing image preprocessing for high accuracy. |
 | **Security & DRM** | Google Drive / Nextcloud allows raw file downloads or default iframe viewing. | **Proprietary DRM Canvas Reader**: Dynamic Canvas rendering, right-click/shortcut blocking, dynamic watermarking. |
-| **Ops & Maintenance Cost** | Requires dedicated IT staff to maintain, update, and glue 3 separate tools together. | **Streamlined Modular Monolith**: 1-Click Docker deployment, minimal maintenance cost. |
+| **Ops & Maintenance Cost** | Requires dedicated IT staff to maintain, update, and glue 3 separate tools together. | **Streamlined Modular Monolith**: 1-Click Docker Compose deployment, low cloud ops cost (~1.2M-2M VND/mo). |
 
 ---
 
-## 5. FUTURE STATE
+## 6. MVP PROJECT SCOPE & SPRINT ROADMAP
 
-- **Librarian Workflow:** Scan books to PDF, upload via admin portal. System automatically optimizes file size and executes background VietOCR. Librarian scans ISBN barcode, system auto-fills metadata, librarian selects category and tags.
-- **Reader Workflow:** Access online library portal, freely search books. Click to read instantly in secure PDF viewer with automatic page bookmarking.
-- **Management Workflow:** Access management dashboard to monitor real-time library usage metrics and guide future procurement/digitization decisions.
+### 6.1 In-Scope for 8-Week MVP
+- ✅ **Authentication & RBAC:** 3 roles — Librarian, Reader, Admin.
+- ✅ **PDF Ingest (US-01):** Drag-and-drop PDF upload to S3 object storage.
+- ✅ **Smart ISBN Metadata (US-02):** Google Books API auto-fill integration.
+- ✅ **Async Tesseract OCR Queue (US-03):** Redis + BullMQ background worker pipeline.
+- ✅ **Online Catalog Search (US-04):** Multi-attribute filtering (category, tags, publication year).
+- ✅ **Full-Text Content Search (US-05):** Keyword search inside OCR text layers.
+- ✅ **DRM Canvas Reader (US-06):** In-browser canvas rendering, expiring presigned URLs (< 60s), anti-copy/print.
+- ✅ **Management Analytics (US-07):** Statistics dashboard for total reads and category usage.
+- ✅ **Admin Approval Workflow (US-08):** Librarian catalog review and publishing pipeline.
+- ✅ **Category & Tag Admin (US-09):** Tree-structure category hierarchy management.
 
----
-
-## 6. MVP PROJECT SCOPE
-
-### 6.1 In-Scope for MVP
-- ✅ **Authentication & Authorization:** 3 roles — Librarian, Reader, Admin.
-- ✅ **PDF Upload:** Admin portal supporting drag-and-drop raw PDF uploads to Object Storage.
-- ✅ **Smart Metadata Entry:** Metadata form integrated with Google Books ISBN lookup API.
-- ✅ **Background PDF Queue:** Async task queue handling image compression and Vietnamese/English OCR.
-- ✅ **Reader Portal:** Web discovery interface with category, tag, and publication year filtering.
-- ✅ **Secure Reader:** Integrated online viewer disabling right-click copy and direct file downloads.
-- ✅ **Basic Analytics:** Tracking total reads, pages read, and top popular books.
-
-### 6.2 Out-of-Scope
-- ❌ Native Mobile Apps for iOS/Android (Web responsive only).
-- ❌ Integration with legacy physical library management systems via legacy protocols (SIP2/Z39.50).
-- ❌ AI-based automatic book categorization beyond ISBN lookup.
-- ❌ Paid e-commerce book purchase system.
+### 6.2 Out-of-Scope for MVP
+- ❌ Native Mobile Apps (iOS/Android — Web Responsive only).
+- ❌ Legacy physical library protocols (SIP2/Z39.50 integration).
+- ❌ Automatic AI book categorization beyond ISBN API.
+- ❌ Commercial e-commerce payment gateways.
 
 ---
 
-## 7. CORE REQUIREMENTS
+## 7. CORE SYSTEM REQUIREMENTS
 
 ### 7.1 Key Functional Requirements
-- **FR1 (PDF Process Queue):** Asynchronous task queuing to prevent librarian connection blocking during heavy PDF uploads.
-- **FR2 (Full-text Search):** Support keyword searching within OCR-extracted book text layers.
-- **FR3 (Copyright Protection):** Online PDF reader must conceal raw storage URLs and disable standard download mechanisms.
+- **FR1 (Async PDF Queue):** Decouple heavy OCR processing using Redis + BullMQ worker queue to prevent 504 timeouts.
+- **FR2 (Full-Text Search):** Search keywords inside OCR-generated text layers with snippet highlighting.
+- **FR3 (Copyright Protection):** DRM Reader must render PDF pages as canvas pixels, conceal raw URLs, and block download/copy events.
 
 ### 7.2 Key Non-Functional Requirements
-- **Availability:** **99.9%** uptime to support 24/7 student access.
-- **OCR Efficiency:** Process OCR and compression under **5 seconds/page** average in background queue.
+- **Availability:** **99.9%** uptime to support 24/7 student learning.
+- **Performance:** Background OCR & compression processing under **< 5 seconds/page** average.
+- **Low Operational Footprint:** Run on standard cloud VM hosting for **~1.2M – 2.0M VND/month**.
+
+---
+
+## 8. CONCLUSION
+
+The updated **Vision & Scope Document** is fully aligned with the **Project Proposal**. By automating manual librarian bottlenecks, protecting intellectual property with a DRM Canvas Reader, and leveraging a lightweight Tesseract OCR pipeline, LIBIF establishes a secure, practical, and highly achievable digital library foundation.

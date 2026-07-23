@@ -44,7 +44,7 @@ The system adopts the **Modular Monolith** architecture. This choice minimizes o
 
 ## 3. DATA PROCESSING MODEL SELECTION (PDF & OCR)
 
-The PDF processing pipeline (**Validation $\rightarrow$ Compression $\rightarrow$ VietOCR Searchable Layer Injection $\rightarrow$ Full-text Indexing**) requires a robust data stream architecture. We evaluated two models:
+The PDF processing pipeline (**Validation $\rightarrow$ Compression $\rightarrow$ Tesseract OCR (`vie`) Searchable Layer Injection $\rightarrow$ Full-text Indexing**) requires a robust data stream architecture. We evaluated two models:
 
 | Model Evaluated | Characteristics & Advantages | Suitability for Library Digitization |
 |---|---|---|
@@ -56,8 +56,8 @@ The PDF processing pipeline (**Validation $\rightarrow$ Compression $\rightarrow
 The system chooses the **Pipe and Filter** pattern. Every uploaded PDF passes through a 4-stage filter pipeline. To implement this without blocking resources, we utilize **Redis + BullMQ** as an asynchronous task queue. Each filter runs as an independent worker step, maintaining high stability and CPU utilization.
 
 ```
-[1. Validation]  →  [2. Compression]  →  [3. VietOCR Text Layer]  →  [4. Indexing]
- (Format Check)     (DPI Optimization)   (Hidden Text Layer)          (Full-text Index)
+[1. Validation]  →  [2. Compression]  →  [3. Tesseract OCR Text Layer]  →  [4. Indexing]
+ (Format Check)     (DPI Optimization)     (Hidden Text Layer vie)          (Full-text Index)
 ```
 
 ---
@@ -94,7 +94,7 @@ The application is structured into modular domain boundaries inside the **Modula
 - **Upload Module:** Receives raw PDF files, stores them in Object Storage, and emits background processing events.
 - **Catalog Module:** Indexes metadata, provides advanced filtering, and integrates with Google Books ISBN API.
 - **Reader Module:** Verifies access rights, generates temporary S3 presigned URLs, and renders books securely via Canvas.
-- **Processing Module:** Coordinates the Pipe and Filter pipeline for background PDF compression and VietOCR execution.
+- **Processing Module:** Coordinates the Pipe and Filter pipeline for background PDF compression and Tesseract OCR (`vie`) execution.
 
 ### 5.1 Detailed Tech Stack
 
@@ -104,5 +104,34 @@ The application is structured into modular domain boundaries inside the **Modula
 | **Backend** | NestJS (TypeScript) | Strong TypeScript support, modular architecture, enterprise-grade structure. |
 | **Database** | PostgreSQL 16 (Prisma ORM) | Relational integrity, native `tsvector` Vietnamese full-text search capability. |
 | **Task Queue** | Redis 7 + BullMQ | Reliable queue handling, concurrency control, retry policies, progress tracking. |
-| **AI / OCR** | Python 3.11 (VietOCR, PyMuPDF) | Deep Learning PyTorch model optimized for Vietnamese diacritics. |
+| **AI / OCR** | Tesseract OCR (`vie`), PyMuPDF | Industry-standard open-source OCR engine with Vietnamese traineddata (`vie`) & image preprocessing. |
 | **Storage** | MinIO / AWS S3 | Standard Object Storage for raw and processed PDF document assets. |
+
+---
+
+## 6. DATA SECURITY & ARCHITECTURAL QUALITY ATTRIBUTES
+
+### 6.1 Security Mechanism & Anti-Download DRM
+
+To protect library textbook copyright, the system enforces a strict security framework:
+
+- **Presigned URLs:** Physical PDF files on MinIO/S3 are never publicly exposed. The backend generates temporary encrypted links with a **short-lived TTL (< 60s)**.
+- **Direct Download Block:** The online Reader renders pages dynamically via an HTML5 Canvas element instead of embedding an `iframe` or raw PDF. Right-click context menus, F12 DevTools shortcuts, text selection, and printing commands are trapped and suppressed.
+
+### 6.2 Core Architectural Quality Attributes
+
+- **Maintainability:** Clear module boundaries inside the Modular Monolith allow independent domain updates. For instance, swapping local OCR libraries for a cloud provider requires no frontend modifications.
+- **Scalability:** Ready-to-split design. Using Redis + BullMQ decouples the background processing server from the web server thread pool.
+- **Fault Tolerance:** BullMQ provides automatic retry policies (3 retries) for transient network or file processing failures.
+
+---
+
+## 7. ARCHITECTURAL CONCLUSION
+
+The architecture for the LIBIF Library Digitization System is optimized for security, performance, and operational cost efficiency:
+
+- Adopted **Modular Monolith** to streamline early development and minimize infrastructure cost.
+- Applied **Pipe and Filter** pattern managed by **Redis + BullMQ** worker queues for heavy async OCR.
+- Applied **Hybrid Communication** (REST and Event-Driven) for responsive user interaction.
+
+This design delivers high security, excellent performance, and clear scalability for digital library transformation.

@@ -12,8 +12,8 @@
 | Field | Content |
 |---|---|
 | **Project Name** | LIBIF — Intelligent Library Digitization System |
-| **Version** | v1.0 (Project Cost & Schedule Estimation) |
-| **Date** | July 10, 2026 |
+| **Version** | v2.0 (Aligned with Tesseract OCR vie & Project Charter) |
+| **Date** | July 19, 2026 |
 | **Author** | Project Manager & Lead Architect |
 
 ---
@@ -24,7 +24,7 @@ The project work scope is broken down into 5 main Work Packages (WPs):
 
 - **WP1: Project Governance & Architecture Setup** (System architecture, CI/CD, DB Schema).
 - **WP2: Digitization & Metadata Module** (Raw PDF Upload, Google Books ISBN API integration).
-- **WP3: Background OCR & Processing Pipeline** (Redis BullMQ Queue, VietOCR Worker, Searchable PDF generation).
+- **WP3: Background OCR & Processing Pipeline** (Redis BullMQ Queue, Tesseract OCR (`vie`) Worker, Searchable PDF generation).
 - **WP4: Reader Discovery & Secure DRM Viewer** (Online Catalog, Full-text Search, DRM Canvas Reader).
 - **WP5: Admin Analytics & QA Handoff** (Dashboard analytics, UAT testing, Deployment).
 
@@ -40,7 +40,7 @@ $$\text{Final Effort} = E \times (1 - \alpha)$$
 |---|:---:|:---:|:---:|:---:|:---:|:---:|
 | **WP1: Setup & Infra** | 3 days | 5 days | 8 days | 5.17 days | 30% | **3.62 days** |
 | **WP2: Upload & Metadata** | 5 days | 8 days | 12 days | 8.17 days | 35% | **5.31 days** |
-| **WP3: VietOCR Queue** | 8 days | 12 days | 18 days | 12.33 days | 40% | **7.40 days** |
+| **WP3: Tesseract OCR Queue** | 8 days | 12 days | 18 days | 12.33 days | 40% | **7.40 days** |
 | **WP4: Reader & DRM** | 7 days | 10 days | 15 days | 10.33 days | 35% | **6.71 days** |
 | **WP5: Dashboard & QA** | 4 days | 7 days | 10 days | 7.00 days | 40% | **4.20 days** |
 | **TOTAL EFFORT** | **27 days** | **42 days** | **63 days** | **43.00 days** | **~36%** | **27.24 days** |
@@ -52,7 +52,7 @@ $$\text{Final Effort} = E \times (1 - \alpha)$$
 ### 3.1 Resource Breakdown Structure (6 Members)
 - **1 Project Manager / Lead Architect** (Project governance, architecture, CI/CD, core API).
 - **1 Backend Engineer** (Database, S3 integration, Auth & Security API).
-- **1 AI / OCR Specialist** (VietOCR pipeline tuning, BullMQ worker queue).
+- **1 AI / OCR Specialist** (Tesseract OCR `vie` pipeline tuning, BullMQ worker queue).
 - **1 Frontend Engineer** (Catalog Portal, DRM Canvas Reader, Dashboard).
 - **1 UI/UX Designer & Tech Writer** (UI mockups, design system, user manual).
 - **1 QA / Testing Engineer** (Unit tests, E2E test scripts, security testing).
@@ -63,7 +63,7 @@ $$\text{Final Effort} = E \times (1 - \alpha)$$
 |---|:---:|:---:|:---:|:---:|:---:|:---:|
 | **System Architecture** | **A / R** | C | C | C | I | I |
 | **PDF Upload & S3** | A | **R** | C | C | I | I |
-| **VietOCR Worker Queue** | A | C | **R** | I | I | C |
+| **Tesseract OCR Worker Queue** | A | C | **R** | I | I | C |
 | **DRM Canvas Reader** | A | C | I | **R** | C | C |
 | **Admin Dashboard** | A | C | I | **R** | C | I |
 | **QA & UAT Testing** | A | I | I | I | I | **R** |

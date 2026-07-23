@@ -62,7 +62,7 @@ Library digitization is not a trend — it is a baseline requirement for modern 
 ### 2.3 Why Now, Why LIBIF
 
 Two critical conditions converge to make this the ideal timing:
-1. **Vietnamese OCR technology has matured:** VietOCR (Transformer architecture) and PaddleOCR achieve 95–98% accuracy on Vietnamese text.
+1. **Vietnamese OCR technology with Tesseract is mature and highly effective:** Tesseract OCR, an industry-standard open-source engine, combined with Vietnamese language traineddata (`vie`) and tailored image preprocessing (grayscale conversion, thresholding, deskewing), delivers high accuracy and processing efficiency for Vietnamese printed documents. By minimizing RAM and CPU overhead compared to heavy deep-learning alternatives, Tesseract provides a robust, lightweight, and cost-effective solution perfectly aligned with project needs.
 2. **Deployment costs have dropped significantly:** The minimum cloud infrastructure to run LIBIF costs only **~1,200,000 – 2,000,000 VND/month**.
 
 ### 2.4 Why Not Continue Using Google Drive / Email
@@ -79,15 +79,64 @@ Two critical conditions converge to make this the ideal timing:
 
 ## 3. Stakeholder Analysis
 
-### 3.1 Stakeholder Map
+### 3.1 Comprehensive Stakeholder Map
 
-| Stakeholder | Role | Current Pain Point | Expected Benefit |
+To ensure thorough coverage across institutional leadership, daily library operations, legal compliance, and end-user adoption, project stakeholders are expanded into seven distinct groups:
+
+| Stakeholder Group | Project Role | Current Pain Point | Expected Benefit |
 |---|---|---|---|
-| **Library Management** | Sponsor / Approver | Lack of reporting data, unknown resource utilization | Real-time dashboard proving ROI to executive board |
-| **Librarians** | Daily Operators | Trapped in repetitive manual tasks, stressed by urgent student requests | 70% reduction in data entry time, automated student interaction |
-| **Students & Faculty** | Primary Beneficiaries | 24–72 hour wait times, unknown digital availability | Instant 24/7 self-service discovery and reading |
-| **Executive Board** | Strategic Approvers | Digital transformation pressure, lacking concrete solutions | Turnkey solution fulfilling digital transformation commitments |
-| **IT Team** | Maintenance & Ops | Unstructured ad-hoc incident calls | Standardized architecture, complete technical docs, easy maintenance |
+| **Executive Board / Leadership** | Strategic Approver & Project Sponsor | Pressure for institutional digital transformation without clear ROI or concrete solutions. | Turnkey solution fulfilling digital transformation commitments and boosting institutional academic reputation. |
+| **Library Management** | Operational Sponsor & Domain Owner | Lack of real-time reporting metrics on resource utilization; unable to justify procurement budget. | Real-time analytics dashboard proving ROI and guiding strategic acquisition and digitization decisions. |
+| **Librarians & Staff** | Daily System Operators | Trapped in repetitive manual tasks (scanning, Excel entry, Zalo messaging); stressed by urgent student requests. | Substantial reduction in manual data entry workload; automated ISBN metadata ingest and student self-service. |
+| **Faculty & Researchers** | Content Contributors & Advanced Readers | Fragmented access to specialized materials; risk of unauthorized distribution of proprietary course reserves/syllabi. | Dual-role portal: secure sharing of course reserves/lectures to enrolled students and instant 24/7 access to rare research references. |
+| **Students & Learners** | Primary Beneficiary / End Readers | 24–72 hour wait times for document requests; inability to search inside book content; poor mobile access. | Instant 24/7 self-service catalog search, full-text OCR lookup, and responsive in-browser DRM reader on all devices. |
+| **Legal & Copyright Compliance Officers** | Compliance & Risk Approvers | High risk of copyright infringement liabilities due to uncontrolled PDF distribution via Zalo/email. | Technical DRM enforcement (in-browser Canvas Reader, dynamic watermarking, presigned expiring URLs) enforcing institutional compliance. |
+| **IT & Infrastructure Team** | Systems & Maintenance Operators | Unstructured ad-hoc incident calls; maintaining fragmented legacy server tools with zero documentation. | Standardized Modular Monolith architecture, single-command Docker deployment, complete API contracts, and low cloud ops overhead. |
+
+---
+
+### 3.2 Power vs. Interest Matrix (Mendelow's Grid)
+
+Stakeholders are mapped across influence (Power) and project impact (Interest) to establish effective engagement strategies:
+
+```
+                  HIGH POWER
+                      │
+   [KEEP SATISFIED]   │   [MANAGE CLOSELY]
+   • Legal & Copyright│   • Executive Board
+     Compliance       │   • Library Management
+   • IT & Infra Team  │
+                      │
+──────────────────────┼──────────────────────
+                      │
+     [MONITOR]        │   [KEEP INFORMED]
+   • External QA &    │   • Librarians & Staff
+     Accreditation    │   • Faculty & Researchers
+     Bodies           │   • Students & Learners
+                      │
+                  LOW POWER ──────────► HIGH INTEREST
+```
+
+- **Manage Closely (High Power, High Interest):** Executive Board & Library Management. Require bi-weekly milestone demos, ROI dashboard previews, and budget/timeline updates.
+- **Keep Satisfied (High Power, Medium/Low Interest):** Legal/Copyright Officers & IT Infrastructure Team. Must be consulted on DRM enforcement compliance, security audits, and system architecture handoff.
+- **Keep Informed (Low Power, High Interest):** Librarians, Faculty, and Students. Focus on UI simplicity, user onboarding guides, and active feedback loops during UAT.
+- **Monitor (Low Power, Low Interest):** External Accreditation Bodies. Ensure system reporting outputs meet standard institutional audit requirements.
+
+---
+
+### 3.3 Stakeholder Success Conditions & Resistance Risk Mitigation
+
+To ensure smooth adoption across all levels, key success conditions, primary resistance risks, and mitigation strategies are mapped for all seven stakeholder groups:
+
+| Stakeholder Group | Key Success Condition | Primary Resistance Risk | Mitigation Strategy |
+|---|---|---|---|
+| **Executive Board / Leadership** | Clear evidence of institutional digital transformation progress and high ROI. | Skepticism toward project completion and fear of wasted institutional investment. | Bi-weekly milestone demos, clear EVM status reporting, and executive dashboard previews. |
+| **Library Management** | Real-time analytics on resource utilization to justify procurement budgets to board. | Hesitation to adopt if system fails to provide actionable management reporting. | Automated dashboard tracking total reads, top categories, and peak access hours with 1-click report export. |
+| **Librarians & Staff** | System must be simpler, cleaner, and faster than manual Excel logbook entry. | Resistance to changing established manual habits or fear of software complexity. | Zero-training UI: Drag-and-drop PDF ingest + 1-click ISBN metadata auto-fill. |
+| **Faculty & Researchers** | Secure sharing of course reserves without unauthorized public leakage of proprietary materials. | Concerns regarding intellectual property theft or piracy of custom lecture notes/syllabi. | Granular role-based access control, secure Canvas Reader, and dynamic user watermark injection. |
+| **Students & Learners** | Instant 24/7 self-service document search and seamless in-browser reading on any device. | Frustration if online reader is slow, non-responsive on mobile, or requires plugin installation. | Lightweight HTML5 Canvas Reader with responsive layout, instant OCR full-text search snippets, and zero-plugin setup. |
+| **Legal & Copyright Officers** | Zero raw PDF file exposure or direct download links in browser network logs. | Risk of blocking deployment due to fear of copyright litigation from commercial book publishers. | Expiring presigned S3 URLs (< 60s), Canvas rendering blocking copy/print, and dynamic student MSSV/IP watermark overlay. |
+| **IT & Infrastructure Team** | Single-command deployment with zero complex server orchestration or heavy maintenance overhead. | Refusal to maintain undocumented code bases or overly complex multi-server infrastructure. | Containerized Docker Compose deployment, comprehensive OpenAPI/Swagger contracts, and Modular Monolith architecture. |
 
 ---
 
@@ -95,7 +144,7 @@ Two critical conditions converge to make this the ideal timing:
 
 ### 4.1 Technical Feasibility
 - **Modular Monolith Architecture:** Ensures low operational complexity while maintaining clear domain isolation for future Microservices extraction.
-- **Async VietOCR Worker Queue:** Redis + BullMQ pipeline decouples heavy OCR workloads from Web Server thread pool, eliminating 504 timeouts and OOM crashes.
+- **Async Tesseract OCR Worker Queue:** Redis + BullMQ pipeline decouples heavy OCR workloads from Web Server thread pool, eliminating 504 timeouts and OOM crashes.
 - **DRM Canvas Reader:** In-browser Canvas rendering with dynamic watermarks, disabling copy/download commands while securing presigned URLs.
 
 ### 4.2 Financial & Operational Feasibility
@@ -109,7 +158,7 @@ Two critical conditions converge to make this the ideal timing:
 ### 5.1 8-Week Sprint Allocation
 
 - **Sprint 1 (Weeks 1-2):** Foundation Setup, Raw PDF Drag-Drop Upload (US-01), Smart ISBN Metadata Auto-fill (US-02).
-- **Sprint 2 (Weeks 3-4):** Background Async VietOCR Worker & Compression Pipeline (US-03), Online Catalog Search (US-04), Auth & RBAC.
+- **Sprint 2 (Weeks 3-4):** Background Async Tesseract OCR Worker & Compression Pipeline (US-03), Online Catalog Search (US-04), Auth & RBAC.
 - **Sprint 3 (Weeks 5-6):** Full-text Search Snippets (US-05), DRM Canvas Reader (US-06), Librarian Approval Workflow (US-08).
 - **Sprint 4 (Weeks 7-8):** Management Statistics Dashboard (US-07), Category & Tag Management (US-09), E2E Testing & QA Handoff.
 
@@ -123,7 +172,7 @@ Two critical conditions converge to make this the ideal timing:
 |---|:---:|:---:|:---:|---|
 | PM / System Architect (Lead) | 1 | 10,000,000 VND | **20,000,000 VND** | Planning, architecture design, CI/CD, database design, API core |
 | Backend Engineer | 1 | 8,000,000 VND | **16,000,000 VND** | Catalog service, S3 object storage integration, auth & Security Reader API |
-| AI / OCR Specialist | 1 | 8,500,000 VND | **17,000,000 VND** | VietOCR pipeline, Redis BullMQ worker queue, full-text index tuning |
+| AI / OCR Specialist | 1 | 8,500,000 VND | **17,000,000 VND** | Tesseract OCR pipeline, Redis BullMQ worker queue, full-text index tuning |
 | Frontend Engineer | 1 | 8,000,000 VND | **16,000,000 VND** | Admin Portal, DRM Canvas Reader component, Dashboard UI |
 | UI/UX Designer & Tech Writer | 1 | 5,500,000 VND | **11,000,000 VND** | UI mockups, design system, user manual & technical documentation |
 | QA / Testing Engineer | 1 | 5,250,000 VND | **10,500,000 VND** | Unit testing, E2E automation test scripts, security & UAT testing |
@@ -133,9 +182,9 @@ Two critical conditions converge to make this the ideal timing:
 
 ## 7. Expected Business Impact
 
-- **70% Reduction** in librarian data entry and processing time per book.
-- **Instant Access (< 5s)** for students to discover and read digitized textbooks 24/7.
-- **100% Protection** against unauthorized raw PDF downloads and uncontrolled distribution.
+- **Substantial Reduction** in librarian data entry and processing time per book.
+- **Instant Access** for students to discover and read digitized textbooks 24/7.
+- **Robust Protection** against unauthorized raw PDF downloads and uncontrolled distribution.
 - **Measurable ROI** through real-time management dashboard tracking readership metrics.
 
 ---
