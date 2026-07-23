@@ -1,6 +1,14 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { Prisma, type UserAdministrationEvent, type UserSession } from '../../generated/prisma/client';
+import { ConflictException, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Prisma,
+  UserAccountStatus,
+  UserAdministrationAction,
+  UserRole,
+  type UserAdministrationEvent,
+  type UserSession
+} from '../../generated/prisma/client';
 import { PrismaService } from '../database/prisma.service';
+import { ChangeUserRoleDto, ChangeUserStatusDto } from './dto/user-administration-command.dto';
 import { UserListQueryDto } from './dto/user-list-query.dto';
 import {
   UserAdministrationEventDto,
@@ -13,6 +21,7 @@ import {
 const DEFAULT_PAGE = 1;
 const DEFAULT_PAGE_SIZE = 20;
 const ADMIN_EVENTS_LIMIT = 20;
+const SERIALIZABLE_RETRY_LIMIT = 3;
 
 const userListSelect = {
   id: true,
@@ -100,6 +109,120 @@ export class UsersService {
     };
   }
 
+  async changeUserRole(
+    userId: string,
+    actorUserId: string,
+    input: ChangeUserRoleDto
+  ): Promise<UserDetailResponseDto> {
+    this.assertNotSelf(userId, actorUserId);
+
+    await this.runSerializableMutation(async (tx) => {
+      await lockActiveAdministrators(tx);
+      const target = await tx.user.findUnique({
+        where: { id: userId },
+        select: { id: true, role: true, status: true }
+      });
+      if (!target) throw new NotFoundException(`User ${userId} not found.`);
+      if (target.role === input.role) throw new ConflictException('User already has the requested role.');
+
+      if (
+        target.role === UserRole.ADMIN &&
+        input.role !== UserRole.ADMIN &&
+        target.status === UserAccountStatus.ACTIVE
+      ) {
+        await assertAnotherActiveAdministrator(tx, userId);
+      }
+
+      const now = new Date();
+      await tx.user.update({ where: { id: userId }, data: { role: input.role } });
+      await revokeActiveSessions(tx, userId, now);
+      await tx.userAdministrationEvent.create({
+        data: {
+          targetUserId: userId,
+          actorUserId,
+          action: UserAdministrationAction.ROLE_CHANGED,
+          previousRole: target.role,
+          nextRole: input.role,
+          reason: input.reason
+        }
+      });
+    });
+
+    return this.getUserDetail(userId);
+  }
+
+  async deactivateUser(
+    userId: string,
+    actorUserId: string,
+    input: ChangeUserStatusDto
+  ): Promise<UserDetailResponseDto> {
+    this.assertNotSelf(userId, actorUserId);
+
+    await this.runSerializableMutation(async (tx) => {
+      await lockActiveAdministrators(tx);
+      const target = await tx.user.findUnique({
+        where: { id: userId },
+        select: { id: true, role: true, status: true }
+      });
+      if (!target) throw new NotFoundException(`User ${userId} not found.`);
+      if (target.status === UserAccountStatus.DEACTIVATED) {
+        throw new ConflictException('User is already deactivated.');
+      }
+      if (target.role === UserRole.ADMIN) await assertAnotherActiveAdministrator(tx, userId);
+
+      const now = new Date();
+      await tx.user.update({
+        where: { id: userId },
+        data: { status: UserAccountStatus.DEACTIVATED, deactivatedAt: now }
+      });
+      await revokeActiveSessions(tx, userId, now);
+      await tx.userAdministrationEvent.create({
+        data: {
+          targetUserId: userId,
+          actorUserId,
+          action: UserAdministrationAction.DEACTIVATED,
+          reason: input.reason
+        }
+      });
+    });
+
+    return this.getUserDetail(userId);
+  }
+
+  async reactivateUser(
+    userId: string,
+    actorUserId: string,
+    input: ChangeUserStatusDto
+  ): Promise<UserDetailResponseDto> {
+    this.assertNotSelf(userId, actorUserId);
+
+    await this.runSerializableMutation(async (tx) => {
+      const target = await tx.user.findUnique({
+        where: { id: userId },
+        select: { id: true, status: true }
+      });
+      if (!target) throw new NotFoundException(`User ${userId} not found.`);
+      if (target.status === UserAccountStatus.ACTIVE) {
+        throw new ConflictException('User is already active.');
+      }
+
+      await tx.user.update({
+        where: { id: userId },
+        data: { status: UserAccountStatus.ACTIVE, deactivatedAt: null }
+      });
+      await tx.userAdministrationEvent.create({
+        data: {
+          targetUserId: userId,
+          actorUserId,
+          action: UserAdministrationAction.REACTIVATED,
+          reason: input.reason
+        }
+      });
+    });
+
+    return this.getUserDetail(userId);
+  }
+
   private async loadActiveSessionCounts(userIds: string[], now: Date): Promise<Map<string, number>> {
     if (userIds.length === 0) return new Map();
 
@@ -115,6 +238,67 @@ export class UsersService {
 
     return new Map(groups.map((group) => [group.userId, group._count._all]));
   }
+
+  private assertNotSelf(userId: string, actorUserId: string): void {
+    if (userId === actorUserId) {
+      throw new ConflictException('Administrators cannot change their own role or account status.');
+    }
+  }
+
+  private async runSerializableMutation(operation: (tx: Prisma.TransactionClient) => Promise<void>): Promise<void> {
+    for (let attempt = 1; attempt <= SERIALIZABLE_RETRY_LIMIT; attempt += 1) {
+      try {
+        await this.prisma.$transaction(operation, {
+          isolationLevel: Prisma.TransactionIsolationLevel.Serializable
+        });
+        return;
+      } catch (error) {
+        if (!isTransactionWriteConflict(error) || attempt === SERIALIZABLE_RETRY_LIMIT) throw error;
+      }
+    }
+  }
+}
+
+async function lockActiveAdministrators(tx: Prisma.TransactionClient): Promise<void> {
+  await tx.$queryRaw(
+    Prisma.sql`SELECT "id" FROM "User" WHERE "role" = 'ADMIN' AND "status" = 'ACTIVE' ORDER BY "id" FOR UPDATE`
+  );
+}
+
+async function assertAnotherActiveAdministrator(
+  tx: Prisma.TransactionClient,
+  excludedUserId: string
+): Promise<void> {
+  const remaining = await tx.user.count({
+    where: {
+      id: { not: excludedUserId },
+      role: UserRole.ADMIN,
+      status: UserAccountStatus.ACTIVE
+    }
+  });
+  if (remaining === 0) throw new ConflictException('The last active administrator cannot be changed.');
+}
+
+async function revokeActiveSessions(
+  tx: Prisma.TransactionClient,
+  userId: string,
+  revokedAt: Date
+): Promise<void> {
+  await tx.userSession.updateMany({
+    where: { userId, revokedAt: null, expiresAt: { gt: revokedAt } },
+    data: { revokedAt }
+  });
+}
+
+function isTransactionWriteConflict(error: unknown): boolean {
+  if (typeof error !== 'object' || error === null) return false;
+  const candidate = error as { code?: unknown; meta?: { code?: unknown }; message?: unknown };
+  return (
+    candidate.code === 'P2034' ||
+    candidate.meta?.code === '40001' ||
+    (typeof candidate.message === 'string' &&
+      candidate.message.includes('could not serialize access due to concurrent update'))
+  );
 }
 
 export function buildUserWhere(query: UserListQueryDto): Prisma.UserWhereInput {

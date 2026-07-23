@@ -1,6 +1,7 @@
-import { Controller, Get, Inject, Param, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Inject, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
+  ApiConflictResponse,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
@@ -8,8 +9,11 @@ import {
   ApiTags
 } from '@nestjs/swagger';
 import { AuthErrorDto } from '../auth/dto/session.dto';
+import { CurrentUser } from '../auth/current-user.decorator';
+import type { SessionUserDto } from '../auth/dto/session.dto';
 import { Roles } from '../auth/roles.decorator';
 import { RolesGuard } from '../auth/roles.guard';
+import { ChangeUserRoleDto, ChangeUserStatusDto } from './dto/user-administration-command.dto';
 import { UserListQueryDto } from './dto/user-list-query.dto';
 import { UserDetailResponseDto, UserListResponseDto } from './dto/user-response.dto';
 import { UsersService } from './users.service';
@@ -37,5 +41,52 @@ export class UsersController {
   @ApiNotFoundResponse({ type: AuthErrorDto })
   getUserDetail(@Param('userId') userId: string): Promise<UserDetailResponseDto> {
     return this.users.getUserDetail(userId);
+  }
+
+  @Patch(':userId/role')
+  @ApiOperation({ summary: 'Change a user role transactionally and revoke active sessions.' })
+  @ApiOkResponse({ type: UserDetailResponseDto })
+  @ApiBadRequestResponse({ type: AuthErrorDto })
+  @ApiForbiddenResponse({ type: AuthErrorDto })
+  @ApiConflictResponse({ type: AuthErrorDto })
+  @ApiNotFoundResponse({ type: AuthErrorDto })
+  changeUserRole(
+    @Param('userId') userId: string,
+    @Body() input: ChangeUserRoleDto,
+    @CurrentUser() actor: SessionUserDto
+  ): Promise<UserDetailResponseDto> {
+    return this.users.changeUserRole(userId, actor.id, input);
+  }
+
+  @Post(':userId/deactivate')
+  @HttpCode(200)
+  @ApiOperation({ summary: 'Deactivate a user transactionally and revoke active sessions.' })
+  @ApiOkResponse({ type: UserDetailResponseDto })
+  @ApiBadRequestResponse({ type: AuthErrorDto })
+  @ApiForbiddenResponse({ type: AuthErrorDto })
+  @ApiConflictResponse({ type: AuthErrorDto })
+  @ApiNotFoundResponse({ type: AuthErrorDto })
+  deactivateUser(
+    @Param('userId') userId: string,
+    @Body() input: ChangeUserStatusDto,
+    @CurrentUser() actor: SessionUserDto
+  ): Promise<UserDetailResponseDto> {
+    return this.users.deactivateUser(userId, actor.id, input);
+  }
+
+  @Post(':userId/reactivate')
+  @HttpCode(200)
+  @ApiOperation({ summary: 'Reactivate a deactivated user transactionally.' })
+  @ApiOkResponse({ type: UserDetailResponseDto })
+  @ApiBadRequestResponse({ type: AuthErrorDto })
+  @ApiForbiddenResponse({ type: AuthErrorDto })
+  @ApiConflictResponse({ type: AuthErrorDto })
+  @ApiNotFoundResponse({ type: AuthErrorDto })
+  reactivateUser(
+    @Param('userId') userId: string,
+    @Body() input: ChangeUserStatusDto,
+    @CurrentUser() actor: SessionUserDto
+  ): Promise<UserDetailResponseDto> {
+    return this.users.reactivateUser(userId, actor.id, input);
   }
 }

@@ -1,4 +1,5 @@
 import { Test } from '@nestjs/testing';
+import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../database/prisma.service';
 import { SettingsService } from './settings.service';
 
@@ -22,14 +23,23 @@ describe('SettingsService', () => {
     const moduleRef = await Test.createTestingModule({
       providers: [
         SettingsService,
-        { provide: PrismaService, useValue: prisma }
+        { provide: PrismaService, useValue: prisma },
+        {
+          provide: ConfigService,
+          useValue: {
+            get: jest.fn((key: string) => {
+              if (key === 'NODE_ENV') return 'test';
+              return undefined;
+            })
+          }
+        }
       ]
     }).compile();
 
     service = moduleRef.get(SettingsService);
   });
 
-  it('returns the singleton product settings without deployment capability claims', async () => {
+  it('returns product settings with safe read-only capability metadata', async () => {
     prisma.systemSettings.findUniqueOrThrow.mockResolvedValue({
       id: 'default',
       libraryName: 'LIBIF',
@@ -46,7 +56,13 @@ describe('SettingsService', () => {
       defaultLocale: 'vi',
       readerNotice: null,
       updatedAt: '2026-07-23T10:00:00.000Z',
-      updatedById: null
+      updatedById: null,
+      deploymentSecurity: {
+        watermarkSigningConfigured: false,
+        scrapeProtectionConfigured: true,
+        personalizedPageCachePolicy: 'private, no-store',
+        editable: false
+      }
     });
   });
 
@@ -69,7 +85,8 @@ describe('SettingsService', () => {
     ).resolves.toMatchObject({
       libraryName: 'LIBIF University Library',
       defaultLocale: 'en-US',
-      updatedById: 'admin-1'
+      updatedById: 'admin-1',
+      deploymentSecurity: { editable: false }
     });
 
     expect(prisma.systemSettings.update).toHaveBeenCalledWith({
@@ -121,6 +138,19 @@ describe('SettingsService', () => {
     expect(prisma.systemSettings.update).toHaveBeenCalledWith({
       where: { id: 'default' },
       data: { updatedById: 'admin-3' }
+    });
+  });
+
+  it('does not claim detector configuration in production without Redis', () => {
+    const productionService = new SettingsService(prisma as never, {
+      get: (key: string) => (key === 'NODE_ENV' ? 'production' : undefined)
+    } as ConfigService);
+
+    expect(productionService.getDeploymentSecurityMetadata()).toEqual({
+      watermarkSigningConfigured: false,
+      scrapeProtectionConfigured: false,
+      personalizedPageCachePolicy: 'private, no-store',
+      editable: false
     });
   });
 });

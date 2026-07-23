@@ -16,13 +16,13 @@ Primary endpoints:
 
 - `GET /api/admin/users` — live in Wave 3 backend slice
 - `GET /api/admin/users/:userId` — live in Wave 3 backend slice
-- `PATCH /api/admin/users/:id/role` — planned for D7-002
-- `POST /api/admin/users/:id/deactivate` — planned for D7-002
-- `POST /api/admin/users/:id/reactivate` — planned for D7-002
+- `PATCH /api/admin/users/:id/role` — live in Wave 5
+- `POST /api/admin/users/:id/deactivate` — live in Wave 5
+- `POST /api/admin/users/:id/reactivate` — live in Wave 5
 
 Foundation status:
 
 - D7-000 now provides `User.status`, `deactivatedAt`, and append-only `UserAdministrationEvent` history.
 - D7-001 is now live for safe Admin-only list/detail reads with bounded session/audit summaries.
 - The tracked OpenAPI and generated web client intentionally remain unchanged until D7-005; this runtime slice is not generated-client-ready in Wave 3.
-- D7-002 role/status mutations, deactivated-auth enforcement, and any admin web page remain pending.
+- D7-002 role/status mutations and deactivated-auth enforcement are implemented and verified. Generated-client-backed Admin pages remain deferred to D7-005.

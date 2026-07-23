@@ -95,7 +95,7 @@ Last updated: 2026-07-23
 9. Phase 7 D7-000 now supplies `User` lifecycle state, append-only user-administration history, append-only bounded Reader access facts, and typed singleton product settings.
 10. Phase 7 Wave 3 now adds runtime-live Admin-only `GET /api/admin/users` and `GET /api/admin/users/:userId` routes with explicit safe projections. The tracked OpenAPI/generated client intentionally remains at the Wave 2 contract until D7-005; no web consumer may treat the user routes as generated-client-ready. Product-settings persistence is implemented independently, but no general-settings route is live.
 11. Category deletion/reassignment, tag duplicate review/merge, user role/status mutations, general management reporting, and general-settings routes still do not have runtime endpoints. The bounded Reader-security report/CSV routes are live.
-12. Settings must distinguish safe database-backed product settings from deployment-owned secrets and security configuration. The general-settings route remains gated on a tested capability source; HMAC secrets and rate/scrape thresholds stay environment-owned.
+12. Settings distinguish safe database-backed product values from deployment-owned secrets and security configuration. The Admin-only general-settings route publishes only tested configured/not-configured capability facts; signing material and exact rate/scrape thresholds stay environment-owned and are never editable or returned.
 13. Phase 7 Wave 4 closes the P0 Reader integration gate with live catalogue/detail, protected manifest/page delivery, hydrated Reader state, committed-risk alerts, and Reader-access reporting. Generated OpenAPI/client reconciliation remains intentionally deferred to D7-005.
 
 ## Migration strategy status

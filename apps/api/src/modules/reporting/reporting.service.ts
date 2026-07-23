@@ -5,6 +5,7 @@ import {
   BookStatus,
   Prisma,
   ProcessingJobStatus,
+  ReaderAccessEventType,
   ReaderAccessRiskLevel,
   UserRole
 } from '../../generated/prisma/client';
@@ -15,6 +16,10 @@ import {
   ReaderAccessReportResponseDto,
   ReaderAccessRiskCountsDto
 } from './dto/reader-access-report.dto';
+import {
+  ManagementDashboardSummaryDto,
+  OperationsReportRangeQueryDto
+} from './dto/operations-report.dto';
 import {
   BookStatusCountsDto,
   DASHBOARD_ACTIVITY_ACTIONS,
@@ -31,6 +36,35 @@ export const READER_ACCESS_DEFAULT_PAGE_SIZE = 50;
 export const READER_ACCESS_MAX_PAGE_SIZE = 200;
 export const READER_ACCESS_DEFAULT_RANGE_MS = 7 * 24 * 60 * 60 * 1000;
 export const READER_ACCESS_MAX_RANGE_MS = 31 * 24 * 60 * 60 * 1000;
+export const OPERATIONS_CSV_ROW_CAP = 1000;
+export const DOCUMENTS_CSV_HEADERS = [
+  'documentId',
+  'title',
+  'status',
+  'category',
+  'createdByEmail',
+  'createdAt',
+  'updatedAt'
+] as const;
+export const USERS_CSV_HEADERS = [
+  'userId',
+  'email',
+  'role',
+  'status',
+  'lastSignInAt',
+  'deactivatedAt',
+  'createdAt',
+  'updatedAt'
+] as const;
+export const ACTIVITY_CSV_HEADERS = [
+  'eventId',
+  'documentId',
+  'documentTitle',
+  'action',
+  'actorEmail',
+  'message',
+  'occurredAt'
+] as const;
 export const READER_ACCESS_CSV_HEADERS = [
   'eventReference',
   'documentReference',
@@ -47,18 +81,27 @@ export const READER_ACCESS_CSV_HEADERS = [
 export class ReportingService {
   constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
 
-  async getLibrarianDashboardSummary(): Promise<LibrarianDashboardSummaryDto> {
+  async getLibrarianDashboardSummary(
+    query: OperationsReportRangeQueryDto = {},
+    now = new Date()
+  ): Promise<LibrarianDashboardSummaryDto> {
+    const range = normalizeOperationsRange(query, now);
+    const rangeWhere = { createdAt: { gte: range.from, lt: range.to } };
     const [bookGroups, processingJobGroups, categoryCount, tagCount, userGroups, recentBooks, activityGroups, recentActivity] = await Promise.all([
       this.prisma.book.groupBy({ by: ['status'], _count: { _all: true } }),
       this.prisma.processingJob.groupBy({ by: ['status'], _count: { _all: true } }),
       this.prisma.category.count(),
       this.prisma.tag.count(),
       this.prisma.user.groupBy({ by: ['role'], _count: { _all: true } }),
-      this.prisma.book.findMany({ take: 5, orderBy: { createdAt: 'desc' }, select: { id: true, title: true, status: true, createdAt: true } }),
-      this.prisma.bookAuditEvent.groupBy({ by: ['action'], where: { action: { in: [...DASHBOARD_ACTIVITY_ACTIONS] } }, _count: { _all: true } }),
+      this.prisma.book.findMany({ where: rangeWhere, take: 5, orderBy: { createdAt: 'desc' }, select: { id: true, title: true, status: true, createdAt: true } }),
+      this.prisma.bookAuditEvent.groupBy({
+        by: ['action'],
+        where: { ...rangeWhere, action: { in: [...DASHBOARD_ACTIVITY_ACTIONS] } },
+        _count: { _all: true }
+      }),
       this.prisma.bookAuditEvent.findMany({
         take: 10,
-        where: { action: { in: [...DASHBOARD_ACTIVITY_ACTIONS] } },
+        where: { ...rangeWhere, action: { in: [...DASHBOARD_ACTIVITY_ACTIONS] } },
         orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
         select: {
           id: true,
@@ -75,7 +118,7 @@ export class ReportingService {
     const users = mapUserCounts(userGroups);
 
     return {
-      generatedAt: new Date().toISOString(),
+      generatedAt: now.toISOString(),
       books,
       processingJobs: mapProcessingCounts(processingJobGroups),
       taxonomy: { categories: categoryCount, tags: tagCount },
@@ -86,6 +129,125 @@ export class ReportingService {
         recent: recentActivity.map(mapActivityItem)
       }
     };
+  }
+
+  async getManagementDashboardSummary(
+    query: OperationsReportRangeQueryDto,
+    now = new Date()
+  ): Promise<ManagementDashboardSummaryDto> {
+    const range = normalizeOperationsRange(query, now);
+    const createdAt = { gte: range.from, lt: range.to };
+    const [documentsCreated, usersCreated, activityEvents, total, rateLimited, scrapeSuspected, highRisk] =
+      await Promise.all([
+        this.prisma.book.count({ where: { createdAt } }),
+        this.prisma.user.count({ where: { createdAt } }),
+        this.prisma.bookAuditEvent.count({ where: { createdAt } }),
+        this.prisma.readerAccessEvent.count({ where: { createdAt } }),
+        this.prisma.readerAccessEvent.count({
+          where: { createdAt, eventType: ReaderAccessEventType.RATE_LIMITED }
+        }),
+        this.prisma.readerAccessEvent.count({
+          where: { createdAt, eventType: ReaderAccessEventType.SCRAPE_SUSPECTED }
+        }),
+        this.prisma.readerAccessEvent.count({
+          where: { createdAt, riskLevel: ReaderAccessRiskLevel.HIGH }
+        })
+      ]);
+
+    return {
+      generatedAt: now.toISOString(),
+      from: range.from.toISOString(),
+      to: range.to.toISOString(),
+      documentsCreated,
+      usersCreated,
+      activityEvents,
+      readerSecurity: { total, rateLimited, scrapeSuspected, highRisk }
+    };
+  }
+
+  async exportDocumentsCsv(query: OperationsReportRangeQueryDto, now = new Date()): Promise<string> {
+    const range = normalizeOperationsRange(query, now);
+    const rows = await this.prisma.book.findMany({
+      where: { createdAt: { gte: range.from, lt: range.to } },
+      orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
+      take: OPERATIONS_CSV_ROW_CAP,
+      select: {
+        id: true,
+        title: true,
+        status: true,
+        createdAt: true,
+        updatedAt: true,
+        category: { select: { name: true } },
+        createdBy: { select: { email: true } }
+      }
+    });
+
+    return buildCsv(DOCUMENTS_CSV_HEADERS, rows.map((row) => [
+      row.id,
+      row.title,
+      row.status,
+      row.category?.name ?? null,
+      row.createdBy.email,
+      row.createdAt.toISOString(),
+      row.updatedAt.toISOString()
+    ]));
+  }
+
+  async exportUsersCsv(query: OperationsReportRangeQueryDto, now = new Date()): Promise<string> {
+    const range = normalizeOperationsRange(query, now);
+    const rows = await this.prisma.user.findMany({
+      where: { createdAt: { gte: range.from, lt: range.to } },
+      orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
+      take: OPERATIONS_CSV_ROW_CAP,
+      select: {
+        id: true,
+        email: true,
+        role: true,
+        status: true,
+        lastSignInAt: true,
+        deactivatedAt: true,
+        createdAt: true,
+        updatedAt: true
+      }
+    });
+
+    return buildCsv(USERS_CSV_HEADERS, rows.map((row) => [
+      row.id,
+      row.email,
+      row.role,
+      row.status,
+      row.lastSignInAt?.toISOString() ?? null,
+      row.deactivatedAt?.toISOString() ?? null,
+      row.createdAt.toISOString(),
+      row.updatedAt.toISOString()
+    ]));
+  }
+
+  async exportActivityCsv(query: OperationsReportRangeQueryDto, now = new Date()): Promise<string> {
+    const range = normalizeOperationsRange(query, now);
+    const rows = await this.prisma.bookAuditEvent.findMany({
+      where: { createdAt: { gte: range.from, lt: range.to } },
+      orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
+      take: OPERATIONS_CSV_ROW_CAP,
+      select: {
+        id: true,
+        action: true,
+        message: true,
+        createdAt: true,
+        book: { select: { id: true, title: true } },
+        actor: { select: { email: true } }
+      }
+    });
+
+    return buildCsv(ACTIVITY_CSV_HEADERS, rows.map((row) => [
+      row.id,
+      row.book.id,
+      row.book.title,
+      row.action,
+      row.actor?.email ?? null,
+      row.message,
+      row.createdAt.toISOString()
+    ]));
   }
 
   async getReaderAccessReport(query: ReaderAccessReportQueryDto, now = new Date()): Promise<ReaderAccessReportResponseDto> {
@@ -161,6 +323,7 @@ export type NormalizedReaderAccessReportQuery = Readonly<{
   pageSize: number;
   offset: number;
 }>;
+export type NormalizedOperationsRange = Readonly<{ from: Date; to: Date }>;
 
 const PROCESSING_ACTIVITY_ACTIONS = new Set<BookAuditAction>([
   BookAuditAction.PROCESSING_QUEUED,
@@ -282,6 +445,24 @@ export function normalizeReaderAccessReportQuery(
   };
 }
 
+export function normalizeOperationsRange(
+  query: OperationsReportRangeQueryDto,
+  now = new Date()
+): NormalizedOperationsRange {
+  const to = query.to ? parseUtcDate(query.to, 'to') : new Date(now);
+  const from = query.from
+    ? parseUtcDate(query.from, 'from')
+    : new Date(to.getTime() - READER_ACCESS_DEFAULT_RANGE_MS);
+
+  if (from.getTime() >= to.getTime()) {
+    throw new BadRequestException('from must be earlier than to.');
+  }
+  if (to.getTime() - from.getTime() > READER_ACCESS_MAX_RANGE_MS) {
+    throw new BadRequestException('Requested range exceeds the 31-day reporting limit.');
+  }
+  return { from, to };
+}
+
 export function buildReaderAccessWhere(query: Pick<NormalizedReaderAccessReportQuery, 'from' | 'to' | 'risk'>): Prisma.ReaderAccessEventWhereInput {
   return {
     createdAt: { gte: query.from, lt: query.to },
@@ -333,6 +514,16 @@ export function serializeCsvCell(value: string | number | null): string {
   const stringValue = typeof value === 'number' ? String(value) : value;
   const safeValue = /^[=+\-@]|^[\t\r]/.test(stringValue) ? `'${stringValue}` : stringValue;
   return `"${safeValue.replace(/"/g, '""')}"`;
+}
+
+function buildCsv(
+  headers: readonly string[],
+  rows: Array<Array<string | number | null>>
+): string {
+  return [
+    headers.join(','),
+    ...rows.map((row) => row.map(serializeCsvCell).join(','))
+  ].join('\n');
 }
 
 function parseUtcDate(value: string, field: 'from' | 'to'): Date {

@@ -368,6 +368,149 @@ describe('Admin dashboard reporting (e2e)', () => {
     });
   });
 
+  it('returns a bounded management summary and safe formula-neutralized operations CSV exports', async () => {
+    const admin = await prisma.user.create({
+      data: {
+        email: 'admin@libif.local',
+        passwordHash: 'dev-only',
+        role: UserRole.ADMIN,
+        createdAt: new Date('2026-07-22T01:00:00.000Z')
+      }
+    });
+    const reader = await prisma.user.create({
+      data: {
+        id: '=reader-export',
+        email: 'reader@example.edu',
+        passwordHash: 'must-never-export',
+        role: UserRole.READER,
+        createdAt: new Date('2026-07-22T02:00:00.000Z')
+      }
+    });
+    const category = await prisma.category.create({
+      data: { name: '@Restricted,Category', slug: 'restricted-category' }
+    });
+    const book = await prisma.book.create({
+      data: {
+        id: '@document-export',
+        title: '=Formula,\nDocument',
+        status: BookStatus.PUBLISHED,
+        categoryId: category.id,
+        createdById: admin.id,
+        createdAt: new Date('2026-07-22T03:00:00.000Z')
+      }
+    });
+    await prisma.bookAuditEvent.create({
+      data: {
+        id: '+activity-export',
+        bookId: book.id,
+        actorId: admin.id,
+        action: BookAuditAction.PUBLISHED,
+        message: '@formula,\nmessage',
+        createdAt: new Date('2026-07-22T04:00:00.000Z')
+      }
+    });
+    await prisma.readerAccessEvent.createMany({
+      data: [
+        {
+          eventType: ReaderAccessEventType.RATE_LIMITED,
+          riskLevel: ReaderAccessRiskLevel.LOW,
+          reasonCode: ReaderAccessReasonCode.RATE_LIMIT_EXCEEDED,
+          userId: reader.id,
+          bookId: book.id,
+          createdAt: new Date('2026-07-22T05:00:00.000Z')
+        },
+        {
+          eventType: ReaderAccessEventType.SCRAPE_SUSPECTED,
+          riskLevel: ReaderAccessRiskLevel.HIGH,
+          reasonCode: ReaderAccessReasonCode.PAGE_ENUMERATION,
+          userId: reader.id,
+          bookId: book.id,
+          createdAt: new Date('2026-07-22T06:00:00.000Z')
+        }
+      ]
+    });
+    const query = { from: '2026-07-22T00:00:00.000Z', to: '2026-07-23T00:00:00.000Z' };
+
+    await request(app.getHttpServer())
+      .get('/api/admin/dashboard/management')
+      .query(query)
+      .set(adminHeaders)
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body).toMatchObject({
+          from: query.from,
+          to: query.to,
+          documentsCreated: 1,
+          usersCreated: 2,
+          activityEvents: 1,
+          readerSecurity: {
+            total: 2,
+            rateLimited: 1,
+            scrapeSuspected: 1,
+            highRisk: 1
+          }
+        });
+      });
+
+    const documentCsv = await request(app.getHttpServer())
+      .get('/api/admin/reports/documents.csv')
+      .query(query)
+      .set(adminHeaders)
+      .expect(200);
+    expect(documentCsv.headers['content-disposition']).toBe(
+      'attachment; filename="documents-report.csv"'
+    );
+    expect(documentCsv.text).toContain(
+      'documentId,title,status,category,createdByEmail,createdAt,updatedAt'
+    );
+    expect(documentCsv.text).toContain('"\'@document-export"');
+    expect(documentCsv.text).toContain('"\'=Formula,\nDocument"');
+    expect(documentCsv.text).toContain('"\'@Restricted,Category"');
+
+    const usersCsv = await request(app.getHttpServer())
+      .get('/api/admin/reports/users.csv')
+      .query(query)
+      .set(adminHeaders)
+      .expect(200);
+    expect(usersCsv.headers['content-disposition']).toBe('attachment; filename="users-report.csv"');
+    expect(usersCsv.text).toContain('userId,email,role,status');
+    expect(usersCsv.text).toContain('"\'=reader-export"');
+    expect(usersCsv.text).not.toContain('must-never-export');
+
+    const activityCsv = await request(app.getHttpServer())
+      .get('/api/admin/reports/activity.csv')
+      .query(query)
+      .set(adminHeaders)
+      .expect(200);
+    expect(activityCsv.headers['content-disposition']).toBe(
+      'attachment; filename="activity-report.csv"'
+    );
+    expect(activityCsv.text).toContain('"\'+activity-export"');
+    expect(activityCsv.text).toContain('"\'@formula,\nmessage"');
+  });
+
+  it('keeps management and operations CSV routes admin-only and validates their UTC range', async () => {
+    const routes = [
+      '/api/admin/dashboard/management',
+      '/api/admin/reports/documents.csv',
+      '/api/admin/reports/users.csv',
+      '/api/admin/reports/activity.csv'
+    ];
+    for (const route of routes) {
+      await request(app.getHttpServer()).get(route).set(librarianHeaders).expect(403);
+      await request(app.getHttpServer()).get(route).set(readerHeaders).expect(403);
+    }
+
+    await request(app.getHttpServer())
+      .get('/api/admin/reports/documents.csv')
+      .query({
+        from: '2026-07-23T00:00:00+07:00',
+        to: '2026-07-24T00:00:00.000Z'
+      })
+      .set(adminHeaders)
+      .expect(400);
+  });
+
   it('forbids reader and anonymous dashboard access', async () => {
     await request(app.getHttpServer()).get('/api/admin/dashboard/librarian').set(readerHeaders).expect(403);
     await request(app.getHttpServer()).get('/api/admin/dashboard/librarian').expect(403);

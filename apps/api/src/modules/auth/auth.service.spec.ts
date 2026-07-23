@@ -2,9 +2,13 @@ import type { Request } from 'express';
 import { AuthService } from './auth.service';
 
 describe('AuthService development fallback', () => {
-  function service(nodeEnv: string, devAuth: string, persistedUserId?: string) {
+  function service(nodeEnv: string, devAuth: string, persistedUserId?: string, status = 'ACTIVE') {
     const config = { get: (key: string) => (key === 'NODE_ENV' ? nodeEnv : key === 'LIBIF_ENABLE_DEV_AUTH' ? devAuth : undefined) };
-    const prisma = { user: { findUnique: jest.fn().mockResolvedValue(persistedUserId ? { id: persistedUserId } : null) } };
+    const prisma = {
+      user: {
+        findUnique: jest.fn().mockResolvedValue(persistedUserId ? { id: persistedUserId, status } : null)
+      }
+    };
     return new AuthService(config as never, prisma as never, {} as never, {} as never, { readSessionToken: () => undefined } as never, {} as never);
   }
 
@@ -29,5 +33,15 @@ describe('AuthService development fallback', () => {
       email: 'reader@libif.local',
       role: 'READER',
     });
+  });
+
+  it('rejects development headers bound to a deactivated account', async () => {
+    const request = {
+      headers: { 'x-libif-dev-role': 'ADMIN', 'x-libif-dev-user-id': 'inactive-admin' }
+    } as unknown as Request;
+
+    await expect(
+      service('test', 'true', 'inactive-admin', 'DEACTIVATED').resolveUser(request)
+    ).resolves.toBeUndefined();
   });
 });

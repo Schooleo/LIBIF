@@ -13,6 +13,7 @@ import { NotificationsModule } from './modules/notifications/notifications.modul
 import { ProcessingModule } from './modules/processing/processing.module';
 import { ReaderModule } from './modules/reader/reader.module';
 import { ReportingModule } from './modules/reporting/reporting.module';
+import { SettingsModule } from './modules/settings/settings.module';
 import { StorageModule } from './modules/storage/storage.module';
 import { TaxonomyModule } from './modules/taxonomy/taxonomy.module';
 import { UploadModule } from './modules/upload/upload.module';
@@ -40,7 +41,8 @@ import { UsersModule } from './modules/users/users.module';
     ReaderModule,
     AccessModule,
     TaxonomyModule,
-    UsersModule
+    UsersModule,
+    SettingsModule
   ]
 })
 export class AppModule {}

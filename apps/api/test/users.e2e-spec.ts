@@ -218,6 +218,178 @@ describe('Admin users (e2e)', () => {
     const response = await request(app.getHttpServer()).get('/api/admin/users/missing-user').set(adminHeaders).expect(404);
     expect(response.body).toMatchObject({ code: 'NOT_FOUND', message: 'User missing-user not found.', status: 404 });
   });
+
+  it('changes roles and account status transactionally with session revocation and immutable events', async () => {
+    const actor = await prisma.user.create({
+      data: { email: 'admin@libif.local', passwordHash: 'actor-secret', role: UserRole.ADMIN }
+    });
+    const target = await prisma.user.create({
+      data: { email: 'member@example.edu', passwordHash: 'target-secret', role: UserRole.LIBRARIAN }
+    });
+    await prisma.userSession.create({
+      data: {
+        userId: target.id,
+        tokenHash: 'wave5-target-session',
+        expiresAt: new Date('2099-07-23T23:59:59.000Z')
+      }
+    });
+
+    await request(app.getHttpServer())
+      .patch(`/api/admin/users/${target.id}/role`)
+      .set(adminHeaders)
+      .send({ role: 'READER', reason: 'Duties changed' })
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body).toMatchObject({
+          id: target.id,
+          role: 'READER',
+          status: 'ACTIVE',
+          activeSessionCount: 0,
+          administrationEvents: [
+            {
+              action: 'ROLE_CHANGED',
+              previousRole: 'LIBRARIAN',
+              nextRole: 'READER',
+              reason: 'Duties changed',
+              actorEmail: actor.email
+            }
+          ]
+        });
+      });
+
+    const revokedSession = await prisma.userSession.findUniqueOrThrow({
+      where: { tokenHash: 'wave5-target-session' }
+    });
+    expect(revokedSession.revokedAt).toBeInstanceOf(Date);
+
+    await request(app.getHttpServer())
+      .post(`/api/admin/users/${target.id}/deactivate`)
+      .set(adminHeaders)
+      .send({ reason: 'Account review' })
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body).toMatchObject({
+          status: 'DEACTIVATED',
+          administrationEvents: [
+            { action: 'DEACTIVATED', reason: 'Account review', actorEmail: actor.email },
+            { action: 'ROLE_CHANGED', reason: 'Duties changed', actorEmail: actor.email }
+          ]
+        });
+        expect(body.deactivatedAt).toEqual(expect.any(String));
+      });
+
+    await request(app.getHttpServer())
+      .post(`/api/admin/users/${target.id}/reactivate`)
+      .set(adminHeaders)
+      .send({ reason: 'Review completed' })
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body).toMatchObject({
+          status: 'ACTIVE',
+          deactivatedAt: null,
+          administrationEvents: [
+            { action: 'REACTIVATED', reason: 'Review completed', actorEmail: actor.email },
+            { action: 'DEACTIVATED', reason: 'Account review', actorEmail: actor.email },
+            { action: 'ROLE_CHANGED', reason: 'Duties changed', actorEmail: actor.email }
+          ]
+        });
+      });
+
+    const events = await prisma.userAdministrationEvent.findMany({
+      where: { targetUserId: target.id },
+      orderBy: { createdAt: 'asc' }
+    });
+    expect(events.map((event) => event.action)).toEqual([
+      UserAdministrationAction.ROLE_CHANGED,
+      UserAdministrationAction.DEACTIVATED,
+      UserAdministrationAction.REACTIVATED
+    ]);
+  });
+
+  it('protects self-management and requires a nonblank reason', async () => {
+    const admin = await prisma.user.create({
+      data: { email: 'admin@libif.local', passwordHash: 'actor-secret', role: UserRole.ADMIN }
+    });
+
+    await request(app.getHttpServer())
+      .patch(`/api/admin/users/${admin.id}/role`)
+      .set(adminHeaders)
+      .send({ role: 'LIBRARIAN', reason: 'Self demotion' })
+      .expect(409);
+
+    await request(app.getHttpServer())
+      .post(`/api/admin/users/${admin.id}/deactivate`)
+      .set(adminHeaders)
+      .send({ reason: 'Self deactivation' })
+      .expect(409);
+
+    const target = await prisma.user.create({
+      data: { email: 'reader@example.edu', passwordHash: 'target-secret', role: UserRole.READER }
+    });
+    await request(app.getHttpServer())
+      .post(`/api/admin/users/${target.id}/deactivate`)
+      .set(adminHeaders)
+      .send({ reason: '   ' })
+      .expect(400);
+  });
+
+  it('serializes concurrent demotions so one active administrator always remains', async () => {
+    const actor = await prisma.user.create({
+      data: { email: 'operator@example.edu', passwordHash: 'operator-secret', role: UserRole.LIBRARIAN }
+    });
+    const [first, second] = await Promise.all([
+      prisma.user.create({
+        data: { email: 'admin.one@example.edu', passwordHash: 'secret-one', role: UserRole.ADMIN }
+      }),
+      prisma.user.create({
+        data: { email: 'admin.two@example.edu', passwordHash: 'secret-two', role: UserRole.ADMIN }
+      })
+    ]);
+    const actorHeaders = {
+      'x-libif-dev-role': 'ADMIN',
+      'x-libif-dev-user-id': actor.id,
+      'x-libif-dev-user-email': actor.email
+    };
+
+    const responses = await Promise.all([
+      request(app.getHttpServer())
+        .patch(`/api/admin/users/${first.id}/role`)
+        .set(actorHeaders)
+        .send({ role: 'LIBRARIAN', reason: 'Concurrent role review' }),
+      request(app.getHttpServer())
+        .patch(`/api/admin/users/${second.id}/role`)
+        .set(actorHeaders)
+        .send({ role: 'LIBRARIAN', reason: 'Concurrent role review' })
+    ]);
+
+    expect(responses.map((response) => response.status).sort()).toEqual([200, 409]);
+    const activeAdminCount = await prisma.user.count({
+      where: { role: UserRole.ADMIN, status: UserAccountStatus.ACTIVE }
+    });
+    expect(activeAdminCount).toBe(1);
+  });
+
+  it('keeps all user mutation routes admin-only', async () => {
+    const target = await prisma.user.create({
+      data: { email: 'reader@example.edu', passwordHash: 'target-secret', role: UserRole.READER }
+    });
+    const mutations = [
+      { method: 'patch', path: `/api/admin/users/${target.id}/role`, body: { role: 'LIBRARIAN', reason: 'No access' } },
+      { method: 'post', path: `/api/admin/users/${target.id}/deactivate`, body: { reason: 'No access' } },
+      { method: 'post', path: `/api/admin/users/${target.id}/reactivate`, body: { reason: 'No access' } }
+    ] as const;
+
+    for (const mutation of mutations) {
+      await request(app.getHttpServer())[mutation.method](mutation.path)
+        .set(librarianHeaders)
+        .send(mutation.body)
+        .expect(403);
+      await request(app.getHttpServer())[mutation.method](mutation.path)
+        .set(readerHeaders)
+        .send(mutation.body)
+        .expect(403);
+    }
+  });
 });
 
 function assertNoForbiddenKeys(value: unknown): void {

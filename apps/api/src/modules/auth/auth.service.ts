@@ -1,7 +1,7 @@
 import { BadRequestException, ConflictException, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import type { Request, Response } from 'express';
-import { Prisma, User, UserRole } from '../../generated/prisma/client';
+import { Prisma, User, UserAccountStatus, UserRole } from '../../generated/prisma/client';
 import { PrismaService } from '../database/prisma.service';
 import { AuthCookieService } from './auth-cookie.service';
 import { AuthTokenService } from './auth-token.service';
@@ -46,6 +46,9 @@ export class AuthService {
   async signIn(dto: SignInRequestDto, request: Request, response: Response): Promise<SessionDto> {
     const user = await this.prisma.user.findUnique({ where: { email: normalizeEmail(dto.email) } });
     if (!user || !(await this.passwordHasher.verify(dto.password, user.passwordHash))) {
+      throw new UnauthorizedException('Invalid email or password.');
+    }
+    if (user.status === UserAccountStatus.DEACTIVATED) {
       throw new UnauthorizedException('Invalid email or password.');
     }
     await this.prisma.user.update({ where: { id: user.id }, data: { lastSignInAt: new Date() } });
@@ -133,7 +136,18 @@ export class AuthService {
     const token = this.cookies.readSessionToken(request);
     if (!token) return undefined;
     const session = await this.prisma.userSession.findUnique({ where: { tokenHash: this.tokens.hashToken(token) }, include: { user: true } });
-    if (!session || session.revokedAt || session.expiresAt <= new Date()) {
+    if (
+      !session ||
+      session.revokedAt ||
+      session.expiresAt <= new Date() ||
+      session.user.status === UserAccountStatus.DEACTIVATED
+    ) {
+      if (session && !session.revokedAt && session.user.status === UserAccountStatus.DEACTIVATED) {
+        await this.prisma.userSession.update({
+          where: { id: session.id },
+          data: { revokedAt: new Date() }
+        });
+      }
       if (response) this.cookies.clearSessionCookie(response);
       return undefined;
     }
@@ -152,8 +166,15 @@ export class AuthService {
     const email = normalizeEmail(this.readHeader(request, 'x-libif-dev-user-email') ?? defaultEmail);
     const explicitUserId = this.readHeader(request, 'x-libif-dev-user-id');
     const persistedUser = explicitUserId
-      ? null
-      : await this.prisma.user.findUnique({ where: { email }, select: { id: true } });
+      ? await this.prisma.user.findUnique({
+          where: { id: explicitUserId },
+          select: { id: true, status: true }
+        })
+      : await this.prisma.user.findUnique({
+          where: { email },
+          select: { id: true, status: true }
+        });
+    if (persistedUser?.status === UserAccountStatus.DEACTIVATED) return undefined;
     return {
       id: explicitUserId ?? persistedUser?.id ?? `dev-${role.toLowerCase()}`,
       email,
