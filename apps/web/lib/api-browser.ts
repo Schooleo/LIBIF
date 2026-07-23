@@ -85,6 +85,104 @@ export async function updateTag(tagId: string, payload: UpdateTaxonomyTagDto): P
   return data;
 }
 
+export type CategoryImpactResponse = {
+  id: string;
+  name: string;
+  documentCount: number;
+  childCount: number;
+  totalDescendantCount: number;
+  isLeaf: boolean;
+  canDirectDelete: boolean;
+};
+
+export type TagImpactResponse = {
+  id: string;
+  name: string;
+  documentCount: number;
+};
+
+export async function fetchCategoryImpact(categoryId: string): Promise<CategoryImpactResponse> {
+  const response = await fetch(`${API_BASE_URL}/api/admin/categories/${encodeURIComponent(categoryId)}/impact`, {
+    headers: getDevAuthHeaders(),
+    credentials: 'include',
+  });
+  if (!response.ok) {
+    const errPayload = await response.json().catch(() => ({}));
+    throw new Error(apiErrorMessage(errPayload, 'Failed to fetch category impact'));
+  }
+  return response.json() as Promise<CategoryImpactResponse>;
+}
+
+export async function deleteCategory(categoryId: string, targetCategoryId?: string): Promise<{ success: boolean }> {
+  const url = targetCategoryId
+    ? `${API_BASE_URL}/api/admin/categories/${encodeURIComponent(categoryId)}?targetCategoryId=${encodeURIComponent(targetCategoryId)}`
+    : `${API_BASE_URL}/api/admin/categories/${encodeURIComponent(categoryId)}`;
+  const response = await fetch(url, {
+    method: 'DELETE',
+    headers: getDevAuthHeaders(),
+    credentials: 'include',
+  });
+  if (!response.ok) {
+    const errPayload = await response.json().catch(() => ({}));
+    throw new Error(apiErrorMessage(errPayload, 'Failed to delete category'));
+  }
+  return response.json() as Promise<{ success: boolean }>;
+}
+
+export async function reassignAndDeleteCategory(categoryId: string, targetCategoryId: string): Promise<{ success: boolean }> {
+  const response = await fetch(`${API_BASE_URL}/api/admin/categories/${encodeURIComponent(categoryId)}/reassign-and-delete`, {
+    method: 'POST',
+    headers: { ...getDevAuthHeaders(), 'Content-Type': 'application/json' },
+    body: JSON.stringify({ targetCategoryId }),
+    credentials: 'include',
+  });
+  if (!response.ok) {
+    const errPayload = await response.json().catch(() => ({}));
+    throw new Error(apiErrorMessage(errPayload, 'Failed to reassign and delete category'));
+  }
+  return response.json() as Promise<{ success: boolean }>;
+}
+
+export async function fetchTagImpact(tagId: string): Promise<TagImpactResponse> {
+  const response = await fetch(`${API_BASE_URL}/api/admin/tags/${encodeURIComponent(tagId)}/impact`, {
+    headers: getDevAuthHeaders(),
+    credentials: 'include',
+  });
+  if (!response.ok) {
+    const errPayload = await response.json().catch(() => ({}));
+    throw new Error(apiErrorMessage(errPayload, 'Failed to fetch tag impact'));
+  }
+  return response.json() as Promise<TagImpactResponse>;
+}
+
+export async function deleteTag(tagId: string): Promise<{ success: boolean }> {
+  const response = await fetch(`${API_BASE_URL}/api/admin/tags/${encodeURIComponent(tagId)}`, {
+    method: 'DELETE',
+    headers: getDevAuthHeaders(),
+    credentials: 'include',
+  });
+  if (!response.ok) {
+    const errPayload = await response.json().catch(() => ({}));
+    throw new Error(apiErrorMessage(errPayload, 'Failed to delete tag'));
+  }
+  return response.json() as Promise<{ success: boolean }>;
+}
+
+export async function mergeTag(sourceTagId: string, targetTagId: string): Promise<{ success: boolean }> {
+  const response = await fetch(`${API_BASE_URL}/api/admin/tags/${encodeURIComponent(sourceTagId)}/merge`, {
+    method: 'POST',
+    headers: { ...getDevAuthHeaders(), 'Content-Type': 'application/json' },
+    body: JSON.stringify({ targetTagId }),
+    credentials: 'include',
+  });
+  if (!response.ok) {
+    const errPayload = await response.json().catch(() => ({}));
+    throw new Error(apiErrorMessage(errPayload, 'Failed to merge tag'));
+  }
+  return response.json() as Promise<{ success: boolean }>;
+}
+
+
 export function uploadBookIntake(file: File, metadata: CreateBookIntakeDto, onProgress: (progress: number) => void): Promise<CreateBookIntakeResponse> {
   return new Promise((resolve, reject) => {
     const form = new FormData();
