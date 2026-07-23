@@ -190,7 +190,7 @@ export function TagManager({ tags: initialTags, canManage }: TagManagerProps) {
           onClose={closeModal}
         >
           <div className="ui-stack">
-            {modalError ? <InlineAlert tone="critical" title="Operation failed">{modalError}</InlineAlert> : null}
+            {modalError ? <InlineAlert tone="error" title="Operation failed">{modalError}</InlineAlert> : null}
             {modalMode === 'merge' ? (
               <FormField label="Merge into target tag" required description="Select the destination tag to receive all document associations.">
                 {(fieldProps) => (

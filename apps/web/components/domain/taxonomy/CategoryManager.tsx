@@ -227,7 +227,7 @@ export function CategoryManager({ categories: initialCategories, canManage }: Ca
           onClose={closeDeleteDialog}
         >
           <div className="ui-stack">
-            {deleteError ? <InlineAlert tone="critical" title="Operation failed">{deleteError}</InlineAlert> : null}
+            {deleteError ? <InlineAlert tone="error" title="Operation failed">{deleteError}</InlineAlert> : null}
             {impact && !impact.canDirectDelete ? (
               <>
                 <div className="ui-stack">
