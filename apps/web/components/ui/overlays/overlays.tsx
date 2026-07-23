@@ -73,7 +73,21 @@ function useOverlayFocus(open: boolean, onClose?: () => void) {
   return { overlayRef, handleTabKey };
 }
 
-export function Dialog({ open, title, description, children, onClose }: { open: boolean; title: string; description?: string; children: ReactNode; onClose: () => void }) {
+export function Dialog({
+  open,
+  title,
+  description,
+  children,
+  showCloseButton = true,
+  onClose
+}: {
+  open: boolean;
+  title: string;
+  description?: string;
+  children: ReactNode;
+  showCloseButton?: boolean;
+  onClose: () => void;
+}) {
   const titleId = useId();
   const descriptionId = useId();
   const { overlayRef, handleTabKey } = useOverlayFocus(open, onClose);
@@ -94,7 +108,7 @@ export function Dialog({ open, title, description, children, onClose }: { open: 
         <h2 id={titleId}>{title}</h2>
         {description ? <p id={descriptionId}>{description}</p> : null}
         {children}
-        <Button variant="secondary" onClick={onClose}>Close</Button>
+        {showCloseButton ? <Button variant="secondary" onClick={onClose}>Close</Button> : null}
       </section>
     </div>
   );
