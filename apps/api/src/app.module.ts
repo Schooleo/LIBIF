@@ -16,6 +16,7 @@ import { ReportingModule } from './modules/reporting/reporting.module';
 import { StorageModule } from './modules/storage/storage.module';
 import { TaxonomyModule } from './modules/taxonomy/taxonomy.module';
 import { UploadModule } from './modules/upload/upload.module';
+import { UsersModule } from './modules/users/users.module';
 
 @Module({
   imports: [
@@ -38,7 +39,8 @@ import { UploadModule } from './modules/upload/upload.module';
     HealthModule,
     ReaderModule,
     AccessModule,
-    TaxonomyModule
+    TaxonomyModule,
+    UsersModule
   ]
 })
 export class AppModule {}

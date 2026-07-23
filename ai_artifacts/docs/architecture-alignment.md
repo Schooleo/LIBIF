@@ -90,9 +90,10 @@ Last updated: 2026-07-23
 6. Catalogue cards have no functional detail link, and detail/viewer routes scan the first catalogue list page instead of using direct detail contracts.
 7. The Reader viewer embeds the raw PDF, exposes a download action, and has a separate hard-coded page tracker that does not control the embedded viewer.
 8. Catalogue detail and viewer bookmark controls default to false because they do not hydrate one-document persisted state.
-9. Phase 7 D7-000 now supplies `User` lifecycle state, append-only user-administration history, append-only bounded Reader access facts, and typed singleton product settings. Auth enforcement and administration/reporting/settings controllers remain later tasks.
-10. Category deletion/reassignment, tag duplicate review/merge, management reporting/CSV, and settings controllers do not yet have runtime routes. Reader-security report and settings DTOs are frozen but are not live endpoints.
-11. Settings must distinguish safe database-backed product settings from deployment-owned secrets and security configuration; Phase 7 must not create an undocumented environment override.
+9. Phase 7 D7-000 now supplies `User` lifecycle state, append-only user-administration history, append-only bounded Reader access facts, and typed singleton product settings.
+10. Phase 7 Wave 3 now adds runtime-live Admin-only `GET /api/admin/users` and `GET /api/admin/users/:userId` routes with explicit safe projections. The tracked OpenAPI/generated client intentionally remains at the Wave 2 contract until D7-005; no web consumer may treat the user routes as generated-client-ready. Product-settings persistence is implemented independently, but no general-settings route is live.
+11. Category deletion/reassignment, tag duplicate review/merge, user role/status mutations, management reporting/CSV, general-settings, and Reader-security report routes still do not have runtime endpoints.
+12. Settings must distinguish safe database-backed product settings from deployment-owned secrets and security configuration. The general-settings route remains gated until Member A supplies a tested signing/scrape capability source; Member D does not infer those facts from rendering or Redis.
 
 ## Migration strategy status
 

@@ -160,6 +160,8 @@ Source of truth: `apps/api/src/common/http-error.filter.ts`.
 - Every successful/denied page attempt produces a bounded `ReaderAccessEvent`; Redis-backed rate/concurrency/scrape enforcement returns stable `429` + `Retry-After` where applicable and emits committed risk facts for deduplicated staff alerts.
 - Planned Admin-only security projections are `GET /api/admin/reports/reader-access?from&to&risk` and the bounded `.csv` equivalent.
 - Reader access to source-file download is removed or denied by explicit role policy. Any retained staff download is a separate staff-authorized contract.
+- Live Admin user routes are `GET /api/admin/users` and `GET /api/admin/users/:userId`; these expose only safe account, session, and administration-audit projections.
+- Wave 3 intentionally does not refresh `apps/api/openapi/libif-api.json` or `apps/web/lib/generated/api-types.ts`. These runtime-live routes are unavailable to generated-client consumers until D7-005 performs the single cross-lane contract refresh.
 
 ## Deferred or absent endpoint families
 
@@ -168,8 +170,8 @@ These routes are not implemented in the current runtime code and must not be tre
 - Dedicated correction history/resubmission endpoints such as `/api/admin/documents/{documentId}/corrections` or `/resubmit`.
 - Category deletion/reassignment endpoints.
 - Tag duplicate-detection or merge endpoints.
-- User administration, role-change, and account-deactivation endpoints.
-- Management dashboard, report-export, and settings endpoints.
+- User role-change and account-deactivation endpoints.
+- Management dashboard, report-export, and general-settings endpoints. The product-settings persistence service is implemented, but the route remains gated on Member A's tested deployment-capability handoff.
 - Published catalogue detail, one-document reader state, and protected manifest/raster-page endpoints.
 
 The approved contract sources are `ai_artifacts/plans/plan-phase-7-admin-operations-users-reporting-settings-2026-07-23.md` and `ai_artifacts/docs/phase-7-wave-1-2-foundation-contract-freeze.md`. Frozen TypeScript/Prisma shapes are not live endpoint evidence; controllers, tests, and regenerated OpenAPI remain required.

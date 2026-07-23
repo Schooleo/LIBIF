@@ -313,7 +313,7 @@ Goal: close the demo-critical reader gaps while preserving the planned operation
 
 Canonical execution plan: `ai_artifacts/plans/plan-phase-7-admin-operations-users-reporting-settings-2026-07-23.md`.
 
-Execution status: Waves 1–2 are complete; Wave 3 parallel P0 implementation is next. Reader POC gates are P0. Weighted work is split A=11, B=11, C=10, D=12 planning points. Member D owns the single migration and final integration; Phase 7 explicitly transfers risky taxonomy implementation to Member B and secure rendering/watermark implementation to Member C. Foundation and contract evidence is recorded in `ai_artifacts/docs/phase-7-wave-1-2-foundation-contract-freeze.md`; the canonical plan's Wave 1–7 member-focus table is the authoritative dispatch order.
+Execution status: Waves 1–2 are complete; Wave 3 is in progress with Member C's renderer baseline merged, Member D's users read API live, and Member D's product-settings persistence implemented behind the capability gate. Reader POC gates are P0. Weighted work is split A=11, B=11, C=10, D=12 planning points. Member D owns the single migration and final integration; Phase 7 explicitly transfers risky taxonomy implementation to Member B and secure rendering/watermark implementation to Member C. Foundation and contract evidence is recorded in `ai_artifacts/docs/phase-7-wave-1-2-foundation-contract-freeze.md`; the canonical plan's Wave 1–7 member-focus table is the authoritative dispatch order.
 
 Member A tasks:
 
@@ -340,9 +340,8 @@ Member C tasks:
 
 Member D tasks:
 
-- Implement user management list/detail/role changes/deactivation with confirmation flows.
-- Add the single schema foundation for user administration, settings, and append-only `ReaderAccessEvent` facts.
-- Implement user management plus operational/security dashboards, bounded CSV, and settings screens.
+- Keep the single schema foundation for user administration, settings, and append-only `ReaderAccessEvent` facts stable.
+- Phase 7 Wave 3 now exposes backend-only user list/detail routes and implements product-settings persistence; the settings route remains capability-gated, while role changes/deactivation, dashboards/CSV, and admin screens remain pending.
 - Coordinate frozen A/B/C handoffs, generated contracts, seeded watermark/audit/scrape scenarios, and phase closure gates.
 
 Expected end-of-phase result:

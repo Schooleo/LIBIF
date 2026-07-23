@@ -88,7 +88,7 @@ The canonical plan's **Wave-by-wave member focus** table is the task dispatch so
 
 - Member A: A7-001/A7-004 first, A7-003 in parallel, then A7-002/A7-005.
 - Member B: B7-001 then B7-002.
-- Member C: C7-001 then C7-002.
-- Member D: D7-001 and D7-004 in parallel while guarding the frozen contracts; shared client regeneration remains deferred to D7-005.
+- Member C: C7-001/C7-002 are already merged; Wave 3 only fixes renderer integration defects until committed risk facts unblock C7-003.
+- Member D: the D7-001 backend read slice is live and D7-004 product-settings persistence is implemented; the settings route remains gated while shared client regeneration stays deferred to D7-005.
 
 Members must not begin Wave 4 integration until the Wave 3 producer tests and handoffs named in the plan pass.

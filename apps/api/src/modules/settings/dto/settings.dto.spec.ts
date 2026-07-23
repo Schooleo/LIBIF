@@ -14,9 +14,26 @@ describe('UpdateGeneralSettingsDto', () => {
     await expect(validate(dto)).resolves.toEqual([]);
   });
 
+  it('trims inputs and normalizes blank nullable fields', async () => {
+    const dto = plainToInstance(UpdateGeneralSettingsDto, {
+      libraryName: '  LIBIF University Library  ',
+      supportEmail: '   ',
+      defaultLocale: '  vi  ',
+      readerNotice: '   '
+    });
+
+    await expect(validate(dto)).resolves.toEqual([]);
+    expect(dto).toEqual({
+      libraryName: 'LIBIF University Library',
+      supportEmail: null,
+      defaultLocale: 'vi',
+      readerNotice: null
+    });
+  });
+
   it('rejects invalid product values', async () => {
     const dto = plainToInstance(UpdateGeneralSettingsDto, {
-      libraryName: '',
+      libraryName: '   ',
       supportEmail: 'not-an-email',
       defaultLocale: 'not_a_locale'
     });
