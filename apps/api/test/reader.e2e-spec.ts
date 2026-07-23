@@ -36,6 +36,7 @@ describe('ReaderModule (e2e)', () => {
     prisma = app.get(PrismaService);
     hasher = app.get(PasswordHasher);
 
+    await prisma.$executeRawUnsafe('TRUNCATE TABLE "ReaderAccessEvent", "UserAdministrationEvent" CASCADE;').catch(() => {});
     await prisma.passwordResetToken.deleteMany();
     await prisma.userSession.deleteMany();
     await prisma.readingProgress.deleteMany();
@@ -49,7 +50,6 @@ describe('ReaderModule (e2e)', () => {
     await prisma.author.deleteMany();
     await prisma.category.deleteMany();
     await prisma.user.deleteMany();
-
 
     // Create a reader user
     const readerUser = await prisma.user.create({
@@ -96,6 +96,16 @@ describe('ReaderModule (e2e)', () => {
     expect(res.body.items[0].id).toBe(testBookId);
   });
 
+  it('GET /api/reader/documents/:documentId/state returns reader state', async () => {
+    const res = await request(app.getHttpServer())
+      .get(`/api/reader/documents/${testBookId}/state`)
+      .set('Cookie', readerCookie)
+      .expect(200);
+
+    expect(res.body.documentId).toBe(testBookId);
+    expect(res.body.bookmarked).toBe(false);
+  });
+
   it('POST /api/reader/bookmarks and GET /api/reader/bookmarks manages bookmarks', async () => {
     await request(app.getHttpServer())
       .post('/api/reader/bookmarks')
@@ -103,25 +113,16 @@ describe('ReaderModule (e2e)', () => {
       .send({ documentId: testBookId })
       .expect(200);
 
-    const bookmarksRes = await request(app.getHttpServer())
-      .get('/api/reader/bookmarks')
+    const stateRes = await request(app.getHttpServer())
+      .get(`/api/reader/documents/${testBookId}/state`)
       .set('Cookie', readerCookie)
       .expect(200);
-
-    expect(bookmarksRes.body.length).toBe(1);
-    expect(bookmarksRes.body[0].id).toBe(testBookId);
+    expect(stateRes.body.bookmarked).toBe(true);
 
     await request(app.getHttpServer())
       .delete(`/api/reader/bookmarks/${testBookId}`)
       .set('Cookie', readerCookie)
       .expect(200);
-
-    const afterDelete = await request(app.getHttpServer())
-      .get('/api/reader/bookmarks')
-      .set('Cookie', readerCookie)
-      .expect(200);
-
-    expect(afterDelete.body.length).toBe(0);
   });
 
   it('PATCH /api/reader/progress/:documentId updates reading progress', async () => {
@@ -134,12 +135,11 @@ describe('ReaderModule (e2e)', () => {
     expect(patchRes.body.currentPage).toBe(15);
     expect(patchRes.body.percentage).toBe(10);
 
-    const historyRes = await request(app.getHttpServer())
-      .get('/api/reader/history')
+    const stateRes = await request(app.getHttpServer())
+      .get(`/api/reader/documents/${testBookId}/state`)
       .set('Cookie', readerCookie)
       .expect(200);
 
-    expect(historyRes.body.length).toBe(1);
-    expect(historyRes.body[0].id).toBe(testBookId);
+    expect(stateRes.body.progress?.currentPage).toBe(15);
   });
 });

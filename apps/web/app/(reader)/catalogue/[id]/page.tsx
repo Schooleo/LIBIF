@@ -1,6 +1,6 @@
 import { PageHeader } from '../../../../components/layout';
 import { Badge, Card, InlineAlert } from '../../../../components/ui';
-import { fetchAccessDecision, fetchPublicBooks } from '../../../../lib/api-server';
+import { fetchAccessDecision, fetchPublicBooks, fetchReaderDocumentState } from '../../../../lib/api-server';
 import { BookmarkButton } from '../../../../components/domain/reader';
 
 export const dynamic = 'force-dynamic';
@@ -30,6 +30,7 @@ export default async function CatalogueDetailPage({ params }: PageProps) {
     allowed: false,
     reason: 'Checking access eligibility...',
   };
+  let readerState: { bookmarked: boolean; progress?: { currentPage: number } | null } | null = null;
   let books: any[] = [];
   let book: any = null;
   let errorMsg: string | null = null;
@@ -38,6 +39,12 @@ export default async function CatalogueDetailPage({ params }: PageProps) {
     decision = await fetchAccessDecision(id);
   } catch (err) {
     decision = { allowed: false, reason: (err as Error).message };
+  }
+
+  try {
+    readerState = await fetchReaderDocumentState(id);
+  } catch {
+    // Non-critical if reader state cannot be loaded
   }
 
   try {
@@ -90,7 +97,7 @@ export default async function CatalogueDetailPage({ params }: PageProps) {
             </div>
 
             <div className="ui-cluster" style={{ alignItems: 'center' }}>
-              <BookmarkButton documentId={id} />
+              <BookmarkButton documentId={id} initialBookmarked={readerState?.bookmarked ?? false} />
             </div>
           </div>
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, ProgressBar } from '../../ui';
 import { updateReadingProgress } from '../../../lib/api-browser';
 
@@ -21,17 +21,22 @@ export function ReadingProgressTracker({
   const [saving, setSaving] = useState(false);
   const [saveStatus, setSaveStatus] = useState<string | null>(null);
 
-  const percentage = Math.min(100, Math.round((currentPage / totalPages) * 100));
+  useEffect(() => {
+    setCurrentPage(initialPage);
+  }, [initialPage]);
+
+  const safeTotalPages = Math.max(1, totalPages);
+  const percentage = Math.min(100, Math.round((currentPage / safeTotalPages) * 100));
 
   const changePage = async (newPage: number) => {
-    if (newPage < 1 || newPage > totalPages) return;
+    if (newPage < 1 || newPage > safeTotalPages) return;
     setCurrentPage(newPage);
     onPageChange?.(newPage);
     setSaving(true);
     setSaveStatus('Saving progress...');
 
     try {
-      await updateReadingProgress(documentId, newPage, totalPages);
+      await updateReadingProgress(documentId, newPage, safeTotalPages);
       setSaveStatus('Saved');
       setTimeout(() => setSaveStatus(null), 2000);
     } catch (err) {
@@ -52,9 +57,18 @@ export function ReadingProgressTracker({
         borderRadius: '8px',
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem' }}>
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: '0.75rem',
+        }}
+      >
         <div className="ui-cluster" style={{ alignItems: 'center' }}>
           <Button
+            type="button"
             variant="secondary"
             size="sm"
             onClick={() => changePage(currentPage - 1)}
@@ -64,16 +78,24 @@ export function ReadingProgressTracker({
             ← Previous
           </Button>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9rem', fontWeight: 600 }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              fontSize: '0.9rem',
+              fontWeight: 600,
+            }}
+          >
             <span>Page</span>
             <input
               type="number"
               min={1}
-              max={totalPages}
+              max={safeTotalPages}
               value={currentPage}
               onChange={(e) => {
                 const val = parseInt(e.target.value, 10);
-                if (!isNaN(val) && val >= 1 && val <= totalPages) {
+                if (!isNaN(val) && val >= 1 && val <= safeTotalPages) {
                   changePage(val);
                 }
               }}
@@ -87,23 +109,36 @@ export function ReadingProgressTracker({
               }}
               aria-label="Jump to page number"
             />
-            <span style={{ color: 'var(--color-text-secondary, #666)' }}>of {totalPages}</span>
+            <span style={{ color: 'var(--color-text-secondary, #666)' }}>
+              of {safeTotalPages}
+            </span>
           </div>
 
           <Button
+            type="button"
             variant="secondary"
             size="sm"
             onClick={() => changePage(currentPage + 1)}
-            disabled={currentPage >= totalPages || saving}
+            disabled={currentPage >= safeTotalPages || saving}
             aria-label="Next Page"
           >
             Next →
           </Button>
         </div>
 
-        <div style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary, #666)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+        <div
+          style={{
+            fontSize: '0.85rem',
+            color: 'var(--color-text-secondary, #666)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem',
+          }}
+        >
           {saveStatus ? <span style={{ fontStyle: 'italic' }}>{saveStatus}</span> : null}
-          <span style={{ fontWeight: 700, color: 'var(--color-secondary, #0C6668)' }}>{percentage}% Complete</span>
+          <span style={{ fontWeight: 700, color: 'var(--color-secondary, #0C6668)' }}>
+            {percentage}% Complete
+          </span>
         </div>
       </div>
 
