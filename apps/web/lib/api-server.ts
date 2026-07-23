@@ -1,9 +1,10 @@
 import { headers } from 'next/headers';
 import { createLibifApiClient, apiErrorMessage } from './api-client';
-import type { AccessDecisionDto, AdminBookListItemDto, DocumentDetailResponseDto, DocumentListQuery, LibrarianDashboardSummaryDto, NotificationResponseDto, PagedBookListDto, PagedDocumentListResponseDto, PublicBookListItemDto, ReaderDocumentStateDto, ReaderLibraryItemDto, ReaderLibraryResponseDto, SessionDto, TaxonomyCategoryDto, TaxonomyTagDto, UnreadNotificationCountDto } from './api-types';
+import type { AccessDecisionDto, AdminBookListItemDto, DocumentDetailResponseDto, DocumentListQuery, LibrarianDashboardSummaryDto, NotificationResponseDto, PagedBookListDto, PagedDocumentListResponseDto, PublicBookDetailDto, ReaderDocumentStateDto, ReaderLibraryItemDto, ReaderLibraryResponseDto, SessionDto, TaxonomyCategoryDto, TaxonomyTagDto, UnreadNotificationCountDto } from './api-types';
 import { getDevAuthHeaders } from './auth/session';
 
 type ReaderLibraryQuery = { filter?: 'ALL' | 'READING' | 'BOOKMARKED' | 'COMPLETED'; search?: string; page?: number; limit?: number };
+export type PublicCatalogQuery = { q?: string; categoryId?: string; tagIds?: string; sort?: string; page?: number; pageSize?: number };
 
 async function createServerClient() {
   const incomingHeaders = await headers();
@@ -39,11 +40,21 @@ export async function fetchAdminBooks(): Promise<AdminBookListItemDto[]> {
   return data;
 }
 
-export async function fetchPublicBooks(): Promise<PublicBookListItemDto[]> {
+export async function fetchPublicBooks(query?: PublicCatalogQuery): Promise<PagedBookListDto> {
   const client = await createServerClient();
-  const { data, error } = await client.GET('/api/catalog/books', { params: { query: {} } });
+  const { data, error } = await client.GET('/api/catalog/books', { params: { query: query ?? {} } });
   if (error) throw new Error(apiErrorMessage(error, 'Catalog books request failed'));
-  return (data as PagedBookListDto).items;
+  return data as PagedBookListDto;
+}
+
+export async function fetchPublicBookDetail(documentId: string): Promise<PublicBookDetailDto> {
+  const client = await createServerClient();
+  // Wave 3 freezes runtime routes before the cross-lane OpenAPI refresh in D7-005.
+  const { data, error } = await (client as any).GET('/api/catalog/books/{documentId}', {
+    params: { path: { documentId } }
+  });
+  if (error) throw new Error(apiErrorMessage(error, 'Public book detail request failed'));
+  return data as PublicBookDetailDto;
 }
 
 export async function fetchLibrarianDashboardSummary(): Promise<LibrarianDashboardSummaryDto> {

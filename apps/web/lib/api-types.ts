@@ -3,6 +3,7 @@ import type {
   AdminBookListItemDto as SharedAdminBookListItemDto,
   CategoryDto as SharedCategoryDto,
   PagedDto as SharedPagedDto,
+  PublicBookDetailDto as SharedPublicBookDetailDto,
   PublicBookListItemDto as SharedPublicBookListItemDto,
   ReaderDocumentStateDto as SharedReaderDocumentStateDto
 } from '@libif/shared';
@@ -34,6 +35,7 @@ export type DocumentListQuery = paths['/api/documents']['get']['parameters']['qu
 export type UnreadNotificationCountDto = components['schemas']['UnreadNotificationCountDto'];
 
 export type PublicBookListItemDto = SharedPublicBookListItemDto;
+export type PublicBookDetailDto = SharedPublicBookDetailDto;
 export type AdminBookListItemDto = SharedAdminBookListItemDto;
 export type BookListItemDto = SharedPublicBookListItemDto;
 export type PagedBookListDto = SharedPagedDto<SharedPublicBookListItemDto>;

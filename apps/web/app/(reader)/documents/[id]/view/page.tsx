@@ -1,6 +1,6 @@
 import { PageHeader } from '../../../../../components/layout';
 import { Card, InlineAlert } from '../../../../../components/ui';
-import { fetchAccessDecision, fetchPublicBooks, fetchReaderDocumentState } from '../../../../../lib/api-server';
+import { fetchAccessDecision, fetchPublicBookDetail, fetchReaderDocumentState } from '../../../../../lib/api-server';
 import { ProtectedDocumentViewer } from '../../../../../components/domain/reader';
 
 export const dynamic = 'force-dynamic';
@@ -65,8 +65,7 @@ export default async function DocumentViewPage({ params }: PageProps) {
   }
 
   try {
-    const books = await fetchPublicBooks();
-    const book = books.find((b: any) => b.id === id);
+    const book = await fetchPublicBookDetail(id);
     if (book?.title) {
       title = book.title;
     }

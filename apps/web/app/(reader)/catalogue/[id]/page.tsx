@@ -1,6 +1,7 @@
 import { PageHeader } from '../../../../components/layout';
 import { Badge, Card, InlineAlert } from '../../../../components/ui';
-import { fetchAccessDecision, fetchPublicBooks, fetchReaderDocumentState } from '../../../../lib/api-server';
+import { fetchAccessDecision, fetchPublicBookDetail, fetchReaderDocumentState } from '../../../../lib/api-server';
+import type { PublicBookDetailDto, ReaderDocumentStateDto } from '../../../../lib/api-types';
 import { BookmarkButton } from '../../../../components/domain/reader';
 
 export const dynamic = 'force-dynamic';
@@ -30,9 +31,8 @@ export default async function CatalogueDetailPage({ params }: PageProps) {
     allowed: false,
     reason: 'Checking access eligibility...',
   };
-  let readerState: { bookmarked: boolean; progress?: { currentPage: number } | null } | null = null;
-  let books: any[] = [];
-  let book: any = null;
+  let book: PublicBookDetailDto | null = null;
+  let readerState: ReaderDocumentStateDto | null = null;
   let errorMsg: string | null = null;
 
   try {
@@ -42,22 +42,26 @@ export default async function CatalogueDetailPage({ params }: PageProps) {
   }
 
   try {
-    readerState = await fetchReaderDocumentState(id);
-  } catch {
-    // Non-critical if reader state cannot be loaded
-  }
-
-  try {
-    books = await fetchPublicBooks();
-    book = books.find((b) => b.id === id);
+    book = await fetchPublicBookDetail(id);
   } catch (err) {
     errorMsg = (err as Error).message;
   }
 
+  try {
+    readerState = await fetchReaderDocumentState(id);
+  } catch {
+    // Public metadata remains useful when personalized state is unavailable.
+  }
+
   const title = book?.title || `Document ${id}`;
-  const authors = book?.authors?.map((a: any) => a.name || a) || [];
+  const subtitle = book?.subtitle;
+  const description = book?.description;
+  const authors = book?.authors?.map((a: { id: string; name: string }) => a.name) || [];
   const publisher = book?.publisher;
   const publishedYear = book?.publishedYear;
+  const language = book?.language;
+  const category = book?.category;
+  const tags = book?.tags || [];
   const statusMeta = getStatusMeta(decision.documentStatus);
 
   return (
@@ -83,16 +87,40 @@ export default async function CatalogueDetailPage({ params }: PageProps) {
                 </Badge>
               </div>
 
+              {subtitle ? (
+                <p style={{ margin: 0, fontSize: '1.1rem', color: 'var(--color-text-secondary, #414846)', fontStyle: 'italic' }}>
+                  {subtitle}
+                </p>
+              ) : null}
+
               {authors.length > 0 ? (
                 <p style={{ margin: 0, fontSize: '1rem', color: 'var(--color-text-secondary, #414846)', fontWeight: 500 }}>
                   Author(s): {authors.join(', ')}
                 </p>
               ) : null}
 
-              {publisher ? (
-                <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--color-text-muted, #717976)' }}>
-                  Publisher: {publisher} {publishedYear ? `(${publishedYear})` : ''}
-                </p>
+              <div className="ui-cluster" style={{ gap: '1rem', fontSize: '0.9rem', color: 'var(--color-text-muted, #717976)' }}>
+                {publisher ? <span>Publisher: {publisher} {publishedYear ? `(${publishedYear})` : ''}</span> : null}
+                {book?.isbn ? <span>ISBN: {book.isbn}</span> : null}
+                {language ? <span>Language: {language}</span> : null}
+                {category ? <Badge tone="info">Category: {category.name}</Badge> : null}
+              </div>
+
+              {tags.length > 0 ? (
+                <div className="ui-cluster" style={{ gap: '0.5rem', marginTop: '0.25rem' }}>
+                  {tags.map((t) => (
+                    <Badge key={t.id} tone="neutral">#{t.name}</Badge>
+                  ))}
+                </div>
+              ) : null}
+
+              {description ? (
+                <div style={{ marginTop: '0.75rem', padding: '0.75rem', backgroundColor: 'var(--color-bg-subtle, #F4F6F8)', borderRadius: '6px' }}>
+                  <h4 style={{ margin: '0 0 0.25rem 0', fontSize: '0.9rem', color: 'var(--color-text-primary, #151C27)' }}>Description</h4>
+                  <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--color-text-secondary, #414846)', lineHeight: 1.5 }}>
+                    {description}
+                  </p>
+                </div>
               ) : null}
             </div>
 

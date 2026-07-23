@@ -1,8 +1,8 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { BookStatus } from '../../generated/prisma/client';
 import { PrismaService } from '../database/prisma.service';
 import { CatalogQueryDto } from './dto/catalog-query.dto';
-import { mapPagedPublicBooks } from './catalog.mapper';
+import { mapPagedPublicBooks, mapPublicBookDetail } from './catalog.mapper';
 
 type SortSpec = { [key: string]: 'asc' | 'desc' };
 
@@ -12,6 +12,26 @@ export class CatalogService {
 
   listCategories() {
     return this.prisma.category.findMany({ orderBy: { name: 'asc' } });
+  }
+
+  async getPublicBookDetail(documentId: string) {
+    const book = await this.prisma.book.findFirst({
+      where: {
+        id: documentId,
+        status: BookStatus.PUBLISHED
+      },
+      include: {
+        category: true,
+        tags: { include: { tag: true } },
+        authors: { include: { author: true } }
+      }
+    });
+
+    if (!book) {
+      throw new NotFoundException('Book not found or not published');
+    }
+
+    return mapPublicBookDetail(book);
   }
 
   async listPublicBooks(query: CatalogQueryDto = {}) {
@@ -48,17 +68,17 @@ export class CatalogService {
       }
     }
 
-    const [totalCount, books] = await Promise.all([
-      this.prisma.book.count({ where }),
-      this.prisma.book.findMany({
-        where,
-        skip,
-        take: pageSize,
-        orderBy,
-        include: { category: true, tags: { include: { tag: true } }, authors: { include: { author: true } } }
-      })
-    ]);
+    const totalCount = await this.prisma.book.count({ where });
+    const books = await this.prisma.book.findMany({
+      where,
+      skip,
+      take: pageSize,
+      orderBy,
+      include: { category: true, tags: { include: { tag: true } }, authors: { include: { author: true } } }
+    });
 
     return mapPagedPublicBooks(books, page, pageSize, totalCount);
   }
 }
+
+

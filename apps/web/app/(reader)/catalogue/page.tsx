@@ -1,27 +1,68 @@
-import type { PublicBookListItemDto } from '../../../lib/api-types';
-import { DocumentCard } from '../../../components/domain';
-import { EmptyState, InlineAlert } from '../../../components/ui';
 import { PageHeader } from '../../../components/layout';
-import { fetchPublicBooks } from '../../../lib/api-server';
+import { InlineAlert } from '../../../components/ui';
+import { fetchPublicBooks, fetchTaxonomyCategories, fetchTaxonomyTags } from '../../../lib/api-server';
+import type { PagedBookListDto, TaxonomyCategoryDto, TaxonomyTagDto } from '../../../lib/api-types';
+import { CatalogueDiscovery } from '../../../components/domain/reader/CatalogueDiscovery';
 
-export default async function CatalogPage() {
-  let books: PublicBookListItemDto[] = [];
+export const dynamic = 'force-dynamic';
+
+interface PageProps {
+  searchParams: Promise<{
+    q?: string;
+    categoryId?: string;
+    tagIds?: string;
+    sort?: string;
+    page?: string;
+    pageSize?: string;
+    view?: 'grid' | 'list';
+  }>;
+}
+
+export default async function CatalogPage({ searchParams }: PageProps) {
+  const params = await searchParams;
+  const page = params.page ? parseInt(params.page, 10) : 1;
+  const pageSize = params.pageSize ? parseInt(params.pageSize, 10) : 20;
+
+  const query = {
+    q: params.q,
+    categoryId: params.categoryId,
+    tagIds: params.tagIds,
+    sort: params.sort,
+    page: isNaN(page) ? 1 : page,
+    pageSize: isNaN(pageSize) ? 20 : pageSize,
+  };
+
+  let pagedBooks: PagedBookListDto = { items: [], totalCount: 0, page: 1, pageSize: 20 };
+  let categories: TaxonomyCategoryDto[] = [];
+  let tags: TaxonomyTagDto[] = [];
   let loadError: string | undefined;
+
   try {
-    books = await fetchPublicBooks();
+    const [booksRes, catsRes, tagsRes] = await Promise.all([
+      fetchPublicBooks(query),
+      fetchTaxonomyCategories().catch(() => []),
+      fetchTaxonomyTags().catch(() => [])
+    ]);
+    pagedBooks = booksRes;
+    categories = catsRes;
+    tags = tagsRes;
   } catch (error) {
     loadError = (error as Error).message;
   }
 
   return (
-    <section className="ui-stack">
-      <PageHeader title="Public Catalog" description="Only published books appear here; newly uploaded intakes remain hidden while pending processing/approval." />
+    <section className="ui-stack" style={{ gap: '1.5rem' }}>
+      <PageHeader
+        title="Public Catalogue"
+        description="Search, filter, and discover published digital library books. Only published items are accessible to readers."
+      />
       {loadError ? <InlineAlert tone="error">Catalog books could not be loaded: {loadError}</InlineAlert> : null}
-      {books.length === 0 ? <EmptyState title="No published books yet." /> : (
-        <section className="ui-stack" aria-label="Published books">
-          {books.map((book) => <DocumentCard key={book.id} document={{ id: book.id, title: book.title, authors: book.authors.map((author) => author.name), status: book.status }} />)}
-        </section>
-      )}
+      <CatalogueDiscovery
+        initialData={pagedBooks}
+        categories={categories}
+        tags={tags}
+        currentParams={{ ...query, view: params.view }}
+      />
     </section>
   );
 }
