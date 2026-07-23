@@ -207,7 +207,7 @@ export function ReaderLibrary({
                       <span>Page {item.progress.currentPage} of {item.progress.totalPages}</span>
                       <span style={{ color: 'var(--color-secondary, #0C6668)' }}>{item.progress.percentage}%</span>
                     </div>
-                    <ProgressBar value={item.progress.percentage} aria-label={`Progress: ${item.progress.percentage}%`} />
+                    <ProgressBar value={item.progress.percentage} label={`Progress: ${item.progress.percentage}%`} />
                   </div>
                 ) : null}
 

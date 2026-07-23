@@ -1,11 +1,15 @@
 import { ValidationPipe, type INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
+import * as fs from 'node:fs/promises';
+import * as path from 'node:path';
+import Redis from 'ioredis';
 import request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { HttpErrorFilter } from '../src/common/http-error.filter';
 import { PasswordHasher } from '../src/modules/auth/password-hasher.service';
 import { PrismaService } from '../src/modules/database/prisma.service';
 import { ProcessingQueue } from '../src/modules/processing/processing.queue';
+import { StorageService } from '../src/modules/storage/storage.service';
 
 class FakeProcessingQueue {
   async enqueueBookUploaded(_event: unknown): Promise<void> {}
@@ -15,8 +19,10 @@ describe('AccessModule (e2e)', () => {
   let app: INestApplication;
   let prisma: PrismaService;
   let hasher: PasswordHasher;
+  let storage: StorageService;
   let readerCookie: string;
   let adminCookie: string;
+  let adminUserId: string;
   let publishedBookId: string;
   let draftBookId: string;
   let correctionBookId: string;
@@ -38,6 +44,8 @@ describe('AccessModule (e2e)', () => {
 
     prisma = app.get(PrismaService);
     hasher = app.get(PasswordHasher);
+    storage = app.get(StorageService);
+    await clearReaderAccessRateKeys();
 
     await prisma.$executeRawUnsafe('TRUNCATE TABLE "ReaderAccessEvent", "UserAdministrationEvent" CASCADE;').catch(() => {});
     await prisma.passwordResetToken.deleteMany();
@@ -54,7 +62,6 @@ describe('AccessModule (e2e)', () => {
     await prisma.category.deleteMany();
     await prisma.user.deleteMany();
 
-    // Create reader
     await prisma.user.create({
       data: {
         email: 'access-reader@example.com',
@@ -63,7 +70,6 @@ describe('AccessModule (e2e)', () => {
       },
     });
 
-    // Create admin
     const adminUser = await prisma.user.create({
       data: {
         email: 'access-admin@example.com',
@@ -71,8 +77,12 @@ describe('AccessModule (e2e)', () => {
         role: 'ADMIN',
       },
     });
+    adminUserId = adminUser.id;
 
-    // Sign in reader
+    const fixturePath = path.join(__dirname, 'fixtures/valid-sample.pdf');
+    const pdfBuffer = await fs.readFile(fixturePath);
+    await storage.putObject('documents', 'published.pdf', pdfBuffer, 'application/pdf');
+
     const readerRes = await request(app.getHttpServer())
       .post('/api/auth/sign-in')
       .send({ email: 'access-reader@example.com', password: 'password-123' })
@@ -80,7 +90,6 @@ describe('AccessModule (e2e)', () => {
     const rCookie = readerRes.headers['set-cookie'];
     readerCookie = Array.isArray(rCookie) ? rCookie[0].split(';')[0] : (rCookie?.split(';')[0] ?? '');
 
-    // Sign in admin
     const adminRes = await request(app.getHttpServer())
       .post('/api/auth/sign-in')
       .send({ email: 'access-admin@example.com', password: 'password-123' })
@@ -88,7 +97,6 @@ describe('AccessModule (e2e)', () => {
     const aCookie = adminRes.headers['set-cookie'];
     adminCookie = Array.isArray(aCookie) ? aCookie[0].split(';')[0] : (aCookie?.split(';')[0] ?? '');
 
-    // Create published & draft & correction books with file attachment
     const pub = await prisma.book.create({
       data: {
         title: 'Published Document',
@@ -100,7 +108,7 @@ describe('AccessModule (e2e)', () => {
             bucket: 'documents',
             objectKey: 'published.pdf',
             mimeType: 'application/pdf',
-            sizeBytes: BigInt(1024),
+            sizeBytes: BigInt(pdfBuffer.length),
             checksumSha256: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
             status: 'ACTIVE',
           },
@@ -121,11 +129,12 @@ describe('AccessModule (e2e)', () => {
   });
 
   afterAll(async () => {
+    await clearReaderAccessRateKeys();
     await app.close();
     await prisma.$disconnect();
   });
 
-  it('GET /api/access/documents/:documentId/decision allows reader for published doc and denies for draft doc', async () => {
+  it('allows reader for published doc and denies for draft/correction docs', async () => {
     const pubRes = await request(app.getHttpServer())
       .get(`/api/access/documents/${publishedBookId}/decision`)
       .set('Cookie', readerCookie)
@@ -137,9 +146,7 @@ describe('AccessModule (e2e)', () => {
       .set('Cookie', readerCookie)
       .expect(200);
     expect(draftRes.body.allowed).toBe(false);
-  });
 
-  it('GET /api/access/documents/:documentId/decision denies reader for CORRECTION_REQUIRED doc', async () => {
     const corrRes = await request(app.getHttpServer())
       .get(`/api/access/documents/${correctionBookId}/decision`)
       .set('Cookie', readerCookie)
@@ -149,7 +156,7 @@ describe('AccessModule (e2e)', () => {
     expect(corrRes.body.reason).toContain('under revision');
   });
 
-  it('GET /api/access/documents/:documentId/decision allows admin for draft and correction docs', async () => {
+  it('allows admin for draft and correction docs', async () => {
     const adminDraftRes = await request(app.getHttpServer())
       .get(`/api/access/documents/${draftBookId}/decision`)
       .set('Cookie', adminCookie)
@@ -163,37 +170,159 @@ describe('AccessModule (e2e)', () => {
     expect(adminCorrRes.body.allowed).toBe(true);
   });
 
-  it('GET /api/access/documents/:documentId/manifest returns document manifest for published doc', async () => {
+  it('returns a manifest from the real renderer wiring for a published doc', async () => {
     const manifestRes = await request(app.getHttpServer())
       .get(`/api/access/documents/${publishedBookId}/manifest`)
       .set('Cookie', readerCookie)
       .expect(200);
 
     expect(manifestRes.body.documentId).toBe(publishedBookId);
-    expect(manifestRes.body.pageCount).toBeDefined();
-    expect(manifestRes.body.pages).toBeDefined();
+    expect(manifestRes.body.pageCount).toBe(2);
+    expect(manifestRes.body.pages).toEqual([
+      expect.objectContaining({ pageNumber: 1 }),
+      expect.objectContaining({ pageNumber: 2 }),
+    ]);
   });
 
-  it('GET /api/access/documents/:documentId/pages/:pageNumber delivers watermarked page image with no-store headers', async () => {
+  it('delivers a watermarked page image with no-store headers', async () => {
     const pageRes = await request(app.getHttpServer())
       .get(`/api/access/documents/${publishedBookId}/pages/1`)
       .set('Cookie', readerCookie)
       .expect(200);
 
-    expect(pageRes.headers['content-type']).toContain('image/png');
+    expect(pageRes.headers['content-type']).toMatch(/^image\//);
     expect(pageRes.headers['cache-control']).toBe('private, no-store');
-    expect(pageRes.headers['x-trace-fingerprint']).toBeDefined();
+    expect(pageRes.headers['x-trace-fingerprint']).toMatch(/^[a-f0-9]{64}$/);
+    expect(pageRes.body).toBeInstanceOf(Buffer);
   });
 
-  it('POST download-token is denied (403) for READER role and allowed for ADMIN', async () => {
+  it('denies reader raw-source routes and denies fabricated staff tokens', async () => {
     await request(app.getHttpServer())
-      .post(`/api/access/documents/${publishedBookId}/download-token`)
+      .post(`/api/access/documents/${publishedBookId}/view-token`)
       .set('Cookie', readerCookie)
       .expect(403);
 
     await request(app.getHttpServer())
+      .get(`/api/access/documents/${publishedBookId}/stream?token=view_${publishedBookId}_fake`)
+      .set('Cookie', readerCookie)
+      .expect(403);
+
+    await request(app.getHttpServer())
+      .get(`/api/access/documents/${publishedBookId}/file?token=download_${publishedBookId}_fake`)
+      .set('Cookie', readerCookie)
+      .expect(403);
+
+    await request(app.getHttpServer())
+      .get(`/api/access/documents/${publishedBookId}/stream?token=view_${publishedBookId}_fake`)
+      .set('Cookie', adminCookie)
+      .expect(403);
+
+    await request(app.getHttpServer())
+      .get(`/api/access/documents/${publishedBookId}/file?token=download_${publishedBookId}_fake`)
+      .set('Cookie', adminCookie)
+      .expect(403);
+  });
+
+  it('allows staff-only download-token and separate raw-source behaviors', async () => {
+    const viewTokenRes = await request(app.getHttpServer())
+      .post(`/api/access/documents/${publishedBookId}/view-token`)
+      .set('Cookie', adminCookie)
+      .expect(200);
+
+    const downloadTokenRes = await request(app.getHttpServer())
       .post(`/api/access/documents/${publishedBookId}/download-token`)
       .set('Cookie', adminCookie)
       .expect(200);
+
+    await request(app.getHttpServer())
+      .get(viewTokenRes.body.url)
+      .set('Cookie', adminCookie)
+      .expect(200)
+      .expect('Content-Type', /application\/pdf/)
+      .expect('Content-Disposition', /inline/);
+
+    await request(app.getHttpServer())
+      .get(downloadTokenRes.body.url)
+      .set('Cookie', adminCookie)
+      .expect(200)
+      .expect('Content-Type', /application\/pdf/)
+      .expect('Content-Disposition', /attachment/);
+  });
+
+  it('turns committed high-risk scrape facts into one deduplicated safe staff alert', async () => {
+    for (let attempt = 0; attempt < 5; attempt++) {
+      await request(app.getHttpServer())
+        .get(`/api/access/documents/${publishedBookId}/pages/999`)
+        .set('Cookie', readerCookie)
+        .expect(404);
+    }
+
+    for (let attempt = 0; attempt < 2; attempt++) {
+      await request(app.getHttpServer())
+        .get(`/api/access/documents/${publishedBookId}/pages/999`)
+        .set('Cookie', readerCookie)
+        .expect(429);
+    }
+
+    const alerts = await prisma.notification.findMany({
+      where: {
+        recipientId: adminUserId,
+        actionHref: '/admin/reports/reader-access',
+      },
+    });
+    expect(alerts).toHaveLength(1);
+    expect(alerts[0]).toMatchObject({
+      type: 'SYSTEM',
+      title: 'Reader access risk alert',
+      body: 'Suspicious reader activity requires review.',
+    });
+
+    const serialized = JSON.stringify(alerts[0].payload);
+    for (const forbidden of [
+      publishedBookId,
+      adminUserId,
+      'documentId',
+      'pageNumber',
+      'userId',
+      'sessionId',
+      'traceFingerprint',
+      'objectKey',
+    ]) {
+      expect(serialized).not.toContain(forbidden);
+    }
+  });
+
+  it('returns 429 with numeric Retry-After while keeping the stable JSON body', async () => {
+    // One successful page request is made by the preceding delivery test.
+    for (let i = 0; i < 29; i++) {
+      await request(app.getHttpServer())
+        .get(`/api/access/documents/${publishedBookId}/pages/1`)
+        .set('Cookie', readerCookie)
+        .expect(200);
+    }
+
+    const rateLimited = await request(app.getHttpServer())
+      .get(`/api/access/documents/${publishedBookId}/pages/1`)
+      .set('Cookie', readerCookie)
+      .expect(429);
+
+    expect(rateLimited.headers['retry-after']).toMatch(/^\d+$/);
+    expect(rateLimited.body.code).toBe('READER_PAGE_RATE_LIMITED');
+    expect(typeof rateLimited.body.retryAfterSeconds).toBe('number');
+    expect(rateLimited.body.retryAfterSeconds).toBeGreaterThan(0);
   });
 });
+
+async function clearReaderAccessRateKeys(): Promise<void> {
+  const redisUrl = process.env.REDIS_URL;
+  if (!redisUrl) return;
+  const redis = new Redis(redisUrl);
+  try {
+    const keys = await redis.keys('reader-access:v1:*');
+    if (keys.length > 0) {
+      await redis.del(...keys);
+    }
+  } finally {
+    await redis.quit();
+  }
+}

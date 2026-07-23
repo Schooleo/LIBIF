@@ -1,10 +1,11 @@
 import {
   ReaderAccessEventType,
   ReaderAccessReasonCode,
-  ReaderAccessRiskLevel
+  ReaderAccessRiskLevel,
 } from '../../../generated/prisma/client';
 
 export const PERSONALIZED_PAGE_CACHE_CONTROL = 'private, no-store' as const;
+export const READER_RISK_EVENT_SINK = Symbol('READER_RISK_EVENT_SINK');
 
 export type ReaderAccessEventInput = Readonly<{
   eventType: ReaderAccessEventType;
@@ -33,3 +34,7 @@ export type CommittedReaderRiskFact = Readonly<{
   pageNumber?: number;
   occurredAt: Date;
 }>;
+
+export interface ReaderRiskEventSink {
+  publishCommittedRiskFact(fact: CommittedReaderRiskFact): Promise<void>;
+}

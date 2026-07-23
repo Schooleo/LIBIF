@@ -1,8 +1,9 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import type { ProtectedDocumentManifestDto } from '@libif/shared';
 import { Badge, Button, Card, InlineAlert, Spinner } from '../../ui';
-import { fetchDocumentManifest, fetchProtectedPageUrl } from '../../../lib/api-browser';
+import { fetchDocumentManifest, fetchProtectedPageUrl, updateReadingProgress, type ReadingProgressStateDto } from '../../../lib/api-browser';
 import { BookmarkButton } from './BookmarkButton';
 import { ReadingProgressTracker } from './ReadingProgressTracker';
 
@@ -14,6 +15,8 @@ export interface ProtectedDocumentViewerProps {
   bookmarked?: boolean;
 }
 
+const clampPage = (page: number, totalPages: number) => Math.min(Math.max(page, 1), Math.max(totalPages, 1));
+
 export function ProtectedDocumentViewer({
   documentId,
   title,
@@ -22,69 +25,100 @@ export function ProtectedDocumentViewer({
   bookmarked = false,
 }: ProtectedDocumentViewerProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const [manifest, setManifest] = useState<{
-    pageCount: number;
-    minZoom: number;
-    maxZoom: number;
-    pages: { pageNumber: number; width: number; height: number }[];
-  } | null>(null);
-
-  const [currentPage, setCurrentPage] = useState(initialPage);
+  const [manifest, setManifest] = useState<ProtectedDocumentManifestDto | null>(null);
+  const [currentPage, setCurrentPage] = useState(Math.max(1, initialPage));
   const [loadingManifest, setLoadingManifest] = useState(true);
   const [loadingPage, setLoadingPage] = useState(false);
   const [manifestError, setManifestError] = useState<string | null>(null);
   const [pageError, setPageError] = useState<string | null>(null);
+  const [renderedPage, setRenderedPage] = useState<number | null>(null);
   const [retryAfterSeconds, setRetryAfterSeconds] = useState<number | null>(null);
+  const [retryNonce, setRetryNonce] = useState(0);
+  const [saveStatus, setSaveStatus] = useState<string | null>(null);
+  const [persistingPage, setPersistingPage] = useState<number | null>(null);
+
+  const renderRequestRef = useRef(0);
+  const desiredPersistPageRef = useRef<number | null>(null);
+  const persistLoopActiveRef = useRef(false);
+  const latestPersistedPageRef = useRef<number | null>(null);
+  const saveStatusTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const totalPages = manifest?.pageCount ?? propTotalPages ?? 1;
+  const safeTotalPages = Math.max(totalPages, 1);
 
-  // Load document manifest
+  const clearSaveStatusTimer = useCallback(() => {
+    if (saveStatusTimeoutRef.current) {
+      clearTimeout(saveStatusTimeoutRef.current);
+      saveStatusTimeoutRef.current = null;
+    }
+  }, []);
+
+  const setTransientSaveStatus = useCallback(
+    (message: string | null) => {
+      clearSaveStatusTimer();
+      setSaveStatus(message);
+      if (message === 'Saved') {
+        saveStatusTimeoutRef.current = setTimeout(() => {
+          setSaveStatus((prev) => (prev === 'Saved' ? null : prev));
+          saveStatusTimeoutRef.current = null;
+        }, 2000);
+      }
+    },
+    [clearSaveStatusTimer],
+  );
+
+  useEffect(() => () => clearSaveStatusTimer(), [clearSaveStatusTimer]);
+
   useEffect(() => {
     let isMounted = true;
+
     async function loadManifest() {
       try {
         setLoadingManifest(true);
+        setManifestError(null);
         const data = await fetchDocumentManifest(documentId);
-        if (isMounted) {
-          setManifest(data);
-          if (initialPage > data.pageCount) {
-            setCurrentPage(1);
-          }
-          setLoadingManifest(false);
-        }
+        if (!isMounted) return;
+        setManifest(data);
+        const clampedInitialPage = clampPage(initialPage, data.pageCount);
+        setCurrentPage(clampedInitialPage);
+        latestPersistedPageRef.current = clampedInitialPage;
       } catch (err) {
+        if (!isMounted) return;
+        setManifestError((err as Error).message);
+      } finally {
         if (isMounted) {
-          setManifestError((err as Error).message);
           setLoadingManifest(false);
         }
       }
     }
+
     loadManifest();
     return () => {
       isMounted = false;
     };
   }, [documentId, initialPage]);
 
-  // Load and render current watermarked page image onto canvas
   useEffect(() => {
     if (!manifest) return;
     let isMounted = true;
     let currentObjectUrl: string | null = null;
+    const renderRequestId = ++renderRequestRef.current;
 
     async function loadPageImage() {
       try {
         setLoadingPage(true);
         setPageError(null);
+        setRenderedPage(null);
         setRetryAfterSeconds(null);
 
         const objectUrl = await fetchProtectedPageUrl(documentId, currentPage);
         currentObjectUrl = objectUrl;
 
-        if (!isMounted) return;
+        if (!isMounted || renderRequestId !== renderRequestRef.current) return;
 
         const img = new Image();
         img.onload = () => {
-          if (!isMounted) return;
+          if (!isMounted || renderRequestId !== renderRequestRef.current) return;
           const canvas = canvasRef.current;
           if (canvas) {
             canvas.width = img.naturalWidth || img.width;
@@ -95,24 +129,23 @@ export function ProtectedDocumentViewer({
               ctx.drawImage(img, 0, 0);
             }
           }
+          setRenderedPage(currentPage);
           setLoadingPage(false);
         };
         img.onerror = () => {
-          if (isMounted) {
-            setPageError(`Failed to display rendered image for page ${currentPage}`);
-            setLoadingPage(false);
-          }
+          if (!isMounted || renderRequestId !== renderRequestRef.current) return;
+          setPageError(`Failed to display rendered image for page ${currentPage}`);
+          setLoadingPage(false);
         };
         img.src = objectUrl;
       } catch (err) {
-        if (isMounted) {
-          const errorObj = err as any;
-          if (errorObj?.statusCode === 429) {
-            setRetryAfterSeconds(errorObj.retryAfterSeconds || 60);
-          }
-          setPageError(errorObj.message || `Failed to load page ${currentPage}`);
-          setLoadingPage(false);
+        if (!isMounted || renderRequestId !== renderRequestRef.current) return;
+        const errorObj = err as Error & { statusCode?: number; retryAfterSeconds?: number };
+        if (errorObj.statusCode === 429) {
+          setRetryAfterSeconds(errorObj.retryAfterSeconds || 60);
         }
+        setPageError(errorObj.message || `Failed to load page ${currentPage}`);
+        setLoadingPage(false);
       }
     }
 
@@ -124,9 +157,8 @@ export function ProtectedDocumentViewer({
         URL.revokeObjectURL(currentObjectUrl);
       }
     };
-  }, [documentId, currentPage, manifest]);
+  }, [documentId, currentPage, manifest, retryNonce]);
 
-  // Countdown timer for rate-limit retry
   useEffect(() => {
     if (retryAfterSeconds === null || retryAfterSeconds <= 0) return;
     const timer = setInterval(() => {
@@ -141,16 +173,57 @@ export function ProtectedDocumentViewer({
     return () => clearInterval(timer);
   }, [retryAfterSeconds]);
 
-  // Page change handler
+  const runPersistLoop = useCallback(async () => {
+    if (persistLoopActiveRef.current || !manifest) return;
+    persistLoopActiveRef.current = true;
+
+    try {
+      while (desiredPersistPageRef.current !== null) {
+        const nextPage = desiredPersistPageRef.current;
+        desiredPersistPageRef.current = null;
+        setPersistingPage(nextPage);
+        setTransientSaveStatus('Saving progress...');
+        try {
+          const progress: ReadingProgressStateDto = await updateReadingProgress(documentId, nextPage, manifest.pageCount);
+          latestPersistedPageRef.current = progress.currentPage;
+          setTransientSaveStatus('Saved');
+        } catch (err) {
+          console.error('Failed to update reading progress:', err);
+          if (desiredPersistPageRef.current === null) {
+            setTransientSaveStatus('Failed to save progress');
+          }
+        } finally {
+          setPersistingPage((current) => (current === nextPage ? null : current));
+        }
+      }
+    } finally {
+      persistLoopActiveRef.current = false;
+      if (desiredPersistPageRef.current !== null) {
+        void runPersistLoop();
+      }
+    }
+  }, [documentId, manifest, setTransientSaveStatus]);
+
+  useEffect(() => {
+    if (!manifest) return;
+    if (renderedPage === null || renderedPage === latestPersistedPageRef.current) return;
+    desiredPersistPageRef.current = renderedPage;
+    void runPersistLoop();
+  }, [manifest, renderedPage, runPersistLoop]);
+
   const handlePageChange = useCallback(
-    (newPage: number) => {
-      if (newPage < 1 || newPage > totalPages) return;
-      setCurrentPage(newPage);
+    (requestedPage: number) => {
+      const nextPage = clampPage(requestedPage, safeTotalPages);
+      setCurrentPage((prev) => (prev === nextPage ? prev : nextPage));
+      setRetryNonce(0);
     },
-    [totalPages],
+    [safeTotalPages],
   );
 
-  // Keyboard navigation
+  const handleRetry = useCallback(() => {
+    setRetryNonce((value) => value + 1);
+  }, []);
+
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
@@ -167,12 +240,14 @@ export function ProtectedDocumentViewer({
         handlePageChange(1);
       } else if (e.key === 'End') {
         e.preventDefault();
-        handlePageChange(totalPages);
+        handlePageChange(safeTotalPages);
       }
     }
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [currentPage, totalPages, handlePageChange]);
+  }, [currentPage, handlePageChange, safeTotalPages]);
+
+  const progressIndicatorLabel = `Reading progress: ${Math.min(100, Math.round((currentPage / safeTotalPages) * 100))}%`;
 
   if (loadingManifest) {
     return (
@@ -207,7 +282,6 @@ export function ProtectedDocumentViewer({
 
   return (
     <div className="ui-stack" style={{ gap: '1.25rem' }}>
-      {/* Header Toolbar */}
       <div
         style={{
           display: 'flex',
@@ -236,15 +310,15 @@ export function ProtectedDocumentViewer({
         </div>
       </div>
 
-      {/* Progress Tracker Navigation */}
       <ReadingProgressTracker
-        documentId={documentId}
-        initialPage={currentPage}
-        totalPages={totalPages}
+        currentPage={currentPage}
+        totalPages={safeTotalPages}
+        saveStatus={saveStatus}
+        saving={persistingPage !== null}
+        progressLabel={progressIndicatorLabel}
         onPageChange={handlePageChange}
       />
 
-      {/* Document View Canvas Container */}
       <Card>
         <div className="ui-stack" style={{ gap: '1rem' }}>
           {pageError ? (
@@ -256,11 +330,7 @@ export function ProtectedDocumentViewer({
                 </p>
               ) : null}
               <div>
-                <Button
-                  variant="secondary"
-                  onClick={() => handlePageChange(currentPage)}
-                  disabled={retryAfterSeconds !== null && retryAfterSeconds > 0}
-                >
+                <Button variant="secondary" onClick={handleRetry} disabled={retryAfterSeconds !== null && retryAfterSeconds > 0}>
                   Retry Loading Page {currentPage}
                 </Button>
               </div>
@@ -306,7 +376,7 @@ export function ProtectedDocumentViewer({
               <canvas
                 ref={canvasRef}
                 role="img"
-                aria-label={`Page ${currentPage} of ${totalPages}`}
+                aria-label={`Page ${currentPage} of ${safeTotalPages}`}
                 style={{
                   maxWidth: '100%',
                   height: 'auto',
@@ -318,7 +388,6 @@ export function ProtectedDocumentViewer({
             </div>
           )}
 
-          {/* Truthful protection disclaimer */}
           <div
             style={{
               padding: '0.75rem 1.25rem',

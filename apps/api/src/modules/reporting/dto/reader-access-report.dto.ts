@@ -40,11 +40,11 @@ export class ReaderAccessReportQueryDto {
 }
 
 export class ReaderAccessReportItemDto {
-  @ApiProperty()
-  id!: string;
+  @ApiProperty({ description: 'Opaque event alias; never the persisted event identifier.' })
+  eventReference!: string;
 
-  @ApiProperty()
-  documentId!: string;
+  @ApiProperty({ description: 'Opaque document alias; never the persisted document identifier.' })
+  documentReference!: string;
 
   @ApiProperty({ description: 'Masked display label; never a raw account identifier.' })
   readerLabel!: string;

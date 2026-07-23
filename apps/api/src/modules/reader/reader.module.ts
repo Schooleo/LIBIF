@@ -1,11 +1,12 @@
 import { Module } from '@nestjs/common';
 import { AuthModule } from '../auth/auth.module';
 import { DatabaseModule } from '../database/database.module';
+import { RenderingModule } from '../rendering/rendering.module';
 import { ReaderController } from './reader.controller';
 import { ReaderService } from './reader.service';
 
 @Module({
-  imports: [DatabaseModule, AuthModule],
+  imports: [DatabaseModule, AuthModule, RenderingModule],
   controllers: [ReaderController],
   providers: [ReaderService],
   exports: [ReaderService],

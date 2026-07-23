@@ -3,11 +3,12 @@ import { AuthModule } from '../auth/auth.module';
 import { DatabaseModule } from '../database/database.module';
 import { NotificationsController } from './notifications.controller';
 import { NotificationsService } from './notifications.service';
+import { RiskAlertService } from './risk-alert.service';
 
 @Module({
   imports: [AuthModule, DatabaseModule],
   controllers: [NotificationsController],
-  providers: [NotificationsService],
-  exports: [NotificationsService]
+  providers: [NotificationsService, RiskAlertService],
+  exports: [NotificationsService, RiskAlertService]
 })
 export class NotificationsModule {}
