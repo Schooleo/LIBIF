@@ -1,4 +1,4 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger, ServiceUnavailableException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Queue } from 'bullmq';
 import { BookUploadedEvent } from './events/book-uploaded.event';
@@ -20,7 +20,10 @@ export class ProcessingQueue {
   async enqueueBookUploaded(event: BookUploadedEvent): Promise<void> {
     this.logger.log(`BookUploadedEvent ${JSON.stringify(event)}`);
     if (!this.queue) {
-      return;
+      this.logger.error('ProcessingQueue: Redis is not available. Cannot enqueue job.');
+      throw new ServiceUnavailableException(
+        'Processing queue is unavailable. Please ensure the Redis service is running.'
+      );
     }
     await this.queue.add('book-uploaded', event, { attempts: 3, removeOnComplete: true });
   }

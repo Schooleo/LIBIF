@@ -22,12 +22,24 @@ export class NotificationsController {
     return this.notificationsService.listNotifications(user.id);
   }
 
+  @Get('unread-count')
+  @ApiOperation({ summary: 'Get unread notifications count for current user.' })
+  @ApiOkResponse({ type: Number })
+  @ApiForbiddenResponse({ type: AuthErrorDto })
+  async getUnreadCount(@CurrentUser() user: SessionUserDto): Promise<{ count: number }> {
+    const count = await this.notificationsService.getUnreadCount(user.id);
+    return { count };
+  }
+
   @Patch(':id/read')
   @ApiOperation({ summary: 'Mark a notification as read.' })
   @ApiOkResponse({ type: NotificationResponseDto })
   @ApiForbiddenResponse({ type: AuthErrorDto })
-  async markAsRead(@Param('id') id: string): Promise<NotificationResponseDto> {
-    return this.notificationsService.markAsRead(id);
+  async markAsRead(
+    @Param('id') id: string,
+    @CurrentUser() user: SessionUserDto
+  ): Promise<NotificationResponseDto> {
+    return this.notificationsService.markAsRead(id, user.id);
   }
 
   @Patch('read-all')

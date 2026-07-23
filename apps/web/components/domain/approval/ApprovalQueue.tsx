@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { DataTable, type DataColumn } from '../../ui/data/DataTable';
 import { StatusBadge } from '../../ui/indicators/StatusBadge';
 
@@ -7,6 +8,7 @@ export interface ApprovalReviewItem {
   id: string;
   bookId: string;
   bookTitle?: string | null;
+  round?: number;
   reviewerId?: string | null;
   status: string;
   reason?: string | null;
@@ -23,23 +25,44 @@ export function ApprovalQueue({ items = [], loading = false }: ApprovalQueueProp
   const columns: DataColumn<ApprovalReviewItem>[] = [
     {
       key: 'bookTitle',
-      header: 'Document Title',
+      header: 'Document Title / Review ID',
       render: (item) => (
         <div className="flex flex-col">
-          <span className="font-medium text-neutral-900">{item.bookTitle || item.bookId}</span>
-          <span className="text-xs text-neutral-500 font-mono">Book ID: {item.bookId}</span>
+          <Link href={`/admin/approvals/${item.id}`} className="ui-link font-medium">
+            {item.bookTitle || item.bookId}
+          </Link>
+          <span className="text-xs text-neutral-500 font-mono">Review #{item.id.slice(-8)}</span>
         </div>
       )
     },
     {
+      key: 'round',
+      header: 'Round',
+      render: (item) => <span className="font-mono text-sm">Round #{item.round ?? 1}</span>
+    },
+    {
       key: 'status',
       header: 'Review Status',
-      render: (_item) => <StatusBadge status="pending_review" label="Awaiting Review" />
+      render: (item) => (
+        <StatusBadge
+          status={item.status.toLowerCase() === 'pending' ? 'pending_review' : item.status.toLowerCase()}
+          label={item.status}
+        />
+      )
     },
     {
       key: 'createdAt',
       header: 'Submitted Date',
       render: (item) => <span className="text-sm">{new Date(item.createdAt).toLocaleString()}</span>
+    },
+    {
+      key: 'actions',
+      header: 'Actions',
+      render: (item) => (
+        <Link href={`/admin/approvals/${item.id}`} className="ui-link text-sm font-semibold">
+          Review &rarr;
+        </Link>
+      )
     }
   ];
 

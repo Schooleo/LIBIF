@@ -29,11 +29,12 @@ export class StorageService {
     });
   }
 
-  async ensureBucket(): Promise<void> {
+  async ensureBucket(bucketName?: string): Promise<void> {
+    const target = bucketName || this.bucket;
     try {
-      await this.client.send(new HeadBucketCommand({ Bucket: this.bucket }));
+      await this.client.send(new HeadBucketCommand({ Bucket: target }));
     } catch {
-      await this.client.send(new CreateBucketCommand({ Bucket: this.bucket }));
+      await this.client.send(new CreateBucketCommand({ Bucket: target }));
     }
   }
 
@@ -41,16 +42,39 @@ export class StorageService {
     await this.ensureBucket();
     const checksumSha256 = createHash('sha256').update(file.buffer).digest('hex');
     const objectKey = `raw-books/${randomUUID()}/${checksumSha256}.pdf`;
+    const safeFilename = encodeURIComponent(file.originalname);
     await this.client.send(
       new PutObjectCommand({
         Bucket: this.bucket,
         Key: objectKey,
         Body: file.buffer,
         ContentType: 'application/pdf',
-        Metadata: { originalFilename: file.originalname, checksumSha256 }
+        Metadata: { originalFilename: safeFilename, checksumSha256 }
       })
     );
     return { bucket: this.bucket, objectKey, checksumSha256, sizeBytes: BigInt(file.size) };
+  }
+
+  async putObject(bucket: string, objectKey: string, body: Buffer, contentType: string): Promise<void> {
+    await this.ensureBucket(bucket);
+    await this.client.send(
+      new PutObjectCommand({
+        Bucket: bucket,
+        Key: objectKey,
+        Body: body,
+        ContentType: contentType
+      })
+    );
+  }
+
+  async getObjectBuffer(bucket: string, objectKey: string): Promise<Buffer> {
+    const { GetObjectCommand } = await import('@aws-sdk/client-s3');
+    const response = await this.client.send(new GetObjectCommand({ Bucket: bucket, Key: objectKey }));
+    if (!response.Body) {
+      throw new Error(`Object ${bucket}/${objectKey} has empty body`);
+    }
+    const bytes = await response.Body.transformToByteArray();
+    return Buffer.from(bytes);
   }
 
   async deleteObject(bucket: string, objectKey: string): Promise<void> {

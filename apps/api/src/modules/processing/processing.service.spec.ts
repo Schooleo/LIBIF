@@ -2,7 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ProcessingService } from './processing.service';
 import { PrismaService } from '../database/prisma.service';
 import { NotificationsService } from '../notifications/notifications.service';
-import { UnprocessableEntityException, BadRequestException } from '@nestjs/common';
+import { ProcessingQueue } from './processing.queue';
+import { BadRequestException } from '@nestjs/common';
 import { ProcessingJobStatus } from '../../generated/prisma/client';
 
 describe('ProcessingService', () => {
@@ -12,7 +13,8 @@ describe('ProcessingService', () => {
     processingJob: {
       findMany: jest.fn(),
       findUnique: jest.fn(),
-      update: jest.fn()
+      update: jest.fn(),
+      create: jest.fn()
     },
     book: {
       update: jest.fn()
@@ -34,6 +36,10 @@ describe('ProcessingService', () => {
     createNotification: jest.fn()
   };
 
+  const mockProcessingQueue = {
+    enqueueBookUploaded: jest.fn().mockResolvedValue(undefined)
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -45,6 +51,10 @@ describe('ProcessingService', () => {
         {
           provide: NotificationsService,
           useValue: mockNotifications
+        },
+        {
+          provide: ProcessingQueue,
+          useValue: mockProcessingQueue
         }
       ]
     }).compile();
@@ -64,7 +74,7 @@ describe('ProcessingService', () => {
           id: 'job-1',
           bookId: 'book-1',
           bookFileId: 'file-1',
-          book: { title: 'Test Book' },
+          book: { title: 'Test Book', status: 'PENDING_PROCESSING' },
           type: 'PDF_OCR_PIPELINE',
           status: ProcessingJobStatus.QUEUED,
           stage: 'queued',
@@ -88,6 +98,7 @@ describe('ProcessingService', () => {
         bookId: 'book-1',
         bookFileId: 'file-1',
         bookTitle: 'Test Book',
+        bookStatus: 'PENDING_PROCESSING',
         type: 'PDF_OCR_PIPELINE',
         status: 'QUEUED',
         stage: 'queued',
@@ -124,95 +135,119 @@ describe('ProcessingService', () => {
     });
   });
 
-  describe('advanceJob', () => {
-    it('should advance QUEUED job to RUNNING', async () => {
-      const mockJob = {
-        id: 'job-1',
+  describe('retryJob', () => {
+    it('should create a new retry job with lineage when job is FAILED', async () => {
+      const mockFailedJob = {
+        id: 'job-failed-1',
+        bookId: 'book-1',
+        bookFileId: 'file-1',
+        bookFile: { objectKey: 'books/book-1/file.pdf' },
+        type: 'PDF_OCR_PIPELINE',
+        status: ProcessingJobStatus.FAILED,
+        attemptNumber: 1,
+        attempts: 1
+      };
+
+      const mockCreatedJob = {
+        id: 'job-retry-2',
         bookId: 'book-1',
         bookFileId: 'file-1',
         book: { title: 'Test Book' },
-        status: ProcessingJobStatus.QUEUED
+        type: 'PDF_OCR_PIPELINE',
+        status: ProcessingJobStatus.QUEUED,
+        stage: 'queued',
+        progressPercent: 0,
+        attemptNumber: 2,
+        attempts: 2,
+        retryOfJobId: 'job-failed-1',
+        terminalReason: null,
+        errorMessage: null,
+        createdAt: new Date('2026-07-22T01:00:00Z'),
+        updatedAt: new Date('2026-07-22T01:00:00Z')
       };
-      const mockUpdatedJob = {
-        ...mockJob,
-        status: ProcessingJobStatus.RUNNING,
-        stage: 'performing_ocr',
-        progressPercent: 50,
-        attempts: 1,
-        createdAt: new Date('2026-07-21T00:00:00Z'),
-        updatedAt: new Date('2026-07-21T00:00:00Z')
-      };
 
-      mockPrisma.processingJob.findUnique.mockResolvedValueOnce(mockJob).mockResolvedValueOnce(mockUpdatedJob);
+      mockPrisma.processingJob.findUnique.mockResolvedValue(mockFailedJob);
+      mockPrisma.processingJob.create.mockResolvedValue(mockCreatedJob);
 
-      const result = await service.advanceJob('job-1');
+      const result = await service.retryJob('job-failed-1');
 
-      expect(result.status).toBe('RUNNING');
-      expect(mockPrisma.processingJob.update).toHaveBeenCalled();
-      expect(mockPrisma.book.update).toHaveBeenCalledWith({
-        where: { id: 'book-1' },
-        data: { status: 'PROCESSING' }
+      expect(mockPrisma.processingJob.update).toHaveBeenCalledWith({
+        where: { id: 'job-failed-1' },
+        data: { supersededAt: expect.any(Date) }
       });
-    });
 
-    it('should advance RUNNING job to SUCCEEDED and create ApprovalReview', async () => {
-      const mockJob = {
-        id: 'job-1',
-        bookId: 'book-1',
-        bookFileId: 'file-1',
-        book: { title: 'Test Book' },
-        status: ProcessingJobStatus.RUNNING
-      };
-      const mockUpdatedJob = {
-        ...mockJob,
-        status: ProcessingJobStatus.SUCCEEDED,
-        stage: 'completed',
-        progressPercent: 100,
-        attempts: 1,
-        createdAt: new Date('2026-07-21T00:00:00Z'),
-        updatedAt: new Date('2026-07-21T00:00:00Z')
-      };
-
-      mockPrisma.processingJob.findUnique.mockResolvedValueOnce(mockJob).mockResolvedValueOnce(mockUpdatedJob);
-      mockPrisma.user.findMany.mockResolvedValue([{ id: 'admin-1' }]);
-
-      const result = await service.advanceJob('job-1');
-
-      expect(result.status).toBe('SUCCEEDED');
-      expect(mockPrisma.book.update).toHaveBeenCalledWith({
-        where: { id: 'book-1' },
-        data: { status: 'PENDING_APPROVAL' }
-      });
-      expect(mockPrisma.approvalReview.create).toHaveBeenCalledWith({
-        data: {
+      expect(mockPrisma.processingJob.create).toHaveBeenCalledWith({
+        data: expect.objectContaining({
           bookId: 'book-1',
           bookFileId: 'file-1',
-          processingJobId: 'job-1',
-          round: 1,
-          status: 'PENDING'
-        }
+          status: ProcessingJobStatus.QUEUED,
+          attemptNumber: 2,
+          retryOfJobId: 'job-failed-1'
+        }),
+        include: { book: { select: { title: true } } }
       });
-      expect(mockNotifications.createNotification).toHaveBeenCalled();
-    });
 
-    it('should throw UnprocessableEntityException when advancing a SUCCEEDED job', async () => {
-      const mockJob = {
-        id: 'job-1',
+      expect(mockProcessingQueue.enqueueBookUploaded).toHaveBeenCalledWith({
         bookId: 'book-1',
-        status: ProcessingJobStatus.SUCCEEDED
-      };
-      mockPrisma.processingJob.findUnique.mockResolvedValue(mockJob);
+        fileId: 'file-1',
+        objectKey: 'books/book-1/file.pdf',
+        processingJobId: 'job-retry-2'
+      });
 
-      await expect(service.advanceJob('job-1')).rejects.toThrow(UnprocessableEntityException);
+      expect(result.id).toBe('job-retry-2');
+      expect(result.retryOfJobId).toBe('job-failed-1');
     });
-  });
 
-  describe('retryJob', () => {
     it('should throw BadRequestException if job is not FAILED', async () => {
       const mockJob = { id: 'job-1', status: ProcessingJobStatus.QUEUED };
       mockPrisma.processingJob.findUnique.mockResolvedValue(mockJob);
 
       await expect(service.retryJob('job-1')).rejects.toThrow(BadRequestException);
+    });
+  });
+
+  describe('getJobHistory', () => {
+    it('should return current job and full history for document', async () => {
+      const currentJob = {
+        id: 'job-2',
+        bookId: 'book-1',
+        bookFileId: 'file-1',
+        book: { title: 'Test Book' },
+        type: 'PDF_OCR_PIPELINE',
+        status: ProcessingJobStatus.QUEUED,
+        stage: 'queued',
+        progressPercent: 0,
+        attemptNumber: 2,
+        attempts: 2,
+        retryOfJobId: 'job-1',
+        createdAt: new Date('2026-07-22T01:00:00Z'),
+        updatedAt: new Date('2026-07-22T01:00:00Z')
+      };
+
+      const oldJob = {
+        id: 'job-1',
+        bookId: 'book-1',
+        bookFileId: 'file-1',
+        book: { title: 'Test Book' },
+        type: 'PDF_OCR_PIPELINE',
+        status: ProcessingJobStatus.FAILED,
+        stage: 'failed',
+        progressPercent: 40,
+        attemptNumber: 1,
+        attempts: 1,
+        retryOfJobId: null,
+        createdAt: new Date('2026-07-22T00:00:00Z'),
+        updatedAt: new Date('2026-07-22T00:05:00Z')
+      };
+
+      mockPrisma.processingJob.findUnique.mockResolvedValue(currentJob);
+      mockPrisma.processingJob.findMany.mockResolvedValue([currentJob, oldJob]);
+
+      const result = await service.getJobHistory('job-2');
+
+      expect(result.current.id).toBe('job-2');
+      expect(result.history).toHaveLength(2);
+      expect(result.history[1].id).toBe('job-1');
     });
   });
 });

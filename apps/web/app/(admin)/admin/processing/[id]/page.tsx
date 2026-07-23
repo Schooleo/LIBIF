@@ -7,16 +7,22 @@ import { DescriptionList } from '../../../../../components/ui/data/DataTable';
 import { ProcessingStatusBadge } from '../../../../../components/domain/processing/ProcessingStatusBadge';
 import { ProcessingStageStepper } from '../../../../../components/domain/processing/processing';
 import { ProcessingActions } from '../../../../../components/domain/processing/ProcessingActions';
+import { JobRetryHistory } from '../../../../../components/domain/processing/JobRetryHistory';
 import { API_BASE_URL } from '../../../../../lib/api-client';
 import { getDevAuthHeaders } from '../../../../../lib/auth/session';
 import type { ProcessingJob } from '../../../../../components/domain/processing/ProcessingQueue';
 
-async function fetchProcessingJob(id: string): Promise<ProcessingJob> {
+interface JobHistoryResponse {
+  current: ProcessingJob;
+  history: ProcessingJob[];
+}
+
+async function fetchProcessingJobHistory(id: string): Promise<JobHistoryResponse> {
   const incomingHeaders = await headers();
   const cookie = incomingHeaders.get('cookie');
   const devHeaders = getDevAuthHeaders();
 
-  const res = await fetch(`${API_BASE_URL}/api/admin/processing/jobs/${id}`, {
+  const res = await fetch(`${API_BASE_URL}/api/admin/processing/jobs/${id}/history`, {
     cache: 'no-store',
     headers: {
       ...devHeaders,
@@ -25,7 +31,21 @@ async function fetchProcessingJob(id: string): Promise<ProcessingJob> {
   });
 
   if (!res.ok) {
-    throw new Error(`Failed to fetch processing job ${id}: ${res.statusText}`);
+    // Fallback to single job fetch if history endpoint fails
+    const singleRes = await fetch(`${API_BASE_URL}/api/admin/processing/jobs/${id}`, {
+      cache: 'no-store',
+      headers: {
+        ...devHeaders,
+        ...(cookie ? { cookie } : {})
+      }
+    });
+
+    if (!singleRes.ok) {
+      throw new Error(`Failed to fetch processing job ${id}: ${singleRes.statusText}`);
+    }
+
+    const job: ProcessingJob = await singleRes.json();
+    return { current: job, history: [job] };
   }
 
   return res.json();
@@ -38,14 +58,16 @@ interface PageProps {
 export default async function AdminProcessingJobDetailPage({ params }: PageProps) {
   const resolvedParams = await params;
   const jobId = resolvedParams.id;
-  let job: ProcessingJob | undefined;
+  let jobData: JobHistoryResponse | undefined;
   let loadError: string | undefined;
 
   try {
-    job = await fetchProcessingJob(jobId);
+    jobData = await fetchProcessingJobHistory(jobId);
   } catch (error) {
     loadError = (error as Error).message;
   }
+
+  const job = jobData?.current;
 
   const getStepperStage = (jobObj: ProcessingJob) => {
     if (jobObj.stage) {
@@ -82,13 +104,29 @@ export default async function AdminProcessingJobDetailPage({ params }: PageProps
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="md:col-span-2 ui-stack">
             {job.status.toUpperCase() === 'SUCCEEDED' && (
-              <InlineAlert tone="success" title="Processing Complete">
-                Document pipeline executed successfully. Succeeded and transformed to <strong>Awaiting Approval</strong> status.
-                <div className="mt-2">
-                  <Link href="/admin/approvals" className="ui-link text-sm font-semibold">
-                    View in Approvals Queue &rarr;
-                  </Link>
-                </div>
+              <InlineAlert
+                tone={job.bookStatus === 'PUBLISHED' ? 'success' : 'info'}
+                title={job.bookStatus === 'PUBLISHED' ? 'Document Published' : 'Processing Complete'}
+              >
+                {job.bookStatus === 'PUBLISHED' ? (
+                  <div>
+                    Document pipeline executed successfully and document has been <strong>Approved & Published</strong> to the catalogue.
+                    <div className="mt-2">
+                      <Link href={`/catalogue/${job.bookId}`} className="ui-link text-sm font-semibold">
+                        View in Public Catalogue &rarr;
+                      </Link>
+                    </div>
+                  </div>
+                ) : (
+                  <div>
+                    Document pipeline executed successfully. Succeeded and transformed to <strong>Awaiting Approval</strong> status.
+                    <div className="mt-2">
+                      <Link href="/admin/approvals" className="ui-link text-sm font-semibold">
+                        View in Approvals Queue &rarr;
+                      </Link>
+                    </div>
+                  </div>
+                )}
               </InlineAlert>
             )}
 
@@ -119,6 +157,12 @@ export default async function AdminProcessingJobDetailPage({ params }: PageProps
               <InlineAlert tone="error" title="Pipeline Failure Details">
                 <p className="font-mono text-sm mt-1 whitespace-pre-wrap">{job.errorMessage}</p>
               </InlineAlert>
+            )}
+
+            {jobData?.history && jobData.history.length > 0 && (
+              <Card>
+                <JobRetryHistory historyJobs={jobData.history} currentJobId={job.id} />
+              </Card>
             )}
           </div>
 

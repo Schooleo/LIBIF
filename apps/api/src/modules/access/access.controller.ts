@@ -1,4 +1,5 @@
-import { Controller, Get, HttpCode, Inject, Param, Post, UseGuards } from '@nestjs/common';
+import { Controller, Get, HttpCode, Inject, Param, Post, Query, Res, UseGuards } from '@nestjs/common';
+import type { Response } from 'express';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from '../auth/current-user.decorator';
 import { SessionUserDto } from '../auth/dto/session.dto';
@@ -7,6 +8,12 @@ import { RolesGuard } from '../auth/roles.guard';
 import { AccessService } from './access.service';
 import { AccessDecisionDto } from './dto/access-decision.dto';
 import { ProtectedDocumentUrlDto } from './dto/protected-document-url.dto';
+
+function formatContentDisposition(type: 'inline' | 'attachment', filename: string): string {
+  const asciiFilename = filename.replace(/[^\x20-\x7E]/g, '_');
+  const encodedFilename = encodeURIComponent(filename);
+  return `${type}; filename="${asciiFilename}"; filename*=UTF-8''${encodedFilename}`;
+}
 
 @ApiTags('Access')
 @ApiBearerAuth()
@@ -46,5 +53,33 @@ export class AccessController {
     @Param('documentId') documentId: string,
   ): Promise<ProtectedDocumentUrlDto> {
     return this.accessService.createDownloadToken(user.id, user.role, documentId);
+  }
+
+  @Get('documents/:documentId/stream')
+  @ApiOperation({ summary: 'Stream protected document PDF content.' })
+  async streamDocument(
+    @Param('documentId') documentId: string,
+    @Query('token') token: string,
+    @Res() res: Response
+  ): Promise<void> {
+    const file = await this.accessService.getDocumentFile(documentId, token);
+    const buffer = await this.accessService.getFileBuffer(file.bucket, file.objectKey);
+    res.setHeader('Content-Type', file.mimeType || 'application/pdf');
+    res.setHeader('Content-Disposition', formatContentDisposition('inline', file.originalFilename));
+    res.send(buffer);
+  }
+
+  @Get('documents/:documentId/file')
+  @ApiOperation({ summary: 'Download protected document PDF file.' })
+  async downloadDocument(
+    @Param('documentId') documentId: string,
+    @Query('token') token: string,
+    @Res() res: Response
+  ): Promise<void> {
+    const file = await this.accessService.getDocumentFile(documentId, token);
+    const buffer = await this.accessService.getFileBuffer(file.bucket, file.objectKey);
+    res.setHeader('Content-Type', file.mimeType || 'application/pdf');
+    res.setHeader('Content-Disposition', formatContentDisposition('attachment', file.originalFilename));
+    res.send(buffer);
   }
 }

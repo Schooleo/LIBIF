@@ -10,6 +10,7 @@ export interface ProcessingJob {
   id: string;
   bookId: string;
   bookTitle?: string | null;
+  bookStatus?: string | null;
   type: string;
   status: string;
   stage?: string | null;

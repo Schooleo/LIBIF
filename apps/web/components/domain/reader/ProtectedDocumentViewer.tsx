@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { Badge, Button, Card, InlineAlert, Spinner } from '../../ui';
 import { fetchDownloadToken, fetchViewToken } from '../../../lib/api-browser';
+import { API_BASE_URL } from '../../../lib/api-client';
 import { BookmarkButton } from './BookmarkButton';
 import { ReadingProgressTracker } from './ReadingProgressTracker';
 
@@ -133,51 +134,16 @@ export function ProtectedDocumentViewer({
 
       {/* Document View Canvas Container */}
       <Card>
-        <div
-          style={{
-            minHeight: '650px',
-            background: 'var(--color-page-background, #f7f9f8)',
-            border: '2px dashed var(--color-border, #d9e1de)',
-            borderRadius: '8px',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '2.5rem',
-            textAlign: 'center',
-            gap: '1rem',
-          }}
-        >
-          <div
-            style={{
-              width: '80px',
-              height: '80px',
-              borderRadius: '50%',
-              background: 'linear-gradient(135deg, var(--color-action-primary, #103C35) 0%, var(--color-secondary, #0C6668) 100%)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: '#ffffff',
-              boxShadow: '0 8px 16px rgba(0,0,0,0.1)',
-            }}
-            aria-hidden="true"
-          >
-            <span className="material-symbols-outlined" style={{ fontSize: '42px' }}>
-              picture_as_pdf
-            </span>
-          </div>
-
-          <h2 style={{ margin: 0, fontSize: '1.25rem', color: 'var(--color-text-primary, #151C27)' }}>
-            Authorized Reader Stream
-          </h2>
-
-          <p style={{ maxWidth: '540px', color: 'var(--color-text-secondary, #414846)', fontSize: '0.9rem', lineHeight: 1.5 }}>
-            Secure session token validated. Active stream endpoint:
-            <br />
-            <code style={{ fontSize: '0.8rem', background: '#eef2f1', padding: '2px 6px', borderRadius: '4px', wordBreak: 'break-all' }}>
-              {streamUrl}
-            </code>
-          </p>
+        <div className="ui-stack gap-4">
+          {streamUrl && (
+            <div className="w-full overflow-hidden rounded-lg border border-neutral-200 shadow-inner">
+              <iframe
+                src={streamUrl.startsWith('http') ? streamUrl : `${API_BASE_URL}${streamUrl}`}
+                title={title}
+                style={{ width: '100%', height: '700px', border: 'none' }}
+              />
+            </div>
+          )}
 
           <div
             style={{
@@ -187,6 +153,7 @@ export function ProtectedDocumentViewer({
               borderRadius: '6px',
               fontSize: '0.85rem',
               color: 'var(--color-text-secondary, #666)',
+              textAlign: 'center'
             }}
           >
             🔒 Watermarked & DRM protection enabled for authenticated session

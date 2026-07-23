@@ -25,4 +25,9 @@ export class CreateNotificationDto {
   @ApiPropertyOptional({ type: Object })
   @IsOptional()
   payload?: Record<string, any>;
+
+  @ApiPropertyOptional({ type: String })
+  @IsOptional()
+  @IsString()
+  actionHref?: string;
 }
