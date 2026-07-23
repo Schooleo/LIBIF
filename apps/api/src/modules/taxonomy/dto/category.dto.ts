@@ -53,3 +53,35 @@ export class UpdateTaxonomyCategoryDto {
   @IsString()
   parentId?: string | null;
 }
+
+export class TaxonomyCategoryImpactDto {
+  @ApiProperty()
+  id!: string;
+
+  @ApiProperty()
+  name!: string;
+
+  @ApiProperty()
+  documentCount!: number;
+
+  @ApiProperty()
+  childCount!: number;
+
+  @ApiProperty()
+  totalDescendantCount!: number;
+
+  @ApiProperty()
+  isLeaf!: boolean;
+
+  @ApiProperty()
+  canDirectDelete!: boolean;
+}
+
+export class ReassignAndDeleteCategoryDto {
+  @ApiPropertyOptional({ type: String, nullable: true, description: 'Target category ID to reassign associated documents and child categories before deletion.' })
+  @Transform(normalizeParentId)
+  @IsOptional()
+  @IsString()
+  targetCategoryId?: string | null;
+}
+

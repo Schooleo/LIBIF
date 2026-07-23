@@ -3,6 +3,7 @@ import { Test } from '@nestjs/testing';
 import request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { HttpErrorFilter } from '../src/common/http-error.filter';
+import { UserRole } from '../src/generated/prisma/client';
 import { PrismaService } from '../src/modules/database/prisma.service';
 import { ProcessingQueue } from '../src/modules/processing/processing.queue';
 
@@ -29,13 +30,68 @@ describe('Taxonomy APIs (e2e)', () => {
     app.useGlobalFilters(new HttpErrorFilter());
     await app.init();
     prisma = app.get(PrismaService);
+
+    // Ensure dev test users exist
+    try {
+      if (!(await prisma.user.findUnique({ where: { email: 'admin@libif.local' } }))) {
+        await prisma.user.create({ data: { email: 'admin@libif.local', passwordHash: 'dev-only', role: UserRole.ADMIN } });
+      }
+      if (!(await prisma.user.findUnique({ where: { email: 'librarian@libif.local' } }))) {
+        await prisma.user.create({ data: { email: 'librarian@libif.local', passwordHash: 'dev-only', role: UserRole.LIBRARIAN } });
+      }
+      if (!(await prisma.user.findUnique({ where: { email: 'reader@libif.local' } }))) {
+        await prisma.user.create({ data: { email: 'reader@libif.local', passwordHash: 'dev-only', role: UserRole.READER } });
+      }
+    } catch {
+      // Database not reachable during environment check
+    }
+
+
+
+
+
+    // Clean up residual records from previous test runs if any
+    const testCategorySlugs = [
+      'phase-5-archive', 'phase-5-root', 'ho-so-so', 'digital-archive', 'orphan',
+      'cycle-root', 'cycle-child', 'duplicate-archive', 'second-archive', 'permission-category',
+      'parent-category', 'target-category', 'leaf-category'
+    ];
+    const testTagSlugs = [
+      'phase-5-digital', 'tai-lieu-so', 'digital-preservation', 'duplicate-tag',
+      'second-tag', 'permission-tag', 'tag-one', 'tag-two', 'tag-three'
+    ];
+
+    try {
+      const existingTags = await prisma.tag.findMany({ where: { slug: { in: testTagSlugs } }, select: { id: true } });
+      const existingTagIds = existingTags.map((t) => t.id);
+      if (existingTagIds.length > 0) {
+        await prisma.bookTag.deleteMany({ where: { tagId: { in: existingTagIds } } });
+        await prisma.tag.deleteMany({ where: { id: { in: existingTagIds } } });
+      }
+      await prisma.book.deleteMany({ where: { title: { in: ['Taxonomy Test Book', 'Tag Book 1', 'Tag Book 2'] } } });
+      await prisma.category.updateMany({ where: { slug: { in: testCategorySlugs } }, data: { parentId: null } });
+      await prisma.category.deleteMany({ where: { slug: { in: testCategorySlugs } } });
+    } catch {
+      // Ignore initial cleanup errors
+    }
+
   });
 
   afterEach(async () => {
-    await prisma.tag.deleteMany({ where: { id: { in: createdTagIds.splice(0) } } });
-    const categoryIds = createdCategoryIds.splice(0);
-    await prisma.category.updateMany({ where: { id: { in: categoryIds } }, data: { parentId: null } });
-    await prisma.category.deleteMany({ where: { id: { in: categoryIds } } });
+    try {
+      const tagIds = createdTagIds.splice(0);
+      if (tagIds.length > 0) {
+        await prisma.bookTag.deleteMany({ where: { tagId: { in: tagIds } } });
+        await prisma.tag.deleteMany({ where: { id: { in: tagIds } } });
+      }
+      const categoryIds = createdCategoryIds.splice(0);
+      if (categoryIds.length > 0) {
+        await prisma.category.updateMany({ where: { id: { in: categoryIds } }, data: { parentId: null } });
+        await prisma.category.deleteMany({ where: { id: { in: categoryIds } } });
+      }
+    } catch {
+      // Ignore cleanup errors so actual test assertions are reported
+    }
   });
 
   afterAll(async () => {
@@ -43,6 +99,7 @@ describe('Taxonomy APIs (e2e)', () => {
     await prisma.$disconnect();
     process.env.LIBIF_ENABLE_DEV_AUTH = originalDevAuth;
   });
+
 
   it('lists stable category and tag options for admins and librarians', async () => {
     const category = await prisma.category.create({ data: { name: 'Phase 5 Archive', slug: 'phase-5-archive' } });
@@ -154,4 +211,116 @@ describe('Taxonomy APIs (e2e)', () => {
     await request(app.getHttpServer()).post('/api/admin/tags').send({ name: 'Blocked Tag' }).expect(403);
     await request(app.getHttpServer()).patch(`/api/admin/tags/${tag.id}`).send({ name: 'Blocked Tag' }).expect(403);
   });
+
+  it('supports category impact preview, direct deletion, and reassignment before deletion', async () => {
+    const parentCategory = await prisma.category.create({ data: { name: 'Parent Category', slug: 'parent-category' } });
+    const targetCategory = await prisma.category.create({ data: { name: 'Target Category', slug: 'target-category' } });
+    const leafCategory = await prisma.category.create({ data: { name: 'Leaf Category', slug: 'leaf-category' } });
+    createdCategoryIds.push(parentCategory.id, targetCategory.id, leafCategory.id);
+
+    const adminUser = await prisma.user.findFirstOrThrow({ where: { role: 'ADMIN' } });
+    const book = await prisma.book.create({
+      data: {
+        title: 'Taxonomy Test Book',
+        createdById: adminUser.id,
+        categoryId: parentCategory.id,
+      },
+    });
+
+    const impactRes = await request(app.getHttpServer())
+      .get(`/api/admin/categories/${parentCategory.id}/impact`)
+      .set(adminHeaders)
+      .expect(200);
+    expect(impactRes.body).toEqual({
+      id: parentCategory.id,
+      name: 'Parent Category',
+      documentCount: 1,
+      childCount: 0,
+      totalDescendantCount: 0,
+      isLeaf: true,
+      canDirectDelete: false,
+    });
+
+    await request(app.getHttpServer())
+      .delete(`/api/admin/categories/${parentCategory.id}`)
+      .set(adminHeaders)
+      .expect(400);
+
+    const reassignRes = await request(app.getHttpServer())
+      .post(`/api/admin/categories/${parentCategory.id}/reassign-and-delete`)
+      .set(adminHeaders)
+      .send({ targetCategoryId: targetCategory.id })
+      .expect(201);
+    expect(reassignRes.body).toEqual({
+      success: true,
+      deletedCategoryId: parentCategory.id,
+      reassignedToCategoryId: targetCategory.id,
+    });
+
+    const updatedBook = await prisma.book.findUnique({ where: { id: book.id } });
+    expect(updatedBook?.categoryId).toBe(targetCategory.id);
+
+    await request(app.getHttpServer())
+      .delete(`/api/admin/categories/${leafCategory.id}`)
+      .set(adminHeaders)
+      .expect(200);
+
+    await prisma.book.delete({ where: { id: book.id } });
+  });
+
+  it('supports tag impact preview, tag deletion, and tag merging', async () => {
+    const tag1 = await prisma.tag.create({ data: { name: 'Tag One', slug: 'tag-one' } });
+    const tag2 = await prisma.tag.create({ data: { name: 'Tag Two', slug: 'tag-two' } });
+    const tag3 = await prisma.tag.create({ data: { name: 'Tag Three', slug: 'tag-three' } });
+    createdTagIds.push(tag1.id, tag2.id, tag3.id);
+
+    const adminUser = await prisma.user.findFirstOrThrow({ where: { role: 'ADMIN' } });
+    const book1 = await prisma.book.create({
+      data: { title: 'Tag Book 1', createdById: adminUser.id },
+    });
+    const book2 = await prisma.book.create({
+      data: { title: 'Tag Book 2', createdById: adminUser.id },
+    });
+
+    await prisma.bookTag.createMany({
+      data: [
+        { bookId: book1.id, tagId: tag1.id },
+        { bookId: book2.id, tagId: tag1.id },
+        { bookId: book2.id, tagId: tag2.id },
+        { bookId: book1.id, tagId: tag3.id },
+      ],
+    });
+
+    const tagImpact = await request(app.getHttpServer())
+      .get(`/api/admin/tags/${tag1.id}/impact`)
+      .set(librarianHeaders)
+      .expect(200);
+    expect(tagImpact.body).toEqual({ id: tag1.id, name: 'Tag One', documentCount: 2 });
+
+    const mergeRes = await request(app.getHttpServer())
+      .post(`/api/admin/tags/${tag1.id}/merge`)
+      .set(adminHeaders)
+      .send({ targetTagId: tag2.id })
+      .expect(201);
+    expect(mergeRes.body).toEqual({
+      success: true,
+      mergedTagId: tag1.id,
+      targetTagId: tag2.id,
+    });
+
+    const book1Tags = await prisma.bookTag.findMany({ where: { bookId: book1.id } });
+    expect(book1Tags.map((bt) => bt.tagId).sort()).toEqual([tag2.id, tag3.id].sort());
+
+    await request(app.getHttpServer())
+      .delete(`/api/admin/tags/${tag3.id}`)
+      .set(adminHeaders)
+      .expect(200);
+
+    const book1TagsAfterDelete = await prisma.bookTag.findMany({ where: { bookId: book1.id } });
+    expect(book1TagsAfterDelete.map((bt) => bt.tagId)).toEqual([tag2.id]);
+
+    await prisma.bookTag.deleteMany({ where: { bookId: { in: [book1.id, book2.id] } } });
+    await prisma.book.deleteMany({ where: { id: { in: [book1.id, book2.id] } } });
+  });
 });
+

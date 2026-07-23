@@ -33,3 +33,23 @@ export class UpdateTaxonomyTagDto {
   @MinLength(1)
   name?: string;
 }
+
+export class TaxonomyTagImpactDto {
+  @ApiProperty()
+  id!: string;
+
+  @ApiProperty()
+  name!: string;
+
+  @ApiProperty()
+  documentCount!: number;
+}
+
+export class MergeTagDto {
+  @ApiProperty({ description: 'Target tag ID to merge source tag into.' })
+  @Transform(normalizeName)
+  @IsString()
+  @MinLength(1)
+  targetTagId!: string;
+}
+
