@@ -107,7 +107,13 @@ describe('Digital book intake (e2e)', () => {
     expect(book?.jobs[0].attemptNumber).toBe(1);
     expect(book?.tags.map(({ tag }) => tag.slug)).toEqual(['software']);
     expect(book?.authors.map(({ author }) => author.name)).toEqual(['Robert C. Martin']);
-    expect(queue.events).toHaveLength(1);
+    expect(queue.events).toEqual([
+      {
+        bookId: book?.id,
+        fileId: book?.files[0].id,
+        processingJobId: book?.jobs[0].id
+      }
+    ]);
   });
 
   it('rejects a non-PDF upload without committed book rows', async () => {

@@ -141,7 +141,6 @@ describe('ProcessingService', () => {
         id: 'job-failed-1',
         bookId: 'book-1',
         bookFileId: 'file-1',
-        bookFile: { objectKey: 'books/book-1/file.pdf' },
         type: 'PDF_OCR_PIPELINE',
         status: ProcessingJobStatus.FAILED,
         attemptNumber: 1,
@@ -190,7 +189,6 @@ describe('ProcessingService', () => {
       expect(mockProcessingQueue.enqueueBookUploaded).toHaveBeenCalledWith({
         bookId: 'book-1',
         fileId: 'file-1',
-        objectKey: 'books/book-1/file.pdf',
         processingJobId: 'job-retry-2'
       });
 

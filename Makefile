@@ -4,9 +4,9 @@ SHELL := /usr/bin/env bash
 COMPOSE := docker compose
 COMPOSE_DEBUG := docker compose -f docker-compose.yml -f docker-compose.debug.yml --profile debug
 
-.PHONY: help install dev build lint test test-e2e verify \
+.PHONY: help install dev build lint test test-e2e test-worker verify \
 	infra-up infra-down infra-restart infra-logs infra-ps \
-	debug-up debug-down debug-logs pgadmin db-migrate db-seed db-reset prisma-generate api web clean
+	debug-up debug-down debug-logs pgadmin db-migrate db-seed db-reset prisma-generate api web worker clean
 
 help: ## Show available commands
 	@awk 'BEGIN {FS = ":.*##"; printf "LIBIF development commands:\n\n"} /^[a-zA-Z0-9_-]+:.*##/ {printf "  %-18s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -57,14 +57,30 @@ db-reset: ## Reset local database, apply migrations, and seed data
 	npm run db:migrate -w apps/api -- --reset --force
 	npm run db:seed
 
-dev: ## Start all workspace dev servers
-	npm run dev
+dev: ## Start the web app, HTTP API, and background OCR worker
+	@set -euo pipefail; \
+	pids=""; \
+	cleanup() { \
+		trap - EXIT INT TERM; \
+		if [[ -n "$$pids" ]]; then \
+			kill $$pids 2>/dev/null || true; \
+			wait $$pids 2>/dev/null || true; \
+		fi; \
+	}; \
+	trap cleanup EXIT INT TERM; \
+	$(MAKE) --no-print-directory api & pids="$$pids $$!"; \
+	$(MAKE) --no-print-directory web & pids="$$pids $$!"; \
+	$(MAKE) --no-print-directory worker & pids="$$pids $$!"; \
+	wait -n $$pids
 
 api: ## Start only the NestJS API dev server
 	npm run dev -w apps/api
 
 web: ## Start only the Next.js web dev server
 	npm run dev -w apps/web
+
+worker: ## Start only the background PDF/OCR worker in watch mode
+	npm run dev:worker -w apps/api
 
 build: ## Build all workspaces
 	npm run build
@@ -78,7 +94,10 @@ test: ## Run unit/component tests
 test-e2e: ## Run API e2e tests
 	npm run test:e2e
 
-verify: lint test test-e2e build ## Run full local verification suite
+test-worker: ## Run Redis/MinIO/PostgreSQL/PDF/OCR worker integration tests
+	npm run test:worker
+
+verify: lint test test-e2e test-worker build ## Run full local verification suite
 
 clean: ## Remove generated build/test artifacts, preserving source and Docker volumes
 	python3 -c "from pathlib import Path; import shutil; [shutil.rmtree(p) for p in map(Path, ['apps/api/dist','apps/api/coverage','apps/web/.next','apps/web/coverage','packages/shared/dist','packages/shared/coverage']) if p.exists()]"

@@ -1,6 +1,6 @@
 # LIBIF Progress Checklist
 
-Last updated: 2026-07-22
+Last updated: 2026-07-23
 
 This checklist is the concise current-state tracker for future agents and team members. Detailed design, screen, workflow, and contract notes remain in the other `ai_artifacts/docs/` files.
 
@@ -21,6 +21,7 @@ This checklist is the concise current-state tracker for future agents and team m
 - [x] Phase 3 seeded usable dev accounts for Admin, Librarian, and Reader.
 - [x] Phase 4 reader/access/catalog/processing/notification/dashboard foundations.
 - [x] Phase 5 schema foundation for reader state, notifications, approvals, audit events, processing progress, and file version/status metadata.
+- [x] Phase 6 processing/OCR worker, approval/correction, durable notifications, reader publication/access integration, and reporting activity closure.
 
 ## Seeded local accounts
 
@@ -36,7 +37,20 @@ Development-header auth remains available only with explicit local opt-in throug
 
 ## Verified command set for latest completed phase
 
-Latest full Phase 4 integration verification passed after merging member lanes:
+Latest Phase 6 closure verification:
+
+- [x] `npx prisma validate --schema apps/api/prisma/schema.prisma`
+- [x] `npm run prisma:generate -w apps/api`
+- [x] `npm run openapi:generate`
+- [x] `npm run lint`
+- [x] `npm test` — 15 API suites/82 tests and 15 web files/62 tests.
+- [x] `npm run build`
+- [x] `npm run test:e2e -w apps/api` — 7 suites/30 tests.
+- [x] `npm run test:worker -w apps/api` — 1 suite/5 infrastructure-backed scenarios.
+- [x] `git diff --check`
+- [x] Phase 6 closure committed in `c807bbc` (`fix: make Phase 6 worker closure trustworthy`).
+
+Historical Phase 4 integration verification:
 
 - [x] `npm run openapi:generate`
 - [x] `npm run lint`
@@ -92,7 +106,7 @@ Latest Phase 5 planning/schema preflight:
 - [x] Document/upload APIs: list, detail, metadata update, upload, replacement, and submit-to-processing contracts.
 - [x] Processing APIs: queue/detail/status plus guarded advance, retry, and cancel transition foundations.
 - [x] Approval APIs: current pending queue/detail foundations with one current review row per document.
-- [ ] Notification persistence: list/read API and UI foundations exist, but `NotificationsService` remains process-local until Phase 6 NTF-001.
+- [x] Notification persistence: recipient-scoped Prisma reads/writes, unread count, read state, and staff/reader UI integration.
 
 ## Remaining high-level work
 
@@ -100,15 +114,16 @@ Latest Phase 5 planning/schema preflight:
 - [x] Reader module and reader discovery/personal library foundations from Phase 4.
 - [x] Protected document decision/token handoff and persisted reading progress/bookmarks integration.
 - [x] Upload/Documents boundary and document metadata workflow foundation.
-- [ ] Processing worker implementation and retry history. Phase 5 completed persisted transition/status/retry/cancel foundations; deeper worker execution remains Phase 6.
-- [ ] Full approval decision/correction loop and persisted notifications. Phase 5 completed approval queue/detail plus notification API/UI foundations; decision commands, correction/resubmission, persistence, and fanout remain Phase 6.
+- [x] Processing worker implementation and retry history, including real PDF extraction/OCR, exact lineage, duplicate-delivery protection, and infrastructure-backed tests.
+- [x] Approval decision/correction loop and persisted notifications, including approve/reject/request-correction, resubmission reuse, publication fanout, and recipient ownership.
 - [ ] Taxonomy risky actions (delete/reassign/merge), user administration, role changes, and deactivation. Starter category/tag list/create/edit is complete.
 - [ ] Dashboards, reports, exports, and settings. Phase 4 Member D completed the base dashboard summary only; report exports/settings remain deferred.
+- [ ] Reader POC completion: functional catalogue discovery/detail, server-rendered user/session-watermarked pages drawn on canvas, integrated real-page progress, no Reader raw-PDF/download surface, correct bookmark hydration, durable access auditing, and scrape/rate/concurrency enforcement.
 - [ ] Cross-screen integration hardening and responsive/visual QA.
 
-## Next recommended planning target
+## Next execution target
 
-Phase 5 member lanes are integrated on the Member D closure branch. The comprehensive next plan is `ai_artifacts/plans/plan-phase-6-processing-approval-correction-notifications-2026-07-22.md`. Phase 6 adds the real OCR worker, approval decisions, correction/resubmission, retry history, and durable notification fanout without rebuilding the Phase 5 document, taxonomy, access, or processing-transition foundations.
+Phase 6 is verified and committed. The canonical next plan is `ai_artifacts/plans/plan-phase-7-admin-operations-users-reporting-settings-2026-07-23.md`, mirrored under `.omx/plans/` with Member D PRD/test-spec artifacts. Phase 7 treats Reader POC completion as P0: catalogue discovery/detail, server-rendered watermarked pages on canvas, integrated real-page progress, removal of Reader raw-PDF/download paths, persisted bookmark hydration, durable access events, and scrape/rate/concurrency enforcement. Existing user administration, taxonomy safeguards, date-filtered reporting, bounded CSV, supported settings, and notification/document polish remain in scope.
 
 ## 80-90% Completion Team Backlog
 
@@ -147,22 +162,55 @@ Member D Phase 5 is complete and integrated with the merged Member A/B/C lanes; 
 
 - [x] Member A: persisted reader progress/bookmarks plus protected document decision/viewer fallback integration.
 - [x] Member B: document list/detail/edit, PDF upload/replacement, metadata, and submit-to-processing foundations.
-- [x] Member C: persisted processing transitions, current approval queue/detail, notification API/UI foundations, and staff workflow surfaces; notification storage remains an explicit Phase 6 gap.
+- [x] Member C: persisted processing transitions, current approval queue/detail, notification API/UI foundations, and staff workflow surfaces; the Phase 5 notification-storage handoff was resolved in Phase 6.
 - [x] Member D: schema foundation, taxonomy reads and starter management, reusable selectors, role-aware staff shell, unified OpenAPI/client regeneration, and phase closure.
 - [x] Canonical `/admin/documents/new` intake and Member D taxonomy selectors are used by the Phase 5 workflow; `/admin/books` is compatibility-only and no longer appears in primary staff navigation or staff sign-in routing.
 - [x] Intake, replacement, and requeue browser mutations use the authenticated API boundary; replacement/requeue supersede stale work, and processing/approval queue projections show one current row per document while history remains available through lifecycle records.
 - [x] Integrated verification passed: Prisma validate/generate, unified OpenAPI/client generation, root lint, 15 API suites/72 tests, 13 web files/54 tests, root production builds, 6 API e2e suites/24 tests, and `git diff --check`.
-- [ ] Phase 5 notification persistence acceptance was not met by the merged runtime: the Prisma model exists, but `NotificationsService` remains process-local. The gap is explicitly transferred to Phase 6 NTF-001.
+- [x] The Phase 5 notification persistence gap was transferred to Phase 6 and is now resolved by Prisma-backed recipient-scoped notification reads/writes.
 
 ## Phase 6 planning
 
 - [x] Comprehensive Phase 6 plan written to `ai_artifacts/plans/plan-phase-6-processing-approval-correction-notifications-2026-07-22.md` and mirrored under `.omx/plans/`.
 - [x] D6-000 schema/OCR-lineage foundation: migration `20260722062955_phase6_processing_foundation`, exact file/job/review lineage, explicit terminal states, retry numbering/self-reference, durable artifact metadata, current-work constraints, generated contracts, and isolated Phase 5 backfill verification.
 - [x] D6-000 verification: Prisma validate/generate/migrate/status, OpenAPI/client generation, 72 API unit tests, and 7 API e2e suites/28 tests including four migration/backfill constraint scenarios.
-- [ ] C6 real worker/OCR, retry history, approval commands, notification persistence/fanout.
-- [ ] B6 correction/resubmission and document workflow history.
-- [ ] A6 publication visibility and reader notification integration.
-- [ ] D6 integration, generated contracts, activity summaries, and phase closure.
+- [x] C6 worker closure completed: isolated worker bootstrap, atomic duplicate claim, active-file cancellation/supersession guards, real embedded-text/Vietnamese OCR extraction, safe corrupt-PDF failure, retry/history, approval commands, and durable notification fanout.
+- [x] B6 correction/resubmission and document workflow history are merged through the existing document edit/replace/requeue commands.
+- [x] A6 publication visibility and reader notification integration are merged.
+- [x] D6-001 contract registry reconciliation, D6-002 activity reporting, D6-003 staff unread-count integration, and D6-004 generated contract refresh are implemented.
+- [x] Phase 6 worker/OCR closure gate now proves Redis delivery, MinIO input/output, PostgreSQL state, duplicate delivery, cancellation, supersession, embedded extraction, scanned Vietnamese OCR, and corrupt failure without synthetic success.
+
+### Phase 6 Member D verification — 2026-07-23
+
+- [x] D6-000 isolated migration/backfill/constraint e2e: 4/4 passed with PostgreSQL running.
+- [x] Reporting unit tests: 4/4 passed.
+- [x] Reporting e2e: 3/3 passed.
+- [x] Dashboard/staff-shell targeted web tests: 18/18 passed.
+- [x] Generated OpenAPI/client contracts include activity DTOs, notification unread-count/action/read fields, access `CORRECTION_REQUIRED`, and string date-time fields.
+- [x] Full non-worker repository gate: Prisma validate/generate, root lint, 15 API unit suites/82 tests, 15 web files/62 tests, root production builds, 7 API e2e suites/30 tests, and `git diff --check`.
+- [x] `npm run test:worker -w apps/api`: 1 suite / 5 infrastructure-backed scenarios passed.
+- [x] Phase 6 closure re-verification: OpenAPI/client generation, Prisma validation/generation/migration status, lint, 15 API unit suites/82 tests, 15 web files/62 tests, API/web builds, 7 API e2e suites/30 tests, 1 worker suite/5 scenarios, and `git diff --check` passed.
+- [x] Phase 6 OCR privacy hardening migration `20260723050000_phase6_ocr_privacy_hardening` purges legacy `textPreview` values; new worker artifacts keep plaintext only in the private derived object.
+- [x] Redis processing payloads/logs contain IDs only, OCR object keys are resolved from PostgreSQL, temporary files use private permissions, and abandoned OCR workspaces are cleaned on worker startup.
+- [x] POC privacy smoke: paused-queue inspection proved an identifier-only Redis payload, the uploaded fixture reached `PENDING_APPROVAL`, artifact metadata was null, the MinIO bucket denied anonymous policy reads, and no OCR temp directory remained.
+- [x] Post-hardening verification: root lint, 17 API suites/86 tests, 15 web files/62 tests, API/web builds, 7 API e2e suites/31 tests, 1 worker suite/5 scenarios, migration status, Make dev supervision probes, privacy scans, and `git diff --check` passed.
+
+## Phase 7 planning
+
+- [x] Canonical team plan written to `ai_artifacts/plans/plan-phase-7-admin-operations-users-reporting-settings-2026-07-23.md` and mirrored under `.omx/plans/`.
+- [x] Member D Ralph prerequisites written to `.omx/plans/prd-phase-7-member-d.md` and `.omx/plans/test-spec-phase-7-member-d.md`.
+- [x] Repository audit confirmed the current catalogue lacks functional detail navigation/state, the viewer embeds and downloads the raw PDF, its page tracker is disconnected and hard-coded, and detail/viewer bookmark controls default to unsaved.
+- [x] Phase 7 locks a server-authorized raster-page/HTML-canvas viewer boundary and explicitly rejects native PDF embedding, Reader source-file download, selectable OCR text, and false absolute-DRM claims.
+- [x] Validated research recorded at `ai_artifacts/research/document-drm-and-screenshot-prevention-2026-07-23.md`; Phase 7 now requires server-burned traceable watermarks, append-only Reader access events, Redis-backed scrape/rate/concurrency controls, and deduplicated staff alerts.
+- [x] Phase 7 workload is explicitly balanced by planning points: A=11 access/viewer, B=11 catalogue/taxonomy, C=10 rendering/alerts, D=12 schema/users/reporting/settings/integration.
+- [x] Phase 7 locks one D7-000 schema migration, transactional user/taxonomy safeguards, bounded synchronous CSV instead of a second worker subsystem, and explicit persisted-versus-deployment-managed settings boundaries.
+- [x] Wave 1 / D7-000 implemented in `20260723143000_phase7_administration_reader_security_foundation`: active/deactivated accounts, immutable user-administration events, bounded append-only Reader access facts, and typed singleton settings.
+- [x] Wave 1 isolated PostgreSQL proof passes 1 suite / 5 tests, including backfill, audit immutability, non-content Reader columns, event constraints, and singleton settings.
+- [x] Wave 2 frozen code contracts cover public catalogue detail, Reader state, manifest/429 shapes, `ProtectedPageRenderer`, committed risk facts, Reader-access reporting, and product-owned settings.
+- [x] Wave 1–2 evidence and ownership handoffs are recorded in `ai_artifacts/docs/phase-7-wave-1-2-foundation-contract-freeze.md`.
+- [x] Wave 1–2 full regression: migration deploy/status and seed, empty Prisma diff, root lint, 20 API suites/91 tests, 15 web files/62 tests, API/web/shared builds, 8 API e2e suites/36 tests, worker suite/5 scenarios, OpenAPI/client generation, and `git diff --check`.
+- [x] The canonical plan now dispatches every member by Wave 1–7 with task IDs, dependency gates, handoffs, current focus, and explicit cross-lane stop boundaries.
+- [ ] Wave 3 parallel P0 implementation is next; no planned Reader page/detail/state route is marked live yet.
 
 ### Phase 4 Member D verification
 
@@ -191,4 +239,4 @@ Member D Phase 5 is complete and integrated with the merged Member A/B/C lanes; 
 - [x] `npm test -w apps/api` — 44/44 passed, 13 suites (including 2 new approval/resubmission tests).
 - [x] `npm run lint` — clean.
 - [x] `npm run build` — all workspaces build cleanly.
-- [ ] OpenAPI/client regeneration deferred to Member D Phase 6 integration PR.
+- [x] OpenAPI/client regeneration completed by Member D Phase 6 integration.

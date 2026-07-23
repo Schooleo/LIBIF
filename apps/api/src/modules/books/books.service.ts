@@ -73,7 +73,6 @@ export class BooksService {
       await this.queue.enqueueBookUploaded({
         bookId: result.book.id,
         fileId: result.file.id,
-        objectKey: storedPdf.objectKey,
         processingJobId: result.processingJob.id
       });
       return result;

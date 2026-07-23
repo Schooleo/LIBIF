@@ -81,7 +81,7 @@ export class StorageService {
     try {
       await this.client.send(new DeleteObjectCommand({ Bucket: bucket, Key: objectKey }));
     } catch (error) {
-      this.logger.warn(`Failed to cleanup object ${bucket}/${objectKey}: ${(error as Error).message}`);
+      this.logger.warn(`Failed to clean up a private storage object: ${(error as Error).message}`);
     }
   }
 }

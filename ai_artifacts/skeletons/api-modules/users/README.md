@@ -19,3 +19,8 @@ Primary endpoints:
 - `PATCH /users/:id/role`
 - `POST /users/:id/deactivate`
 - `POST /users/:id/reactivate`
+
+Foundation status:
+
+- D7-000 now provides `User.status`, `deactivatedAt`, and append-only `UserAdministrationEvent` history.
+- The endpoints remain non-live until D7-001/D7-002 add transactional guards, session revocation, authorization, and tests.

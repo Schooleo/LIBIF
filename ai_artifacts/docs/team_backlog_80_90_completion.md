@@ -29,7 +29,7 @@ Target outcome: reach roughly 80-90% product completion, meaning the main reader
 1. Use Phase 4 to establish reader library/access and catalog contracts.
 2. Use Phase 5 to complete document lifecycle, upload, metadata editing, and taxonomy integration.
 3. Use Phase 6 to complete processing, approval, correction, and notification workflows.
-4. Use Phase 7 to fill admin operations, user management, reporting, settings, and reader polish.
+4. Use Phase 7 to complete the Reader POC first, then fill admin operations, user management, reporting, settings, and remaining polish.
 5. Use Phase 8 for integration hardening, e2e, accessibility, visual QA, docs, and demo readiness.
 
 ## Risks and Mitigations
@@ -42,20 +42,21 @@ Target outcome: reach roughly 80-90% product completion, meaning the main reader
 
 ## Current Baseline
 
-Completed foundation from earlier phases:
+Completed foundation through Phase 6:
 
 - Shared tokens and UI primitives exist for web work.
 - Main route shells and navigation structure exist.
 - Backend API foundation, OpenAPI generation, auth cookies, sessions, password reset, role checks, and seeded role accounts exist.
-- Core intake/catalog/backend modules exist in early form.
+- Core intake/catalog/document, reader/access, processing/OCR, approval/correction, notification, taxonomy starter-management, and reporting modules are integrated and verified.
+- The real worker/OCR closure gate covers Redis, MinIO, PostgreSQL, duplicate delivery, cancellation, supersession, digital extraction, scanned Vietnamese OCR, and corrupt-PDF failure.
 - Current docs are centralized under `ai_artifacts/docs`.
 
 Primary remaining product gaps:
 
-- Reader library, protected document access, reading progress, bookmarks, and document viewer flows.
-- Upload/catalog/document-management boundary deepening.
-- Processing worker/status/retry lifecycle and approval/correction workflow.
-- Notifications, taxonomy/tag management, user management, settings, dashboards, and reports.
+- Reader library state polish and responsive/accessibility coverage.
+- Document taxonomy-filter integration and explicitly gated metadata-only bulk actions.
+- Notification-center polish and any missing committed-state fanout.
+- Taxonomy risky actions, user management, date-filtered/management reporting, CSV exports, and supported settings.
 - Cross-feature integration hardening, accessibility, visual QA, and e2e coverage.
 
 ## Team Lanes and File Ownership
@@ -268,7 +269,7 @@ Goal: make the core operational workflow explicit, retryable, and visible.
 
 Canonical comprehensive execution plan: `ai_artifacts/plans/plan-phase-6-processing-approval-correction-notifications-2026-07-22.md`.
 
-Phase 6 entry note: Phase 5 now has authenticated intake/replacement/requeue handoffs and current-work queue projections, but no BullMQ worker consumes OCR jobs and `NotificationsService` remains process-local despite the Prisma model. Worker/OCR truth and notification persistence are early Phase 6 gates.
+Phase 6 status on 2026-07-23: complete. A/B workflows and durable notification/approval/processing foundations are merged; Member D completed activity reporting, staff unread-count integration, and generated-contract reconciliation; and the worker closure pass added isolated startup, real local Vietnamese/English OCR, atomic duplicate handling, stale cancellation/supersession guards, identifier-only queue payloads, private temporary-workspace cleanup, plaintext-preview removal, and the infrastructure-backed `test:worker` CI gate.
 
 D6-000 foundation status: completed on the Phase 5 Member D integration PR through `20260722062955_phase6_processing_foundation`. Member lanes must consume its file-scoped jobs/reviews, explicit terminal statuses, retry lineage, artifact model, and current-work constraints rather than introducing parallel schema shapes.
 
@@ -290,8 +291,9 @@ Member C tasks:
 
 Member D tasks:
 
-- Add admin audit/activity summaries for processing and approval actions.
-- Integrate notifications into admin navigation/header if applicable.
+- [x] Add admin audit/activity summaries for processing, approval, and correction actions.
+- [x] Integrate typed unread notifications into the existing responsive staff navigation.
+- [x] Reconcile Phase 6 API/workflow docs and regenerate OpenAPI/client contracts.
 
 Expected end-of-phase result:
 
@@ -305,42 +307,60 @@ Validation:
 - Notification persistence tests.
 - Regression tests for auth session behavior.
 
-### Phase 7 — Admin Operations, Users, Reporting, and Settings
+### Phase 7 — Reader POC Completion and Admin Operations
 
-Goal: fill operational gaps needed for a near-complete admin product.
+Goal: close the demo-critical reader gaps while preserving the planned operational work needed for a near-complete admin product.
+
+Canonical execution plan: `ai_artifacts/plans/plan-phase-7-admin-operations-users-reporting-settings-2026-07-23.md`.
+
+Execution status: Waves 1–2 are complete; Wave 3 parallel P0 implementation is next. Reader POC gates are P0. Weighted work is split A=11, B=11, C=10, D=12 planning points. Member D owns the single migration and final integration; Phase 7 explicitly transfers risky taxonomy implementation to Member B and secure rendering/watermark implementation to Member C. Foundation and contract evidence is recorded in `ai_artifacts/docs/phase-7-wave-1-2-foundation-contract-freeze.md`; the canonical plan's Wave 1–7 member-focus table is the authoritative dispatch order.
 
 Member A tasks:
 
-- Polish reader library filters, history, bookmarks, and empty/loading/error states.
-- Add reader-facing accessibility and responsive checks.
+- Own access decisions, Reader raw-PDF/download denial, page manifest/controller contracts, and the canvas viewer.
+- Integrate Member C's server-rendered watermarked pages with real page count, navigation, and saved progress as one state machine.
+- Hydrate persisted bookmark state on catalogue detail and viewer; keep it consistent across all reader routes.
+- Enforce durable access events plus Redis-backed rate/concurrency/scrape rules and emit committed risk facts.
+- Add reader-facing loading/error/accessibility/responsive checks and truthful copy-protection language.
 
 Member B tasks:
 
-- Finish taxonomy integration in document search and admin filters.
+- Implement published-only catalogue detail and wire list search/category/tag/sort/pagination state to the route.
+- Make every catalogue record open the canonical `/catalogue/:id` detail route.
+- Own Phase 7 risky taxonomy impact/delete/reassign/merge backend and confirmation UI as an explicit workload transfer from Member D.
+- Reconcile taxonomy changes in catalogue/document filters and metadata surfaces.
 - Add bulk document actions only if the single-document lifecycle is stable.
 
 Member C tasks:
 
+- Own the bounded Poppler `RenderingModule`, private file-version-scoped raster bases, server-burned user/session/page watermarks, and replacement invalidation.
+- Convert committed rate/scrape facts into deduplicated staff alerts without receiving document content.
 - Finish notification center UI and read/unread behavior.
 - Add scheduled or event-driven notification hooks where needed.
 
 Member D tasks:
 
 - Implement user management list/detail/role changes/deactivation with confirmation flows.
-- Implement category/tag management, merge/reassign safeguards, and risky-action confirmations.
-- Implement dashboards, report endpoints, export stubs/CSV, and settings screens.
+- Add the single schema foundation for user administration, settings, and append-only `ReaderAccessEvent` facts.
+- Implement user management plus operational/security dashboards, bounded CSV, and settings screens.
+- Coordinate frozen A/B/C handoffs, generated contracts, seeded watermark/audit/scrape scenarios, and phase closure gates.
 
 Expected end-of-phase result:
 
+- Readers can search/browse the catalogue, open a real detail page, see correct saved state, and read individually server-watermarked pages through canvas without receiving a native PDF viewer or Reader download action.
+- Page delivery is durably auditable; bulk scraping is rate/concurrency controlled and produces deduplicated staff alerts.
 - Admins can manage users, categories, tags, reports, and key settings.
 - Librarians/admins can operate the document lifecycle without database access.
-- Reader experience has realistic account-specific state.
+- Copy protection is described honestly as controlled page rendering/casual-copy deterrence, not absolute DRM or screenshot prevention.
 
 Validation:
 
 - User-management authorization tests.
 - Taxonomy CRUD and reassignment tests.
 - Report endpoint tests using seeded/dev data.
+- Catalogue list/detail tests, authorized manifest/page-image tests, watermark uniqueness/traceability tests, canvas interaction tests, and bookmark/progress refresh tests.
+- Normal-reading versus scrape/rate/concurrency scenarios, durable audit assertions, staff alert deduplication, and fail-closed dependency behavior.
+- Manual browser inspection proving Reader viewing responses contain page images/manifest data rather than source-PDF bytes, object keys, or selectable OCR text.
 - Web e2e smoke over reader, librarian, and admin accounts.
 
 ### Phase 8 — Integration Hardening, QA, Accessibility, and Demo Readiness

@@ -1,12 +1,12 @@
 # LIBIF
 
-LIBIF is a TypeScript monorepo for an integrated digital-library application. The current development build includes the first MVP vertical slice plus the Phase 1–3 platform foundations:
+LIBIF is a TypeScript monorepo for an integrated digital-library application. The current development build includes the MVP vertical slice through the Phase 6 processing, approval, correction, notification, and reporting workflow:
 
 - **Frontend:** Next.js App Router, shared design tokens/components, reader/admin/auth shells, digital book intake, public catalogue proof, and authentication screens.
-- **Backend:** NestJS modular API for auth/access, intake, categories/catalog, ISBN lookup, private storage, and processing-queue producer boundary.
+- **Backend:** NestJS modular API for auth/access, intake, categories/catalog, ISBN lookup, private storage, approval/notifications, and an isolated BullMQ processing worker.
 - **Database:** PostgreSQL via Prisma for users, sessions, password reset tokens, books, files, authors, categories, tags, and processing jobs.
 - **Contracts:** OpenAPI generation plus generated frontend API path types.
-- **Storage/queue:** MinIO-compatible private object storage and Redis/BullMQ queue scaffold.
+- **Storage/queue:** MinIO-compatible private object storage, Redis/BullMQ delivery, Poppler PDF extraction/rendering, and local Tesseract.js English/Vietnamese OCR.
 
 ## Current dev progress
 
@@ -15,8 +15,12 @@ LIBIF is a TypeScript monorepo for an integrated digital-library application. Th
 | Phase 1 — Design tokens/shared components | Complete | Semantic CSS tokens, shared UI primitives, layout shells, domain foundations, component tests. |
 | Phase 2 — Route shells/auth boundary/API client | Complete | Reader/Admin/Auth route groups, admin gating, OpenAPI generation, typed API adapters. |
 | Phase 3 — Authentication/access | Complete | Register, sign-in/out, DB-backed sessions, HTTP-only cookie, password reset flow, standard error envelope, auth routes. |
+| Phase 4 — Reader/access/catalog foundations | Complete | Reader state, protected access, catalogue and dashboard foundations. |
+| Phase 5 — Document lifecycle and taxonomy | Complete | Intake, file versioning, metadata, taxonomy, and persisted workflow schema. |
+| Phase 6 — Processing and approval loop | Complete | Real worker/OCR, approval/correction, durable notifications, reporting, and worker integration gate. |
+| Phase 7 — Reader POC and admin operations | In progress | Waves 1–2 complete: schema foundation and cross-lane contracts are frozen. Functional catalogue/detail, server-watermarked canvas pages, no Reader PDF route, enforcement, reader state, and admin operations remain. |
 
-Next likely product direction is Reader discovery/personal-library work unless staff/user administration is prioritized first.
+The canonical execution plan is `ai_artifacts/plans/plan-phase-7-admin-operations-users-reporting-settings-2026-07-23.md`; the completed foundation/contract checkpoint is recorded in `ai_artifacts/docs/phase-7-wave-1-2-foundation-contract-freeze.md`. Reader POC gates are the first priority: catalogue discovery/detail must work, the viewer must draw individually server-watermarked raster pages instead of receiving the raw PDF, persisted bookmark/progress state must hydrate correctly, and page access must be auditable with scrape/rate/concurrency enforcement. The security decision is grounded in `ai_artifacts/research/document-drm-and-screenshot-prevention-2026-07-23.md`.
 
 ## Local setup
 
@@ -36,7 +40,13 @@ docker compose up -d
 npm run db:migrate
 npm run db:seed
 npm run dev
+# In another terminal:
+npm run dev:worker -w apps/api
 ```
+
+The API worker host also requires Poppler commands (`pdfinfo`, `pdftotext`, and `pdftoppm`). Tesseract.js and the English/Vietnamese language models are installed through npm and do not fetch language data at runtime.
+
+OCR stays inside the LIBIF deployment boundary: Redis jobs contain database identifiers only, the worker resolves private object-storage keys from PostgreSQL, extracted text is stored only as a private artifact object, and PostgreSQL metadata does not duplicate a plaintext preview. Temporary PDF/page files use private permissions, are removed after every outcome, and abandoned worker directories are purged on worker startup.
 
 API runs on `http://localhost:3001` and web runs on the Next.js dev port, usually `http://localhost:3000`.
 
@@ -76,10 +86,12 @@ The repository includes a `Makefile` for common local workflows:
 | `make db-seed` | Seed development users and starter categories. |
 | `make prisma-generate` | Generate Prisma client. |
 | `make db-reset` | Reset local DB, run migrations, and seed data. |
-| `make dev` | Start all workspace dev servers. |
+| `make dev` | Start the web app, HTTP API, and background OCR worker together. |
 | `make api` | Start only the NestJS API dev server. |
 | `make web` | Start only the Next.js web dev server. |
-| `make verify` | Run lint, unit/component tests, e2e tests, and build. |
+| `make worker` | Start only the background PDF/OCR worker in watch mode. |
+| `make test-worker` | Run the Redis/MinIO/PostgreSQL/PDF/OCR worker integration gate. |
+| `make verify` | Run lint, unit/component tests, API e2e, worker integration, and build. |
 | `make clean` | Remove generated build/test artifacts only. |
 
 ## Debug tooling: pgAdmin
@@ -164,30 +176,39 @@ npm run lint
 npm test
 npm run build
 npm run test:e2e -w apps/api
+npm run test:worker -w apps/api
+```
+
+Run the background processor separately from the HTTP API:
+
+```bash
+npm run build -w apps/api
+npm run start:worker -w apps/api
 ```
 
 For a manual smoke test:
 
 1. Start Docker services and run migrations/seeds.
-2. Open `/sign-in` and sign in as `librarian@libif.local` using the seeded password.
-3. Open `/admin/books/new`.
-4. Upload `apps/api/test/fixtures/sample.pdf` and metadata.
-5. Confirm the success panel shows `PENDING_PROCESSING` and a queued processing job.
-6. Open `/admin/books` and confirm the record exists.
-7. Confirm `/catalog` does not show pending books.
-8. Sign out, then confirm staff routes send anonymous users to `/session-expired`.
+2. Start the API, web app, and background worker.
+3. Open `/sign-in` and sign in as `librarian@libif.local` using the seeded password.
+4. Open `/admin/documents/new`.
+5. Upload `apps/api/test/fixtures/worker/embedded-text.pdf` with valid metadata.
+6. Confirm the worker reaches `PENDING_APPROVAL` and persists an extracted-text artifact.
+7. Open `/admin/documents` and confirm the record exists.
+8. Confirm `/catalog` does not show the document before publication.
+9. Sign out, then confirm staff routes send anonymous users to `/session-expired`.
 
 ## Follow-up features
 
 - Production password-reset email provider.
-- Reader discovery and personal library.
-- Secure PDF reader with presigned URLs and reading-progress mutation.
-- Upload/Catalog module deepening and document metadata workflows.
-- OCR/compression workers and processing status endpoints.
-- Approval workflow from pending to published/rejected.
+- OCR layout/compression enhancements beyond the current extracted-text artifact.
 - Full catalog search and full-text OCR indexing.
+- Phase 7 reader POC completion: functional catalogue search/filter/pagination and direct detail routes.
+- Authorized server-rendered page images drawn to canvas, with integrated real-page progress and no Reader raw-PDF/download control or selectable text layer.
+- Correct persisted bookmark state on catalogue detail, viewer, library, history, and bookmark routes.
 - Staff/user administration, role changes, and account deactivation.
-- Management dashboard metrics.
+- Category reassignment/tag merge safeguards, management reports/CSV, and supported settings.
+- Phase 8 integration hardening, accessibility/visual QA, release notes, and demo readiness.
 
 ## GitHub Actions CI notifications
 

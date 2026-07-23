@@ -140,7 +140,6 @@ describe('DocumentsService', () => {
     expect(queue.enqueueBookUploaded).toHaveBeenCalledWith({
       bookId: 'doc_1',
       fileId: 'f1',
-      objectKey: 'key1',
       processingJobId: 'job_2'
     });
   });

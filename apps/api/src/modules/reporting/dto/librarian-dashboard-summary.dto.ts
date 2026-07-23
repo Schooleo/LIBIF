@@ -1,5 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { BookStatus } from '../../../generated/prisma/client';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { BookAuditAction, BookStatus } from '../../../generated/prisma/client';
 
 export class BookStatusCountsDto {
   @ApiProperty()
@@ -83,6 +83,51 @@ export class RecentBookSummaryDto {
   createdAt!: string;
 }
 
+export class ReportingActivityCountsDto {
+  @ApiProperty()
+  processing!: number;
+
+  @ApiProperty()
+  approval!: number;
+
+  @ApiProperty()
+  correction!: number;
+
+  @ApiProperty()
+  total!: number;
+}
+
+export class ReportingActivityItemDto {
+  @ApiProperty()
+  id!: string;
+
+  @ApiProperty()
+  documentId!: string;
+
+  @ApiProperty()
+  documentTitle!: string;
+
+  @ApiProperty({ enum: BookAuditAction })
+  action!: BookAuditAction;
+
+  @ApiPropertyOptional({ type: String, nullable: true })
+  message?: string | null;
+
+  @ApiPropertyOptional({ type: String, nullable: true })
+  actorEmail?: string | null;
+
+  @ApiProperty({ format: 'date-time' })
+  createdAt!: string;
+}
+
+export class ReportingActivitySummaryDto {
+  @ApiProperty({ type: () => ReportingActivityCountsDto })
+  counts!: ReportingActivityCountsDto;
+
+  @ApiProperty({ type: [ReportingActivityItemDto] })
+  recent!: ReportingActivityItemDto[];
+}
+
 export class LibrarianDashboardSummaryDto {
   @ApiProperty({ format: 'date-time' })
   generatedAt!: string;
@@ -101,6 +146,9 @@ export class LibrarianDashboardSummaryDto {
 
   @ApiProperty({ type: [RecentBookSummaryDto] })
   recentBooks!: RecentBookSummaryDto[];
+
+  @ApiProperty({ type: () => ReportingActivitySummaryDto })
+  activity!: ReportingActivitySummaryDto;
 }
 
 export const DASHBOARD_BOOK_STATUSES = [
@@ -111,4 +159,15 @@ export const DASHBOARD_BOOK_STATUSES = [
   BookStatus.CORRECTION_REQUIRED,
   BookStatus.PUBLISHED,
   BookStatus.REJECTED
+] as const;
+
+export const DASHBOARD_ACTIVITY_ACTIONS = [
+  BookAuditAction.PROCESSING_QUEUED,
+  BookAuditAction.PROCESSING_STARTED,
+  BookAuditAction.PROCESSING_COMPLETED,
+  BookAuditAction.APPROVAL_REQUESTED,
+  BookAuditAction.APPROVED,
+  BookAuditAction.PUBLISHED,
+  BookAuditAction.REJECTED,
+  BookAuditAction.CORRECTION_REQUESTED
 ] as const;

@@ -17,7 +17,7 @@ export class NotificationResponseDto {
   body!: string;
 
   @ApiPropertyOptional({ type: Object, nullable: true })
-  payload?: Record<string, any> | null;
+  payload?: Record<string, unknown> | null;
 
   @ApiPropertyOptional({ type: String, nullable: true })
   actionHref?: string | null;
@@ -25,9 +25,14 @@ export class NotificationResponseDto {
   @ApiProperty()
   isRead!: boolean;
 
-  @ApiPropertyOptional({ format: 'date-time', nullable: true })
+  @ApiPropertyOptional({ type: String, format: 'date-time', nullable: true })
   readAt?: string | null;
 
   @ApiProperty({ format: 'date-time' })
   createdAt!: string;
+}
+
+export class UnreadNotificationCountDto {
+  @ApiProperty({ minimum: 0 })
+  count!: number;
 }

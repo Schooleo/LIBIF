@@ -1,12 +1,12 @@
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
+import { WorkerModule } from './worker.module';
 
 async function bootstrap() {
   const logger = new Logger('WorkerBootstrap');
   logger.log('Starting LIBIF background processing worker...');
 
-  const app = await NestFactory.createApplicationContext(AppModule);
+  const app = await NestFactory.createApplicationContext(WorkerModule);
   await app.init();
 
   logger.log('LIBIF background processing worker is running.');

@@ -133,7 +133,6 @@ export class UploadService {
       await this.queue.enqueueBookUploaded({
         bookId: result.book.id,
         fileId: result.file.id,
-        objectKey: storedPdf.objectKey,
         processingJobId: result.processingJob.id
       });
 
@@ -250,7 +249,6 @@ export class UploadService {
     await this.queue.enqueueBookUploaded({
       bookId: id,
       fileId: file.id,
-      objectKey: file.objectKey,
       processingJobId: job.id
     });
 

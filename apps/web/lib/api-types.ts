@@ -30,6 +30,7 @@ export type ProcessingJobResponseDto = components['schemas']['ProcessingJobRespo
 export type ApprovalReviewResponseDto = components['schemas']['ApprovalReviewResponseDto'];
 export type NotificationResponseDto = components['schemas']['NotificationResponseDto'];
 export type DocumentListQuery = paths['/api/documents']['get']['parameters']['query'];
+export type UnreadNotificationCountDto = components['schemas']['UnreadNotificationCountDto'];
 
 export type PublicBookListItemDto = SharedPublicBookListItemDto;
 export type AdminBookListItemDto = SharedAdminBookListItemDto;

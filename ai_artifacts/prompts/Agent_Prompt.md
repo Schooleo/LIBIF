@@ -16,6 +16,7 @@ All AI-produced planning and design-reference artifacts are centralized under `a
 | `ai_artifacts/docs/component-inventory.md` | Shared component contracts and current implementation inventory. |
 | `ai_artifacts/docs/workflow-state-machines.md` | Workflow states, commands, events, permissions, and response expectations. |
 | `ai_artifacts/docs/api-contracts.md` | Current and target API/OpenAPI contract notes by batch. |
+| `ai_artifacts/docs/phase-7-wave-1-2-foundation-contract-freeze.md` | Implemented Phase 7 schema foundation, frozen cross-lane code contracts, ownership boundaries, and verification evidence. |
 | `ai_artifacts/docs/team_backlog_80_90_completion.md` | Canonical four-member backlog for reaching 80-90% application completion, including phase roadmap, ownership lanes, merge rules, task IDs, expected results, and validation. |
 | `ai_artifacts/plans/` | Approved execution plans by phase. |
 | `ai_artifacts/skeletons/` | Planning skeleton maps for future API modules, web routes, and domain components. These are not runtime placeholders; use them to determine expected files and ownership before generating implementation files. |
@@ -46,7 +47,7 @@ The repository is a TypeScript monorepo with:
 - S3/MinIO-compatible object storage.
 - Redis/BullMQ queue infrastructure.
 
-Current foundations through the integrated Phase 5 result are already in place:
+Current foundations through the verified Phase 6 result are already in place:
 
 - Tailwind/PostCSS setup via `apps/web/postcss.config.mjs` and `apps/web/app/globals.css`.
 - Semantic tokens/base/component CSS in `apps/web/styles/`.
@@ -63,8 +64,10 @@ Current foundations through the integrated Phase 5 result are already in place:
 - Auth routes under `apps/web/app/(auth)`: `/sign-in`, `/register`, `/forgot-password`, `/reset-password`, `/reset-password/completed`, `/access-denied`, and `/session-expired`.
 - Phase 4 reader/access/catalog/processing/notification/dashboard foundations are merged.
 - Phase 5 schema foundation migration `20260721114643_phase5_domain_foundations` adds persisted reading progress, bookmarks, notifications, approval reviews, document audit events, processing progress fields, and file version/status fields.
-- Phase 6 schema foundation migration `20260722062955_phase6_processing_foundation` makes processing jobs and approval rounds file-scoped, adds retry/supersession lineage and explicit terminal states, persists OCR artifact metadata, and enforces one current file/job/review per document. It is a worker foundation, not evidence that OCR execution is implemented.
-- Phase 5 adds persisted reader state/access handoff, document/upload/metadata routes and APIs, processing transition foundations, approval queue/detail, the notification schema/API/UI foundation, and the Member D taxonomy lane. `NotificationsService` is still process-local and notification persistence is an explicit early Phase 6 gate.
+- Phase 6 schema foundation migration `20260722062955_phase6_processing_foundation` makes processing jobs and approval rounds file-scoped, adds retry/supersession lineage and explicit terminal states, persists OCR artifact metadata, and enforces one current file/job/review per document.
+- Phase 6 completes the isolated BullMQ worker, embedded-text extraction and Vietnamese/English OCR fallback, job-scoped artifact persistence, retry/cancel/supersession behavior, approval decisions, correction/resubmission reuse, durable recipient-scoped notifications, reader publication/access integration, and reporting activity summaries.
+- The Phase 6 closure gate exercises Redis delivery, MinIO input/output, PostgreSQL state, duplicate delivery, cancellation, supersession, embedded extraction, scanned Vietnamese OCR, and corrupt-PDF failure without synthetic success.
+- Phase 6 OCR privacy hardening keeps queue payloads/logs identifier-only, stores extracted text only in private artifact objects, removes legacy database previews, and cleans private process-owned temporary workspaces after normal and abandoned-worker paths.
 - Member D adds `TaxonomyModule`, stable staff category/tag reads, Admin-only starter create/edit APIs, `/admin/categories` and `/admin/tags`, reusable taxonomy selectors/managers consumed by both document intake flows, the standardized staff shell, and unified OpenAPI/client contracts. Risky deletion/reassignment/merge workflows remain Phase 7.
 - Phase 5 closure fixes route document intake, PDF replacement, and manual requeue through authenticated API adapters; replacement/requeue supersede stale active work, approval/processing queue projections show one current row per document, and the legacy Books entry is removed from primary navigation while its routes/API remain compatibility-only.
 
@@ -223,7 +226,7 @@ Use the batch assignments in `screen-matrix.md` as the source of truth.
 7. Dashboards, reports, export, and settings.
 8. Cross-screen integration and hardening.
 
-Phase 5 is integrated across Members A/B/C/D. The next execution target is the canonical Phase 6 plan at `ai_artifacts/plans/plan-phase-6-processing-approval-correction-notifications-2026-07-22.md`: add a real processing/OCR worker, retry history, approval decisions, correction/resubmission, and persisted notification fanout. Consume the existing Phase 5 document, taxonomy, reader-access, and processing-transition contracts instead of rebuilding them.
+Phases 5 and 6 are integrated across Members A/B/C/D. The next execution target is the canonical Phase 7 plan at `ai_artifacts/plans/plan-phase-7-admin-operations-users-reporting-settings-2026-07-23.md`, informed by `ai_artifacts/research/document-drm-and-screenshot-prevention-2026-07-23.md`. Treat Reader POC completion as P0: make catalogue discovery/detail functional, replace the raw-PDF iframe/download surface with individually server-watermarked raster pages drawn on HTML canvas, integrate real page navigation/progress, hydrate persisted bookmark state, and enforce durable access auditing plus scrape/rate/concurrency controls. Phase 7 lane ownership is explicit: A access/viewer, B catalogue and risky taxonomy, C rendering/watermarks/alerts, D schema/users/reporting/settings/integration. Preserve the approved administration goals, consume Phase 6 contracts instead of rebuilding them, and never describe canvas rendering as absolute DRM or screenshot prevention.
 
 ## 10. Accessibility and interaction requirements
 

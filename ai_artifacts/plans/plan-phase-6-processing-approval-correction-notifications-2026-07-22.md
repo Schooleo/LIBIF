@@ -3,6 +3,8 @@
 Date: 2026-07-22  
 Planning mode: `$plan` direct  
 Phase owner / integration lane: Member D unless the team assigns a separate integrator
+Final status: **Complete — finalized 2026-07-23**
+Closure commit: `c807bbc` (`fix: make Phase 6 worker closure trustworthy`)
 
 ## Requirements Summary
 
@@ -15,7 +17,7 @@ This plan consumes rather than rebuilds the Phase 5 contracts:
 - The processing queue currently produces BullMQ `book-uploaded` jobs but has no consumer (`apps/api/src/modules/processing/processing.queue.ts:6-25`).
 - Current processing advancement is a guarded manual simulation that moves queued jobs to OCR and then directly to completion (`apps/api/src/modules/processing/processing.service.ts:48-133`).
 - Approval currently provides only current queue/detail reads (`apps/api/src/modules/approval/approval.controller.ts:17-31`).
-- The Prisma `Notification` model exists, but `NotificationsService` still stores records in a process-local array (`apps/api/prisma/schema.prisma:268-284`; `apps/api/src/modules/notifications/notifications.service.ts:5-47`).
+- At Phase 6 planning time, the Prisma `Notification` model existed while `NotificationsService` still used a process-local array; the closure record below documents its replacement with durable recipient-scoped persistence.
 - Recent Phase 5 closure fixes route intake, replacement, and requeue mutations through the authenticated API boundary; replacement/requeue supersede older active work, clear stale pending approvals, and expose only the latest operational job/review per document.
 
 ## Phase 5 Entry Baseline
@@ -449,3 +451,37 @@ D6-000 is complete on the Phase 5 Member D integration PR and is the mandatory b
 - Range/self-reference constraints protect file versions, progress, attempt/round numbers, artifact sizes/pages, and direct retry/supersession self-links.
 - Intake, replacement, requeue, cancellation, manual transition, dashboard counts, DTOs, OpenAPI, and frontend generated types were updated to consume the new foundation without implementing later Member A/B/C commands.
 - Verification includes an isolated migration test that creates a Phase 5 schema, seeds stale/duplicate lifecycle rows, applies D6-000, verifies the backfill, and proves uniqueness, foreign-key, and range constraints.
+
+## D6-001 through D6-004 Integration Record — 2026-07-23
+
+Member D completed the integration-owned Phase 6 surfaces:
+
+- D6-001 reconciled live workflow ownership, endpoint contracts, and architecture boundaries in the canonical docs without introducing a separate event bus.
+- D6-002 extended the existing librarian dashboard with read-only grouped processing/approval/correction counts and ten newest `BookAuditEvent` rows; unit, API e2e, web rendering, empty-state, and axe coverage were added.
+- D6-003 integrated the recipient-scoped unread count into the single shared desktop/mobile staff navigation with zero/high-count and failure-fallback coverage.
+- D6-004 corrected Swagger/runtime shape drift for unread count, date-time fields, and `CORRECTION_REQUIRED`; regenerated the OpenAPI JSON and frontend path types; and removed the temporary raw-fetch integration in favor of the generated client.
+- D6-000 re-verification passed all four isolated migration/backfill/constraint scenarios after PostgreSQL was started.
+- Fresh non-worker integration verification passed Prisma validation/generation, root lint, 15 API unit suites/82 tests, 15 web files/62 tests, production builds, 7 API e2e suites/30 tests, and `git diff --check`.
+
+## Worker/OCR Closure Record — 2026-07-23
+
+The remaining Phase 6 blockers are resolved:
+
+- `worker.main.ts` now boots an isolated `WorkerModule`; the HTTP `AppModule` no longer starts a BullMQ consumer.
+- The processor atomically claims a queued job, rejects mismatched lineage, rechecks cancellation/replacement state around side effects, uses job-scoped artifact keys, and emits `APPROVAL_REQUESTED` only after durable success.
+- `PdftotextOcrEngineAdapter` validates PDFs with Poppler, returns embedded text when present, renders scanned pages for local Tesseract.js Vietnamese/English OCR, and fails corrupt or unreadable input without synthetic success.
+- `npm run test:worker -w apps/api` exercises real Redis queue delivery, MinIO source/artifact objects, PostgreSQL lifecycle state, duplicate delivery, cancelled payloads, replaced-file supersession, embedded text, scanned Vietnamese OCR, and corrupt-PDF failure.
+- CI has a dedicated worker-integration job that starts the Docker Compose infrastructure, installs Poppler, and runs the same gate.
+
+Phase 6 closure is now supported by reproducible worker evidence rather than a mocked advance endpoint.
+
+Final closure verification passed Prisma validation/generation/migration status, OpenAPI/client generation, root lint, 15 API unit suites/82 tests, 15 web files/62 tests, API/web production builds, 7 API e2e suites/30 tests, the worker integration suite with 5 infrastructure-backed scenarios, and `git diff --check`. Phase 7 planning is authoritative in `ai_artifacts/plans/plan-phase-7-admin-operations-users-reporting-settings-2026-07-23.md`.
+
+### OCR Privacy Hardening Record — 2026-07-23
+
+- Migration `20260723050000_phase6_ocr_privacy_hardening` removes legacy plaintext `textPreview` values from artifact metadata.
+- Queue producers publish only `bookId`, `fileId`, and `processingJobId`; storage object keys are resolved authoritatively from PostgreSQL and no longer appear in Redis payloads or OCR queue logs.
+- The worker persists full extracted text only in the private job-scoped object, not in duplicate PostgreSQL metadata.
+- OCR PDF, rendered-page, and embedded-text temp files use private workspace/file permissions. Normal cleanup remains in `finally`, while worker initialization removes dead-process directories and stale legacy workspaces.
+- POC smoke evidence paused the real queue, inspected the identifier-only payload, resumed processing, reached `PENDING_APPROVAL`, observed null artifact metadata, confirmed no residual OCR temp directory, and confirmed the MinIO bucket rejects anonymous policy access.
+- Fresh verification passed root lint, 17 API suites/86 tests, 15 web files/62 tests, API/web production builds, 7 API e2e suites/31 tests, the worker integration suite with 5 scenarios, migration status, Make dev supervision probes, privacy scans, and `git diff --check`.

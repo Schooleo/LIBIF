@@ -11,6 +11,7 @@ const LEGACY_MIGRATIONS = [
   '20260721114643_phase5_domain_foundations'
 ];
 const PHASE6_MIGRATION = '20260722062955_phase6_processing_foundation';
+const OCR_PRIVACY_MIGRATION = '20260723050000_phase6_ocr_privacy_hardening';
 
 describe('Phase 6 processing schema foundation migration', () => {
   let client: Client;
@@ -30,6 +31,8 @@ describe('Phase 6 processing schema foundation migration', () => {
 
     await seedPhase5Lifecycle(client);
     await client.query(readMigration(PHASE6_MIGRATION));
+    await seedLeakedOcrPreview(client);
+    await client.query(readMigration(OCR_PRIVACY_MIGRATION));
   }, 30_000);
 
   afterAll(async () => {
@@ -159,6 +162,16 @@ describe('Phase 6 processing schema foundation migration', () => {
     ).rejects.toMatchObject({ code: '23503' });
   });
 
+  it('purges plaintext OCR previews while preserving non-content artifact metadata', async () => {
+    const artifact = await client.query<{ metadata: Record<string, unknown> | null }>(
+      'SELECT "metadata" FROM "ProcessingArtifact" WHERE "id" = $1',
+      ['artifact-preview']
+    );
+
+    expect(artifact.rows[0].metadata).toEqual({ source: 'legacy-worker' });
+    expect(artifact.rows[0].metadata).not.toHaveProperty('textPreview');
+  });
+
   it('rejects invalid progress, attempts, and artifact metadata', async () => {
     await expect(
       client.query('UPDATE "ProcessingJob" SET "progressPercent" = 101 WHERE "id" = $1', ['job-current-new'])
@@ -203,5 +216,20 @@ async function seedPhase5Lifecycle(client: Client): Promise<void> {
     VALUES
       ('review-old', 'book-1', 'PENDING', '2026-01-04', '2026-01-04'),
       ('review-new', 'book-1', 'PENDING', '2026-02-05', '2026-02-05');
+  `);
+}
+
+async function seedLeakedOcrPreview(client: Client): Promise<void> {
+  await client.query(`
+    INSERT INTO "ProcessingArtifact" (
+      "id", "processingJobId", "bookFileId", "kind", "extractionMethod",
+      "bucket", "objectKey", "mimeType", "sizeBytes", "checksumSha256",
+      "language", "pageCount", "metadata", "createdAt", "updatedAt"
+    )
+    VALUES (
+      'artifact-preview', 'job-success-new', 'file-new', 'EXTRACTED_TEXT', 'OCR',
+      'derived', 'derived/file-new/privacy-preview.txt', 'text/plain', 128, 'privacy-checksum',
+      'vi', 1, '{"textPreview":"sensitive OCR content","source":"legacy-worker"}'::jsonb, now(), now()
+    )
   `);
 }

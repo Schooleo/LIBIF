@@ -78,7 +78,7 @@ export class ApprovalReviewSummaryDto {
   @ApiPropertyOptional({ type: String, nullable: true })
   reviewerEmail?: string | null;
 
-  @ApiPropertyOptional({ format: 'date-time', nullable: true })
+  @ApiPropertyOptional({ type: String, format: 'date-time', nullable: true })
   decidedAt?: string | null;
 
   @ApiProperty({ format: 'date-time' })

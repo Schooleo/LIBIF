@@ -33,6 +33,16 @@ async function main() {
       create: { name, slug: slugify(name, { lower: true, strict: true, locale: 'vi' }) }
     });
   }
+
+  await prisma.systemSettings.upsert({
+    where: { id: 'default' },
+    update: {},
+    create: {
+      id: 'default',
+      libraryName: 'LIBIF',
+      defaultLocale: 'vi'
+    }
+  });
 }
 
 main()
