@@ -268,7 +268,7 @@ Goal: make the core operational workflow explicit, retryable, and visible.
 
 Canonical comprehensive execution plan: `ai_artifacts/plans/plan-phase-6-processing-approval-correction-notifications-2026-07-22.md`.
 
-Phase 6 status on 2026-07-23: A/B workflows and durable notification/approval/processing foundations are merged. Member D completed activity reporting, staff unread-count integration, and generated-contract reconciliation. Phase closure is still blocked because no `test:worker` command proves Redis/MinIO/PostgreSQL/OCR behavior and the current OCR adapter can synthesize success after extraction errors.
+Phase 6 status on 2026-07-23: complete. A/B workflows and durable notification/approval/processing foundations are merged; Member D completed activity reporting, staff unread-count integration, and generated-contract reconciliation; and the worker closure pass added isolated startup, real local Vietnamese/English OCR, atomic duplicate handling, stale cancellation/supersession guards, and the infrastructure-backed `test:worker` CI gate.
 
 D6-000 foundation status: completed on the Phase 5 Member D integration PR through `20260722062955_phase6_processing_foundation`. Member lanes must consume its file-scoped jobs/reviews, explicit terminal statuses, retry lineage, artifact model, and current-work constraints rather than introducing parallel schema shapes.
 

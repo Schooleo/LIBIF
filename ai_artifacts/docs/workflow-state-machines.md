@@ -61,7 +61,7 @@ This document records current runtime workflow truth from the merged Phase 6 cod
   - `ProcessingQueue` owns queue publication.
   - `ProcessingProcessor` owns worker execution, stage/progress mutation, artifact persistence, and approval-review creation on success.
   - `ProcessingService` owns read models, retry, cancel, and history projection.
-- **Notes:** artifacts are file-scoped through `ProcessingArtifact`; current success flow persists one `EXTRACTED_TEXT` artifact and records extraction method metadata.
+- **Notes:** the claim is atomic, duplicate deliveries skip after the first claim, and cancellation/replacement state is rechecked before artifact and approval side effects. Artifacts are file/job-scoped through `ProcessingArtifact`; success persists one `EXTRACTED_TEXT` artifact with `EMBEDDED_TEXT` or real `OCR` metadata, while corrupt/unreadable PDFs fail without synthetic text.
 
 ## Approval, rejection, publication, and superseded review rounds
 
@@ -105,4 +105,4 @@ This document records current runtime workflow truth from the merged Phase 6 cod
 - **Read-model groups:** book status counts, processing job status counts, taxonomy counts, user role counts, recent books, grouped workflow activity counts, and the ten most recent processing/approval/correction audit facts.
 - **Commands:** get_librarian_dashboard_summary.
 - **Ownership:** `ReportingService` owns read-only aggregation over module-owned tables.
-- **Notes:** activity rows are newest-first, document-scoped projections over `BookAuditEvent`; the reporting module does not own workflow commands. `APPROVAL_REQUESTED` is recognized by the read model, but the merged processing/approval code does not currently emit that audit action.
+- **Notes:** activity rows are newest-first, document-scoped projections over `BookAuditEvent`; the reporting module does not own workflow commands. Successful worker completion emits both `PROCESSING_COMPLETED` and `APPROVAL_REQUESTED`.

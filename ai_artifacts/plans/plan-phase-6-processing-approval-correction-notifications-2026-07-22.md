@@ -461,4 +461,14 @@ Member D completed the integration-owned Phase 6 surfaces:
 - D6-000 re-verification passed all four isolated migration/backfill/constraint scenarios after PostgreSQL was started.
 - Fresh non-worker integration verification passed Prisma validation/generation, root lint, 15 API unit suites/82 tests, 15 web files/62 tests, production builds, 7 API e2e suites/30 tests, and `git diff --check`.
 
-Phase 6 is **not closed** by this integration record. The repository still lacks `npm run test:worker -w apps/api`, and `PdftotextOcrEngineAdapter` returns synthetic `[OCR Processed]` text after extraction errors. Member C must provide an infrastructure-backed Redis/MinIO/PostgreSQL/OCR gate covering duplicate delivery, cancellation, supersession, and deterministic fixtures before the phase-end stop condition can be claimed.
+## Worker/OCR Closure Record — 2026-07-23
+
+The remaining Phase 6 blockers are resolved:
+
+- `worker.main.ts` now boots an isolated `WorkerModule`; the HTTP `AppModule` no longer starts a BullMQ consumer.
+- The processor atomically claims a queued job, rejects mismatched lineage, rechecks cancellation/replacement state around side effects, uses job-scoped artifact keys, and emits `APPROVAL_REQUESTED` only after durable success.
+- `PdftotextOcrEngineAdapter` validates PDFs with Poppler, returns embedded text when present, renders scanned pages for local Tesseract.js Vietnamese/English OCR, and fails corrupt or unreadable input without synthetic success.
+- `npm run test:worker -w apps/api` exercises real Redis queue delivery, MinIO source/artifact objects, PostgreSQL lifecycle state, duplicate delivery, cancelled payloads, replaced-file supersession, embedded text, scanned Vietnamese OCR, and corrupt-PDF failure.
+- CI has a dedicated worker-integration job that starts the Docker Compose infrastructure, installs Poppler, and runs the same gate.
+
+Phase 6 closure is now supported by reproducible worker evidence rather than a mocked advance endpoint.

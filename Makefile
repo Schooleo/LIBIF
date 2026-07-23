@@ -4,7 +4,7 @@ SHELL := /usr/bin/env bash
 COMPOSE := docker compose
 COMPOSE_DEBUG := docker compose -f docker-compose.yml -f docker-compose.debug.yml --profile debug
 
-.PHONY: help install dev build lint test test-e2e verify \
+.PHONY: help install dev build lint test test-e2e test-worker verify \
 	infra-up infra-down infra-restart infra-logs infra-ps \
 	debug-up debug-down debug-logs pgadmin db-migrate db-seed db-reset prisma-generate api web clean
 
@@ -78,7 +78,10 @@ test: ## Run unit/component tests
 test-e2e: ## Run API e2e tests
 	npm run test:e2e
 
-verify: lint test test-e2e build ## Run full local verification suite
+test-worker: ## Run Redis/MinIO/PostgreSQL/PDF/OCR worker integration tests
+	npm run test:worker
+
+verify: lint test test-e2e test-worker build ## Run full local verification suite
 
 clean: ## Remove generated build/test artifacts, preserving source and Docker volumes
 	python3 -c "from pathlib import Path; import shutil; [shutil.rmtree(p) for p in map(Path, ['apps/api/dist','apps/api/coverage','apps/web/.next','apps/web/coverage','packages/shared/dist','packages/shared/coverage']) if p.exists()]"

@@ -159,11 +159,11 @@ Member D Phase 5 is complete and integrated with the merged Member A/B/C lanes; 
 - [x] Comprehensive Phase 6 plan written to `ai_artifacts/plans/plan-phase-6-processing-approval-correction-notifications-2026-07-22.md` and mirrored under `.omx/plans/`.
 - [x] D6-000 schema/OCR-lineage foundation: migration `20260722062955_phase6_processing_foundation`, exact file/job/review lineage, explicit terminal states, retry numbering/self-reference, durable artifact metadata, current-work constraints, generated contracts, and isolated Phase 5 backfill verification.
 - [x] D6-000 verification: Prisma validate/generate/migrate/status, OpenAPI/client generation, 72 API unit tests, and 7 API e2e suites/28 tests including four migration/backfill constraint scenarios.
-- [ ] C6 is partially implemented: worker bootstrap, BullMQ processor, retry/history, approval commands, and notification persistence/fanout exist, but there is no `test:worker` gate and extraction errors still produce synthetic OCR-success text.
+- [x] C6 worker closure completed: isolated worker bootstrap, atomic duplicate claim, active-file cancellation/supersession guards, real embedded-text/Vietnamese OCR extraction, safe corrupt-PDF failure, retry/history, approval commands, and durable notification fanout.
 - [x] B6 correction/resubmission and document workflow history are merged through the existing document edit/replace/requeue commands.
 - [x] A6 publication visibility and reader notification integration are merged.
 - [x] D6-001 contract registry reconciliation, D6-002 activity reporting, D6-003 staff unread-count integration, and D6-004 generated contract refresh are implemented.
-- [ ] Phase 6 closure remains blocked until Member C provides real Redis/MinIO/PostgreSQL/OCR integration evidence, duplicate-delivery/cancel/supersede coverage, and removes synthetic OCR success.
+- [x] Phase 6 worker/OCR closure gate now proves Redis delivery, MinIO input/output, PostgreSQL state, duplicate delivery, cancellation, supersession, embedded extraction, scanned Vietnamese OCR, and corrupt failure without synthetic success.
 
 ### Phase 6 Member D verification — 2026-07-23
 
@@ -173,7 +173,8 @@ Member D Phase 5 is complete and integrated with the merged Member A/B/C lanes; 
 - [x] Dashboard/staff-shell targeted web tests: 18/18 passed.
 - [x] Generated OpenAPI/client contracts include activity DTOs, notification unread-count/action/read fields, access `CORRECTION_REQUIRED`, and string date-time fields.
 - [x] Full non-worker repository gate: Prisma validate/generate, root lint, 15 API unit suites/82 tests, 15 web files/62 tests, root production builds, 7 API e2e suites/30 tests, and `git diff --check`.
-- [ ] `npm run test:worker -w apps/api` is absent; architect/deslop gates and the Member C worker/OCR handoff remain before Ralph shutdown.
+- [x] `npm run test:worker -w apps/api`: 1 suite / 5 infrastructure-backed scenarios passed.
+- [x] Phase 6 closure re-verification: OpenAPI/client generation, Prisma validation/generation/migration status, lint, 15 API unit suites/82 tests, 15 web files/62 tests, API/web builds, 7 API e2e suites/30 tests, 1 worker suite/5 scenarios, and `git diff --check` passed.
 
 ### Phase 4 Member D verification
 
