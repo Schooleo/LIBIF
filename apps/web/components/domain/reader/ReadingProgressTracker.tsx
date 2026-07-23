@@ -56,7 +56,7 @@ export function ReadingProgressTracker({
           gap: '0.75rem',
         }}
       >
-        <div className="ui-cluster" style={{ alignItems: 'center' }}>
+        <div className="ui-cluster reader-progress-controls" style={{ alignItems: 'center' }}>
           <Button
             type="button"
             variant="secondary"

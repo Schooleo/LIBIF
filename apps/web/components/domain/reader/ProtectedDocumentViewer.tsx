@@ -283,6 +283,7 @@ export function ProtectedDocumentViewer({
   return (
     <div className="ui-stack" style={{ gap: '1.25rem' }}>
       <div
+        className="reader-header-cluster"
         style={{
           display: 'flex',
           justifyContent: 'space-between',
@@ -319,6 +320,10 @@ export function ProtectedDocumentViewer({
         onPageChange={handlePageChange}
       />
 
+      <span className="ui-sr-only" role="status" aria-live="polite">
+        {loadingPage ? `Loading page ${currentPage}` : `Displaying watermarked page ${currentPage} of ${safeTotalPages}`}
+      </span>
+
       <Card>
         <div className="ui-stack" style={{ gap: '1rem' }}>
           {pageError ? (
@@ -337,6 +342,7 @@ export function ProtectedDocumentViewer({
             </div>
           ) : (
             <div
+              className="reader-canvas-container"
               style={{
                 position: 'relative',
                 display: 'flex',
@@ -376,7 +382,10 @@ export function ProtectedDocumentViewer({
               <canvas
                 ref={canvasRef}
                 role="img"
+                tabIndex={0}
+                className="reader-canvas"
                 aria-label={`Page ${currentPage} of ${safeTotalPages}`}
+                onContextMenu={(e) => e.preventDefault()}
                 style={{
                   maxWidth: '100%',
                   height: 'auto',
@@ -399,10 +408,11 @@ export function ProtectedDocumentViewer({
               textAlign: 'center',
             }}
           >
-            🔒 Pages are individually server-watermarked with session &amp; traceable identifiers. Canvas rendering provides casual copy deterrence.
+            Pages are individually server-watermarked with session &amp; traceable identifiers. HTML canvas rendering provides controlled page delivery and copy deterrence.
           </div>
         </div>
       </Card>
     </div>
+
   );
 }

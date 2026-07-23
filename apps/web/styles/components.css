@@ -153,3 +153,12 @@
 .avatar-menu__item:focus-visible { outline: none; box-shadow: var(--focus-ring); }
 .avatar-menu__item--destructive { color: var(--color-error); }
 .avatar-menu__item--destructive:hover { background: var(--color-error-surface); color: var(--color-error); }
+
+/* ── Reader Viewer canvas & accessibility ───────────────────────────────────── */
+.reader-canvas { outline: none; }
+.reader-canvas:focus-visible { box-shadow: var(--focus-ring); }
+.reader-canvas-container { user-select: none; -webkit-user-select: none; }
+@media (max-width: 40rem) {
+  .reader-header-cluster { flex-direction: column; align-items: flex-start !important; }
+  .reader-progress-controls { flex-direction: column; align-items: stretch !important; }
+}
