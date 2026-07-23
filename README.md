@@ -18,9 +18,9 @@ LIBIF is a TypeScript monorepo for an integrated digital-library application. Th
 | Phase 4 — Reader/access/catalog foundations | Complete | Reader state, protected access, catalogue and dashboard foundations. |
 | Phase 5 — Document lifecycle and taxonomy | Complete | Intake, file versioning, metadata, taxonomy, and persisted workflow schema. |
 | Phase 6 — Processing and approval loop | Complete | Real worker/OCR, approval/correction, durable notifications, reporting, and worker integration gate. |
-| Phase 7 — Reader POC and admin operations | Planned | Functional catalogue/detail, protected canvas page rendering, correct bookmark/progress state, plus user/taxonomy/reporting/settings operations. |
+| Phase 7 — Reader POC and admin operations | Planned | Functional catalogue/detail, server-watermarked canvas pages, no Reader PDF route, access auditing/scrape controls, correct reader state, and admin operations. |
 
-The canonical next execution plan is `ai_artifacts/plans/plan-phase-7-admin-operations-users-reporting-settings-2026-07-23.md`. Reader POC gates are the first priority: catalogue discovery/detail must work, the viewer must render authorized raster pages on canvas instead of embedding the raw PDF, and persisted bookmark/progress state must hydrate correctly.
+The canonical next execution plan is `ai_artifacts/plans/plan-phase-7-admin-operations-users-reporting-settings-2026-07-23.md`. Reader POC gates are the first priority: catalogue discovery/detail must work, the viewer must draw individually server-watermarked raster pages instead of receiving the raw PDF, persisted bookmark/progress state must hydrate correctly, and page access must be auditable with scrape/rate/concurrency enforcement. The security decision is grounded in `ai_artifacts/research/document-drm-and-screenshot-prevention-2026-07-23.md`.
 
 ## Local setup
 

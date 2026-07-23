@@ -92,14 +92,16 @@ This document records current runtime workflow truth from the merged Phase 6 cod
 - **Access decision states:** access_granted, access_denied.
 - **Reader-visible document states:** DRAFT, PENDING_PROCESSING, PROCESSING, PENDING_APPROVAL, CORRECTION_REQUIRED, PUBLISHED, REJECTED.
 - **Current commands:** get_access_decision, create_view_token, create_download_token, stream_document, download_document, list_library, list_history, list_bookmarks, add_bookmark, remove_bookmark, update_progress.
-- **Phase 7 target commands:** get_catalogue_detail, get_reader_document_state, get_page_manifest, render_page_image, render_canvas_page, add_bookmark, remove_bookmark, update_progress.
-- **Events:** AccessGranted, AccessDenied, PageRendered, BookmarkAdded, BookmarkRemoved, ProgressUpdated.
+- **Phase 7 target commands:** get_catalogue_detail, get_reader_document_state, get_page_manifest, render_page_base, compose_page_watermark, serve_page_image, render_canvas_page, add_bookmark, remove_bookmark, update_progress.
+- **Events:** AccessGranted, AccessDenied, ViewerOpened, PageServed, PageDenied, RateLimited, ScrapeSuspected, PageRendered, BookmarkAdded, BookmarkRemoved, ProgressUpdated.
 - **Transitions:**
   - Readers are allowed only for `PUBLISHED` documents.
   - Admins and librarians are allowed to access unpublished documents through the same access boundary.
   - Bookmark and reading-progress records apply only to published-library reads.
   - A successful page render moves the integrated viewer to that page and only then persists progress using the manifest page count.
   - Source PDF download is not a Reader transition; retained staff download requires a separate role policy.
+  - Every Reader page response is server-watermarked and maps to a durable access event before delivery.
+  - Redis rate/concurrency rules may move a request to `RateLimited`/`ScrapeSuspected`; committed risk facts can notify staff.
 - **Ownership:** `AccessService` owns reader/staff access decisions plus protected file delivery; `ReaderService` owns library, bookmarks, and reading progress.
 - **Notes:** current token generation and raw-PDF stream/download are Phase 7 replacement targets. The target browser consumes authorized page images and draws them on canvas without receiving source-PDF bytes, storage credentials, object keys, or selectable OCR text. Canvas deters casual copying but does not prevent screenshots or determined pixel capture.
 

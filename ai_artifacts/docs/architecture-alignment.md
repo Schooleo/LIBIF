@@ -43,6 +43,7 @@ Last updated: 2026-07-23
 - `NotificationsModule` owns persisted notification reads, unread counts, and read-state updates.
 - `AccessModule` owns reader/staff access decisions plus current protected raw-PDF delivery. Phase 7 keeps ownership here while replacing Reader delivery with authorized raster-page manifest/page endpoints.
 - `ReaderModule` owns reader library, bookmarks, and reading-progress persistence; Phase 7 adds a one-document personalized-state read rather than defaulting UI state.
+- Phase 7 adds a bounded `RenderingModule`, owned by Member C, that exports Poppler raster/watermark behavior to `AccessModule` without owning authorization or HTTP routes.
 - `ReportingModule` owns read-only dashboard aggregation.
 - `TaxonomyModule` owns staff selector contracts and starter admin category/tag management.
 - `BooksModule` remains a compatibility-only intake/list boundary and should not regain primary ownership.
@@ -102,7 +103,7 @@ Last updated: 2026-07-23
 5. Phase 5 document lifecycle, taxonomy selectors, upload boundary, and persisted workflow tables remain the base consumed by the completed Phase 6 workflow and planned Phase 7 work.
 6. Phase 6 adds an isolated worker bootstrap, real embedded-text/OCR extraction, persisted notification reads, approval commands, processing lineage/artifacts, and runtime correction-loop reuse.
 7. The Phase 6 worker/OCR closure gate is reproducible through `npm run test:worker -w apps/api` and its CI job.
-8. Phase 7 follows `ai_artifacts/plans/plan-phase-7-admin-operations-users-reporting-settings-2026-07-23.md`: Reader POC gates come first; `CatalogModule` adds published-only detail, `AccessModule` serves authorized raster pages, `ReaderModule` hydrates bookmark/progress state, and the web viewer draws pages on canvas without a Reader raw-PDF/download path.
+8. Phase 7 follows `ai_artifacts/plans/plan-phase-7-admin-operations-users-reporting-settings-2026-07-23.md` and the validated DRM research: Reader POC gates come first; `CatalogModule` adds published-only detail, `RenderingModule` produces private raster bases and server-burned traceable watermarks, `AccessModule` authorizes/audits/rate-limits delivery, `ReaderModule` hydrates bookmark/progress state, and the web viewer draws pages on canvas without a Reader raw-PDF/download path.
 9. Existing Phase 7 admin decisions remain: one schema foundation precedes user administration/settings, risky taxonomy actions remain in `TaxonomyModule`, reporting remains read-only, and exports are bounded synchronous CSV rather than a second worker subsystem.
 
 ## Anti-fragmentation decisions

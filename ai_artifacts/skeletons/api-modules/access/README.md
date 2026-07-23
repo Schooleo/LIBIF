@@ -24,5 +24,7 @@ Notes:
 - Centralize reader/admin/librarian access decisions here.
 - Do not expose raw storage credentials to the web app.
 - Render bounded page images server-side and authorize every manifest/page request.
+- Consume the Member C `ProtectedPageRenderer` port; do not import Poppler/OCR implementation details.
+- Persist bounded Reader access events, enforce Redis-backed rate/concurrency/scrape rules, and fail closed when required authorization/watermark/audit controls are unavailable.
 - Do not deliver source-PDF bytes, object keys, or OCR plaintext to Reader viewers.
 - Canvas rendering is copy deterrence, not absolute DRM or screenshot prevention.

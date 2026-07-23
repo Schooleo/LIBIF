@@ -313,38 +313,42 @@ Goal: close the demo-critical reader gaps while preserving the planned operation
 
 Canonical execution plan: `ai_artifacts/plans/plan-phase-7-admin-operations-users-reporting-settings-2026-07-23.md`.
 
-Planning status: ready for execution. Reader POC gates are P0. Member D owns the single Phase 7 schema foundation and final integration; Members A/B/C retain their established reader, document/catalog, and processing/approval/notification lanes.
+Planning status: ready for execution. Reader POC gates are P0. Weighted work is split A=11, B=11, C=10, D=12 planning points. Member D owns the single migration and final integration; Phase 7 explicitly transfers risky taxonomy implementation to Member B and secure rendering/watermark implementation to Member C.
 
 Member A tasks:
 
-- Replace the raw-PDF iframe/download UI with authorized raster-page delivery drawn onto HTML canvas.
-- Integrate the canvas page, real page count, navigation, and saved reading progress as one state machine.
+- Own access decisions, Reader raw-PDF/download denial, page manifest/controller contracts, and the canvas viewer.
+- Integrate Member C's server-rendered watermarked pages with real page count, navigation, and saved progress as one state machine.
 - Hydrate persisted bookmark state on catalogue detail and viewer; keep it consistent across all reader routes.
+- Enforce durable access events plus Redis-backed rate/concurrency/scrape rules and emit committed risk facts.
 - Add reader-facing loading/error/accessibility/responsive checks and truthful copy-protection language.
 
 Member B tasks:
 
 - Implement published-only catalogue detail and wire list search/category/tag/sort/pagination state to the route.
 - Make every catalogue record open the canonical `/catalogue/:id` detail route.
-- Finish taxonomy integration in document search and admin filters.
+- Own Phase 7 risky taxonomy impact/delete/reassign/merge backend and confirmation UI as an explicit workload transfer from Member D.
+- Reconcile taxonomy changes in catalogue/document filters and metadata surfaces.
 - Add bulk document actions only if the single-document lifecycle is stable.
 
 Member C tasks:
 
-- Support private file-version-scoped raster derivatives only if the agreed canvas design caches them.
+- Own the bounded Poppler `RenderingModule`, private file-version-scoped raster bases, server-burned user/session/page watermarks, and replacement invalidation.
+- Convert committed rate/scrape facts into deduplicated staff alerts without receiving document content.
 - Finish notification center UI and read/unread behavior.
 - Add scheduled or event-driven notification hooks where needed.
 
 Member D tasks:
 
 - Implement user management list/detail/role changes/deactivation with confirmation flows.
-- Implement category/tag management, merge/reassign safeguards, and risky-action confirmations.
-- Implement dashboards, report endpoints, export stubs/CSV, and settings screens.
-- Coordinate Reader POC contract freeze, generated contracts, seeded scenarios, and phase closure gates.
+- Add the single schema foundation for user administration, settings, and append-only `ReaderAccessEvent` facts.
+- Implement user management plus operational/security dashboards, bounded CSV, and settings screens.
+- Coordinate frozen A/B/C handoffs, generated contracts, seeded watermark/audit/scrape scenarios, and phase closure gates.
 
 Expected end-of-phase result:
 
-- Readers can search/browse the catalogue, open a real detail page, see correct saved state, and read through an integrated canvas without receiving a native PDF viewer or Reader download action.
+- Readers can search/browse the catalogue, open a real detail page, see correct saved state, and read individually server-watermarked pages through canvas without receiving a native PDF viewer or Reader download action.
+- Page delivery is durably auditable; bulk scraping is rate/concurrency controlled and produces deduplicated staff alerts.
 - Admins can manage users, categories, tags, reports, and key settings.
 - Librarians/admins can operate the document lifecycle without database access.
 - Copy protection is described honestly as controlled page rendering/casual-copy deterrence, not absolute DRM or screenshot prevention.
@@ -354,7 +358,8 @@ Validation:
 - User-management authorization tests.
 - Taxonomy CRUD and reassignment tests.
 - Report endpoint tests using seeded/dev data.
-- Catalogue list/detail tests, authorized manifest/page-image tests, canvas interaction tests, and bookmark/progress refresh tests.
+- Catalogue list/detail tests, authorized manifest/page-image tests, watermark uniqueness/traceability tests, canvas interaction tests, and bookmark/progress refresh tests.
+- Normal-reading versus scrape/rate/concurrency scenarios, durable audit assertions, staff alert deduplication, and fail-closed dependency behavior.
 - Manual browser inspection proving Reader viewing responses contain page images/manifest data rather than source-PDF bytes, object keys, or selectable OCR text.
 - Web e2e smoke over reader, librarian, and admin accounts.
 

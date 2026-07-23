@@ -118,12 +118,12 @@ Latest Phase 5 planning/schema preflight:
 - [x] Approval decision/correction loop and persisted notifications, including approve/reject/request-correction, resubmission reuse, publication fanout, and recipient ownership.
 - [ ] Taxonomy risky actions (delete/reassign/merge), user administration, role changes, and deactivation. Starter category/tag list/create/edit is complete.
 - [ ] Dashboards, reports, exports, and settings. Phase 4 Member D completed the base dashboard summary only; report exports/settings remain deferred.
-- [ ] Reader POC completion: functional catalogue discovery/detail, server-authorized raster pages drawn on canvas, integrated real-page progress, no Reader raw-PDF/download surface, and correct bookmark hydration.
+- [ ] Reader POC completion: functional catalogue discovery/detail, server-rendered user/session-watermarked pages drawn on canvas, integrated real-page progress, no Reader raw-PDF/download surface, correct bookmark hydration, durable access auditing, and scrape/rate/concurrency enforcement.
 - [ ] Cross-screen integration hardening and responsive/visual QA.
 
 ## Next execution target
 
-Phase 6 is verified and committed. The canonical next plan is `ai_artifacts/plans/plan-phase-7-admin-operations-users-reporting-settings-2026-07-23.md`, mirrored under `.omx/plans/` with Member D PRD/test-spec artifacts. Phase 7 treats Reader POC completion as P0: catalogue discovery/detail, server-rendered page images on canvas, integrated real-page progress, removal of Reader raw-PDF/download paths, and persisted bookmark hydration. Existing user administration, taxonomy safeguards, date-filtered reporting, bounded CSV, supported settings, and notification/document polish remain in scope.
+Phase 6 is verified and committed. The canonical next plan is `ai_artifacts/plans/plan-phase-7-admin-operations-users-reporting-settings-2026-07-23.md`, mirrored under `.omx/plans/` with Member D PRD/test-spec artifacts. Phase 7 treats Reader POC completion as P0: catalogue discovery/detail, server-rendered watermarked pages on canvas, integrated real-page progress, removal of Reader raw-PDF/download paths, persisted bookmark hydration, durable access events, and scrape/rate/concurrency enforcement. Existing user administration, taxonomy safeguards, date-filtered reporting, bounded CSV, supported settings, and notification/document polish remain in scope.
 
 ## 80-90% Completion Team Backlog
 
@@ -201,6 +201,8 @@ Member D Phase 5 is complete and integrated with the merged Member A/B/C lanes; 
 - [x] Member D Ralph prerequisites written to `.omx/plans/prd-phase-7-member-d.md` and `.omx/plans/test-spec-phase-7-member-d.md`.
 - [x] Repository audit confirmed the current catalogue lacks functional detail navigation/state, the viewer embeds and downloads the raw PDF, its page tracker is disconnected and hard-coded, and detail/viewer bookmark controls default to unsaved.
 - [x] Phase 7 locks a server-authorized raster-page/HTML-canvas viewer boundary and explicitly rejects native PDF embedding, Reader source-file download, selectable OCR text, and false absolute-DRM claims.
+- [x] Validated research recorded at `ai_artifacts/research/document-drm-and-screenshot-prevention-2026-07-23.md`; Phase 7 now requires server-burned traceable watermarks, append-only Reader access events, Redis-backed scrape/rate/concurrency controls, and deduplicated staff alerts.
+- [x] Phase 7 workload is explicitly balanced by planning points: A=11 access/viewer, B=11 catalogue/taxonomy, C=10 rendering/alerts, D=12 schema/users/reporting/settings/integration.
 - [x] Phase 7 locks one D7-000 schema migration, transactional user/taxonomy safeguards, bounded synchronous CSV instead of a second worker subsystem, and explicit persisted-versus-deployment-managed settings boundaries.
 - [ ] Phase 7 implementation has not started; completion boxes must be updated only from fresh execution evidence.
 

@@ -156,7 +156,9 @@ Source of truth: `apps/api/src/common/http-error.filter.ts`.
 - Stream and file delivery always resolve the active file version for the document at request time.
 - The current Reader viewer still receives the source PDF through the application stream and exposes the download-token route. This is a documented Phase 7 P0 gap, not the target content-protection design.
 - Planned Phase 7 contracts are `GET /api/catalog/books/:documentId`, `GET /api/reader/documents/:documentId/state`, `GET /api/access/documents/:documentId/manifest`, and `GET /api/access/documents/:documentId/pages/:pageNumber`.
-- The planned Reader page route returns an authorized bounded raster image with private/no-store caching and never returns object keys, source-PDF bytes/URLs, or extracted OCR text. The web viewer draws it on canvas without a selectable text layer.
+- The planned Reader page route returns an authorized, bounded, individually server-watermarked raster image with private/no-store caching and never returns object keys, source-PDF bytes/URLs, or extracted OCR text. The web viewer draws it on canvas without a selectable text layer.
+- Every successful/denied page attempt produces a bounded `ReaderAccessEvent`; Redis-backed rate/concurrency/scrape enforcement returns stable `429` + `Retry-After` where applicable and emits committed risk facts for deduplicated staff alerts.
+- Planned Admin-only security projections are `GET /api/admin/reports/reader-access?from&to&risk` and the bounded `.csv` equivalent.
 - Reader access to source-file download is removed or denied by explicit role policy. Any retained staff download is a separate staff-authorized contract.
 
 ## Deferred or absent endpoint families
