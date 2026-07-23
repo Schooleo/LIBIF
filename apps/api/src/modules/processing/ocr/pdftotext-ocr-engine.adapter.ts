@@ -1,4 +1,4 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { execFile } from 'node:child_process';
 import * as crypto from 'node:crypto';
@@ -9,18 +9,26 @@ import { promisify } from 'node:util';
 import { createWorker, OEM, PSM } from 'tesseract.js';
 import { StorageService } from '../../storage/storage.service';
 import { OcrEngine, OcrExtractionError, OcrResult } from './ocr-engine.port';
+import {
+  cleanupAbandonedOcrWorkspaces,
+  createPrivateOcrWorkspace,
+  makeFilesPrivate,
+  writePrivateFile
+} from './ocr-temp-workspace';
 
 const execFileAsync = promisify(execFile);
 const SUPPORTED_OCR_LANGUAGES = ['vie', 'eng'] as const;
 type SupportedOcrLanguage = (typeof SUPPORTED_OCR_LANGUAGES)[number];
 
 @Injectable()
-export class PdftotextOcrEngineAdapter implements OcrEngine {
+export class PdftotextOcrEngineAdapter implements OcrEngine, OnModuleInit {
   private readonly logger = new Logger(PdftotextOcrEngineAdapter.name);
   private readonly commandTimeoutMs: number;
   private readonly maxPages: number;
   private readonly renderDpi: number;
   private readonly languages: SupportedOcrLanguage[];
+  private readonly tempRoot: string;
+  private readonly legacyTempStaleAgeMs: number;
 
   constructor(
     @Inject(StorageService) private readonly storage: StorageService,
@@ -30,6 +38,21 @@ export class PdftotextOcrEngineAdapter implements OcrEngine {
     this.maxPages = positiveInteger(config.get<string>('OCR_MAX_PAGES'), 50);
     this.renderDpi = positiveInteger(config.get<string>('OCR_RENDER_DPI'), 200);
     this.languages = parseLanguages(config.get<string>('OCR_LANGUAGES') ?? 'vie+eng');
+    this.tempRoot = config.get<string>('OCR_TEMP_ROOT')?.trim() || os.tmpdir();
+    this.legacyTempStaleAgeMs = positiveInteger(
+      config.get<string>('OCR_TEMP_STALE_AGE_MS'),
+      60 * 60 * 1000
+    );
+  }
+
+  async onModuleInit(): Promise<void> {
+    const removed = await cleanupAbandonedOcrWorkspaces({
+      root: this.tempRoot,
+      legacyStaleAgeMs: this.legacyTempStaleAgeMs
+    });
+    if (removed > 0) {
+      this.logger.warn(`Removed ${removed} abandoned OCR temporary workspace(s).`);
+    }
   }
 
   async extractText(bucket: string, objectKey: string, mimeType = 'application/pdf'): Promise<OcrResult> {
@@ -37,13 +60,13 @@ export class PdftotextOcrEngineAdapter implements OcrEngine {
       throw new OcrExtractionError('Text extraction accepts PDF files only.');
     }
 
-    const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), 'libif-ocr-'));
+    const tmpDir = await createPrivateOcrWorkspace(this.tempRoot);
     const pdfPath = path.join(tmpDir, 'input.pdf');
     const txtPath = path.join(tmpDir, 'embedded.txt');
 
     try {
       const fileBuffer = await this.loadSourcePdf(bucket, objectKey);
-      await fs.writeFile(pdfPath, fileBuffer);
+      await writePrivateFile(pdfPath, fileBuffer);
 
       const pageCount = await this.readPageCount(pdfPath);
       if (pageCount > this.maxPages) {
@@ -52,12 +75,12 @@ export class PdftotextOcrEngineAdapter implements OcrEngine {
 
       const embeddedText = await this.extractEmbeddedText(pdfPath, txtPath);
       if (embeddedText) {
-        this.logger.log(`Extracted an embedded text layer from ${objectKey}`);
+        this.logger.log('Extracted an embedded text layer from a private source document.');
         return resultFor(embeddedText, 'EMBEDDED_TEXT', pageCount, 'vi');
       }
 
       const ocrText = await this.extractScannedText(pdfPath, tmpDir, pageCount);
-      this.logger.log(`Completed OCR for ${objectKey}`);
+      this.logger.log('Completed OCR for a private source document.');
       return resultFor(ocrText, 'OCR', pageCount, 'vi');
     } finally {
       await fs.rm(tmpDir, { recursive: true, force: true }).catch((error: unknown) => {
@@ -84,7 +107,7 @@ export class PdftotextOcrEngineAdapter implements OcrEngine {
       }
       return pageCount;
     } catch (error) {
-      this.logger.warn(`PDF validation failed: ${errorMessage(error)}`);
+      this.logger.warn('Private PDF validation failed.');
       throw new OcrExtractionError('PDF is invalid or unreadable.', { cause: error });
     }
   }
@@ -92,9 +115,10 @@ export class PdftotextOcrEngineAdapter implements OcrEngine {
   private async extractEmbeddedText(pdfPath: string, txtPath: string): Promise<string> {
     try {
       await execFileAsync('pdftotext', [pdfPath, txtPath], this.commandOptions());
+      await makeFilesPrivate([txtPath]);
       return (await fs.readFile(txtPath, 'utf8')).trim();
     } catch (error) {
-      this.logger.warn(`Embedded text extraction failed: ${errorMessage(error)}`);
+      this.logger.warn('Private PDF embedded text extraction failed.');
       throw new OcrExtractionError('PDF text extraction failed.', { cause: error });
     }
   }
@@ -108,7 +132,7 @@ export class PdftotextOcrEngineAdapter implements OcrEngine {
         this.commandOptions()
       );
     } catch (error) {
-      this.logger.warn(`PDF rendering for OCR failed: ${errorMessage(error)}`);
+      this.logger.warn('Private PDF rendering for OCR failed.');
       throw new OcrExtractionError('PDF pages could not be rendered for OCR.', { cause: error });
     }
 
@@ -120,6 +144,7 @@ export class PdftotextOcrEngineAdapter implements OcrEngine {
     if (pageImages.length !== pageCount) {
       throw new OcrExtractionError('PDF rendering produced an incomplete page set.');
     }
+    await makeFilesPrivate(pageImages);
 
     const languageDataPath = await this.prepareLanguageData(tmpDir);
     const worker = await createWorker(this.languages, OEM.LSTM_ONLY, {
@@ -151,7 +176,7 @@ export class PdftotextOcrEngineAdapter implements OcrEngine {
       return text;
     } catch (error) {
       if (error instanceof OcrExtractionError) throw error;
-      this.logger.warn(`OCR recognition failed: ${errorMessage(error)}`);
+      this.logger.warn('Private document OCR recognition failed.');
       throw new OcrExtractionError('OCR recognition failed.', { cause: error });
     } finally {
       await worker.terminate();

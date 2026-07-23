@@ -21,7 +21,6 @@ import { StorageModule } from './modules/storage/storage.module';
   providers: [
     ProcessingQueue,
     ProcessingProcessor,
-    PdftotextOcrEngineAdapter,
     {
       provide: OCR_ENGINE,
       useClass: PdftotextOcrEngineAdapter

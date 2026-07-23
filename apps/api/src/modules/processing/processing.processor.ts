@@ -6,6 +6,7 @@ import {
   BookFileStatus,
   BookStatus,
   NotificationType,
+  Prisma,
   ProcessingArtifactKind,
   ProcessingJobStatus,
   TextExtractionMethod,
@@ -85,8 +86,7 @@ export class ProcessingProcessor implements OnModuleInit, OnModuleDestroy {
 
     if (
       dbJob.bookId !== bookId ||
-      dbJob.bookFileId !== fileId ||
-      dbJob.bookFile.objectKey !== job.data.objectKey
+      dbJob.bookFileId !== fileId
     ) {
       this.logger.warn(`ProcessingJob ${processingJobId} payload does not match its persisted file lineage. Skipping.`);
       return;
@@ -138,7 +138,7 @@ export class ProcessingProcessor implements OnModuleInit, OnModuleDestroy {
           checksumSha256: ocrResult.checksumSha256,
           language: ocrResult.language,
           pageCount: ocrResult.pageCount,
-          metadata: { textPreview: ocrResult.text.slice(0, 500) }
+          metadata: Prisma.DbNull
         },
         update: {
           extractionMethod: ocrResult.method as TextExtractionMethod,
@@ -146,7 +146,7 @@ export class ProcessingProcessor implements OnModuleInit, OnModuleDestroy {
           checksumSha256: ocrResult.checksumSha256,
           language: ocrResult.language,
           pageCount: ocrResult.pageCount,
-          metadata: { textPreview: ocrResult.text.slice(0, 500) }
+          metadata: Prisma.DbNull
         }
       });
 

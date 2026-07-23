@@ -108,7 +108,8 @@ describe('Processing worker infrastructure integration', () => {
     expect(artifact).toMatchObject({
       bookFileId: fixture.fileId,
       extractionMethod: TextExtractionMethod.EMBEDDED_TEXT,
-      pageCount: 1
+      pageCount: 1,
+      metadata: null
     });
     expect(approvalCount).toBe(1);
     expect(startedCount).toBe(1);
@@ -132,7 +133,8 @@ describe('Processing worker infrastructure integration', () => {
       bookFileId: fixture.fileId,
       extractionMethod: TextExtractionMethod.OCR,
       pageCount: 1,
-      language: 'vi'
+      language: 'vi',
+      metadata: null
     });
     expect(persistedText).toContain('LIBIF SCANNED DOCUMENT');
     expect(persistedText).not.toContain('[OCR Processed]');
@@ -250,7 +252,6 @@ describe('Processing worker infrastructure integration', () => {
       event: {
         bookId: book.id,
         fileId: file.id,
-        objectKey,
         processingJobId: job.id
       }
     };

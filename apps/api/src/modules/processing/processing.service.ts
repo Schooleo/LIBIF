@@ -166,8 +166,7 @@ export class ProcessingService {
 
   async retryJob(id: string): Promise<ProcessingJobResponseDto> {
     const job = await this.prisma.processingJob.findUnique({
-      where: { id },
-      include: { bookFile: true }
+      where: { id }
     });
     if (!job) {
       throw new NotFoundException(`Processing job with ID ${id} not found`);
@@ -221,7 +220,6 @@ export class ProcessingService {
     await this.processingQueue.enqueueBookUploaded({
       bookId: job.bookId,
       fileId: job.bookFileId,
-      objectKey: job.bookFile?.objectKey ?? `documents/${job.bookId}/${job.bookFileId}.pdf`,
       processingJobId: newJob.id
     });
 

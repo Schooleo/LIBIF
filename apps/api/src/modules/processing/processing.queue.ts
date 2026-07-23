@@ -18,14 +18,21 @@ export class ProcessingQueue implements OnModuleDestroy {
   }
 
   async enqueueBookUploaded(event: BookUploadedEvent): Promise<void> {
-    this.logger.log(`BookUploadedEvent ${JSON.stringify(event)}`);
+    const payload: BookUploadedEvent = {
+      bookId: event.bookId,
+      fileId: event.fileId,
+      processingJobId: event.processingJobId
+    };
+    this.logger.log(
+      `Queued processing job ${payload.processingJobId} for book ${payload.bookId} and file ${payload.fileId}.`
+    );
     if (!this.queue) {
       this.logger.error('ProcessingQueue: Redis is not available. Cannot enqueue job.');
       throw new ServiceUnavailableException(
         'Processing queue is unavailable. Please ensure the Redis service is running.'
       );
     }
-    await this.queue.add('book-uploaded', event, { attempts: 3, removeOnComplete: true });
+    await this.queue.add('book-uploaded', payload, { attempts: 3, removeOnComplete: true });
   }
 
   async onModuleDestroy(): Promise<void> {

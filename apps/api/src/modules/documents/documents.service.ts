@@ -230,7 +230,6 @@ export class DocumentsService {
     await this.queue.enqueueBookUploaded({
       bookId: id,
       fileId: file.id,
-      objectKey: file.objectKey,
       processingJobId: job.id
     });
 
@@ -295,7 +294,6 @@ export class DocumentsService {
       await this.queue.enqueueBookUploaded({
         bookId: id,
         fileId: newFile.id,
-        objectKey: storedPdf.objectKey,
         processingJobId: job.id
       });
 
