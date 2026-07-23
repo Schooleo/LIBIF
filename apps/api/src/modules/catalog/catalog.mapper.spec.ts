@@ -1,10 +1,15 @@
-import { mapAdminBook, mapPagedPublicBooks, mapPublicBook } from './catalog.mapper';
+import { mapAdminBook, mapPagedPublicBooks, mapPublicBook, mapPublicBookDetail } from './catalog.mapper';
 
 describe('catalog mapper', () => {
   const book = {
     id: 'book-1',
     isbn: '9780132350884',
     title: 'Clean Code',
+    subtitle: 'A Handbook of Agile Software Craftsmanship',
+    description: 'Even bad code can function.',
+    publisher: 'Prentice Hall',
+    publishedYear: 2008,
+    language: 'en',
     status: 'PUBLISHED',
     category: { id: 'cat-1', name: 'Programming', slug: 'programming', parentId: null },
     tags: [{ tag: { id: 'tag-1', name: 'Software', slug: 'software' } }],
@@ -29,6 +34,20 @@ describe('catalog mapper', () => {
     expect(mapped).not.toHaveProperty('file');
   });
 
+  it('maps public book details with extended metadata', () => {
+    const mapped = mapPublicBookDetail(book);
+
+    expect(mapped).toMatchObject({
+      id: 'book-1',
+      title: 'Clean Code',
+      subtitle: 'A Handbook of Agile Software Craftsmanship',
+      description: 'Even bad code can function.',
+      publisher: 'Prentice Hall',
+      publishedYear: 2008,
+      language: 'en'
+    });
+  });
+
   it('maps admin books with file metadata', () => {
     const mapped = mapAdminBook(book);
 
@@ -49,3 +68,4 @@ describe('catalog mapper', () => {
     });
   });
 });
+

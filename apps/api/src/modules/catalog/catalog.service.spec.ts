@@ -2,18 +2,23 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { CatalogService } from './catalog.service';
 import { PrismaService } from '../database/prisma.service';
 import { BookStatus } from '../../generated/prisma/client';
+import { NotFoundException } from '@nestjs/common';
 
 describe('CatalogService', () => {
   let service: CatalogService;
   let prisma: {
     category: { findMany: jest.Mock };
-    book: { count: jest.Mock; findMany: jest.Mock };
+    book: { count: jest.Mock; findMany: jest.Mock; findFirst: jest.Mock };
   };
 
   beforeEach(async () => {
     prisma = {
       category: { findMany: jest.fn().mockResolvedValue([]) },
-      book: { count: jest.fn().mockResolvedValue(0), findMany: jest.fn().mockResolvedValue([]) }
+      book: {
+        count: jest.fn().mockResolvedValue(0),
+        findMany: jest.fn().mockResolvedValue([]),
+        findFirst: jest.fn().mockResolvedValue(null)
+      }
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -34,6 +39,48 @@ describe('CatalogService', () => {
     const res = await service.listCategories();
     expect(res).toHaveLength(1);
     expect(prisma.category.findMany).toHaveBeenCalledWith({ orderBy: { name: 'asc' } });
+  });
+
+  it('gets public book detail for a published book', async () => {
+    const dummyBook = {
+      id: 'b-1',
+      title: 'Design Patterns',
+      isbn: '9780201633610',
+      subtitle: 'Elements of Reusable Object-Oriented Software',
+      publisher: 'Addison-Wesley',
+      publishedYear: 1994,
+      status: BookStatus.PUBLISHED,
+      category: { id: 'c-1', name: 'Software', slug: 'software', parentId: null },
+      tags: [],
+      authors: [],
+      createdAt: new Date('2026-07-21T00:00:00Z')
+    };
+    prisma.book.findFirst.mockResolvedValue(dummyBook);
+
+    const result = await service.getPublicBookDetail('b-1');
+
+    expect(result).toMatchObject({
+      id: 'b-1',
+      title: 'Design Patterns',
+      subtitle: 'Elements of Reusable Object-Oriented Software',
+      publisher: 'Addison-Wesley',
+      publishedYear: 1994
+    });
+
+    expect(prisma.book.findFirst).toHaveBeenCalledWith({
+      where: { id: 'b-1', status: BookStatus.PUBLISHED },
+      include: {
+        category: true,
+        tags: { include: { tag: true } },
+        authors: { include: { author: true } }
+      }
+    });
+  });
+
+  it('throws NotFoundException when public book detail is not found or not published', async () => {
+    prisma.book.findFirst.mockResolvedValue(null);
+
+    await expect(service.getPublicBookDetail('non-existent')).rejects.toThrow(NotFoundException);
   });
 
   it('lists public books with default pagination and filter', async () => {
@@ -85,3 +132,4 @@ describe('CatalogService', () => {
     );
   });
 });
+

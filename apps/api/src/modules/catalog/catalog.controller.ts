@@ -1,7 +1,7 @@
-import { Controller, Get, Inject, Query } from '@nestjs/common';
-import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Controller, Get, Inject, Param, Query } from '@nestjs/common';
+import { ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CatalogService } from './catalog.service';
-import { CategoryResponseDto, PagedPublicBookListResponseDto } from './dto/catalog-response.dto';
+import { CategoryResponseDto, PagedPublicBookListResponseDto, PublicBookDetailResponseDto } from './dto/catalog-response.dto';
 import { CatalogQueryDto } from './dto/catalog-query.dto';
 
 @ApiTags('Catalog')
@@ -22,4 +22,13 @@ export class CatalogController {
   listPublicBooks(@Query() query: CatalogQueryDto) {
     return this.catalog.listPublicBooks(query);
   }
+
+  @Get('catalog/books/:documentId')
+  @ApiOperation({ summary: 'Get published public catalogue book detail.' })
+  @ApiOkResponse({ type: PublicBookDetailResponseDto })
+  @ApiNotFoundResponse({ description: 'Book not found or not published.' })
+  getPublicBookDetail(@Param('documentId') documentId: string) {
+    return this.catalog.getPublicBookDetail(documentId);
+  }
 }
+

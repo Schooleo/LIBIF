@@ -4,6 +4,7 @@ import type {
   BookFileSummaryDto,
   CategoryDto,
   PagedDto,
+  PublicBookDetailDto,
   PublicBookListItemDto,
   TagDto
 } from '@libif/shared';
@@ -12,6 +13,11 @@ type BookRecord = {
   id: string;
   isbn: string | null;
   title: string;
+  subtitle?: string | null;
+  description?: string | null;
+  publisher?: string | null;
+  publishedYear?: number | null;
+  language?: string | null;
   status: string;
   category: { id: string; name: string; slug: string; parentId: string | null } | null;
   tags: Array<{ tag: { id: string; name: string; slug: string } }>;
@@ -68,6 +74,17 @@ export function mapPublicBook(book: BookRecord): PublicBookListItemDto {
   return mapBaseBook(book);
 }
 
+export function mapPublicBookDetail(book: BookRecord): PublicBookDetailDto {
+  return {
+    ...mapBaseBook(book),
+    subtitle: book.subtitle ?? null,
+    description: book.description ?? null,
+    publisher: book.publisher ?? null,
+    publishedYear: book.publishedYear ?? null,
+    language: book.language ?? null
+  };
+}
+
 export function mapAdminBook(book: BookRecord): AdminBookListItemDto {
   return {
     ...mapBaseBook(book),
@@ -83,3 +100,4 @@ export function mapPagedPublicBooks(items: BookRecord[], page: number, pageSize:
     pageSize
   };
 }
+
