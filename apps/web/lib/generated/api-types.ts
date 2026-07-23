@@ -45,6 +45,7 @@ export interface components {
     "bookId": string;
     "bookFileId": string;
     "bookTitle"?: string | null;
+    "bookStatus"?: string | null;
     "type": string;
     "status": "QUEUED" | "RUNNING" | "SUCCEEDED" | "FAILED" | "CANCELLED" | "SUPERSEDED";
     "stage"?: string | null;
@@ -57,6 +58,10 @@ export interface components {
     "createdAt": string;
     "updatedAt": string;
   };
+    "ProcessingJobHistoryDto": {
+    "current": components['schemas']["ProcessingJobResponseDto"];
+    "history": components['schemas']["ProcessingJobResponseDto"][];
+  };
     "NotificationResponseDto": {
     "id": string;
     "recipientId": string;
@@ -64,8 +69,13 @@ export interface components {
     "title": string;
     "body": string;
     "payload"?: Record<string, unknown> | null;
+    "actionHref"?: string | null;
     "isRead": boolean;
+    "readAt"?: string | null;
     "createdAt": string;
+  };
+    "UnreadNotificationCountDto": {
+    "count": number;
   };
     "ApprovalReviewResponseDto": {
     "id": string;
@@ -78,10 +88,20 @@ export interface components {
     "status": "PENDING" | "APPROVED" | "REJECTED" | "CORRECTION_REQUESTED" | "SUPERSEDED";
     "reason"?: string | null;
     "requestedChanges"?: string | null;
-    "decidedAt"?: Record<string, unknown> | null;
-    "supersededAt"?: Record<string, unknown> | null;
+    "decidedAt"?: string | null;
+    "supersededAt"?: string | null;
     "createdAt": string;
     "updatedAt": string;
+  };
+    "ApproveReviewDto": {
+    "comment"?: string;
+  };
+    "RejectReviewDto": {
+    "reason": string;
+  };
+    "RequestCorrectionDto": {
+    "reason": string;
+    "requestedChanges": string;
   };
     "BookStatusCountsDto": {
     "total": number;
@@ -117,6 +137,25 @@ export interface components {
     "status": "DRAFT" | "PENDING_PROCESSING" | "PROCESSING" | "PENDING_APPROVAL" | "CORRECTION_REQUIRED" | "PUBLISHED" | "REJECTED";
     "createdAt": string;
   };
+    "ReportingActivityCountsDto": {
+    "processing": number;
+    "approval": number;
+    "correction": number;
+    "total": number;
+  };
+    "ReportingActivityItemDto": {
+    "id": string;
+    "documentId": string;
+    "documentTitle": string;
+    "action": "CREATED" | "METADATA_UPDATED" | "FILE_UPLOADED" | "FILE_REPLACED" | "PROCESSING_QUEUED" | "PROCESSING_STARTED" | "PROCESSING_COMPLETED" | "APPROVAL_REQUESTED" | "APPROVED" | "REJECTED" | "CORRECTION_REQUESTED" | "PUBLISHED";
+    "message"?: string | null;
+    "actorEmail"?: string | null;
+    "createdAt": string;
+  };
+    "ReportingActivitySummaryDto": {
+    "counts": components['schemas']["ReportingActivityCountsDto"];
+    "recent": components['schemas']["ReportingActivityItemDto"][];
+  };
     "LibrarianDashboardSummaryDto": {
     "generatedAt": string;
     "books": components['schemas']["BookStatusCountsDto"];
@@ -124,6 +163,7 @@ export interface components {
     "taxonomy": components['schemas']["TaxonomyCountsDto"];
     "users": components['schemas']["UserRoleCountsDto"];
     "recentBooks": components['schemas']["RecentBookSummaryDto"][];
+    "activity": components['schemas']["ReportingActivitySummaryDto"];
   };
     "IntakeBookSummaryDto": {
     "id": string;
@@ -208,6 +248,15 @@ export interface components {
     "errorMessage"?: string | null;
     "updatedAt": string;
   };
+    "ApprovalReviewSummaryDto": {
+    "id": string;
+    "status": "PENDING" | "APPROVED" | "REJECTED" | "CORRECTION_REQUESTED" | "SUPERSEDED";
+    "reason"?: string | null;
+    "requestedChanges"?: string | null;
+    "reviewerEmail"?: string | null;
+    "decidedAt"?: string | null;
+    "createdAt": string;
+  };
     "BookAuditEventDto": {
     "id": string;
     "action": "CREATED" | "METADATA_UPDATED" | "FILE_UPLOADED" | "FILE_REPLACED" | "PROCESSING_QUEUED" | "PROCESSING_STARTED" | "PROCESSING_COMPLETED" | "APPROVAL_REQUESTED" | "APPROVED" | "REJECTED" | "CORRECTION_REQUESTED" | "PUBLISHED";
@@ -231,6 +280,9 @@ export interface components {
     "files": components['schemas']["BookFileVersionDto"][];
     "activeFile"?: components['schemas']["BookFileVersionDto"];
     "activeProcessingJob"?: components['schemas']["ProcessingJobSummaryDto"];
+    "processingHistory": components['schemas']["ProcessingJobSummaryDto"][];
+    "approvalHistory": components['schemas']["ApprovalReviewSummaryDto"][];
+    "latestApprovalReview"?: components['schemas']["ApprovalReviewSummaryDto"];
     "auditHistory": components['schemas']["BookAuditEventDto"][];
     "createdAt": string;
     "updatedAt": string;
@@ -327,7 +379,7 @@ export interface components {
     "allowed": boolean;
     "documentId": string;
     "userRole": string;
-    "documentStatus"?: "DRAFT" | "PENDING_PROCESSING" | "PROCESSING" | "PENDING_APPROVAL" | "PUBLISHED" | "REJECTED";
+    "documentStatus"?: "DRAFT" | "PENDING_PROCESSING" | "PROCESSING" | "PENDING_APPROVAL" | "CORRECTION_REQUIRED" | "PUBLISHED" | "REJECTED";
     "reason"?: string;
   };
     "ProtectedDocumentUrlDto": {
@@ -523,8 +575,8 @@ export interface paths {
       };
     };
   };
-  "/api/admin/processing/jobs/{id}/advance": {
-    post: {
+  "/api/admin/processing/jobs/{id}/history": {
+    get: {
       parameters: {
         path: {
           "id": string;
@@ -533,7 +585,7 @@ export interface paths {
       responses: {
       "200": {
         content: {
-          "application/json": components['schemas']["ProcessingJobResponseDto"];
+          "application/json": components['schemas']["ProcessingJobHistoryDto"];
         };
       };
       "403": {
@@ -592,6 +644,22 @@ export interface paths {
       "200": {
         content: {
           "application/json": components['schemas']["NotificationResponseDto"][];
+        };
+      };
+      "403": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/notifications/unread-count": {
+    get: {
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["UnreadNotificationCountDto"];
         };
       };
       "403": {
@@ -665,6 +733,110 @@ export interface paths {
       parameters: {
         path: {
           "id": string;
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["ApprovalReviewResponseDto"];
+        };
+      };
+      "403": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/admin/approvals/{id}/approve": {
+    post: {
+      parameters: {
+        path: {
+          "id": string;
+        };
+      };
+      requestBody: {
+        content: {
+          "application/json": components['schemas']["ApproveReviewDto"];
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["ApprovalReviewResponseDto"];
+        };
+      };
+      "403": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/admin/approvals/{id}/approve-and-publish": {
+    post: {
+      parameters: {
+        path: {
+          "id": string;
+        };
+      };
+      requestBody: {
+        content: {
+          "application/json": components['schemas']["ApproveReviewDto"];
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["ApprovalReviewResponseDto"];
+        };
+      };
+      "403": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/admin/approvals/{id}/reject": {
+    post: {
+      parameters: {
+        path: {
+          "id": string;
+        };
+      };
+      requestBody: {
+        content: {
+          "application/json": components['schemas']["RejectReviewDto"];
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["ApprovalReviewResponseDto"];
+        };
+      };
+      "403": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/admin/approvals/{id}/request-correction": {
+    post: {
+      parameters: {
+        path: {
+          "id": string;
+        };
+      };
+      requestBody: {
+        content: {
+          "application/json": components['schemas']["RequestCorrectionDto"];
         };
       };
       responses: {
@@ -1159,6 +1331,44 @@ export interface paths {
       "200": {
         content: {
           "application/json": components['schemas']["ProtectedDocumentUrlDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/access/documents/{documentId}/stream": {
+    get: {
+      parameters: {
+        path: {
+          "documentId": string;
+        };
+        query: {
+          "token": string;
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": unknown;
+        };
+      };
+      };
+    };
+  };
+  "/api/access/documents/{documentId}/file": {
+    get: {
+      parameters: {
+        path: {
+          "documentId": string;
+        };
+        query: {
+          "token": string;
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": unknown;
         };
       };
       };

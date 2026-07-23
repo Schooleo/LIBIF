@@ -37,12 +37,14 @@ export function AppShell({
   user,
   children,
   utility,
+  notificationCount,
 }: {
   variant: ShellVariant;
   navItems: NavItem[];
   user?: ShellUser;
   children: ReactNode;
   utility?: ReactNode;
+  notificationCount?: number;
 }) {
   return (
     <div className={classNames('app-shell', `app-shell--${variant}`)}>
@@ -50,7 +52,7 @@ export function AppShell({
       <header className="app-shell__topbar">
         {variant === 'admin' && user ? (
           <div className="app-shell__context">
-            <AdminMobileNavigation role={user.role} />
+            <AdminMobileNavigation role={user.role} notificationCount={notificationCount} />
             <span>
               <strong>Staff workspace</strong>
               <small>Operations and administration</small>
@@ -94,7 +96,7 @@ export function AppShell({
           )}
         </div>
       </header>
-      {variant === 'admin' && user ? <AdminSidebarNavigation role={user.role} /> : null}
+      {variant === 'admin' && user ? <AdminSidebarNavigation role={user.role} notificationCount={notificationCount} /> : null}
       <main id="main-content" className="app-shell__main" tabIndex={-1}>
         {children}
       </main>
@@ -114,9 +116,9 @@ export function ReaderShell({ children, user }: { children: ReactNode; user?: Sh
   );
 }
 
-export function AdminShell({ children, user, utility }: { children: ReactNode; user: ShellUser; utility?: ReactNode }) {
+export function AdminShell({ children, user, utility, notificationCount }: { children: ReactNode; user: ShellUser; utility?: ReactNode; notificationCount?: number }) {
   return (
-    <AppShell variant="admin" navItems={[]} user={user} utility={utility}>
+    <AppShell variant="admin" navItems={[]} user={user} utility={utility} notificationCount={notificationCount}>
       {children}
     </AppShell>
   );

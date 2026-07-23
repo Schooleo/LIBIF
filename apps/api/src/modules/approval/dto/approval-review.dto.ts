@@ -32,10 +32,10 @@ export class ApprovalReviewResponseDto {
   @ApiPropertyOptional({ type: String, nullable: true })
   requestedChanges?: string | null;
 
-  @ApiPropertyOptional({ format: 'date-time', nullable: true })
+  @ApiPropertyOptional({ type: String, format: 'date-time', nullable: true })
   decidedAt?: string | null;
 
-  @ApiPropertyOptional({ format: 'date-time', nullable: true })
+  @ApiPropertyOptional({ type: String, format: 'date-time', nullable: true })
   supersededAt?: string | null;
 
   @ApiProperty({ format: 'date-time' })

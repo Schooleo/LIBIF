@@ -1,6 +1,6 @@
 # LIBIF Progress Checklist
 
-Last updated: 2026-07-22
+Last updated: 2026-07-23
 
 This checklist is the concise current-state tracker for future agents and team members. Detailed design, screen, workflow, and contract notes remain in the other `ai_artifacts/docs/` files.
 
@@ -152,17 +152,28 @@ Member D Phase 5 is complete and integrated with the merged Member A/B/C lanes; 
 - [x] Canonical `/admin/documents/new` intake and Member D taxonomy selectors are used by the Phase 5 workflow; `/admin/books` is compatibility-only and no longer appears in primary staff navigation or staff sign-in routing.
 - [x] Intake, replacement, and requeue browser mutations use the authenticated API boundary; replacement/requeue supersede stale work, and processing/approval queue projections show one current row per document while history remains available through lifecycle records.
 - [x] Integrated verification passed: Prisma validate/generate, unified OpenAPI/client generation, root lint, 15 API suites/72 tests, 13 web files/54 tests, root production builds, 6 API e2e suites/24 tests, and `git diff --check`.
-- [ ] Phase 5 notification persistence acceptance was not met by the merged runtime: the Prisma model exists, but `NotificationsService` remains process-local. The gap is explicitly transferred to Phase 6 NTF-001.
+- [x] The Phase 5 notification persistence gap was transferred to Phase 6 and is now resolved by Prisma-backed recipient-scoped notification reads/writes.
 
 ## Phase 6 planning
 
 - [x] Comprehensive Phase 6 plan written to `ai_artifacts/plans/plan-phase-6-processing-approval-correction-notifications-2026-07-22.md` and mirrored under `.omx/plans/`.
 - [x] D6-000 schema/OCR-lineage foundation: migration `20260722062955_phase6_processing_foundation`, exact file/job/review lineage, explicit terminal states, retry numbering/self-reference, durable artifact metadata, current-work constraints, generated contracts, and isolated Phase 5 backfill verification.
 - [x] D6-000 verification: Prisma validate/generate/migrate/status, OpenAPI/client generation, 72 API unit tests, and 7 API e2e suites/28 tests including four migration/backfill constraint scenarios.
-- [ ] C6 real worker/OCR, retry history, approval commands, notification persistence/fanout.
-- [ ] B6 correction/resubmission and document workflow history.
-- [ ] A6 publication visibility and reader notification integration.
-- [ ] D6 integration, generated contracts, activity summaries, and phase closure.
+- [ ] C6 is partially implemented: worker bootstrap, BullMQ processor, retry/history, approval commands, and notification persistence/fanout exist, but there is no `test:worker` gate and extraction errors still produce synthetic OCR-success text.
+- [x] B6 correction/resubmission and document workflow history are merged through the existing document edit/replace/requeue commands.
+- [x] A6 publication visibility and reader notification integration are merged.
+- [x] D6-001 contract registry reconciliation, D6-002 activity reporting, D6-003 staff unread-count integration, and D6-004 generated contract refresh are implemented.
+- [ ] Phase 6 closure remains blocked until Member C provides real Redis/MinIO/PostgreSQL/OCR integration evidence, duplicate-delivery/cancel/supersede coverage, and removes synthetic OCR success.
+
+### Phase 6 Member D verification — 2026-07-23
+
+- [x] D6-000 isolated migration/backfill/constraint e2e: 4/4 passed with PostgreSQL running.
+- [x] Reporting unit tests: 4/4 passed.
+- [x] Reporting e2e: 3/3 passed.
+- [x] Dashboard/staff-shell targeted web tests: 18/18 passed.
+- [x] Generated OpenAPI/client contracts include activity DTOs, notification unread-count/action/read fields, access `CORRECTION_REQUIRED`, and string date-time fields.
+- [x] Full non-worker repository gate: Prisma validate/generate, root lint, 15 API unit suites/82 tests, 15 web files/62 tests, root production builds, 7 API e2e suites/30 tests, and `git diff --check`.
+- [ ] `npm run test:worker -w apps/api` is absent; architect/deslop gates and the Member C worker/OCR handoff remain before Ralph shutdown.
 
 ### Phase 4 Member D verification
 
@@ -191,4 +202,4 @@ Member D Phase 5 is complete and integrated with the merged Member A/B/C lanes; 
 - [x] `npm test -w apps/api` — 44/44 passed, 13 suites (including 2 new approval/resubmission tests).
 - [x] `npm run lint` — clean.
 - [x] `npm run build` — all workspaces build cleanly.
-- [ ] OpenAPI/client regeneration deferred to Member D Phase 6 integration PR.
+- [x] OpenAPI/client regeneration completed by Member D Phase 6 integration.

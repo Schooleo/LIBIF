@@ -268,7 +268,7 @@ Goal: make the core operational workflow explicit, retryable, and visible.
 
 Canonical comprehensive execution plan: `ai_artifacts/plans/plan-phase-6-processing-approval-correction-notifications-2026-07-22.md`.
 
-Phase 6 entry note: Phase 5 now has authenticated intake/replacement/requeue handoffs and current-work queue projections, but no BullMQ worker consumes OCR jobs and `NotificationsService` remains process-local despite the Prisma model. Worker/OCR truth and notification persistence are early Phase 6 gates.
+Phase 6 status on 2026-07-23: A/B workflows and durable notification/approval/processing foundations are merged. Member D completed activity reporting, staff unread-count integration, and generated-contract reconciliation. Phase closure is still blocked because no `test:worker` command proves Redis/MinIO/PostgreSQL/OCR behavior and the current OCR adapter can synthesize success after extraction errors.
 
 D6-000 foundation status: completed on the Phase 5 Member D integration PR through `20260722062955_phase6_processing_foundation`. Member lanes must consume its file-scoped jobs/reviews, explicit terminal statuses, retry lineage, artifact model, and current-work constraints rather than introducing parallel schema shapes.
 
@@ -290,8 +290,9 @@ Member C tasks:
 
 Member D tasks:
 
-- Add admin audit/activity summaries for processing and approval actions.
-- Integrate notifications into admin navigation/header if applicable.
+- [x] Add admin audit/activity summaries for processing, approval, and correction actions.
+- [x] Integrate typed unread notifications into the existing responsive staff navigation.
+- [x] Reconcile Phase 6 API/workflow docs and regenerate OpenAPI/client contracts.
 
 Expected end-of-phase result:
 

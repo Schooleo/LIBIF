@@ -13,7 +13,7 @@ export class AccessDecisionDto {
   @ApiPropertyOptional({
     example: 'PUBLISHED',
     description: 'Current lifecycle status of the document (reader-safe subset)',
-    enum: ['DRAFT', 'PENDING_PROCESSING', 'PROCESSING', 'PENDING_APPROVAL', 'PUBLISHED', 'REJECTED'],
+    enum: ['DRAFT', 'PENDING_PROCESSING', 'PROCESSING', 'PENDING_APPROVAL', 'CORRECTION_REQUIRED', 'PUBLISHED', 'REJECTED'],
   })
   documentStatus?: string;
 

@@ -449,3 +449,16 @@ D6-000 is complete on the Phase 5 Member D integration PR and is the mandatory b
 - Range/self-reference constraints protect file versions, progress, attempt/round numbers, artifact sizes/pages, and direct retry/supersession self-links.
 - Intake, replacement, requeue, cancellation, manual transition, dashboard counts, DTOs, OpenAPI, and frontend generated types were updated to consume the new foundation without implementing later Member A/B/C commands.
 - Verification includes an isolated migration test that creates a Phase 5 schema, seeds stale/duplicate lifecycle rows, applies D6-000, verifies the backfill, and proves uniqueness, foreign-key, and range constraints.
+
+## D6-001 through D6-004 Integration Record — 2026-07-23
+
+Member D completed the integration-owned Phase 6 surfaces:
+
+- D6-001 reconciled live workflow ownership, endpoint contracts, and architecture boundaries in the canonical docs without introducing a separate event bus.
+- D6-002 extended the existing librarian dashboard with read-only grouped processing/approval/correction counts and ten newest `BookAuditEvent` rows; unit, API e2e, web rendering, empty-state, and axe coverage were added.
+- D6-003 integrated the recipient-scoped unread count into the single shared desktop/mobile staff navigation with zero/high-count and failure-fallback coverage.
+- D6-004 corrected Swagger/runtime shape drift for unread count, date-time fields, and `CORRECTION_REQUIRED`; regenerated the OpenAPI JSON and frontend path types; and removed the temporary raw-fetch integration in favor of the generated client.
+- D6-000 re-verification passed all four isolated migration/backfill/constraint scenarios after PostgreSQL was started.
+- Fresh non-worker integration verification passed Prisma validation/generation, root lint, 15 API unit suites/82 tests, 15 web files/62 tests, production builds, 7 API e2e suites/30 tests, and `git diff --check`.
+
+Phase 6 is **not closed** by this integration record. The repository still lacks `npm run test:worker -w apps/api`, and `PdftotextOcrEngineAdapter` returns synthetic `[OCR Processed]` text after extraction errors. Member C must provide an infrastructure-backed Redis/MinIO/PostgreSQL/OCR gate covering duplicate delivery, cancellation, supersession, and deterministic fixtures before the phase-end stop condition can be claimed.

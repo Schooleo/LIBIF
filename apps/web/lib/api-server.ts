@@ -1,6 +1,6 @@
 import { headers } from 'next/headers';
 import { createLibifApiClient, apiErrorMessage } from './api-client';
-import type { AccessDecisionDto, AdminBookListItemDto, DocumentDetailResponseDto, DocumentListQuery, LibrarianDashboardSummaryDto, PagedBookListDto, PagedDocumentListResponseDto, PublicBookListItemDto, ReaderLibraryItemDto, ReaderLibraryResponseDto, SessionDto, TaxonomyCategoryDto, TaxonomyTagDto } from './api-types';
+import type { AccessDecisionDto, AdminBookListItemDto, DocumentDetailResponseDto, DocumentListQuery, LibrarianDashboardSummaryDto, NotificationResponseDto, PagedBookListDto, PagedDocumentListResponseDto, PublicBookListItemDto, ReaderLibraryItemDto, ReaderLibraryResponseDto, SessionDto, TaxonomyCategoryDto, TaxonomyTagDto, UnreadNotificationCountDto } from './api-types';
 import { getDevAuthHeaders } from './auth/session';
 
 type ReaderLibraryQuery = { filter?: 'ALL' | 'READING' | 'BOOKMARKED' | 'COMPLETED'; search?: string; page?: number; limit?: number };
@@ -53,6 +53,13 @@ export async function fetchLibrarianDashboardSummary(): Promise<LibrarianDashboa
   return data;
 }
 
+export async function fetchUnreadNotificationCount(): Promise<UnreadNotificationCountDto> {
+  const client = await createServerClient();
+  const { data, error } = await client.GET('/api/notifications/unread-count');
+  if (error) throw new Error(apiErrorMessage(error, 'Unread notifications request failed'));
+  return data;
+}
+
 export async function fetchAccessDecision(documentId: string): Promise<AccessDecisionDto> {
   const client = await createServerClient();
   const { data, error } = await client.GET('/api/access/documents/{documentId}/decision', {
@@ -99,9 +106,9 @@ export async function fetchDocumentDetail(id: string): Promise<DocumentDetailRes
   return data;
 }
 
-export async function fetchMyNotifications(): Promise<any[]> {
+export async function fetchMyNotifications(): Promise<NotificationResponseDto[]> {
   const client = await createServerClient();
   const { data, error } = await client.GET('/api/notifications');
   if (error) throw new Error(apiErrorMessage(error, 'Notifications request failed'));
-  return data as any[];
+  return data;
 }

@@ -4,7 +4,7 @@ import { CurrentUser } from '../auth/current-user.decorator';
 import { AuthErrorDto, type SessionUserDto } from '../auth/dto/session.dto';
 import { Roles } from '../auth/roles.decorator';
 import { RolesGuard } from '../auth/roles.guard';
-import { NotificationResponseDto } from './dto/notification.dto';
+import { NotificationResponseDto, UnreadNotificationCountDto } from './dto/notification.dto';
 import { NotificationsService } from './notifications.service';
 
 @ApiTags('Notifications')
@@ -24,9 +24,9 @@ export class NotificationsController {
 
   @Get('unread-count')
   @ApiOperation({ summary: 'Get unread notifications count for current user.' })
-  @ApiOkResponse({ type: Number })
+  @ApiOkResponse({ type: UnreadNotificationCountDto })
   @ApiForbiddenResponse({ type: AuthErrorDto })
-  async getUnreadCount(@CurrentUser() user: SessionUserDto): Promise<{ count: number }> {
+  async getUnreadCount(@CurrentUser() user: SessionUserDto): Promise<UnreadNotificationCountDto> {
     const count = await this.notificationsService.getUnreadCount(user.id);
     return { count };
   }

@@ -320,9 +320,9 @@
         ]
       }
     },
-    "/api/admin/processing/jobs/{id}/advance": {
-      "post": {
-        "operationId": "advanceJob",
+    "/api/admin/processing/jobs/{id}/history": {
+      "get": {
+        "operationId": "getJobHistory",
         "parameters": [
           {
             "name": "id",
@@ -339,7 +339,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProcessingJobResponseDto"
+                  "$ref": "#/components/schemas/ProcessingJobHistoryDto"
                 }
               }
             }
@@ -355,7 +355,7 @@
             }
           }
         },
-        "summary": "Advance processing job status (simulate progress).",
+        "summary": "Get processing job history and retry lineage.",
         "tags": [
           "Admin Processing"
         ]
@@ -473,6 +473,38 @@
           }
         },
         "summary": "List notifications for the current user.",
+        "tags": [
+          "Notifications"
+        ]
+      }
+    },
+    "/api/notifications/unread-count": {
+      "get": {
+        "operationId": "getUnreadCount",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnreadNotificationCountDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get unread notifications count for current user.",
         "tags": [
           "Notifications"
         ]
@@ -631,6 +663,210 @@
           }
         },
         "summary": "Get approval review details.",
+        "tags": [
+          "Admin Approvals"
+        ]
+      }
+    },
+    "/api/admin/approvals/{id}/approve": {
+      "post": {
+        "operationId": "approveReview",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApproveReviewDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApprovalReviewResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Approve a document review.",
+        "tags": [
+          "Admin Approvals"
+        ]
+      }
+    },
+    "/api/admin/approvals/{id}/approve-and-publish": {
+      "post": {
+        "operationId": "approveAndPublish",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApproveReviewDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApprovalReviewResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Approve and publish a document to the catalogue.",
+        "tags": [
+          "Admin Approvals"
+        ]
+      }
+    },
+    "/api/admin/approvals/{id}/reject": {
+      "post": {
+        "operationId": "rejectReview",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RejectReviewDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApprovalReviewResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Reject a document review.",
+        "tags": [
+          "Admin Approvals"
+        ]
+      }
+    },
+    "/api/admin/approvals/{id}/request-correction": {
+      "post": {
+        "operationId": "requestCorrection",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestCorrectionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApprovalReviewResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Request metadata or file corrections from the uploader.",
         "tags": [
           "Admin Approvals"
         ]
@@ -1723,6 +1959,80 @@
         ]
       }
     },
+    "/api/access/documents/{documentId}/stream": {
+      "get": {
+        "operationId": "streamDocument",
+        "parameters": [
+          {
+            "name": "documentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "token",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Stream protected document PDF content.",
+        "tags": [
+          "Access"
+        ]
+      }
+    },
+    "/api/access/documents/{documentId}/file": {
+      "get": {
+        "operationId": "downloadDocument",
+        "parameters": [
+          {
+            "name": "documentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "token",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Download protected document PDF file.",
+        "tags": [
+          "Access"
+        ]
+      }
+    },
     "/api/taxonomy/categories": {
       "get": {
         "operationId": "listCategories",
@@ -2307,6 +2617,10 @@
             "type": "string",
             "nullable": true
           },
+          "bookStatus": {
+            "type": "string",
+            "nullable": true
+          },
           "type": {
             "type": "string"
           },
@@ -2367,6 +2681,24 @@
           "updatedAt"
         ]
       },
+      "ProcessingJobHistoryDto": {
+        "type": "object",
+        "properties": {
+          "current": {
+            "$ref": "#/components/schemas/ProcessingJobResponseDto"
+          },
+          "history": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProcessingJobResponseDto"
+            }
+          }
+        },
+        "required": [
+          "current",
+          "history"
+        ]
+      },
       "NotificationResponseDto": {
         "type": "object",
         "properties": {
@@ -2389,8 +2721,17 @@
             "type": "object",
             "nullable": true
           },
+          "actionHref": {
+            "type": "string",
+            "nullable": true
+          },
           "isRead": {
             "type": "boolean"
+          },
+          "readAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
           },
           "createdAt": {
             "type": "string",
@@ -2405,6 +2746,18 @@
           "body",
           "isRead",
           "createdAt"
+        ]
+      },
+      "UnreadNotificationCountDto": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "number",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "count"
         ]
       },
       "ApprovalReviewResponseDto": {
@@ -2452,12 +2805,12 @@
             "nullable": true
           },
           "decidedAt": {
-            "type": "object",
+            "type": "string",
             "format": "date-time",
             "nullable": true
           },
           "supersededAt": {
-            "type": "object",
+            "type": "string",
             "format": "date-time",
             "nullable": true
           },
@@ -2479,6 +2832,44 @@
           "status",
           "createdAt",
           "updatedAt"
+        ]
+      },
+      "ApproveReviewDto": {
+        "type": "object",
+        "properties": {
+          "comment": {
+            "type": "string",
+            "description": "Optional reviewer comment"
+          }
+        }
+      },
+      "RejectReviewDto": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "description": "Required reason for rejecting document"
+          }
+        },
+        "required": [
+          "reason"
+        ]
+      },
+      "RequestCorrectionDto": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "description": "Reason for requesting correction"
+          },
+          "requestedChanges": {
+            "type": "string",
+            "description": "Specific metadata or file changes requested"
+          }
+        },
+        "required": [
+          "reason",
+          "requestedChanges"
         ]
       },
       "BookStatusCountsDto": {
@@ -2622,6 +3013,97 @@
           "createdAt"
         ]
       },
+      "ReportingActivityCountsDto": {
+        "type": "object",
+        "properties": {
+          "processing": {
+            "type": "number"
+          },
+          "approval": {
+            "type": "number"
+          },
+          "correction": {
+            "type": "number"
+          },
+          "total": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "processing",
+          "approval",
+          "correction",
+          "total"
+        ]
+      },
+      "ReportingActivityItemDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "documentId": {
+            "type": "string"
+          },
+          "documentTitle": {
+            "type": "string"
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "CREATED",
+              "METADATA_UPDATED",
+              "FILE_UPLOADED",
+              "FILE_REPLACED",
+              "PROCESSING_QUEUED",
+              "PROCESSING_STARTED",
+              "PROCESSING_COMPLETED",
+              "APPROVAL_REQUESTED",
+              "APPROVED",
+              "REJECTED",
+              "CORRECTION_REQUESTED",
+              "PUBLISHED"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "actorEmail": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "documentId",
+          "documentTitle",
+          "action",
+          "createdAt"
+        ]
+      },
+      "ReportingActivitySummaryDto": {
+        "type": "object",
+        "properties": {
+          "counts": {
+            "$ref": "#/components/schemas/ReportingActivityCountsDto"
+          },
+          "recent": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReportingActivityItemDto"
+            }
+          }
+        },
+        "required": [
+          "counts",
+          "recent"
+        ]
+      },
       "LibrarianDashboardSummaryDto": {
         "type": "object",
         "properties": {
@@ -2646,6 +3128,9 @@
             "items": {
               "$ref": "#/components/schemas/RecentBookSummaryDto"
             }
+          },
+          "activity": {
+            "$ref": "#/components/schemas/ReportingActivitySummaryDto"
           }
         },
         "required": [
@@ -2654,7 +3139,8 @@
           "processingJobs",
           "taxonomy",
           "users",
-          "recentBooks"
+          "recentBooks",
+          "activity"
         ]
       },
       "IntakeBookSummaryDto": {
@@ -3057,6 +3543,50 @@
           "updatedAt"
         ]
       },
+      "ApprovalReviewSummaryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "APPROVED",
+              "REJECTED",
+              "CORRECTION_REQUESTED",
+              "SUPERSEDED"
+            ]
+          },
+          "reason": {
+            "type": "string",
+            "nullable": true
+          },
+          "requestedChanges": {
+            "type": "string",
+            "nullable": true
+          },
+          "reviewerEmail": {
+            "type": "string",
+            "nullable": true
+          },
+          "decidedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "createdAt"
+        ]
+      },
       "BookAuditEventDto": {
         "type": "object",
         "properties": {
@@ -3189,6 +3719,27 @@
               }
             ]
           },
+          "processingHistory": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProcessingJobSummaryDto"
+            }
+          },
+          "approvalHistory": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ApprovalReviewSummaryDto"
+            }
+          },
+          "latestApprovalReview": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ApprovalReviewSummaryDto"
+              }
+            ]
+          },
           "auditHistory": {
             "type": "array",
             "items": {
@@ -3211,6 +3762,8 @@
           "tags",
           "authors",
           "files",
+          "processingHistory",
+          "approvalHistory",
           "auditHistory",
           "createdAt",
           "updatedAt"
@@ -3632,6 +4185,7 @@
               "PENDING_PROCESSING",
               "PROCESSING",
               "PENDING_APPROVAL",
+              "CORRECTION_REQUIRED",
               "PUBLISHED",
               "REJECTED"
             ]

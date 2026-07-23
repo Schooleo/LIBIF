@@ -2,13 +2,17 @@ import { Badge } from '../../ui';
 
 interface NotificationBadgeProps {
   count: number;
+  maxVisibleCount?: number;
 }
 
-export function NotificationBadge({ count }: NotificationBadgeProps) {
+export function NotificationBadge({ count, maxVisibleCount = 99 }: NotificationBadgeProps) {
   if (count <= 0) return null;
+
+  const visualCount = count > maxVisibleCount ? `${maxVisibleCount}+` : String(count);
+
   return (
-    <Badge tone="info">
-      {count}
-    </Badge>
+    <span aria-hidden="true">
+      <Badge tone="info">{visualCount}</Badge>
+    </span>
   );
 }

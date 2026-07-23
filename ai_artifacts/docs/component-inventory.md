@@ -1,6 +1,6 @@
 # Component Inventory
 
-Last updated: 2026-07-22
+Last updated: 2026-07-23
 
 This file combines the original component contract inventory with the current implementation locations. Treat the tables below as the component source of truth for future phases.
 
@@ -19,7 +19,7 @@ This file combines the original component contract inventory with the current im
 | StatusBadge / DocumentStatusBadge / UserRoleBadge | Status/role communication | status enum, label override | neutral, info, success, warning, error | not color-only; text visible | wraps without clipping | `apps/web/components/ui` + `domain` | documents, processing, users, approvals |
 | DataTable | Server-backed tabular data | columns, rows, page, sort, selection | selectable, compact, loading | table semantics, sortable headers, keyboard row actions | horizontal strategy without clipping | `apps/web/components/ui/data` | documents, processing, approvals, users, reports |
 | Pagination | Page navigation | page, pageSize, total/cursor, onChange | page, cursor | labelled nav and current page | compact controls on mobile | `apps/web/components/ui/data` | catalogue, lists, reports |
-| AppShell / ReaderShell / AdminShell | Application frames | nav items, user, role, utilities | reader, admin, management | landmarks, skip link, one H1 in page content; one primary nav source per viewport | Reader header navigation; staff desktop sidebar with utility-only topbar; staff mobile drawer from one permission-aware model | `apps/web/components/layout` | all route groups |
+| AppShell / ReaderShell / AdminShell | Application frames | nav items, user, role, utilities, optional unread count | reader, admin, management | landmarks, skip link, one H1 in page content; one primary nav source per viewport; unread count included in the Notifications link name | Reader header navigation; staff desktop sidebar with utility-only topbar; staff mobile drawer from one permission-aware model | `apps/web/components/layout` | all route groups |
 | Breadcrumbs / Tabs / PageHeader | Page hierarchy | items, active tab, actions | default, compact | ordered nav/list semantics | wraps predictably | `apps/web/components/layout` | admin details, settings, reports |
 | DocumentCard / DocumentRow | Document summary | document view model, actions | grid card, list row, compact | title/author semantics, action labels | grid/list switch by route state | `apps/web/components/domain/documents` | catalogue, bookmarks, admin docs |
 | DocumentMetadataSummary | Metadata details | document metadata DTO | compact, full | description list semantics | stacks fields | `apps/web/components/domain/documents` | details, approval, ISBN result |
@@ -28,7 +28,7 @@ This file combines the original component contract inventory with the current im
 | ProcessingStageStepper | Pipeline progress | stages, current stage, status | horizontal, vertical | current step announced, not color-only | vertical on narrow screens | `apps/web/components/domain/processing` | upload result, processing jobs |
 | ProcessingJobSummary | Job details | job DTO | active, completed, failed | safe error copy and trace id | drawer/page variants | `apps/web/components/domain/processing` | processing queue/job screens |
 | JobStatusPoller | Planned Phase 6 bounded polling behavior | endpoint, terminal states, interval, children | active job, export job | restrained live announcements | stops on unmount/hidden | planned under `apps/web/components/domain/processing` | processing, exports |
-| ApprovalDecisionPanel | Planned Phase 6 review decision UI | document, allowed actions, onDecision | approve, publish, reject, correction | explicit buttons and reason field labels | stacks actions | planned under `apps/web/components/domain/approval` | approval screens |
+| ApprovalReviewPanel | Implemented approval review decision UI | review id, book id/title, status | approve-and-publish, reject, correction request, closed | explicit action buttons and labelled reason/requested-change fields | actions wrap and modal forms stack | `apps/web/components/domain/approval/ApprovalReviewPanel.tsx` | `/admin/approvals/[id]` |
 | CorrectionRequestPanel | Planned Phase 6 correction details/editing | correction DTO, editable | read, edit, resubmit | labelled reason/details | responsive text wrapping | planned under `apps/web/components/domain/approval` | correction screens |
 | CategoryTree | Hierarchical taxonomy | nodes, selected, onSelect | picker, manager, reassignment | tree keyboard support | collapses to drawer/picker | `apps/web/components/domain/taxonomy` | categories, metadata form |
 | CategorySelector | Controlled document category selection | `categories`, `value`, `onChange`, labels/errors/disabled | optional category | visible label, described-by/error semantics | full-width select on narrow layouts | `apps/web/components/domain/taxonomy` | document metadata forms |
@@ -36,9 +36,11 @@ This file combines the original component contract inventory with the current im
 | CategoryManager | Starter category list/create/edit surface | `categories`, `canManage` | Admin editable, Librarian read-only | labelled form/table, accessible edit actions, error alert | shared table wrapping and stacked form | `apps/web/components/domain/taxonomy` | `/admin/categories` |
 | TagManager | Starter tag list/create/edit surface | `tags`, `canManage` | Admin editable, Librarian read-only | labelled form/table, accessible edit actions, error alert | shared table wrapping and stacked form | `apps/web/components/domain/taxonomy` | `/admin/tags` |
 | NotificationItem | Notification summary/action | notification DTO, action slot | list, detail, action-required | role/status text, button labels | no horizontal clipping | `apps/web/components/domain/notifications` | notifications |
+| NotificationBadge | Bounded unread-count indicator | `count`, optional `maxVisibleCount` | hidden at zero, numeric, `99+` | visual badge is hidden from assistive technology; link owns the accurate unread label | reused by desktop sidebar and mobile drawer | `apps/web/components/domain/notifications` | staff shell |
 | ReaderBookCard | Reader-facing book card | book, progress, actions | home, bookmark, history | title/author/access labels | responsive card grid | `apps/web/components/domain/reader` | reader home, bookmarks |
 | ProtectedPdfViewer | Protected reader UI | accessGrant, book, progress callbacks | compact, full | keyboard controls, no security claims from UI deterrents | controls adapt to viewport | `apps/web/components/domain/reader` | secure reader |
 | ChartCard / KpiCard / MetricCard | Reporting visuals | title, value/data, loading | chart, KPI, metric | text alternatives/data table link | preserves skeleton dimensions | `apps/web/components/domain/reports` | dashboards, reports |
+| DashboardMetrics | Librarian operational read model | generated dashboard summary including workflow activity | populated, empty, error handled by route | semantic metric groups, table caption, explicit empty state | shared table/metric wrapping | `apps/web/components/domain/reporting` | `/admin/dashboard` |
 
 ## Remaining UI migration notes
 
@@ -122,3 +124,7 @@ Deferred auth UI/component work remains in later batches: user administration, r
 ## Phase 5 lifecycle closure update — 2026-07-22
 
 `NewDocumentClient` and `UploadLifecyclePanel` now use authenticated browser API adapters for intake, replacement, and requeue instead of relative Next.js requests. Replacement and requeue refresh server-rendered document state, while backend current-work projections prevent duplicate processing/approval rows from appearing after file-version changes. The legacy Books destination is no longer part of primary staff navigation; its routes/components remain compatibility-only pending a dedicated migration.
+
+## Phase 6 Member D reporting and shell update — 2026-07-23
+
+`DashboardMetrics` now renders grouped processing/approval/correction activity plus a newest-first audit table from the generated reporting contract. `AdminShell` threads a server-derived unread-notification count through the existing shared desktop/mobile staff navigation; `NotificationBadge` caps only the visual label while the Notifications link retains the accurate accessible count. Focused dashboard and staff-shell tests cover populated/empty activity, zero/high counts, mobile reuse, failure fallback, and axe.
