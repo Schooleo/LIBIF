@@ -2,7 +2,12 @@ import { ForbiddenException, Inject, Injectable, NotFoundException } from '@nest
 import { NotificationStatus, NotificationType } from '../../generated/prisma/client';
 import { PrismaService } from '../database/prisma.service';
 import { CreateNotificationDto } from './dto/create-notification.dto';
-import { NotificationResponseDto } from './dto/notification.dto';
+import {
+  NotificationFilterEnum,
+  NotificationListQueryDto,
+  NotificationResponseDto,
+  PagedNotificationListResponseDto
+} from './dto/notification.dto';
 
 @Injectable()
 export class NotificationsService {
@@ -29,6 +34,42 @@ export class NotificationsService {
       orderBy: { createdAt: 'desc' }
     });
     return notifications.map((n) => this.mapToDto(n));
+  }
+
+  async listNotificationsPage(
+    recipientId: string,
+    query: NotificationListQueryDto
+  ): Promise<PagedNotificationListResponseDto> {
+    const page = Math.max(1, query.page || 1);
+    const pageSize = Math.min(100, Math.max(1, query.pageSize || 20));
+    const skip = (page - 1) * pageSize;
+
+    const where: any = { recipientId };
+    if (query.filter === NotificationFilterEnum.UNREAD) {
+      where.status = NotificationStatus.UNREAD;
+    } else if (query.filter === NotificationFilterEnum.READ) {
+      where.status = NotificationStatus.READ;
+    }
+
+    const [notifications, totalCount] = await Promise.all([
+      this.prisma.notification.findMany({
+        where,
+        orderBy: { createdAt: 'desc' },
+        skip,
+        take: pageSize
+      }),
+      this.prisma.notification.count({ where })
+    ]);
+
+    const totalPages = Math.ceil(totalCount / pageSize) || 1;
+
+    return {
+      items: notifications.map((n) => this.mapToDto(n)),
+      totalCount,
+      page,
+      pageSize,
+      totalPages
+    };
   }
 
   async markAsRead(id: string, recipientId?: string): Promise<NotificationResponseDto> {

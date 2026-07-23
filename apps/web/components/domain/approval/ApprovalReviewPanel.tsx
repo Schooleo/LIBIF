@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Button, Dialog, FormField, TextInput } from '../../ui';
+import { Button, ConfirmationDialog, Dialog, FormField, InlineAlert, TextInput } from '../../ui';
 import { API_BASE_URL } from '../../../lib/api-client';
 import { getDevAuthHeaders } from '../../../lib/auth/session';
 
@@ -13,17 +13,24 @@ interface ApprovalReviewPanelProps {
   status: string;
 }
 
-export function ApprovalReviewPanel({ reviewId, bookId: _bookId, status }: ApprovalReviewPanelProps) {
+export function ApprovalReviewPanel({ reviewId, bookId: _bookId, bookTitle, status }: ApprovalReviewPanelProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // Modal states
-  const [activeModal, setActiveModal] = useState<'reject' | 'correction' | null>(null);
+  const [activeModal, setActiveModal] = useState<'approve-and-publish' | 'reject' | 'correction' | null>(null);
   const [reason, setReason] = useState('');
   const [requestedChanges, setRequestedChanges] = useState('');
 
   const isPending = status.toUpperCase() === 'PENDING';
+
+  const closeModal = () => {
+    setActiveModal(null);
+    setReason('');
+    setRequestedChanges('');
+    setError(null);
+  };
 
   const executeAction = async (endpoint: string, bodyPayload?: any) => {
     setLoading(true);
@@ -45,9 +52,7 @@ export function ApprovalReviewPanel({ reviewId, bookId: _bookId, status }: Appro
         throw new Error(errorData.message || `Failed to execute ${endpoint}`);
       }
 
-      setActiveModal(null);
-      setReason('');
-      setRequestedChanges('');
+      closeModal();
       router.refresh();
     } catch (err) {
       setError((err as Error).message);
@@ -68,13 +73,13 @@ export function ApprovalReviewPanel({ reviewId, bookId: _bookId, status }: Appro
 
   return (
     <div className="ui-stack gap-4">
-      {error && <span className="text-sm text-red-600 font-medium">{error}</span>}
+      {error && <InlineAlert tone="error">{error}</InlineAlert>}
 
       <div className="flex flex-wrap gap-3">
         <Button
           variant="primary"
           disabled={loading}
-          onClick={() => executeAction('approve-and-publish', { comment: 'Approved & Published' })}
+          onClick={() => setActiveModal('approve-and-publish')}
         >
           {loading ? 'Processing...' : 'Approve & Publish'}
         </Button>
@@ -96,11 +101,42 @@ export function ApprovalReviewPanel({ reviewId, bookId: _bookId, status }: Appro
         </Button>
       </div>
 
+      {/* Approve & Publish Confirmation Modal */}
+      <ConfirmationDialog
+        open={activeModal === 'approve-and-publish'}
+        onClose={closeModal}
+        title="Approve and Publish to Catalogue"
+        showCloseButton={false}
+      >
+        <div className="ui-stack gap-3">
+          <InlineAlert tone="warning">
+            This action will immediately publish <strong>«{bookTitle || 'this document'}»</strong> to the public reader catalogue. Readers will gain reading access.
+          </InlineAlert>
+          <p className="text-sm text-neutral-600">
+            Please confirm that document quality, metadata, and licensing are verified before proceeding.
+          </p>
+          <div className="flex justify-end gap-2 pt-2">
+            <Button variant="ghost" type="button" onClick={closeModal}>
+              Cancel
+            </Button>
+            <Button
+              variant="primary"
+              type="button"
+              disabled={loading}
+              onClick={() => executeAction('approve-and-publish', { comment: 'Approved & Published' })}
+            >
+              {loading ? 'Publishing...' : 'Confirm Approve & Publish'}
+            </Button>
+          </div>
+        </div>
+      </ConfirmationDialog>
+
       {/* Reject Modal */}
       <Dialog
         open={activeModal === 'reject'}
-        onClose={() => setActiveModal(null)}
+        onClose={closeModal}
         title="Reject Document"
+        showCloseButton={false}
       >
         <form
           onSubmit={(e) => {
@@ -110,7 +146,7 @@ export function ApprovalReviewPanel({ reviewId, bookId: _bookId, status }: Appro
           className="ui-stack gap-4"
         >
           <p className="text-sm text-neutral-600">
-            Please provide a clear reason for rejecting this document.
+            Please provide a clear reason for rejecting <strong>«{bookTitle || 'this document'}»</strong>.
           </p>
           <FormField label="Reason for Rejection" required>
             {(fieldProps) => (
@@ -124,7 +160,7 @@ export function ApprovalReviewPanel({ reviewId, bookId: _bookId, status }: Appro
             )}
           </FormField>
           <div className="flex justify-end gap-2 pt-2">
-            <Button variant="ghost" type="button" onClick={() => setActiveModal(null)}>
+            <Button variant="ghost" type="button" onClick={closeModal}>
               Cancel
             </Button>
             <Button variant="primary" type="submit" disabled={loading || !reason.trim()}>
@@ -137,8 +173,9 @@ export function ApprovalReviewPanel({ reviewId, bookId: _bookId, status }: Appro
       {/* Request Correction Modal */}
       <Dialog
         open={activeModal === 'correction'}
-        onClose={() => setActiveModal(null)}
+        onClose={closeModal}
         title="Request Metadata or File Correction"
+        showCloseButton={false}
       >
         <form
           onSubmit={(e) => {
@@ -148,7 +185,7 @@ export function ApprovalReviewPanel({ reviewId, bookId: _bookId, status }: Appro
           className="ui-stack gap-4"
         >
           <p className="text-sm text-neutral-600">
-            Specify the reason and detailed changes needed from the uploader.
+            Specify the reason and detailed changes needed for <strong>«{bookTitle || 'this document'}»</strong> from the uploader.
           </p>
           <FormField label="Reason for Correction Request" required>
             {(fieldProps) => (
@@ -174,7 +211,7 @@ export function ApprovalReviewPanel({ reviewId, bookId: _bookId, status }: Appro
             )}
           </FormField>
           <div className="flex justify-end gap-2 pt-2">
-            <Button variant="ghost" type="button" onClick={() => setActiveModal(null)}>
+            <Button variant="ghost" type="button" onClick={closeModal}>
               Cancel
             </Button>
             <Button variant="primary" type="submit" disabled={loading || !reason.trim() || !requestedChanges.trim()}>

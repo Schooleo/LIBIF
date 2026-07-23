@@ -1,10 +1,15 @@
-import { Controller, Get, Inject, Param, Patch, UseGuards } from '@nestjs/common';
+import { Controller, Get, Inject, Param, Patch, Query, UseGuards } from '@nestjs/common';
 import { ApiForbiddenResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from '../auth/current-user.decorator';
 import { AuthErrorDto, type SessionUserDto } from '../auth/dto/session.dto';
 import { Roles } from '../auth/roles.decorator';
 import { RolesGuard } from '../auth/roles.guard';
-import { NotificationResponseDto, UnreadNotificationCountDto } from './dto/notification.dto';
+import {
+  NotificationListQueryDto,
+  NotificationResponseDto,
+  PagedNotificationListResponseDto,
+  UnreadNotificationCountDto
+} from './dto/notification.dto';
 import { NotificationsService } from './notifications.service';
 
 @ApiTags('Notifications')
@@ -16,10 +21,13 @@ export class NotificationsController {
 
   @Get()
   @ApiOperation({ summary: 'List notifications for the current user.' })
-  @ApiOkResponse({ type: [NotificationResponseDto] })
+  @ApiOkResponse({ type: PagedNotificationListResponseDto })
   @ApiForbiddenResponse({ type: AuthErrorDto })
-  async listMyNotifications(@CurrentUser() user: SessionUserDto): Promise<NotificationResponseDto[]> {
-    return this.notificationsService.listNotifications(user.id);
+  async listMyNotifications(
+    @Query() query: NotificationListQueryDto,
+    @CurrentUser() user: SessionUserDto
+  ): Promise<PagedNotificationListResponseDto> {
+    return this.notificationsService.listNotificationsPage(user.id, query);
   }
 
   @Get('unread-count')

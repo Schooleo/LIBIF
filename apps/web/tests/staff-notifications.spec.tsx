@@ -12,6 +12,11 @@ const fetchUnreadNotificationCountMock = vi.hoisted(() => vi.fn());
 vi.mock('next/navigation', () => ({
   usePathname: () => currentPath.value,
   redirect: redirectMock,
+  useRouter: () => ({
+    refresh: vi.fn(),
+    push: vi.fn()
+  }),
+  useSearchParams: () => new URLSearchParams()
 }));
 
 vi.mock('../lib/api-server', () => ({
@@ -88,5 +93,90 @@ describe('staff notification navigation', () => {
     expect(screen.getByRole('heading', { level: 1, name: /dashboard/i })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Notifications' })).toHaveAttribute('href', '/admin/notifications');
     expect(screen.queryByText('99+')).not.toBeInTheDocument();
+  });
+});
+
+import { NotificationList } from '../components/domain/notifications/NotificationList';
+
+describe('NotificationList component', () => {
+  const sampleNotifications = [
+    {
+      id: 'n-1',
+      recipientId: 'user-1',
+      type: 'DOCUMENT_AVAILABLE',
+      title: 'Document Published',
+      body: 'Clean Architecture is now available',
+      isRead: false,
+      createdAt: '2026-07-23T10:00:00Z'
+    },
+    {
+      id: 'n-2',
+      recipientId: 'user-1',
+      type: 'SYSTEM',
+      title: 'System Alert',
+      body: 'System maintenance scheduled',
+      isRead: true,
+      createdAt: '2026-07-22T10:00:00Z'
+    }
+  ];
+
+  it('renders filter tabs and pagination controls', () => {
+    const onFilterChange = vi.fn();
+    const onPageChange = vi.fn();
+
+    render(
+      <NotificationList
+        notifications={sampleNotifications}
+        page={1}
+        pageSize={1}
+        totalCount={2}
+        totalPages={2}
+        activeFilter="all"
+        onFilterChange={onFilterChange}
+        onPageChange={onPageChange}
+      />
+    );
+
+    // Filter tablist
+    expect(screen.getByRole('tablist', { name: /filter notifications/i })).toBeInTheDocument();
+    expect(screen.getByRole('tab', { name: /all/i })).toHaveAttribute('aria-selected', 'true');
+    expect(screen.getByRole('tab', { name: /unread/i })).toHaveAttribute('aria-selected', 'false');
+
+    // Pagination nav
+    expect(screen.getByRole('navigation', { name: /pagination/i })).toBeInTheDocument();
+    expect(screen.getByText('Page 1 of 2')).toBeInTheDocument();
+  });
+
+  it('announces unread count in polite live region', () => {
+    render(
+      <NotificationList
+        notifications={sampleNotifications}
+        activeFilter="all"
+      />
+    );
+
+    // Live region
+    const liveRegion = screen.getByText('1 unread notification');
+    expect(liveRegion).toBeInTheDocument();
+    expect(liveRegion).toHaveAttribute('aria-live', 'polite');
+  });
+
+  it('supports keyboard arrow navigation across filter tabs', async () => {
+    const user = userEvent.setup();
+    const onFilterChange = vi.fn();
+
+    render(
+      <NotificationList
+        notifications={sampleNotifications}
+        activeFilter="all"
+        onFilterChange={onFilterChange}
+      />
+    );
+
+    const allTab = screen.getByRole('tab', { name: /all/i });
+    allTab.focus();
+
+    await user.keyboard('{ArrowRight}');
+    expect(onFilterChange).toHaveBeenCalledWith('unread');
   });
 });
