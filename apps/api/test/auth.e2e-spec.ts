@@ -39,6 +39,7 @@ describe('Authentication and access (e2e)', () => {
 
   beforeEach(async () => {
     deliveries.clearDeliveries();
+    await prisma.$executeRawUnsafe('TRUNCATE TABLE "ReaderAccessEvent", "UserAdministrationEvent" CASCADE;').catch(() => {});
     await prisma.passwordResetToken.deleteMany();
     await prisma.userSession.deleteMany();
     await prisma.processingJob.deleteMany();

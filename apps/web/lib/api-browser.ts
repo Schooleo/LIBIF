@@ -125,6 +125,51 @@ async function postMultipart<T>(path: string, form: FormData, fallbackMessage: s
   return payload as T;
 }
 
+export async function fetchDocumentManifest(documentId: string) {
+  const response = await fetch(`${API_BASE_URL}/api/access/documents/${encodeURIComponent(documentId)}/manifest`, {
+    headers: getDevAuthHeaders(),
+    credentials: 'include',
+  });
+  if (!response.ok) {
+    const errPayload = await response.json().catch(() => ({}));
+    throw new Error(apiErrorMessage(errPayload, 'Failed to load document manifest'));
+  }
+  return response.json();
+}
+
+export async function fetchProtectedPageUrl(documentId: string, pageNumber: number): Promise<string> {
+  const response = await fetch(`${API_BASE_URL}/api/access/documents/${encodeURIComponent(documentId)}/pages/${pageNumber}`, {
+    headers: getDevAuthHeaders(),
+    credentials: 'include',
+  });
+  if (response.status === 429) {
+    const errPayload = await response.json().catch(() => ({}));
+    const retryAfter = errPayload.retryAfterSeconds || 60;
+    const err = new Error(errPayload.message || 'Page rate limit exceeded');
+    (err as any).retryAfterSeconds = retryAfter;
+    (err as any).statusCode = 429;
+    throw err;
+  }
+  if (!response.ok) {
+    const errPayload = await response.json().catch(() => ({}));
+    throw new Error(apiErrorMessage(errPayload, `Failed to load page ${pageNumber}`));
+  }
+  const blob = await response.blob();
+  return URL.createObjectURL(blob);
+}
+
+export async function fetchReaderDocumentState(documentId: string) {
+  const response = await fetch(`${API_BASE_URL}/api/reader/documents/${encodeURIComponent(documentId)}/state`, {
+    headers: getDevAuthHeaders(),
+    credentials: 'include',
+  });
+  if (!response.ok) {
+    const errPayload = await response.json().catch(() => ({}));
+    throw new Error(apiErrorMessage(errPayload, 'Failed to fetch reader state'));
+  }
+  return response.json();
+}
+
 export async function fetchViewToken(documentId: string): Promise<{ url: string; token: string; expiresAt: string }> {
   const { data, error } = await client.POST('/api/access/documents/{documentId}/view-token', {
     params: { path: { documentId } },

@@ -3,7 +3,8 @@ import type {
   AdminBookListItemDto as SharedAdminBookListItemDto,
   CategoryDto as SharedCategoryDto,
   PagedDto as SharedPagedDto,
-  PublicBookListItemDto as SharedPublicBookListItemDto
+  PublicBookListItemDto as SharedPublicBookListItemDto,
+  ReaderDocumentStateDto as SharedReaderDocumentStateDto
 } from '@libif/shared';
 
 export type SessionDto = components['schemas']['SessionDto'];
@@ -37,6 +38,7 @@ export type AdminBookListItemDto = SharedAdminBookListItemDto;
 export type BookListItemDto = SharedPublicBookListItemDto;
 export type PagedBookListDto = SharedPagedDto<SharedPublicBookListItemDto>;
 export type CategoryDto = SharedCategoryDto;
+export type ReaderDocumentStateDto = SharedReaderDocumentStateDto;
 
 export type CreateBookIntakeDto = {
   isbn?: string;
