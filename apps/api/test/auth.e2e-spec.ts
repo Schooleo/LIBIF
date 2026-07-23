@@ -3,6 +3,7 @@ import { Test } from '@nestjs/testing';
 import request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { HttpErrorFilter } from '../src/common/http-error.filter';
+import { UserAccountStatus } from '../src/generated/prisma/client';
 import { PasswordHasher } from '../src/modules/auth/password-hasher.service';
 import { PasswordResetDeliveryService } from '../src/modules/auth/password-reset-delivery.service';
 import { ProcessingQueue } from '../src/modules/processing/processing.queue';
@@ -93,6 +94,40 @@ describe('Authentication and access (e2e)', () => {
     expect(setCookieHeader(signOut.headers['set-cookie'])).toContain('libif_session=;');
     await request(app.getHttpServer()).get('/api/auth/session').set('Cookie', sessionCookie).expect(200).expect((response) => expect(response.body.authenticated).toBe(false));
     await request(app.getHttpServer()).get('/api/admin/books').set('Cookie', sessionCookie).expect(403).expect((response) => expect(response.body).toMatchObject({ code: 'AUTHENTICATION_REQUIRED', status: 403, fieldErrors: {} }));
+  });
+
+  it('rejects sign-in and existing cookies after account deactivation', async () => {
+    const user = await prisma.user.create({
+      data: {
+        email: 'deactivation@example.edu',
+        passwordHash: await hasher.hash('correct horse battery staple'),
+        role: 'READER'
+      }
+    });
+    const signInResponse = await request(app.getHttpServer())
+      .post('/api/auth/sign-in')
+      .send({ email: user.email, password: 'correct horse battery staple' })
+      .expect(200);
+    const sessionCookie = sessionCookieHeader(signInResponse.headers['set-cookie']);
+
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { status: UserAccountStatus.DEACTIVATED, deactivatedAt: new Date() }
+    });
+
+    await request(app.getHttpServer())
+      .get('/api/auth/session')
+      .set('Cookie', sessionCookie)
+      .expect(200)
+      .expect(({ body }) => expect(body.authenticated).toBe(false));
+    await request(app.getHttpServer())
+      .post('/api/auth/sign-in')
+      .send({ email: user.email, password: 'correct horse battery staple' })
+      .expect(401);
+
+    const sessions = await prisma.userSession.findMany({ where: { userId: user.id } });
+    expect(sessions).toHaveLength(1);
+    expect(sessions[0].revokedAt).toBeInstanceOf(Date);
   });
 
   it('uses uniform reset request responses and consumes reset tokens exactly once', async () => {

@@ -341,7 +341,7 @@ Member C tasks:
 Member D tasks:
 
 - Keep the single schema foundation for user administration, settings, and append-only `ReaderAccessEvent` facts stable.
-- Phase 7 Wave 3 now exposes backend-only user list/detail routes and implements product-settings persistence; the settings route remains capability-gated, while role changes/deactivation, dashboards/CSV, and admin screens remain pending.
+- Phase 7 Wave 5 completes Member D's backend user administration, deactivated-auth enforcement, UTC dashboards, bounded CSV exports, and safe general-settings routes. Generated clients, staff navigation, and Admin pages remain deferred to D7-005.
 - Coordinate frozen A/B/C handoffs, generated contracts, seeded watermark/audit/scrape scenarios, and phase closure gates.
 
 Expected end-of-phase result:

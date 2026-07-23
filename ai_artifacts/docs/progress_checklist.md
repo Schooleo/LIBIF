@@ -120,14 +120,14 @@ Latest Phase 5 planning/schema preflight:
 - [x] Upload/Documents boundary and document metadata workflow foundation.
 - [x] Processing worker implementation and retry history, including real PDF extraction/OCR, exact lineage, duplicate-delivery protection, and infrastructure-backed tests.
 - [x] Approval decision/correction loop and persisted notifications, including approve/reject/request-correction, resubmission reuse, publication fanout, and recipient ownership.
-- [ ] Taxonomy risky actions (delete/reassign/merge), user administration, role changes, and deactivation. Starter category/tag list/create/edit is complete.
-- [ ] General management dashboards/reports/exports and settings remain. The base dashboard and bounded Reader-access JSON/CSV report are complete.
+- [ ] Taxonomy risky actions (delete/reassign/merge) remain. User administration reads and transactional role/deactivate/reactivate commands are complete.
+- [x] General management/librarian UTC dashboards, bounded document/user/activity/Reader-access CSV exports, and Admin-only general settings backend routes are complete.
 - [x] Reader POC P0 integration: functional catalogue discovery/detail, server-rendered user/session-watermarked pages drawn on canvas, integrated real-page progress, no Reader raw-PDF/download surface, bookmark hydration, durable access auditing, and scrape/rate/concurrency enforcement.
 - [ ] Cross-screen integration hardening and responsive/visual QA.
 
 ## Next execution target
 
-Phase 7 Wave 4 closes the Reader POC P0 integration gate. Wave 5 is next under `ai_artifacts/plans/plan-phase-7-admin-operations-users-reporting-settings-2026-07-23.md`: remaining user administration, taxonomy safeguards, general reports/settings, and notification/document polish proceed in their existing member lanes while protected Reader surfaces remain regression-only.
+Phase 7 Wave 5 is active under `ai_artifacts/plans/plan-phase-7-admin-operations-users-reporting-settings-2026-07-23.md`. Member D's administration backend lane is complete; remaining taxonomy, notification, and Reader regression slices proceed in their existing member lanes before the Wave 6 cross-lane gate.
 
 ## 80-90% Completion Team Backlog
 
@@ -217,12 +217,14 @@ Member D Phase 5 is complete and integrated with the merged Member A/B/C lanes; 
 - [x] Member C's Wave 3 C7-001/C7-002 renderer baseline is merged into `dev` and this branch; root `AppModule` still does not import `RenderingModule`, which remains an Access-owned integration handoff.
 - [x] Member D Wave 3 users backend is live at `GET /api/admin/users` and `GET /api/admin/users/:userId`; D7-004 product-settings persistence and normalization are implemented without generated-client churn.
 - [x] The Wave 3 contract exception is explicit: runtime users routes are not generated-client-ready, and the unchanged OpenAPI/client hashes preserve D7-005 as the single cross-lane refresh.
-- [ ] `GET/PATCH /api/admin/settings/general` remains gated on Member A's tested watermark-signing and scrape-protection capability source; no hard-coded or inferred capability state is published.
+- [x] `GET/PATCH /api/admin/settings/general` is live and Admin-only. Product settings persist, scrape capability reflects Redis/test-development fallback availability, current unsigned trace fingerprints are truthfully reported as not watermark-signed, and no secret or exact threshold is editable/exposed.
 - [x] Wave 4 P0 Reader integration is live: published detail/state, protected manifest/raster pages, server-burned watermarks, canvas navigation/retry, render-confirmed progress, and explicit Reader denial on source-PDF token/stream/file routes.
 - [x] Redis-backed rate/concurrency/scrape enforcement uses deployment-owned thresholds, stable `429`/`Retry-After`, hashed scopes, and fail-closed production behavior when Redis is unavailable.
 - [x] Committed high-risk scrape facts create deterministic, deduplicated, content-safe alerts for active Admin/Librarian recipients.
 - [x] Admin Reader-access JSON/CSV reporting is live with bounded UTC ranges, safe reader labels, deterministic ordering, formula-neutralized CSV, and seeded trace/risk scenarios backed by a usable private sample PDF.
 - [x] Wave 4 targeted verification: 16 API suites / 103 tests across access/Reader/rendering/notifications/reporting/catalogue, plus 2 protected Reader/catalogue web files / 5 tests and 4 API e2e suites / 24 tests.
+- [x] Member D Wave 5 completes transactional user role/status commands with concurrent last-admin protection and deactivated-auth enforcement, UTC management reporting, bounded formula-safe document/user/activity CSV, and safe general-settings routes.
+- [x] Member D Wave 5 verification: root lint; 32 API suites/171 tests; 17 web files/67 tests; shared/API/web builds; 12 API e2e suites/68 tests; worker OCR/privacy suite/5 scenarios; Prisma validate/migration status; idempotent seed; and `git diff --check`.
 - [ ] D7-005 remains the only approved OpenAPI/generated-client refresh; tracked generated contracts stay unchanged through Wave 4.
 - [x] Member D Wave 3 regression: root lint; 29 API suites/124 tests; 15 web files/62 tests; API/web/shared builds; 9 API e2e suites/41 tests; worker OCR/privacy suite/5 scenarios; Prisma validate/status; unchanged schema, migrations, rendering, OpenAPI, and generated client; `git diff --check`; architect approval; and post-cleanup re-verification.
 

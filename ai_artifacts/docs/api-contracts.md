@@ -168,8 +168,10 @@ Source tokens are staff-only, purpose-specific, bound to the authenticated staff
 - Admin-only security projections are live at `GET /api/admin/reports/reader-access?from&to&risk` and `GET /api/admin/reports/reader-access.csv`; both enforce a bounded UTC range, safe projections, and deterministic ordering.
 - Reader access to the source-file token, stream, and file routes is denied by explicit role policy. Retained source-file access is staff-only and uses a short-lived HMAC token bound to staff user, document, purpose, and expiry.
 - `LIBIF_SOURCE_ACCESS_TOKEN_SECRET` is required in production. Protected-page rate thresholds are deployment-owned environment configuration; production fails closed when Redis is unavailable unless the explicit in-memory development override is enabled.
-- Live Admin user routes are `GET /api/admin/users` and `GET /api/admin/users/:userId`; these expose only safe account, session, and administration-audit projections.
-- Waves 3–4 intentionally do not refresh `apps/api/openapi/libif-api.json` or `apps/web/lib/generated/api-types.ts`. Runtime-live Phase 7 routes remain unavailable to generated-client consumers until D7-005 performs the single cross-lane contract refresh.
+- Live Admin user routes are `GET /api/admin/users`, `GET /api/admin/users/:userId`, `PATCH /api/admin/users/:userId/role`, and `POST /api/admin/users/:userId/{deactivate|reactivate}`. Reads expose only safe account/session/audit projections; commands require a reason and enforce self/last-admin/session-revocation/immutable-event invariants.
+- Live reporting routes include UTC-filtered librarian/management dashboards and bounded Admin-only `documents.csv`, `users.csv`, `activity.csv`, and `reader-access.csv` exports.
+- Live settings routes are `GET/PATCH /api/admin/settings/general`; only product-owned values are editable, while cache/detector/watermark capability metadata is read-only and secret-free.
+- Waves 3–5 intentionally do not refresh `apps/api/openapi/libif-api.json` or `apps/web/lib/generated/api-types.ts`. Runtime-live Phase 7 routes remain unavailable to generated-client consumers until D7-005 performs the single cross-lane contract refresh.
 
 ## Deferred or absent endpoint families
 
@@ -178,7 +180,6 @@ These routes are not implemented in the current runtime code and must not be tre
 - Dedicated correction history/resubmission endpoints such as `/api/admin/documents/{documentId}/corrections` or `/resubmit`.
 - Category deletion/reassignment endpoints.
 - Tag duplicate-detection or merge endpoints.
-- User role-change and account-deactivation endpoints.
-- General management dashboard/export and general-settings endpoints. The Reader-access report and bounded CSV routes are live; product-settings persistence is implemented, but the settings route remains gated on a tested deployment-capability source.
+- Admin web pages for users, reporting, and settings; these wait for the D7-005 unified generated-client and staff-navigation reconciliation.
 
-The approved contract sources are `ai_artifacts/plans/plan-phase-7-admin-operations-users-reporting-settings-2026-07-23.md`, `ai_artifacts/docs/phase-7-wave-1-2-foundation-contract-freeze.md`, and `ai_artifacts/docs/phase-7-wave-4-p0-integration.md`. Controllers and tests are the runtime evidence until D7-005 performs the deferred unified OpenAPI/client refresh.
+The approved contract sources are `ai_artifacts/plans/plan-phase-7-admin-operations-users-reporting-settings-2026-07-23.md`, `ai_artifacts/docs/phase-7-wave-1-2-foundation-contract-freeze.md`, `ai_artifacts/docs/phase-7-wave-4-p0-integration.md`, and `ai_artifacts/docs/phase-7-wave-5-member-d-administration.md`. Controllers and tests are the runtime evidence until D7-005 performs the deferred unified OpenAPI/client refresh.

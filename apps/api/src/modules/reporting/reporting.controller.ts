@@ -5,6 +5,10 @@ import { AuthErrorDto } from '../auth/dto/session.dto';
 import { Roles } from '../auth/roles.decorator';
 import { RolesGuard } from '../auth/roles.guard';
 import { LibrarianDashboardSummaryDto } from './dto/librarian-dashboard-summary.dto';
+import {
+  ManagementDashboardSummaryDto,
+  OperationsReportRangeQueryDto
+} from './dto/operations-report.dto';
 import { ReaderAccessReportQueryDto, ReaderAccessReportResponseDto } from './dto/reader-access-report.dto';
 import { ReportingService } from './reporting.service';
 
@@ -19,8 +23,21 @@ export class ReportingController {
   @ApiOperation({ summary: 'Return librarian dashboard summary counts.' })
   @ApiOkResponse({ type: LibrarianDashboardSummaryDto })
   @ApiForbiddenResponse({ type: AuthErrorDto })
-  getLibrarianDashboardSummary(): Promise<LibrarianDashboardSummaryDto> {
-    return this.reporting.getLibrarianDashboardSummary();
+  getLibrarianDashboardSummary(
+    @Query() query: OperationsReportRangeQueryDto
+  ): Promise<LibrarianDashboardSummaryDto> {
+    return this.reporting.getLibrarianDashboardSummary(query);
+  }
+
+  @Get('management')
+  @Roles('ADMIN')
+  @ApiOperation({ summary: 'Return a bounded UTC management and reader-security summary.' })
+  @ApiOkResponse({ type: ManagementDashboardSummaryDto })
+  @ApiForbiddenResponse({ type: AuthErrorDto })
+  getManagementDashboardSummary(
+    @Query() query: OperationsReportRangeQueryDto
+  ): Promise<ManagementDashboardSummaryDto> {
+    return this.reporting.getManagementDashboardSummary(query);
   }
 }
 
@@ -54,4 +71,43 @@ export class ReaderAccessReportingController {
     response.setHeader('Content-Disposition', 'attachment; filename="reader-access-report.csv"');
     response.send(csv);
   }
+
+  @Get('documents.csv')
+  @ApiOperation({ summary: 'Export a bounded UTC document operations report.' })
+  @ApiProduces('text/csv')
+  @ApiForbiddenResponse({ type: AuthErrorDto })
+  async exportDocumentsCsv(
+    @Query() query: OperationsReportRangeQueryDto,
+    @Res() response: Response
+  ): Promise<void> {
+    sendCsv(response, await this.reporting.exportDocumentsCsv(query), 'documents-report.csv');
+  }
+
+  @Get('users.csv')
+  @ApiOperation({ summary: 'Export a bounded UTC safe user administration report.' })
+  @ApiProduces('text/csv')
+  @ApiForbiddenResponse({ type: AuthErrorDto })
+  async exportUsersCsv(
+    @Query() query: OperationsReportRangeQueryDto,
+    @Res() response: Response
+  ): Promise<void> {
+    sendCsv(response, await this.reporting.exportUsersCsv(query), 'users-report.csv');
+  }
+
+  @Get('activity.csv')
+  @ApiOperation({ summary: 'Export a bounded UTC document activity report.' })
+  @ApiProduces('text/csv')
+  @ApiForbiddenResponse({ type: AuthErrorDto })
+  async exportActivityCsv(
+    @Query() query: OperationsReportRangeQueryDto,
+    @Res() response: Response
+  ): Promise<void> {
+    sendCsv(response, await this.reporting.exportActivityCsv(query), 'activity-report.csv');
+  }
+}
+
+function sendCsv(response: Response, csv: string, filename: string): void {
+  response.setHeader('Content-Type', 'text/csv; charset=utf-8');
+  response.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+  response.send(csv);
 }

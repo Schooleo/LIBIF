@@ -20,6 +20,11 @@ import {
   mapReaderAccessRiskCounts,
   mapUserCounts,
   normalizeReaderAccessReportQuery,
+  normalizeOperationsRange,
+  OPERATIONS_CSV_ROW_CAP,
+  DOCUMENTS_CSV_HEADERS,
+  USERS_CSV_HEADERS,
+  ACTIVITY_CSV_HEADERS,
   READER_ACCESS_CSV_HEADERS,
   ReportingService,
   sanitizeTraceFingerprint,
@@ -253,5 +258,94 @@ describe('Reader access reporting helpers', () => {
         })
       })
     );
+  });
+});
+
+describe('Operations reporting and CSV', () => {
+  it('normalizes inclusive-start/exclusive-end UTC ranges with the shared 31-day cap', () => {
+    const now = new Date('2026-07-23T12:00:00.000Z');
+    expect(normalizeOperationsRange({}, now)).toEqual({
+      from: new Date('2026-07-16T12:00:00.000Z'),
+      to: now
+    });
+    expect(() =>
+      normalizeOperationsRange({
+        from: '2026-07-23T12:00:00+07:00',
+        to: '2026-07-24T12:00:00.000Z'
+      })
+    ).toThrow('from must be a UTC timestamp ending in Z.');
+  });
+
+  it('uses fixed headers, deterministic ordering, safe selects, and the 1000-row cap', async () => {
+    const bookFindMany = jest.fn().mockResolvedValue([]);
+    const userFindMany = jest.fn().mockResolvedValue([]);
+    const activityFindMany = jest.fn().mockResolvedValue([]);
+    const service = new ReportingService({
+      book: { findMany: bookFindMany },
+      user: { findMany: userFindMany },
+      bookAuditEvent: { findMany: activityFindMany }
+    } as never);
+    const query = {
+      from: '2026-07-22T00:00:00.000Z',
+      to: '2026-07-23T00:00:00.000Z'
+    };
+
+    await expect(service.exportDocumentsCsv(query)).resolves.toBe(DOCUMENTS_CSV_HEADERS.join(','));
+    await expect(service.exportUsersCsv(query)).resolves.toBe(USERS_CSV_HEADERS.join(','));
+    await expect(service.exportActivityCsv(query)).resolves.toBe(ACTIVITY_CSV_HEADERS.join(','));
+
+    for (const findMany of [bookFindMany, userFindMany, activityFindMany]) {
+      expect(findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
+          take: OPERATIONS_CSV_ROW_CAP,
+          select: expect.not.objectContaining({
+            passwordHash: true,
+            objectKey: true,
+            tokenHash: true
+          })
+        })
+      );
+    }
+  });
+
+  it('returns management counts with a bounded reader scrape summary', async () => {
+    const countResults = [2, 3, 4, 5, 1, 2, 1];
+    const service = new ReportingService({
+      book: { count: jest.fn().mockResolvedValue(countResults[0]) },
+      user: { count: jest.fn().mockResolvedValue(countResults[1]) },
+      bookAuditEvent: { count: jest.fn().mockResolvedValue(countResults[2]) },
+      readerAccessEvent: {
+        count: jest
+          .fn()
+          .mockResolvedValueOnce(countResults[3])
+          .mockResolvedValueOnce(countResults[4])
+          .mockResolvedValueOnce(countResults[5])
+          .mockResolvedValueOnce(countResults[6])
+      }
+    } as never);
+
+    await expect(
+      service.getManagementDashboardSummary(
+        {
+          from: '2026-07-22T00:00:00.000Z',
+          to: '2026-07-23T00:00:00.000Z'
+        },
+        new Date('2026-07-23T12:00:00.000Z')
+      )
+    ).resolves.toEqual({
+      generatedAt: '2026-07-23T12:00:00.000Z',
+      from: '2026-07-22T00:00:00.000Z',
+      to: '2026-07-23T00:00:00.000Z',
+      documentsCreated: 2,
+      usersCreated: 3,
+      activityEvents: 4,
+      readerSecurity: {
+        total: 5,
+        rateLimited: 1,
+        scrapeSuspected: 2,
+        highRisk: 1
+      }
+    });
   });
 });

@@ -14,7 +14,11 @@ Future runtime files:
 
 Primary endpoints:
 
-- `GET /reporting/dashboard`
-- `GET /reporting/documents.csv`
-- `GET /reporting/users.csv`
-- `GET /reporting/activity.csv`
+- `GET /api/admin/dashboard/librarian?from&to`
+- `GET /api/admin/dashboard/management?from&to`
+- `GET /api/admin/reports/documents.csv?from&to`
+- `GET /api/admin/reports/users.csv?from&to`
+- `GET /api/admin/reports/activity.csv?from&to`
+- `GET /api/admin/reports/reader-access.csv?from&to&risk`
+
+Wave 5 status: all backend routes above are live with bounded UTC ranges, deterministic ordering, fixed headers, formula-neutralized CSV, safe projections, and Admin authorization where required. Generated-client/web integration remains deferred to D7-005.
