@@ -29,7 +29,7 @@ Target outcome: reach roughly 80-90% product completion, meaning the main reader
 1. Use Phase 4 to establish reader library/access and catalog contracts.
 2. Use Phase 5 to complete document lifecycle, upload, metadata editing, and taxonomy integration.
 3. Use Phase 6 to complete processing, approval, correction, and notification workflows.
-4. Use Phase 7 to fill admin operations, user management, reporting, settings, and reader polish.
+4. Use Phase 7 to complete the Reader POC first, then fill admin operations, user management, reporting, settings, and remaining polish.
 5. Use Phase 8 for integration hardening, e2e, accessibility, visual QA, docs, and demo readiness.
 
 ## Risks and Mitigations
@@ -42,20 +42,21 @@ Target outcome: reach roughly 80-90% product completion, meaning the main reader
 
 ## Current Baseline
 
-Completed foundation from earlier phases:
+Completed foundation through Phase 6:
 
 - Shared tokens and UI primitives exist for web work.
 - Main route shells and navigation structure exist.
 - Backend API foundation, OpenAPI generation, auth cookies, sessions, password reset, role checks, and seeded role accounts exist.
-- Core intake/catalog/backend modules exist in early form.
+- Core intake/catalog/document, reader/access, processing/OCR, approval/correction, notification, taxonomy starter-management, and reporting modules are integrated and verified.
+- The real worker/OCR closure gate covers Redis, MinIO, PostgreSQL, duplicate delivery, cancellation, supersession, digital extraction, scanned Vietnamese OCR, and corrupt-PDF failure.
 - Current docs are centralized under `ai_artifacts/docs`.
 
 Primary remaining product gaps:
 
-- Reader library, protected document access, reading progress, bookmarks, and document viewer flows.
-- Upload/catalog/document-management boundary deepening.
-- Processing worker/status/retry lifecycle and approval/correction workflow.
-- Notifications, taxonomy/tag management, user management, settings, dashboards, and reports.
+- Reader library state polish and responsive/accessibility coverage.
+- Document taxonomy-filter integration and explicitly gated metadata-only bulk actions.
+- Notification-center polish and any missing committed-state fanout.
+- Taxonomy risky actions, user management, date-filtered/management reporting, CSV exports, and supported settings.
 - Cross-feature integration hardening, accessibility, visual QA, and e2e coverage.
 
 ## Team Lanes and File Ownership
@@ -268,7 +269,7 @@ Goal: make the core operational workflow explicit, retryable, and visible.
 
 Canonical comprehensive execution plan: `ai_artifacts/plans/plan-phase-6-processing-approval-correction-notifications-2026-07-22.md`.
 
-Phase 6 status on 2026-07-23: complete. A/B workflows and durable notification/approval/processing foundations are merged; Member D completed activity reporting, staff unread-count integration, and generated-contract reconciliation; and the worker closure pass added isolated startup, real local Vietnamese/English OCR, atomic duplicate handling, stale cancellation/supersession guards, and the infrastructure-backed `test:worker` CI gate.
+Phase 6 status on 2026-07-23: complete. A/B workflows and durable notification/approval/processing foundations are merged; Member D completed activity reporting, staff unread-count integration, and generated-contract reconciliation; and the worker closure pass added isolated startup, real local Vietnamese/English OCR, atomic duplicate handling, stale cancellation/supersession guards, identifier-only queue payloads, private temporary-workspace cleanup, plaintext-preview removal, and the infrastructure-backed `test:worker` CI gate.
 
 D6-000 foundation status: completed on the Phase 5 Member D integration PR through `20260722062955_phase6_processing_foundation`. Member lanes must consume its file-scoped jobs/reviews, explicit terminal statuses, retry lineage, artifact model, and current-work constraints rather than introducing parallel schema shapes.
 
@@ -306,22 +307,31 @@ Validation:
 - Notification persistence tests.
 - Regression tests for auth session behavior.
 
-### Phase 7 — Admin Operations, Users, Reporting, and Settings
+### Phase 7 — Reader POC Completion and Admin Operations
 
-Goal: fill operational gaps needed for a near-complete admin product.
+Goal: close the demo-critical reader gaps while preserving the planned operational work needed for a near-complete admin product.
+
+Canonical execution plan: `ai_artifacts/plans/plan-phase-7-admin-operations-users-reporting-settings-2026-07-23.md`.
+
+Planning status: ready for execution. Reader POC gates are P0. Member D owns the single Phase 7 schema foundation and final integration; Members A/B/C retain their established reader, document/catalog, and processing/approval/notification lanes.
 
 Member A tasks:
 
-- Polish reader library filters, history, bookmarks, and empty/loading/error states.
-- Add reader-facing accessibility and responsive checks.
+- Replace the raw-PDF iframe/download UI with authorized raster-page delivery drawn onto HTML canvas.
+- Integrate the canvas page, real page count, navigation, and saved reading progress as one state machine.
+- Hydrate persisted bookmark state on catalogue detail and viewer; keep it consistent across all reader routes.
+- Add reader-facing loading/error/accessibility/responsive checks and truthful copy-protection language.
 
 Member B tasks:
 
+- Implement published-only catalogue detail and wire list search/category/tag/sort/pagination state to the route.
+- Make every catalogue record open the canonical `/catalogue/:id` detail route.
 - Finish taxonomy integration in document search and admin filters.
 - Add bulk document actions only if the single-document lifecycle is stable.
 
 Member C tasks:
 
+- Support private file-version-scoped raster derivatives only if the agreed canvas design caches them.
 - Finish notification center UI and read/unread behavior.
 - Add scheduled or event-driven notification hooks where needed.
 
@@ -330,18 +340,22 @@ Member D tasks:
 - Implement user management list/detail/role changes/deactivation with confirmation flows.
 - Implement category/tag management, merge/reassign safeguards, and risky-action confirmations.
 - Implement dashboards, report endpoints, export stubs/CSV, and settings screens.
+- Coordinate Reader POC contract freeze, generated contracts, seeded scenarios, and phase closure gates.
 
 Expected end-of-phase result:
 
+- Readers can search/browse the catalogue, open a real detail page, see correct saved state, and read through an integrated canvas without receiving a native PDF viewer or Reader download action.
 - Admins can manage users, categories, tags, reports, and key settings.
 - Librarians/admins can operate the document lifecycle without database access.
-- Reader experience has realistic account-specific state.
+- Copy protection is described honestly as controlled page rendering/casual-copy deterrence, not absolute DRM or screenshot prevention.
 
 Validation:
 
 - User-management authorization tests.
 - Taxonomy CRUD and reassignment tests.
 - Report endpoint tests using seeded/dev data.
+- Catalogue list/detail tests, authorized manifest/page-image tests, canvas interaction tests, and bookmark/progress refresh tests.
+- Manual browser inspection proving Reader viewing responses contain page images/manifest data rather than source-PDF bytes, object keys, or selectable OCR text.
 - Web e2e smoke over reader, librarian, and admin accounts.
 
 ### Phase 8 — Integration Hardening, QA, Accessibility, and Demo Readiness

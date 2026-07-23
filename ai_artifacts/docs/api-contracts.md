@@ -154,6 +154,10 @@ Source of truth: `apps/api/src/common/http-error.filter.ts`.
 - Reader access decisions can deny on `CORRECTION_REQUIRED`; the generated access-decision enum includes that state.
 - View/download token routes return application URLs, not storage-provider credentials.
 - Stream and file delivery always resolve the active file version for the document at request time.
+- The current Reader viewer still receives the source PDF through the application stream and exposes the download-token route. This is a documented Phase 7 P0 gap, not the target content-protection design.
+- Planned Phase 7 contracts are `GET /api/catalog/books/:documentId`, `GET /api/reader/documents/:documentId/state`, `GET /api/access/documents/:documentId/manifest`, and `GET /api/access/documents/:documentId/pages/:pageNumber`.
+- The planned Reader page route returns an authorized bounded raster image with private/no-store caching and never returns object keys, source-PDF bytes/URLs, or extracted OCR text. The web viewer draws it on canvas without a selectable text layer.
+- Reader access to source-file download is removed or denied by explicit role policy. Any retained staff download is a separate staff-authorized contract.
 
 ## Deferred or absent endpoint families
 
@@ -164,3 +168,6 @@ These routes are not implemented in the current runtime code and must not be tre
 - Tag duplicate-detection or merge endpoints.
 - User administration, role-change, and account-deactivation endpoints.
 - Management dashboard, report-export, and settings endpoints.
+- Published catalogue detail, one-document reader state, and protected manifest/raster-page endpoints.
+
+The approved next-contract source is `ai_artifacts/plans/plan-phase-7-admin-operations-users-reporting-settings-2026-07-23.md`. Its endpoint outline is planning-only until controllers, tests, and regenerated OpenAPI prove the runtime shapes.

@@ -3,6 +3,8 @@
 Date: 2026-07-22  
 Planning mode: `$plan` direct  
 Phase owner / integration lane: Member D unless the team assigns a separate integrator
+Final status: **Complete — finalized 2026-07-23**
+Closure commit: `c807bbc` (`fix: make Phase 6 worker closure trustworthy`)
 
 ## Requirements Summary
 
@@ -15,7 +17,7 @@ This plan consumes rather than rebuilds the Phase 5 contracts:
 - The processing queue currently produces BullMQ `book-uploaded` jobs but has no consumer (`apps/api/src/modules/processing/processing.queue.ts:6-25`).
 - Current processing advancement is a guarded manual simulation that moves queued jobs to OCR and then directly to completion (`apps/api/src/modules/processing/processing.service.ts:48-133`).
 - Approval currently provides only current queue/detail reads (`apps/api/src/modules/approval/approval.controller.ts:17-31`).
-- The Prisma `Notification` model exists, but `NotificationsService` still stores records in a process-local array (`apps/api/prisma/schema.prisma:268-284`; `apps/api/src/modules/notifications/notifications.service.ts:5-47`).
+- At Phase 6 planning time, the Prisma `Notification` model existed while `NotificationsService` still used a process-local array; the closure record below documents its replacement with durable recipient-scoped persistence.
 - Recent Phase 5 closure fixes route intake, replacement, and requeue mutations through the authenticated API boundary; replacement/requeue supersede older active work, clear stale pending approvals, and expose only the latest operational job/review per document.
 
 ## Phase 5 Entry Baseline
@@ -472,3 +474,14 @@ The remaining Phase 6 blockers are resolved:
 - CI has a dedicated worker-integration job that starts the Docker Compose infrastructure, installs Poppler, and runs the same gate.
 
 Phase 6 closure is now supported by reproducible worker evidence rather than a mocked advance endpoint.
+
+Final closure verification passed Prisma validation/generation/migration status, OpenAPI/client generation, root lint, 15 API unit suites/82 tests, 15 web files/62 tests, API/web production builds, 7 API e2e suites/30 tests, the worker integration suite with 5 infrastructure-backed scenarios, and `git diff --check`. Phase 7 planning is authoritative in `ai_artifacts/plans/plan-phase-7-admin-operations-users-reporting-settings-2026-07-23.md`.
+
+### OCR Privacy Hardening Record — 2026-07-23
+
+- Migration `20260723050000_phase6_ocr_privacy_hardening` removes legacy plaintext `textPreview` values from artifact metadata.
+- Queue producers publish only `bookId`, `fileId`, and `processingJobId`; storage object keys are resolved authoritatively from PostgreSQL and no longer appear in Redis payloads or OCR queue logs.
+- The worker persists full extracted text only in the private job-scoped object, not in duplicate PostgreSQL metadata.
+- OCR PDF, rendered-page, and embedded-text temp files use private workspace/file permissions. Normal cleanup remains in `finally`, while worker initialization removes dead-process directories and stale legacy workspaces.
+- POC smoke evidence paused the real queue, inspected the identifier-only payload, resumed processing, reached `PENDING_APPROVAL`, observed null artifact metadata, confirmed no residual OCR temp directory, and confirmed the MinIO bucket rejects anonymous policy access.
+- Fresh verification passed root lint, 17 API suites/86 tests, 15 web files/62 tests, API/web production builds, 7 API e2e suites/31 tests, the worker integration suite with 5 scenarios, migration status, Make dev supervision probes, privacy scans, and `git diff --check`.

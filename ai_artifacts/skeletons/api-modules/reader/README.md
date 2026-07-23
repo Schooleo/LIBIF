@@ -19,6 +19,13 @@ Primary endpoints:
 - `GET /reader/library`
 - `GET /reader/history`
 - `GET /reader/bookmarks`
+- Phase 7 target: `GET /reader/documents/:documentId/state`
 - `POST /reader/bookmarks`
 - `DELETE /reader/bookmarks/:documentId`
 - `PATCH /reader/progress/:documentId`
+
+Phase 7 notes:
+
+- The one-document state read hydrates `bookmarked` and saved progress on catalogue detail and viewer entry.
+- Bookmark writes remain idempotent; refreshes must show persisted state rather than component defaults.
+- Progress uses the protected page manifest's real page count and updates only after a page renders successfully.

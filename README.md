@@ -18,8 +18,9 @@ LIBIF is a TypeScript monorepo for an integrated digital-library application. Th
 | Phase 4 — Reader/access/catalog foundations | Complete | Reader state, protected access, catalogue and dashboard foundations. |
 | Phase 5 — Document lifecycle and taxonomy | Complete | Intake, file versioning, metadata, taxonomy, and persisted workflow schema. |
 | Phase 6 — Processing and approval loop | Complete | Real worker/OCR, approval/correction, durable notifications, reporting, and worker integration gate. |
+| Phase 7 — Reader POC and admin operations | Planned | Functional catalogue/detail, protected canvas page rendering, correct bookmark/progress state, plus user/taxonomy/reporting/settings operations. |
 
-Next likely product direction is Reader discovery/personal-library work unless staff/user administration is prioritized first.
+The canonical next execution plan is `ai_artifacts/plans/plan-phase-7-admin-operations-users-reporting-settings-2026-07-23.md`. Reader POC gates are the first priority: catalogue discovery/detail must work, the viewer must render authorized raster pages on canvas instead of embedding the raw PDF, and persisted bookmark/progress state must hydrate correctly.
 
 ## Local setup
 
@@ -39,9 +40,13 @@ docker compose up -d
 npm run db:migrate
 npm run db:seed
 npm run dev
+# In another terminal:
+npm run dev:worker -w apps/api
 ```
 
 The API worker host also requires Poppler commands (`pdfinfo`, `pdftotext`, and `pdftoppm`). Tesseract.js and the English/Vietnamese language models are installed through npm and do not fetch language data at runtime.
+
+OCR stays inside the LIBIF deployment boundary: Redis jobs contain database identifiers only, the worker resolves private object-storage keys from PostgreSQL, extracted text is stored only as a private artifact object, and PostgreSQL metadata does not duplicate a plaintext preview. Temporary PDF/page files use private permissions, are removed after every outcome, and abandoned worker directories are purged on worker startup.
 
 API runs on `http://localhost:3001` and web runs on the Next.js dev port, usually `http://localhost:3000`.
 
@@ -81,9 +86,10 @@ The repository includes a `Makefile` for common local workflows:
 | `make db-seed` | Seed development users and starter categories. |
 | `make prisma-generate` | Generate Prisma client. |
 | `make db-reset` | Reset local DB, run migrations, and seed data. |
-| `make dev` | Start all workspace dev servers. |
+| `make dev` | Start the web app, HTTP API, and background OCR worker together. |
 | `make api` | Start only the NestJS API dev server. |
 | `make web` | Start only the Next.js web dev server. |
+| `make worker` | Start only the background PDF/OCR worker in watch mode. |
 | `make test-worker` | Run the Redis/MinIO/PostgreSQL/PDF/OCR worker integration gate. |
 | `make verify` | Run lint, unit/component tests, API e2e, worker integration, and build. |
 | `make clean` | Remove generated build/test artifacts only. |
@@ -195,13 +201,14 @@ For a manual smoke test:
 ## Follow-up features
 
 - Production password-reset email provider.
-- Reader discovery and personal library.
-- Secure PDF reader with presigned URLs and reading-progress mutation.
-- Upload/Catalog module deepening and document metadata workflows.
 - OCR layout/compression enhancements beyond the current extracted-text artifact.
 - Full catalog search and full-text OCR indexing.
+- Phase 7 reader POC completion: functional catalogue search/filter/pagination and direct detail routes.
+- Authorized server-rendered page images drawn to canvas, with integrated real-page progress and no Reader raw-PDF/download control or selectable text layer.
+- Correct persisted bookmark state on catalogue detail, viewer, library, history, and bookmark routes.
 - Staff/user administration, role changes, and account deactivation.
-- Management dashboard metrics.
+- Category reassignment/tag merge safeguards, management reports/CSV, and supported settings.
+- Phase 8 integration hardening, accessibility/visual QA, release notes, and demo readiness.
 
 ## GitHub Actions CI notifications
 

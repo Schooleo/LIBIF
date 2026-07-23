@@ -61,7 +61,7 @@ This document records current runtime workflow truth from the merged Phase 6 cod
   - `ProcessingQueue` owns queue publication.
   - `ProcessingProcessor` owns worker execution, stage/progress mutation, artifact persistence, and approval-review creation on success.
   - `ProcessingService` owns read models, retry, cancel, and history projection.
-- **Notes:** the claim is atomic, duplicate deliveries skip after the first claim, and cancellation/replacement state is rechecked before artifact and approval side effects. Artifacts are file/job-scoped through `ProcessingArtifact`; success persists one `EXTRACTED_TEXT` artifact with `EMBEDDED_TEXT` or real `OCR` metadata, while corrupt/unreadable PDFs fail without synthetic text.
+- **Notes:** the queue fact carries only `bookId`, `fileId`, and `processingJobId`; the worker resolves private storage identity from PostgreSQL. The claim is atomic, duplicate deliveries skip after the first claim, and cancellation/replacement state is rechecked before artifact and approval side effects. Artifacts are file/job-scoped through `ProcessingArtifact`; success persists one private `EXTRACTED_TEXT` object with `EMBEDDED_TEXT` or real `OCR` metadata but no plaintext JSON preview, while corrupt/unreadable PDFs fail without synthetic text. OCR temp files are private and cleaned after normal, failure, and abandoned-worker paths.
 
 ## Approval, rejection, publication, and superseded review rounds
 
@@ -87,18 +87,21 @@ This document records current runtime workflow truth from the merged Phase 6 cod
 - **Ownership:** `NotificationsService` owns Prisma persistence, recipient scoping, unread counts, and read-state mutation.
 - **Notes:** notifications are now durable across process restarts; service methods enforce recipient ownership for single-item read actions.
 
-## Reader access, protected file delivery, and personal collections
+## Reader access, protected page delivery, and personal collections
 
 - **Access decision states:** access_granted, access_denied.
 - **Reader-visible document states:** DRAFT, PENDING_PROCESSING, PROCESSING, PENDING_APPROVAL, CORRECTION_REQUIRED, PUBLISHED, REJECTED.
-- **Commands:** get_access_decision, create_view_token, create_download_token, stream_document, download_document, list_library, list_history, list_bookmarks, add_bookmark, remove_bookmark, update_progress.
-- **Events:** AccessGranted, AccessDenied, BookmarkAdded, BookmarkRemoved, ProgressUpdated.
+- **Current commands:** get_access_decision, create_view_token, create_download_token, stream_document, download_document, list_library, list_history, list_bookmarks, add_bookmark, remove_bookmark, update_progress.
+- **Phase 7 target commands:** get_catalogue_detail, get_reader_document_state, get_page_manifest, render_page_image, render_canvas_page, add_bookmark, remove_bookmark, update_progress.
+- **Events:** AccessGranted, AccessDenied, PageRendered, BookmarkAdded, BookmarkRemoved, ProgressUpdated.
 - **Transitions:**
   - Readers are allowed only for `PUBLISHED` documents.
   - Admins and librarians are allowed to access unpublished documents through the same access boundary.
   - Bookmark and reading-progress records apply only to published-library reads.
+  - A successful page render moves the integrated viewer to that page and only then persists progress using the manifest page count.
+  - Source PDF download is not a Reader transition; retained staff download requires a separate role policy.
 - **Ownership:** `AccessService` owns reader/staff access decisions plus protected file delivery; `ReaderService` owns library, bookmarks, and reading progress.
-- **Notes:** current token generation is request-time and short-lived by convention; browser code consumes protected stream/download URLs rather than direct storage credentials.
+- **Notes:** current token generation and raw-PDF stream/download are Phase 7 replacement targets. The target browser consumes authorized page images and draws them on canvas without receiving source-PDF bytes, storage credentials, object keys, or selectable OCR text. Canvas deters casual copying but does not prevent screenshots or determined pixel capture.
 
 ## Dashboard and reporting read model
 

@@ -41,8 +41,8 @@ Last updated: 2026-07-23
 - `ProcessingModule` owns queue publication, processing-job reads, retry/cancel/history, worker orchestration, and OCR artifact persistence.
 - `ApprovalModule` owns approval review reads and decision commands.
 - `NotificationsModule` owns persisted notification reads, unread counts, and read-state updates.
-- `AccessModule` owns reader/staff access decisions plus protected stream/download delivery for active files.
-- `ReaderModule` owns reader library, bookmarks, and reading-progress persistence.
+- `AccessModule` owns reader/staff access decisions plus current protected raw-PDF delivery. Phase 7 keeps ownership here while replacing Reader delivery with authorized raster-page manifest/page endpoints.
+- `ReaderModule` owns reader library, bookmarks, and reading-progress persistence; Phase 7 adds a one-document personalized-state read rather than defaulting UI state.
 - `ReportingModule` owns read-only dashboard aggregation.
 - `TaxonomyModule` owns staff selector contracts and starter admin category/tag management.
 - `BooksModule` remains a compatibility-only intake/list boundary and should not regain primary ownership.
@@ -52,17 +52,18 @@ Last updated: 2026-07-23
 - Prisma models include `Book`, `BookFile`, `ProcessingJob`, `ProcessingArtifact`, `ApprovalReview`, `Notification`, `BookAuditEvent`, reader progress/bookmarks, auth/session models, and taxonomy joins.
 - `ProcessingJob` is now file-scoped through `bookFileId`, with lineage fields `attemptNumber`, `retryOfJobId`, and supersession markers.
 - `ApprovalReview` is file/job-scoped and keeps `round`, `reason`, `requestedChanges`, `decidedAt`, and `supersededAt`.
-- `ProcessingArtifact` persists extracted text or OCR artifacts with bucket/object-key identity and metadata.
+- `ProcessingArtifact` persists private extracted-text/OCR object identity, checksum, language, page count, and extraction method; plaintext previews are not duplicated in JSON metadata.
 - Notifications are now durable in Prisma instead of process-local memory.
 - PostgreSQL remains the single source of truth; no frontend code reads the database directly.
 
 ## Queue, worker, and storage boundary
 
-- `ProcessingQueue` publishes BullMQ jobs on the `pdf-processing` queue when `REDIS_URL` is configured.
+- `ProcessingQueue` publishes identifier-only BullMQ jobs on the `pdf-processing` queue when `REDIS_URL` is configured; storage bucket/object keys are resolved from PostgreSQL by the worker and are not copied into Redis payloads or queue logs.
 - `worker.main.ts` boots `WorkerModule`, so HTTP `AppModule` does not instantiate a BullMQ consumer.
 - `ProcessingProcessor` atomically claims queued jobs, rechecks active file/job state around storage and persistence side effects, extracts text through the OCR port, stores job-scoped artifact objects through `StorageService`, and creates pending approval rounds on success.
+- OCR workspaces are process-owned private directories with private PDF/page permissions, normal-path `finally` cleanup, and dead-process/stale-legacy cleanup at worker startup.
 - `StorageService` remains the only storage boundary; browsers never receive bucket credentials.
-- Protected reading/downloading goes through `AccessModule`, which resolves the active file and streams the PDF through the API.
+- Current protected reading/downloading goes through `AccessModule`, which resolves the active file and streams the PDF through the API. This is a known POC gap: Phase 7 must stop delivering the source PDF to Reader viewers and render authorized server-side raster pages on canvas instead.
 
 ## Reporting read-model boundary
 
@@ -85,6 +86,12 @@ Last updated: 2026-07-23
 3. Approval currently exposes two publish-like commands (`approve` and `approve-and-publish`) without a separate persisted non-published approved state.
 4. Access-token generation is request-time string construction; there is no persisted token ledger or revocation model beyond document-status checks and token-shape validation.
 5. `BooksModule` remains as a live compatibility surface and continues to duplicate part of the intake boundary.
+6. Catalogue cards have no functional detail link, and detail/viewer routes scan the first catalogue list page instead of using direct detail contracts.
+7. The Reader viewer embeds the raw PDF, exposes a download action, and has a separate hard-coded page tracker that does not control the embedded viewer.
+8. Catalogue detail and viewer bookmark controls default to false because they do not hydrate one-document persisted state.
+9. `User` has no deactivation marker or user-administration audit history; Phase 7 D7-000 owns that schema foundation and AuthModule integration.
+10. Category deletion/reassignment, tag duplicate review/merge, management reporting/CSV, and persisted settings do not yet have runtime contracts.
+11. Settings must distinguish safe database-backed product settings from deployment-owned secrets and security configuration; Phase 7 must not create an undocumented environment override.
 
 ## Migration strategy status
 
@@ -92,9 +99,11 @@ Last updated: 2026-07-23
 2. Phase 2 route shells, auth/session boundary scaffolding, and generated-contract tooling remain the integration base.
 3. Phase 3 authentication and password-reset flows remain the current auth baseline.
 4. Phase 4 reader/access/catalog/dashboard foundations remain merged.
-5. Phase 5 document lifecycle, taxonomy selectors, upload boundary, and persisted workflow tables remain the basis for current Phase 6 work.
+5. Phase 5 document lifecycle, taxonomy selectors, upload boundary, and persisted workflow tables remain the base consumed by the completed Phase 6 workflow and planned Phase 7 work.
 6. Phase 6 adds an isolated worker bootstrap, real embedded-text/OCR extraction, persisted notification reads, approval commands, processing lineage/artifacts, and runtime correction-loop reuse.
 7. The Phase 6 worker/OCR closure gate is reproducible through `npm run test:worker -w apps/api` and its CI job.
+8. Phase 7 follows `ai_artifacts/plans/plan-phase-7-admin-operations-users-reporting-settings-2026-07-23.md`: Reader POC gates come first; `CatalogModule` adds published-only detail, `AccessModule` serves authorized raster pages, `ReaderModule` hydrates bookmark/progress state, and the web viewer draws pages on canvas without a Reader raw-PDF/download path.
+9. Existing Phase 7 admin decisions remain: one schema foundation precedes user administration/settings, risky taxonomy actions remain in `TaxonomyModule`, reporting remains read-only, and exports are bounded synchronous CSV rather than a second worker subsystem.
 
 ## Anti-fragmentation decisions
 
