@@ -150,8 +150,8 @@ export class PdftotextOcrEngineAdapter implements OcrEngine, OnModuleInit {
     const worker = await createWorker(this.languages, OEM.LSTM_ONLY, {
       langPath: languageDataPath,
       cacheMethod: 'none',
-      logger: (message) => {
-        if (message.status === 'recognizing text') {
+      logger: (message: { status?: string; progress?: number }) => {
+        if (message.status === 'recognizing text' && typeof message.progress === 'number') {
           this.logger.debug(`OCR progress ${Math.round(message.progress * 100)}%`);
         }
       }
@@ -161,7 +161,7 @@ export class PdftotextOcrEngineAdapter implements OcrEngine, OnModuleInit {
       await worker.setParameters({ tessedit_pageseg_mode: PSM.AUTO });
       const pageTexts: string[] = [];
       for (const pageImage of pageImages) {
-        const recognition = await withTimeout(
+        const recognition: any = await withTimeout(
           worker.recognize(pageImage),
           this.commandTimeoutMs,
           'OCR recognition timed out.'

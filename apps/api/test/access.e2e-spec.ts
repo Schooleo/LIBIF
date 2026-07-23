@@ -39,8 +39,11 @@ describe('AccessModule (e2e)', () => {
     prisma = app.get(PrismaService);
     hasher = app.get(PasswordHasher);
 
+    await prisma.$executeRawUnsafe('TRUNCATE TABLE "ReaderAccessEvent", "UserAdministrationEvent" CASCADE;').catch(() => {});
     await prisma.passwordResetToken.deleteMany();
     await prisma.userSession.deleteMany();
+    await prisma.readingProgress.deleteMany();
+    await prisma.bookmark.deleteMany();
     await prisma.processingJob.deleteMany();
     await prisma.bookFile.deleteMany();
     await prisma.bookTag.deleteMany();
@@ -85,9 +88,24 @@ describe('AccessModule (e2e)', () => {
     const aCookie = adminRes.headers['set-cookie'];
     adminCookie = Array.isArray(aCookie) ? aCookie[0].split(';')[0] : (aCookie?.split(';')[0] ?? '');
 
-    // Create published & draft & correction books
+    // Create published & draft & correction books with file attachment
     const pub = await prisma.book.create({
-      data: { title: 'Published Document', status: 'PUBLISHED', createdById: adminUser.id },
+      data: {
+        title: 'Published Document',
+        status: 'PUBLISHED',
+        createdById: adminUser.id,
+        files: {
+          create: {
+            originalFilename: 'published.pdf',
+            bucket: 'documents',
+            objectKey: 'published.pdf',
+            mimeType: 'application/pdf',
+            sizeBytes: BigInt(1024),
+            checksumSha256: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
+            status: 'ACTIVE',
+          },
+        },
+      },
     });
     publishedBookId = pub.id;
 
@@ -145,24 +163,37 @@ describe('AccessModule (e2e)', () => {
     expect(adminCorrRes.body.allowed).toBe(true);
   });
 
-  it('POST view-token and download-token succeed when allowed and return 403 when denied', async () => {
-    await request(app.getHttpServer())
-      .post(`/api/access/documents/${publishedBookId}/view-token`)
+  it('GET /api/access/documents/:documentId/manifest returns document manifest for published doc', async () => {
+    const manifestRes = await request(app.getHttpServer())
+      .get(`/api/access/documents/${publishedBookId}/manifest`)
       .set('Cookie', readerCookie)
-      .expect(200)
-      .expect((res) => {
-        expect(res.body.token).toBeDefined();
-        expect(res.body.url).toBeDefined();
-      });
+      .expect(200);
 
+    expect(manifestRes.body.documentId).toBe(publishedBookId);
+    expect(manifestRes.body.pageCount).toBeDefined();
+    expect(manifestRes.body.pages).toBeDefined();
+  });
+
+  it('GET /api/access/documents/:documentId/pages/:pageNumber delivers watermarked page image with no-store headers', async () => {
+    const pageRes = await request(app.getHttpServer())
+      .get(`/api/access/documents/${publishedBookId}/pages/1`)
+      .set('Cookie', readerCookie)
+      .expect(200);
+
+    expect(pageRes.headers['content-type']).toContain('image/png');
+    expect(pageRes.headers['cache-control']).toBe('private, no-store');
+    expect(pageRes.headers['x-trace-fingerprint']).toBeDefined();
+  });
+
+  it('POST download-token is denied (403) for READER role and allowed for ADMIN', async () => {
     await request(app.getHttpServer())
-      .post(`/api/access/documents/${draftBookId}/view-token`)
+      .post(`/api/access/documents/${publishedBookId}/download-token`)
       .set('Cookie', readerCookie)
       .expect(403);
 
     await request(app.getHttpServer())
-      .post(`/api/access/documents/${correctionBookId}/view-token`)
-      .set('Cookie', readerCookie)
-      .expect(403);
+      .post(`/api/access/documents/${publishedBookId}/download-token`)
+      .set('Cookie', adminCookie)
+      .expect(200);
   });
 });

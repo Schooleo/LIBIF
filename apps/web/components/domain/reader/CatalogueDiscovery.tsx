@@ -212,7 +212,9 @@ export function CatalogueDiscovery({ initialData, categories, tags, currentParam
 
       {/* Catalogue Results */}
       {initialData.items.length === 0 ? (
-        <EmptyState title="No books found matching your filters." description="Try adjusting your search criteria or resetting filters." />
+        <EmptyState title="No books found matching your filters.">
+          Try adjusting your search criteria or resetting filters.
+        </EmptyState>
       ) : viewMode === 'grid' ? (
         <div
           style={{

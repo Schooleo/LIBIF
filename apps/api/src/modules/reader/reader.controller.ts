@@ -8,6 +8,7 @@ import { BookmarkDto } from './dto/bookmark.dto';
 import { ReaderLibraryItemDto, ReaderLibraryResponseDto, ReadingProgressStateDto } from './dto/reader-library-item.dto';
 import { ReaderLibraryQueryDto } from './dto/reader-library-query.dto';
 import { ReadingProgressDto } from './dto/reading-progress.dto';
+import { ReaderDocumentStateDto } from './dto/reader-document-state.dto';
 import { ReaderService } from './reader.service';
 
 @ApiTags('Reader')
@@ -40,6 +41,16 @@ export class ReaderController {
   @ApiOkResponse({ type: [ReaderLibraryItemDto] })
   getBookmarks(@CurrentUser() user: SessionUserDto): Promise<ReaderLibraryItemDto[]> {
     return this.readerService.getBookmarks(user.id);
+  }
+
+  @Get('documents/:documentId/state')
+  @ApiOperation({ summary: 'Get reader personalized state (bookmarked, progress) for one document.' })
+  @ApiOkResponse({ type: ReaderDocumentStateDto })
+  getDocumentState(
+    @CurrentUser() user: SessionUserDto,
+    @Param('documentId') documentId: string,
+  ): Promise<ReaderDocumentStateDto> {
+    return this.readerService.getDocumentState(user.id, documentId);
   }
 
   @Post('bookmarks')

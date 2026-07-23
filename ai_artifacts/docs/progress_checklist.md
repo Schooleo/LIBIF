@@ -210,7 +210,12 @@ Member D Phase 5 is complete and integrated with the merged Member A/B/C lanes; 
 - [x] Wave 1–2 evidence and ownership handoffs are recorded in `ai_artifacts/docs/phase-7-wave-1-2-foundation-contract-freeze.md`.
 - [x] Wave 1–2 full regression: migration deploy/status and seed, empty Prisma diff, root lint, 20 API suites/91 tests, 15 web files/62 tests, API/web/shared builds, 8 API e2e suites/36 tests, worker suite/5 scenarios, OpenAPI/client generation, and `git diff --check`.
 - [x] The canonical plan now dispatches every member by Wave 1–7 with task IDs, dependency gates, handoffs, current focus, and explicit cross-lane stop boundaries.
-- [ ] Wave 3 parallel P0 implementation is next; no planned Reader page/detail/state route is marked live yet.
+- [x] Member C's Wave 3 C7-001/C7-002 renderer baseline is merged into `dev` and this branch; root `AppModule` still does not import `RenderingModule`, which remains an Access-owned integration handoff.
+- [x] Member D Wave 3 users backend is live at `GET /api/admin/users` and `GET /api/admin/users/:userId`; D7-004 product-settings persistence and normalization are implemented without generated-client churn.
+- [x] The Wave 3 contract exception is explicit: runtime users routes are not generated-client-ready, and the unchanged OpenAPI/client hashes preserve D7-005 as the single cross-lane refresh.
+- [ ] `GET/PATCH /api/admin/settings/general` remains gated on Member A's tested watermark-signing and scrape-protection capability source; no hard-coded or inferred capability state is published.
+- [ ] Reader page/detail/state routes remain pending; no protected Reader manifest/raster route is marked live yet.
+- [x] Member D Wave 3 regression: root lint; 29 API suites/124 tests; 15 web files/62 tests; API/web/shared builds; 9 API e2e suites/41 tests; worker OCR/privacy suite/5 scenarios; Prisma validate/status; unchanged schema, migrations, rendering, OpenAPI, and generated client; `git diff --check`; architect approval; and post-cleanup re-verification.
 
 ### Phase 4 Member D verification
 

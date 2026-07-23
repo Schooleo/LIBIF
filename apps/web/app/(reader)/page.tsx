@@ -1,19 +1,20 @@
 import { PageHeader } from '../../components/layout';
 import { Badge, Card } from '../../components/ui';
 import { fetchPublicBooks, fetchReaderLibrary } from '../../lib/api-server';
+import type { PublicBookListItemDto } from '../../lib/api-types';
 import { ContinueReading } from '../../components/domain/reader';
 
 export const dynamic = 'force-dynamic';
 
 export default async function ReaderHomePage() {
-  let publicBooks: Array<{ id: string; title: string; authors: string[]; publisher?: string; publishedYear?: number; status?: string }> = [];
+  let publicBooks: PublicBookListItemDto[] = [];
   let libraryItems: any[] = [];
   let readingCount = 0;
   let bookmarkedCount = 0;
 
   try {
     const publicRes = await fetchPublicBooks();
-    publicBooks = (publicRes as any) || [];
+    publicBooks = publicRes.items;
   } catch (err) {
     console.error('Failed to load public books for reader home', err);
   }
@@ -213,7 +214,7 @@ export default async function ReaderHomePage() {
                     </div>
                     {book.authors?.length ? (
                       <p style={{ color: 'var(--color-text-secondary, #414846)', fontSize: '0.85rem', margin: '0.35rem 0' }}>
-                        By {book.authors.join(', ')}
+                        By {book.authors.map((author) => author.name).join(', ')}
                       </p>
                     ) : null}
                   </div>

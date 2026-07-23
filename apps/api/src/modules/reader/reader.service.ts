@@ -4,6 +4,7 @@ import { BookmarkDto } from './dto/bookmark.dto';
 import { ReaderLibraryFilter, ReaderLibraryQueryDto } from './dto/reader-library-query.dto';
 import { ReaderLibraryItemDto, ReaderLibraryResponseDto, ReadingProgressStateDto } from './dto/reader-library-item.dto';
 import { ReadingProgressDto } from './dto/reading-progress.dto';
+import { ReaderDocumentStateDto } from './dto/reader-document-state.dto';
 
 @Injectable()
 export class ReaderService {
@@ -174,6 +175,35 @@ export class ReaderService {
         updatedAt: book.updatedAt.toISOString(),
       };
     });
+  }
+
+  async getDocumentState(userId: string, documentId: string): Promise<ReaderDocumentStateDto> {
+    const book = await this.prisma.book.findUnique({ where: { id: documentId } });
+    if (!book) {
+      throw new NotFoundException(`Document with ID ${documentId} not found`);
+    }
+
+    const bookmark = await this.prisma.bookmark.findUnique({
+      where: { userId_bookId: { userId, bookId: documentId } },
+    });
+
+    const rp = await this.prisma.readingProgress.findUnique({
+      where: { userId_bookId: { userId, bookId: documentId } },
+    });
+
+    return {
+      documentId,
+      bookmarked: !!bookmark,
+      progress: rp
+        ? {
+            currentPage: rp.currentPage,
+            totalPages: rp.totalPages,
+            percentage: rp.percentage,
+            status: rp.status,
+            lastReadAt: rp.lastReadAt.toISOString(),
+          }
+        : null,
+    };
   }
 
   /**

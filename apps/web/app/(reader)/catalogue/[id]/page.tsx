@@ -1,7 +1,7 @@
 import { PageHeader } from '../../../../components/layout';
 import { Badge, Card, InlineAlert } from '../../../../components/ui';
-import { fetchAccessDecision, fetchPublicBookDetail } from '../../../../lib/api-server';
-import type { PublicBookDetailDto } from '../../../../lib/api-types';
+import { fetchAccessDecision, fetchPublicBookDetail, fetchReaderDocumentState } from '../../../../lib/api-server';
+import type { PublicBookDetailDto, ReaderDocumentStateDto } from '../../../../lib/api-types';
 import { BookmarkButton } from '../../../../components/domain/reader';
 
 export const dynamic = 'force-dynamic';
@@ -32,6 +32,7 @@ export default async function CatalogueDetailPage({ params }: PageProps) {
     reason: 'Checking access eligibility...',
   };
   let book: PublicBookDetailDto | null = null;
+  let readerState: ReaderDocumentStateDto | null = null;
   let errorMsg: string | null = null;
 
   try {
@@ -44,6 +45,12 @@ export default async function CatalogueDetailPage({ params }: PageProps) {
     book = await fetchPublicBookDetail(id);
   } catch (err) {
     errorMsg = (err as Error).message;
+  }
+
+  try {
+    readerState = await fetchReaderDocumentState(id);
+  } catch {
+    // Public metadata remains useful when personalized state is unavailable.
   }
 
   const title = book?.title || `Document ${id}`;
@@ -118,7 +125,7 @@ export default async function CatalogueDetailPage({ params }: PageProps) {
             </div>
 
             <div className="ui-cluster" style={{ alignItems: 'center' }}>
-              <BookmarkButton documentId={id} />
+              <BookmarkButton documentId={id} initialBookmarked={readerState?.bookmarked ?? false} />
             </div>
           </div>
 
@@ -166,4 +173,3 @@ export default async function CatalogueDetailPage({ params }: PageProps) {
     </section>
   );
 }
-

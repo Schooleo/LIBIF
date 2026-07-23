@@ -1,6 +1,6 @@
 import { PageHeader } from '../../../../../components/layout';
 import { Card, InlineAlert } from '../../../../../components/ui';
-import { fetchAccessDecision, fetchPublicBooks } from '../../../../../lib/api-server';
+import { fetchAccessDecision, fetchPublicBookDetail, fetchReaderDocumentState } from '../../../../../lib/api-server';
 import { ProtectedDocumentViewer } from '../../../../../components/domain/reader';
 
 export const dynamic = 'force-dynamic';
@@ -49,6 +49,7 @@ export default async function DocumentViewPage({ params }: PageProps) {
     allowed: false,
     reason: 'Verifying access eligibility...',
   };
+  let readerState: { bookmarked: boolean; progress?: { currentPage: number } | null } | null = null;
   let title = `Document ${id}`;
 
   try {
@@ -58,8 +59,13 @@ export default async function DocumentViewPage({ params }: PageProps) {
   }
 
   try {
-    const books = await fetchPublicBooks();
-    const book = books.find((b: any) => b.id === id);
+    readerState = await fetchReaderDocumentState(id);
+  } catch {
+    // Non-critical if reader state cannot be loaded
+  }
+
+  try {
+    const book = await fetchPublicBookDetail(id);
     if (book?.title) {
       title = book.title;
     }
@@ -114,7 +120,12 @@ export default async function DocumentViewPage({ params }: PageProps) {
 
   return (
     <section className="ui-stack">
-      <ProtectedDocumentViewer documentId={id} title={title} />
+      <ProtectedDocumentViewer
+        documentId={id}
+        title={title}
+        initialPage={readerState?.progress?.currentPage ?? 1}
+        bookmarked={readerState?.bookmarked ?? false}
+      />
     </section>
   );
 }

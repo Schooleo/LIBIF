@@ -1,6 +1,6 @@
 import { headers } from 'next/headers';
 import { createLibifApiClient, apiErrorMessage } from './api-client';
-import type { AccessDecisionDto, AdminBookListItemDto, DocumentDetailResponseDto, DocumentListQuery, LibrarianDashboardSummaryDto, NotificationResponseDto, PagedBookListDto, PagedDocumentListResponseDto, PublicBookDetailDto, PublicBookListItemDto, ReaderLibraryItemDto, ReaderLibraryResponseDto, SessionDto, TaxonomyCategoryDto, TaxonomyTagDto, UnreadNotificationCountDto } from './api-types';
+import type { AccessDecisionDto, AdminBookListItemDto, DocumentDetailResponseDto, DocumentListQuery, LibrarianDashboardSummaryDto, NotificationResponseDto, PagedBookListDto, PagedDocumentListResponseDto, PublicBookDetailDto, ReaderDocumentStateDto, ReaderLibraryItemDto, ReaderLibraryResponseDto, SessionDto, TaxonomyCategoryDto, TaxonomyTagDto, UnreadNotificationCountDto } from './api-types';
 import { getDevAuthHeaders } from './auth/session';
 
 type ReaderLibraryQuery = { filter?: 'ALL' | 'READING' | 'BOOKMARKED' | 'COMPLETED'; search?: string; page?: number; limit?: number };
@@ -49,13 +49,13 @@ export async function fetchPublicBooks(query?: PublicCatalogQuery): Promise<Page
 
 export async function fetchPublicBookDetail(documentId: string): Promise<PublicBookDetailDto> {
   const client = await createServerClient();
-  const { data, error } = await client.GET('/api/catalog/books/{documentId}', {
+  // Wave 3 freezes runtime routes before the cross-lane OpenAPI refresh in D7-005.
+  const { data, error } = await (client as any).GET('/api/catalog/books/{documentId}', {
     params: { path: { documentId } }
   });
   if (error) throw new Error(apiErrorMessage(error, 'Public book detail request failed'));
   return data as PublicBookDetailDto;
 }
-
 
 export async function fetchLibrarianDashboardSummary(): Promise<LibrarianDashboardSummaryDto> {
   const client = await createServerClient();
@@ -78,6 +78,15 @@ export async function fetchAccessDecision(documentId: string): Promise<AccessDec
   });
   if (error) throw new Error(apiErrorMessage(error, 'Access decision request failed'));
   return data as AccessDecisionDto;
+}
+
+export async function fetchReaderDocumentState(documentId: string): Promise<ReaderDocumentStateDto> {
+  const client = await createServerClient();
+  const { data, error } = await (client as any).GET('/api/reader/documents/{documentId}/state', {
+    params: { path: { documentId } },
+  });
+  if (error) throw new Error(apiErrorMessage(error, 'Reader state request failed'));
+  return data as ReaderDocumentStateDto;
 }
 
 export async function fetchReaderLibrary(query?: ReaderLibraryQuery): Promise<ReaderLibraryResponseDto> {
