@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   HttpCode,
+  HttpException,
   Inject,
   Param,
   ParseIntPipe,
@@ -73,21 +74,28 @@ export class AccessController {
     @Res() res: Response,
   ): Promise<void> {
     const sessionId = (req.cookies as Record<string, string> | undefined)?.['libif_session'];
-    const pageResult = await this.accessService.getProtectedPage(
-      user.id,
-      user.role,
-      sessionId,
-      documentId,
-      pageNumber,
-    );
 
-    res.setHeader('Content-Type', pageResult.contentType);
-    res.setHeader('Cache-Control', pageResult.cacheControl);
-    res.setHeader('X-Trace-Fingerprint', pageResult.traceFingerprint);
-    res.send(pageResult.content);
+    try {
+      const pageResult = await this.accessService.getProtectedPage(
+        user.id,
+        user.role,
+        sessionId,
+        documentId,
+        pageNumber,
+      );
+
+      res.setHeader('Content-Type', pageResult.contentType);
+      res.setHeader('Cache-Control', pageResult.cacheControl);
+      res.setHeader('X-Trace-Fingerprint', pageResult.traceFingerprint);
+      res.send(pageResult.content);
+    } catch (error) {
+      applyRetryAfterHeader(error, res);
+      throw error;
+    }
   }
 
   @Post('documents/:documentId/view-token')
+  @Roles('LIBRARIAN', 'ADMIN')
   @HttpCode(200)
   @ApiOperation({ summary: 'Obtain a protected viewing URL token for staff or legacy viewer.' })
   @ApiOkResponse({ type: ProtectedDocumentUrlDto })
@@ -111,13 +119,15 @@ export class AccessController {
   }
 
   @Get('documents/:documentId/stream')
+  @Roles('LIBRARIAN', 'ADMIN')
   @ApiOperation({ summary: 'Stream protected document PDF content (staff internal).' })
   async streamDocument(
+    @CurrentUser() user: SessionUserDto,
     @Param('documentId') documentId: string,
     @Query('token') token: string,
     @Res() res: Response,
   ): Promise<void> {
-    const file = await this.accessService.getDocumentFile(documentId, token);
+    const file = await this.accessService.getDocumentFile(user.id, user.role, documentId, token, 'view');
     const buffer = await this.accessService.getFileBuffer(file.bucket, file.objectKey);
     res.setHeader('Content-Type', file.mimeType || 'application/pdf');
     res.setHeader('Content-Disposition', formatContentDisposition('inline', file.originalFilename));
@@ -125,16 +135,34 @@ export class AccessController {
   }
 
   @Get('documents/:documentId/file')
+  @Roles('LIBRARIAN', 'ADMIN')
   @ApiOperation({ summary: 'Download protected document PDF file (staff internal).' })
   async downloadDocument(
+    @CurrentUser() user: SessionUserDto,
     @Param('documentId') documentId: string,
     @Query('token') token: string,
     @Res() res: Response,
   ): Promise<void> {
-    const file = await this.accessService.getDocumentFile(documentId, token);
+    const file = await this.accessService.getDocumentFile(user.id, user.role, documentId, token, 'download');
     const buffer = await this.accessService.getFileBuffer(file.bucket, file.objectKey);
     res.setHeader('Content-Type', file.mimeType || 'application/pdf');
     res.setHeader('Content-Disposition', formatContentDisposition('attachment', file.originalFilename));
     res.send(buffer);
+  }
+}
+
+function applyRetryAfterHeader(error: unknown, res: Response): void {
+  if (!(error instanceof HttpException) || error.getStatus() !== 429) {
+    return;
+  }
+
+  const response = error.getResponse();
+  if (!response || typeof response !== 'object' || !('retryAfterSeconds' in response)) {
+    return;
+  }
+
+  const retryAfterSeconds = Number((response as { retryAfterSeconds?: unknown }).retryAfterSeconds);
+  if (Number.isFinite(retryAfterSeconds) && retryAfterSeconds > 0) {
+    res.setHeader('Retry-After', String(Math.trunc(retryAfterSeconds)));
   }
 }

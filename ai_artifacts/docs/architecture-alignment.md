@@ -64,19 +64,21 @@ Last updated: 2026-07-23
 - `ProcessingProcessor` atomically claims queued jobs, rechecks active file/job state around storage and persistence side effects, extracts text through the OCR port, stores job-scoped artifact objects through `StorageService`, and creates pending approval rounds on success.
 - OCR workspaces are process-owned private directories with private PDF/page permissions, normal-path `finally` cleanup, and dead-process/stale-legacy cleanup at worker startup.
 - `StorageService` remains the only storage boundary; browsers never receive bucket credentials.
-- Current protected reading/downloading goes through `AccessModule`, which resolves the active file and streams the PDF through the API. This is a known POC gap: Phase 7 must stop delivering the source PDF to Reader viewers and render authorized server-side raster pages on canvas instead.
+- Protected Reader delivery goes through `AccessModule`, which resolves the active published file, authorizes each manifest/page request, delegates rasterization and server-burned watermarking to `RenderingModule`, and returns private/no-store page images. Source-file token/stream/file routes are staff-only and are not part of the Reader viewer.
 
 ## Reporting read-model boundary
 
 - The librarian dashboard is a read-only aggregate over books, processing jobs, taxonomy, users, recent books, and persisted processing/approval/correction audit facts.
 - Activity counts and the ten newest activity rows are projected from `BookAuditEvent`; reporting does not mutate workflow state.
 - Reporting remains a consumer of module-owned persistence, not a writer of workflow state.
+- Phase 7 adds an Admin-only, bounded Reader-access projection and synchronous CSV export over `ReaderAccessEvent`; reader identifiers are masked and spreadsheet-formula prefixes are neutralized.
 
 ## Event and coordination boundary
 
 - Upload and resubmission commands enqueue `BookUploadedEvent`-shaped facts for processing.
 - Processing success creates approval work and approval-required notifications after durable transaction commits.
 - Approval decisions create audit records, mutate document status, and fan out creator notifications.
+- Committed high-risk Reader scrape facts are passed through a narrow sink to `RiskAlertService`, which creates deterministic, deduplicated notifications for active Admin/Librarian recipients without exposing page content or raw identifiers.
 - Correction requests do not have a separate correction aggregate; they reopen work by reusing document metadata replacement and submit-processing boundaries.
 - Cross-module coordination is still service-driven inside the modular monolith rather than through external message infrastructure.
 
@@ -85,15 +87,16 @@ Last updated: 2026-07-23
 1. Worker hosts require Poppler (`pdfinfo`, `pdftotext`, and `pdftoppm`); CI installs and exercises that prerequisite, but deployment images must preserve it.
 2. There is still no dedicated correction-history or resubmission endpoint family; correction work is expressed through generic document edit, replace-file, and submit-processing commands.
 3. Approval currently exposes two publish-like commands (`approve` and `approve-and-publish`) without a separate persisted non-published approved state.
-4. Access-token generation is request-time string construction; there is no persisted token ledger or revocation model beyond document-status checks and token-shape validation.
+4. Staff source-file access uses short-lived HMAC tokens bound to user, document, purpose, and expiry; there is no persisted token ledger or per-token revocation beyond session/document authorization and expiry.
 5. `BooksModule` remains as a live compatibility surface and continues to duplicate part of the intake boundary.
-6. Catalogue cards have no functional detail link, and detail/viewer routes scan the first catalogue list page instead of using direct detail contracts.
-7. The Reader viewer embeds the raw PDF, exposes a download action, and has a separate hard-coded page tracker that does not control the embedded viewer.
-8. Catalogue detail and viewer bookmark controls default to false because they do not hydrate one-document persisted state.
+6. Catalogue discovery/detail and published-only direct lookup are live; broader relevance/full-text search remains deferred.
+7. The Reader viewer now uses one canvas-backed page owner with real manifest totals, retry/navigation behavior, and no Reader raw-PDF/download action or selectable text layer. Absolute screenshot prevention remains impossible and is not claimed.
+8. Catalogue detail/viewer state hydrates through the one-document Reader state route; progress totals are checked against the backend renderer rather than trusted from the browser.
 9. Phase 7 D7-000 now supplies `User` lifecycle state, append-only user-administration history, append-only bounded Reader access facts, and typed singleton product settings.
 10. Phase 7 Wave 3 now adds runtime-live Admin-only `GET /api/admin/users` and `GET /api/admin/users/:userId` routes with explicit safe projections. The tracked OpenAPI/generated client intentionally remains at the Wave 2 contract until D7-005; no web consumer may treat the user routes as generated-client-ready. Product-settings persistence is implemented independently, but no general-settings route is live.
-11. Category deletion/reassignment, tag duplicate review/merge, user role/status mutations, management reporting/CSV, general-settings, and Reader-security report routes still do not have runtime endpoints.
-12. Settings must distinguish safe database-backed product settings from deployment-owned secrets and security configuration. The general-settings route remains gated until Member A supplies a tested signing/scrape capability source; Member D does not infer those facts from rendering or Redis.
+11. Category deletion/reassignment, tag duplicate review/merge, user role/status mutations, general management reporting, and general-settings routes still do not have runtime endpoints. The bounded Reader-security report/CSV routes are live.
+12. Settings must distinguish safe database-backed product settings from deployment-owned secrets and security configuration. The general-settings route remains gated on a tested capability source; HMAC secrets and rate/scrape thresholds stay environment-owned.
+13. Phase 7 Wave 4 closes the P0 Reader integration gate with live catalogue/detail, protected manifest/page delivery, hydrated Reader state, committed-risk alerts, and Reader-access reporting. Generated OpenAPI/client reconciliation remains intentionally deferred to D7-005.
 
 ## Migration strategy status
 
@@ -104,7 +107,7 @@ Last updated: 2026-07-23
 5. Phase 5 document lifecycle, taxonomy selectors, upload boundary, and persisted workflow tables remain the base consumed by the completed Phase 6 workflow and planned Phase 7 work.
 6. Phase 6 adds an isolated worker bootstrap, real embedded-text/OCR extraction, persisted notification reads, approval commands, processing lineage/artifacts, and runtime correction-loop reuse.
 7. The Phase 6 worker/OCR closure gate is reproducible through `npm run test:worker -w apps/api` and its CI job.
-8. Phase 7 follows `ai_artifacts/plans/plan-phase-7-admin-operations-users-reporting-settings-2026-07-23.md` and the validated DRM research. Waves 1–2 are complete and recorded in `ai_artifacts/docs/phase-7-wave-1-2-foundation-contract-freeze.md`; Reader POC implementation comes next from the frozen catalogue, rendering, access, state, audit, reporting, and settings shapes.
+8. Phase 7 follows `ai_artifacts/plans/plan-phase-7-admin-operations-users-reporting-settings-2026-07-23.md` and the validated DRM research. Waves 1–4 are complete; the P0 result is recorded in `ai_artifacts/docs/phase-7-wave-4-p0-integration.md`, and Wave 5 proceeds with parallel administration work.
 9. Existing Phase 7 admin decisions remain: one schema foundation precedes user administration/settings, risky taxonomy actions remain in `TaxonomyModule`, reporting remains read-only, and exports are bounded synchronous CSV rather than a second worker subsystem.
 
 ## Anti-fragmentation decisions

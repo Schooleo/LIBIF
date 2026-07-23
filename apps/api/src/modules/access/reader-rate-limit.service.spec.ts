@@ -1,6 +1,14 @@
 import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
-import { ReaderRateLimitService } from './reader-rate-limit.service';
+import {
+  ReaderAccessEventType,
+  ReaderAccessReasonCode,
+  ReaderAccessRiskLevel,
+} from '../../generated/prisma/client';
+import {
+  DetectorDependencyUnavailableError,
+  ReaderRateLimitService,
+} from './reader-rate-limit.service';
 
 describe('ReaderRateLimitService', () => {
   let service: ReaderRateLimitService;
@@ -12,7 +20,7 @@ describe('ReaderRateLimitService', () => {
         {
           provide: ConfigService,
           useValue: {
-            get: jest.fn().mockReturnValue(undefined), // No Redis URL -> in-memory fallback
+            get: jest.fn().mockReturnValue(undefined),
           },
         },
       ],
@@ -61,11 +69,52 @@ describe('ReaderRateLimitService', () => {
     await service.checkPageAccessRate('usr-multi', 'sess-1', 1, 10);
     await service.checkPageAccessRate('usr-multi', 'sess-2', 1, 10);
     await service.checkPageAccessRate('usr-multi', 'sess-3', 1, 10);
-    await service.checkPageAccessRate('usr-multi', 'sess-4', 1, 10);
-
     const res = await service.checkPageAccessRate('usr-multi', 'sess-4', 1, 10);
+
     expect(res.allowed).toBe(false);
     expect(res.eventType).toBe('RATE_LIMITED');
     expect(res.reasonCode).toBe('PARALLEL_SESSION_ABUSE');
+  });
+
+  it('uses Redis atomically when a client is configured', async () => {
+    const redisEval = jest.fn().mockResolvedValue([
+      0,
+      17,
+      ReaderAccessEventType.RATE_LIMITED,
+      ReaderAccessReasonCode.RATE_LIMIT_EXCEEDED,
+      ReaderAccessRiskLevel.LOW,
+    ]);
+
+    (service as any).redis = { eval: redisEval, quit: jest.fn().mockResolvedValue(undefined) };
+
+    const res = await service.checkPageAccessRate('usr-redis', 'sess-1', 2, 10);
+
+    expect(redisEval).toHaveBeenCalled();
+    expect(res).toEqual({
+      allowed: false,
+      retryAfterSeconds: 17,
+      eventType: ReaderAccessEventType.RATE_LIMITED,
+      reasonCode: ReaderAccessReasonCode.RATE_LIMIT_EXCEEDED,
+      riskLevel: ReaderAccessRiskLevel.LOW,
+    });
+  });
+
+  it('fails closed when configured Redis checks error', async () => {
+    (service as any).redisConfigured = true;
+    (service as any).redis = { eval: jest.fn().mockRejectedValue(new Error('redis down')), quit: jest.fn() };
+
+    await expect(
+      service.checkPageAccessRate('usr-redis', 'sess-1', 2, 10),
+    ).rejects.toThrow(DetectorDependencyUnavailableError);
+  });
+
+  it('fails closed outside tests when Redis is not configured', async () => {
+    const productionService = new ReaderRateLimitService({
+      get: jest.fn((key: string) => (key === 'NODE_ENV' ? 'production' : undefined)),
+    } as unknown as ConfigService);
+
+    await expect(
+      productionService.checkPageAccessRate('usr-prod', 'sess-1', 2, 10, 'doc-1'),
+    ).rejects.toThrow(DetectorDependencyUnavailableError);
   });
 });

@@ -1,6 +1,6 @@
 # LIBIF
 
-LIBIF is a TypeScript monorepo for an integrated digital-library application. The current development build includes the MVP vertical slice through the Phase 6 processing, approval, correction, notification, and reporting workflow:
+LIBIF is a TypeScript monorepo for an integrated digital-library application. The current development build includes the Phase 7 Wave 4 protected Reader POC integration:
 
 - **Frontend:** Next.js App Router, shared design tokens/components, reader/admin/auth shells, digital book intake, public catalogue proof, and authentication screens.
 - **Backend:** NestJS modular API for auth/access, intake, categories/catalog, ISBN lookup, private storage, approval/notifications, and an isolated BullMQ processing worker.
@@ -18,9 +18,9 @@ LIBIF is a TypeScript monorepo for an integrated digital-library application. Th
 | Phase 4 — Reader/access/catalog foundations | Complete | Reader state, protected access, catalogue and dashboard foundations. |
 | Phase 5 — Document lifecycle and taxonomy | Complete | Intake, file versioning, metadata, taxonomy, and persisted workflow schema. |
 | Phase 6 — Processing and approval loop | Complete | Real worker/OCR, approval/correction, durable notifications, reporting, and worker integration gate. |
-| Phase 7 — Reader POC and admin operations | In progress | Waves 1–2 complete: schema foundation and cross-lane contracts are frozen. Functional catalogue/detail, server-watermarked canvas pages, no Reader PDF route, enforcement, reader state, and admin operations remain. |
+| Phase 7 — Reader POC and admin operations | In progress | Waves 1–4 complete. Published catalogue/detail, server-watermarked canvas pages, Reader PDF denial, persisted reader state, enforcement, alerts, and Reader-access reporting are integrated; Wave 5 administration remains. |
 
-The canonical execution plan is `ai_artifacts/plans/plan-phase-7-admin-operations-users-reporting-settings-2026-07-23.md`; the completed foundation/contract checkpoint is recorded in `ai_artifacts/docs/phase-7-wave-1-2-foundation-contract-freeze.md`. Reader POC gates are the first priority: catalogue discovery/detail must work, the viewer must draw individually server-watermarked raster pages instead of receiving the raw PDF, persisted bookmark/progress state must hydrate correctly, and page access must be auditable with scrape/rate/concurrency enforcement. The security decision is grounded in `ai_artifacts/research/document-drm-and-screenshot-prevention-2026-07-23.md`.
+The canonical execution plan is `ai_artifacts/plans/plan-phase-7-admin-operations-users-reporting-settings-2026-07-23.md`; the Wave 4 integration result is recorded in `ai_artifacts/docs/phase-7-wave-4-p0-integration.md`. The protected Reader draws individually authorized, server-watermarked raster pages onto canvas instead of receiving the source PDF. Persisted bookmark/progress state hydrates through Reader APIs, and access is audited with Redis-backed scrape/rate/concurrency enforcement plus deduplicated staff alerts. This is deterrence and traceability—not absolute DRM or screenshot prevention—as documented in `ai_artifacts/research/document-drm-and-screenshot-prevention-2026-07-23.md`.
 
 ## Local setup
 
@@ -203,11 +203,9 @@ For a manual smoke test:
 - Production password-reset email provider.
 - OCR layout/compression enhancements beyond the current extracted-text artifact.
 - Full catalog search and full-text OCR indexing.
-- Phase 7 reader POC completion: functional catalogue search/filter/pagination and direct detail routes.
-- Authorized server-rendered page images drawn to canvas, with integrated real-page progress and no Reader raw-PDF/download control or selectable text layer.
-- Correct persisted bookmark state on catalogue detail, viewer, library, history, and bookmark routes.
 - Staff/user administration, role changes, and account deactivation.
 - Category reassignment/tag merge safeguards, management reports/CSV, and supported settings.
+- Protected Reader accessibility decision and full manual responsive/network smoke evidence.
 - Phase 8 integration hardening, accessibility/visual QA, release notes, and demo readiness.
 
 ## GitHub Actions CI notifications

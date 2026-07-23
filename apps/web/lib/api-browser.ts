@@ -1,5 +1,26 @@
 import { API_BASE_URL, createLibifApiClient, apiErrorMessage } from './api-client';
-import type { AuthMessageDto, CreateBookIntakeDto, CreateBookIntakeResponse, CreateTaxonomyCategoryDto, CreateTaxonomyTagDto, DocumentDetailResponseDto, IsbnLookupResponse, PasswordResetDto, PasswordResetRequestDto, RegisterRequestDto, SessionDto, SignInRequestDto, TaxonomyCategoryDto, TaxonomyTagDto, UpdateTaxonomyCategoryDto, UpdateTaxonomyTagDto, UploadResultDto } from './api-types';
+import type {
+  AuthMessageDto,
+  CreateBookIntakeDto,
+  CreateBookIntakeResponse,
+  CreateTaxonomyCategoryDto,
+  CreateTaxonomyTagDto,
+  DocumentDetailResponseDto,
+  IsbnLookupResponse,
+  PasswordResetDto,
+  PasswordResetRequestDto,
+  ProtectedDocumentManifestDto,
+  ReaderDocumentStateDto,
+  ReadingProgressStateDto,
+  RegisterRequestDto,
+  SessionDto,
+  SignInRequestDto,
+  TaxonomyCategoryDto,
+  TaxonomyTagDto,
+  UpdateTaxonomyCategoryDto,
+  UpdateTaxonomyTagDto,
+  UploadResultDto,
+} from './api-types';
 import { getDevAuthHeaders } from './auth/session';
 
 const client = createLibifApiClient(getDevAuthHeaders());
@@ -125,7 +146,7 @@ async function postMultipart<T>(path: string, form: FormData, fallbackMessage: s
   return payload as T;
 }
 
-export async function fetchDocumentManifest(documentId: string) {
+export async function fetchDocumentManifest(documentId: string): Promise<ProtectedDocumentManifestDto> {
   const response = await fetch(`${API_BASE_URL}/api/access/documents/${encodeURIComponent(documentId)}/manifest`, {
     headers: getDevAuthHeaders(),
     credentials: 'include',
@@ -134,7 +155,7 @@ export async function fetchDocumentManifest(documentId: string) {
     const errPayload = await response.json().catch(() => ({}));
     throw new Error(apiErrorMessage(errPayload, 'Failed to load document manifest'));
   }
-  return response.json();
+  return response.json() as Promise<ProtectedDocumentManifestDto>;
 }
 
 export async function fetchProtectedPageUrl(documentId: string, pageNumber: number): Promise<string> {
@@ -146,8 +167,9 @@ export async function fetchProtectedPageUrl(documentId: string, pageNumber: numb
     const errPayload = await response.json().catch(() => ({}));
     const retryAfter = errPayload.retryAfterSeconds || 60;
     const err = new Error(errPayload.message || 'Page rate limit exceeded');
-    (err as any).retryAfterSeconds = retryAfter;
-    (err as any).statusCode = 429;
+    const retryableError = err as Error & { retryAfterSeconds?: number; statusCode?: number };
+    retryableError.retryAfterSeconds = retryAfter;
+    retryableError.statusCode = 429;
     throw err;
   }
   if (!response.ok) {
@@ -158,7 +180,7 @@ export async function fetchProtectedPageUrl(documentId: string, pageNumber: numb
   return URL.createObjectURL(blob);
 }
 
-export async function fetchReaderDocumentState(documentId: string) {
+export async function fetchReaderDocumentState(documentId: string): Promise<ReaderDocumentStateDto> {
   const response = await fetch(`${API_BASE_URL}/api/reader/documents/${encodeURIComponent(documentId)}/state`, {
     headers: getDevAuthHeaders(),
     credentials: 'include',
@@ -167,7 +189,7 @@ export async function fetchReaderDocumentState(documentId: string) {
     const errPayload = await response.json().catch(() => ({}));
     throw new Error(apiErrorMessage(errPayload, 'Failed to fetch reader state'));
   }
-  return response.json();
+  return response.json() as Promise<ReaderDocumentStateDto>;
 }
 
 export async function fetchViewToken(documentId: string): Promise<{ url: string; token: string; expiresAt: string }> {
@@ -202,13 +224,13 @@ export async function removeBookmark(documentId: string): Promise<{ success: boo
   return data as { success: boolean };
 }
 
-export async function updateReadingProgress(documentId: string, page: number, totalPages: number): Promise<any> {
+export async function updateReadingProgress(documentId: string, page: number, totalPages: number): Promise<ReadingProgressStateDto> {
   const { data, error } = await client.PATCH('/api/reader/progress/{documentId}', {
     params: { path: { documentId } },
     body: { currentPage: page, totalPages },
   });
   if (error) throw new Error(apiErrorMessage(error, 'Update progress failed'));
-  return data;
+  return data as ReadingProgressStateDto;
 }
 
 export async function fetchMyNotifications(): Promise<any[]> {
@@ -229,3 +251,5 @@ export async function markAllNotificationsAsRead(): Promise<void> {
   const { error } = await client.PATCH('/api/notifications/read-all');
   if (error) throw new Error(apiErrorMessage(error, 'Failed to mark all notifications as read'));
 }
+
+export type { ProtectedDocumentManifestDto, ReaderDocumentStateDto, ReadingProgressStateDto };

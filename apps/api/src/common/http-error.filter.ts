@@ -8,6 +8,7 @@ export type ErrorEnvelope = {
   fieldErrors: Record<string, string[]>;
   traceId: string;
   status: number;
+  retryAfterSeconds?: number;
 };
 
 @Catch()
@@ -19,14 +20,38 @@ export class HttpErrorFilter implements ExceptionFilter {
     const status = exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
     const exceptionResponse = exception instanceof HttpException ? exception.getResponse() : undefined;
     const message = messageFromException(exceptionResponse, exception);
+    const retryAfterSeconds = retryAfterSecondsFromException(exceptionResponse);
     response.status(status).json({
-      code: codeFromStatus(status, message),
+      code: explicitCodeFromException(exceptionResponse) ?? codeFromStatus(status, message),
       message,
       fieldErrors: fieldErrorsFromException(exceptionResponse),
       traceId: traceIdFromRequest(request),
-      status
+      status,
+      ...(retryAfterSeconds ? { retryAfterSeconds } : {})
     } satisfies ErrorEnvelope);
   }
+}
+
+function explicitCodeFromException(exceptionResponse: unknown): string | undefined {
+  if (!exceptionResponse || typeof exceptionResponse !== 'object' || !('code' in exceptionResponse)) {
+    return undefined;
+  }
+  const code = (exceptionResponse as { code?: unknown }).code;
+  return typeof code === 'string' && /^[A-Z][A-Z0-9_]*$/.test(code) ? code : undefined;
+}
+
+function retryAfterSecondsFromException(exceptionResponse: unknown): number | undefined {
+  if (
+    !exceptionResponse ||
+    typeof exceptionResponse !== 'object' ||
+    !('retryAfterSeconds' in exceptionResponse)
+  ) {
+    return undefined;
+  }
+  const value = Number(
+    (exceptionResponse as { retryAfterSeconds?: unknown }).retryAfterSeconds,
+  );
+  return Number.isFinite(value) && value > 0 ? Math.trunc(value) : undefined;
 }
 
 function messageFromException(exceptionResponse: unknown, exception: unknown): string {

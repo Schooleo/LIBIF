@@ -2,49 +2,39 @@
 
 import { useEffect, useState } from 'react';
 import { Button, ProgressBar } from '../../ui';
-import { updateReadingProgress } from '../../../lib/api-browser';
 
 export interface ReadingProgressTrackerProps {
-  documentId: string;
-  initialPage?: number;
+  currentPage: number;
   totalPages?: number;
+  saving?: boolean;
+  saveStatus?: string | null;
+  progressLabel?: string;
   onPageChange?: (page: number) => void;
 }
 
 export function ReadingProgressTracker({
-  documentId,
-  initialPage = 1,
+  currentPage,
   totalPages = 100,
+  saving = false,
+  saveStatus = null,
+  progressLabel = 'Reading progress',
   onPageChange,
 }: ReadingProgressTrackerProps) {
-  const [currentPage, setCurrentPage] = useState(initialPage);
-  const [saving, setSaving] = useState(false);
-  const [saveStatus, setSaveStatus] = useState<string | null>(null);
+  const safeTotalPages = Math.max(1, totalPages);
+  const [pageInput, setPageInput] = useState(String(currentPage));
 
   useEffect(() => {
-    setCurrentPage(initialPage);
-  }, [initialPage]);
+    setPageInput(String(currentPage));
+  }, [currentPage]);
 
-  const safeTotalPages = Math.max(1, totalPages);
   const percentage = Math.min(100, Math.round((currentPage / safeTotalPages) * 100));
 
-  const changePage = async (newPage: number) => {
-    if (newPage < 1 || newPage > safeTotalPages) return;
-    setCurrentPage(newPage);
-    onPageChange?.(newPage);
-    setSaving(true);
-    setSaveStatus('Saving progress...');
-
-    try {
-      await updateReadingProgress(documentId, newPage, safeTotalPages);
-      setSaveStatus('Saved');
-      setTimeout(() => setSaveStatus(null), 2000);
-    } catch (err) {
-      console.error('Failed to update reading progress:', err);
-      setSaveStatus('Failed to save progress');
-    } finally {
-      setSaving(false);
+  const commitPage = (nextPage: number) => {
+    if (nextPage < 1 || nextPage > safeTotalPages || nextPage === currentPage) {
+      setPageInput(String(currentPage));
+      return;
     }
+    onPageChange?.(nextPage);
   };
 
   return (
@@ -71,8 +61,8 @@ export function ReadingProgressTracker({
             type="button"
             variant="secondary"
             size="sm"
-            onClick={() => changePage(currentPage - 1)}
-            disabled={currentPage <= 1 || saving}
+            onClick={() => commitPage(currentPage - 1)}
+            disabled={currentPage <= 1}
             aria-label="Previous Page"
           >
             ← Previous
@@ -92,11 +82,26 @@ export function ReadingProgressTracker({
               type="number"
               min={1}
               max={safeTotalPages}
-              value={currentPage}
-              onChange={(e) => {
-                const val = parseInt(e.target.value, 10);
-                if (!isNaN(val) && val >= 1 && val <= safeTotalPages) {
-                  changePage(val);
+              value={pageInput}
+              onChange={(e) => setPageInput(e.target.value)}
+              onBlur={() => {
+                const value = Number.parseInt(pageInput, 10);
+                if (!Number.isNaN(value)) {
+                  commitPage(value);
+                } else {
+                  setPageInput(String(currentPage));
+                }
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  const value = Number.parseInt(pageInput, 10);
+                  if (!Number.isNaN(value)) {
+                    commitPage(value);
+                  }
+                }
+                if (e.key === 'Escape') {
+                  setPageInput(String(currentPage));
                 }
               }}
               style={{
@@ -109,17 +114,15 @@ export function ReadingProgressTracker({
               }}
               aria-label="Jump to page number"
             />
-            <span style={{ color: 'var(--color-text-secondary, #666)' }}>
-              of {safeTotalPages}
-            </span>
+            <span style={{ color: 'var(--color-text-secondary, #666)' }}>of {safeTotalPages}</span>
           </div>
 
           <Button
             type="button"
             variant="secondary"
             size="sm"
-            onClick={() => changePage(currentPage + 1)}
-            disabled={currentPage >= safeTotalPages || saving}
+            onClick={() => commitPage(currentPage + 1)}
+            disabled={currentPage >= safeTotalPages}
             aria-label="Next Page"
           >
             Next →
@@ -136,13 +139,12 @@ export function ReadingProgressTracker({
           }}
         >
           {saveStatus ? <span style={{ fontStyle: 'italic' }}>{saveStatus}</span> : null}
-          <span style={{ fontWeight: 700, color: 'var(--color-secondary, #0C6668)' }}>
-            {percentage}% Complete
-          </span>
+          {saving ? <span aria-label="Progress save in flight">•</span> : null}
+          <span style={{ fontWeight: 700, color: 'var(--color-secondary, #0C6668)' }}>{percentage}% Complete</span>
         </div>
       </div>
 
-      <ProgressBar value={percentage} aria-label={`Reading progress: ${percentage}%`} />
+      <ProgressBar value={percentage} label={progressLabel} />
     </div>
   );
 }

@@ -1,36 +1,38 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { PrismaService } from '../database/prisma.service';
-import { ReaderAccessAuditService } from './reader-access-audit.service';
 import {
   ReaderAccessEventType,
   ReaderAccessReasonCode,
   ReaderAccessRiskLevel,
 } from '../../generated/prisma/client';
+import { PrismaService } from '../database/prisma.service';
+import { READER_RISK_EVENT_SINK } from './contracts/reader-access.contract';
+import { ReaderAccessAuditService } from './reader-access-audit.service';
 
 describe('ReaderAccessAuditService', () => {
   let service: ReaderAccessAuditService;
   let prisma: { readerAccessEvent: { create: jest.Mock } };
+  let sink: { publishCommittedRiskFact: jest.Mock };
 
   beforeEach(async () => {
     prisma = {
       readerAccessEvent: {
-        create: jest.fn().mockImplementation(({ data }) =>
-          Promise.resolve({ id: 'evt-123', ...data }),
-        ),
+        create: jest.fn().mockImplementation(({ data }) => Promise.resolve({ id: 'evt-123', ...data })),
       },
     };
+    sink = { publishCommittedRiskFact: jest.fn().mockResolvedValue(undefined) };
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ReaderAccessAuditService,
         { provide: PrismaService, useValue: prisma },
+        { provide: READER_RISK_EVENT_SINK, useValue: sink },
       ],
     }).compile();
 
     service = module.get<ReaderAccessAuditService>(ReaderAccessAuditService);
   });
 
-  it('should record reader access event to Prisma', async () => {
+  it('records reader access event to Prisma', async () => {
     const now = new Date();
     const event = await service.recordEvent({
       eventType: ReaderAccessEventType.PAGE_SERVED,
@@ -53,9 +55,10 @@ describe('ReaderAccessAuditService', () => {
         pageNumber: 2,
       }),
     });
+    expect(sink.publishCommittedRiskFact).not.toHaveBeenCalled();
   });
 
-  it('should fail closed when Prisma throws an error', async () => {
+  it('fails closed when Prisma throws an error', async () => {
     prisma.readerAccessEvent.create.mockRejectedValueOnce(new Error('DB Error'));
 
     await expect(
@@ -69,24 +72,37 @@ describe('ReaderAccessAuditService', () => {
     ).rejects.toThrow('DB Error');
   });
 
-  it('should correctly map RATE_LIMITED event to CommittedReaderRiskFact', () => {
-    const now = new Date();
-    const fact = service.mapToCommittedRiskFact({
-      id: 'evt-456',
+  it('publishes committed rate-limit risk facts to the optional sink', async () => {
+    await service.recordEvent({
       eventType: ReaderAccessEventType.RATE_LIMITED,
       riskLevel: ReaderAccessRiskLevel.MEDIUM,
       reasonCode: ReaderAccessReasonCode.PARALLEL_SESSION_ABUSE,
+      userId: 'usr-1',
+      bookId: 'book-1',
+      pageNumber: 4,
+      createdAt: new Date('2026-07-23T12:00:00Z'),
+    });
+
+    expect(sink.publishCommittedRiskFact).toHaveBeenCalledWith(
+      expect.objectContaining({
+        eventType: ReaderAccessEventType.RATE_LIMITED,
+        reasonCode: ReaderAccessReasonCode.PARALLEL_SESSION_ABUSE,
+      }),
+    );
+  });
+
+  it('does not publish dependency denials as scrape or rate-limit facts', () => {
+    const now = new Date();
+    const fact = service.mapToCommittedRiskFact({
+      id: 'evt-456',
+      eventType: ReaderAccessEventType.PAGE_DENIED,
+      riskLevel: ReaderAccessRiskLevel.HIGH,
+      reasonCode: ReaderAccessReasonCode.DEPENDENCY_UNAVAILABLE,
       bookId: 'book-99',
       pageNumber: 4,
       createdAt: now,
     });
 
-    expect(fact).not.toBeNull();
-    expect(fact?.accessEventId).toBe('evt-456');
-    expect(fact?.eventType).toBe('RATE_LIMITED');
-    expect(fact?.riskLevel).toBe('MEDIUM');
-    expect(fact?.reasonCode).toBe('PARALLEL_SESSION_ABUSE');
-    expect(fact?.documentId).toBe('book-99');
-    expect(fact?.pageNumber).toBe(4);
+    expect(fact).toBeNull();
   });
 });

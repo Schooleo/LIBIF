@@ -33,10 +33,7 @@ describe('Admin users (e2e)', () => {
 
   beforeEach(async () => {
     jest.restoreAllMocks();
-    await prisma.$executeRawUnsafe('TRUNCATE TABLE "ReaderAccessEvent", "UserAdministrationEvent" CASCADE;').catch(() => {});
-    await prisma.passwordResetToken.deleteMany();
-    await prisma.userSession.deleteMany();
-    await prisma.user.deleteMany();
+    await prisma.$executeRawUnsafe('TRUNCATE TABLE "User" CASCADE;');
   });
 
   afterAll(async () => {

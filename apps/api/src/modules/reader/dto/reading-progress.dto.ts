@@ -7,11 +7,10 @@ export class ReadingProgressDto {
   @Min(1)
   currentPage!: number;
 
-  @ApiPropertyOptional({ example: 120, description: 'Total pages in document' })
-  @IsOptional()
+  @ApiProperty({ example: 120, description: 'Authoritative total pages in document' })
   @IsInt()
   @Min(1)
-  totalPages?: number;
+  totalPages!: number;
 
   @ApiPropertyOptional({ example: 45.5, description: 'Reading progress percentage' })
   @IsOptional()

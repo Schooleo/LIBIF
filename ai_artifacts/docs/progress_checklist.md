@@ -22,6 +22,7 @@ This checklist is the concise current-state tracker for future agents and team m
 - [x] Phase 4 reader/access/catalog/processing/notification/dashboard foundations.
 - [x] Phase 5 schema foundation for reader state, notifications, approvals, audit events, processing progress, and file version/status metadata.
 - [x] Phase 6 processing/OCR worker, approval/correction, durable notifications, reader publication/access integration, and reporting activity closure.
+- [x] Phase 7 Waves 1–4: administration/security schema and contracts, published catalogue/detail, protected server-watermarked canvas Reader, persisted Reader state, enforcement/audit, risk alerts, and Reader-access reporting.
 
 ## Seeded local accounts
 
@@ -35,20 +36,21 @@ Run `make db-seed` or `npm run db:seed` after migrations.
 
 Development-header auth remains available only with explicit local opt-in through `LIBIF_ENABLE_DEV_AUTH=true` and `NEXT_PUBLIC_LIBIF_ENABLE_DEV_AUTH=true`.
 
-## Verified command set for latest completed phase
+## Verified command set for latest completed wave
 
-Latest Phase 6 closure verification:
+Latest Phase 7 Wave 4 verification:
 
-- [x] `npx prisma validate --schema apps/api/prisma/schema.prisma`
+- [x] `npx dotenv -e ../../.env -- prisma validate` from `apps/api`.
 - [x] `npm run prisma:generate -w apps/api`
-- [x] `npm run openapi:generate`
+- [x] `npm run db:seed -w apps/api` twice; the published Reader sample PDF is stored privately and seed rows remain idempotent.
 - [x] `npm run lint`
-- [x] `npm test` — 15 API suites/82 tests and 15 web files/62 tests.
+- [x] `npm test` — 32 API suites/166 tests and 17 web files/67 tests.
 - [x] `npm run build`
-- [x] `npm run test:e2e -w apps/api` — 7 suites/30 tests.
+- [x] `npm run test:e2e -w apps/api` — 11 suites/58 tests.
 - [x] `npm run test:worker -w apps/api` — 1 suite/5 infrastructure-backed scenarios.
+- [x] Manual cookie-authenticated network smoke: published detail/state/manifest and a watermarked WebP page returned successfully with `private, no-store`; Reader source download-token returned `403`. Opt-in development headers also resolve the seeded Reader identity and return the manifest successfully.
+- [x] Schema/migrations and tracked OpenAPI/generated client remain unchanged; the unified contract refresh is deferred to D7-005.
 - [x] `git diff --check`
-- [x] Phase 6 closure committed in `c807bbc` (`fix: make Phase 6 worker closure trustworthy`).
 
 Historical Phase 4 integration verification:
 
@@ -107,6 +109,8 @@ Latest Phase 5 planning/schema preflight:
 - [x] Processing APIs: queue/detail/status plus guarded advance, retry, and cancel transition foundations.
 - [x] Approval APIs: current pending queue/detail foundations with one current review row per document.
 - [x] Notification persistence: recipient-scoped Prisma reads/writes, unread count, read state, and staff/reader UI integration.
+- [x] Published catalogue detail, one-document Reader state, protected manifest/watermarked page delivery, and canvas Reader integration.
+- [x] Reader-access audit/rate/scrape enforcement, deduplicated staff risk alerts, and Admin-only bounded report/CSV.
 
 ## Remaining high-level work
 
@@ -117,13 +121,13 @@ Latest Phase 5 planning/schema preflight:
 - [x] Processing worker implementation and retry history, including real PDF extraction/OCR, exact lineage, duplicate-delivery protection, and infrastructure-backed tests.
 - [x] Approval decision/correction loop and persisted notifications, including approve/reject/request-correction, resubmission reuse, publication fanout, and recipient ownership.
 - [ ] Taxonomy risky actions (delete/reassign/merge), user administration, role changes, and deactivation. Starter category/tag list/create/edit is complete.
-- [ ] Dashboards, reports, exports, and settings. Phase 4 Member D completed the base dashboard summary only; report exports/settings remain deferred.
-- [ ] Reader POC completion: functional catalogue discovery/detail, server-rendered user/session-watermarked pages drawn on canvas, integrated real-page progress, no Reader raw-PDF/download surface, correct bookmark hydration, durable access auditing, and scrape/rate/concurrency enforcement.
+- [ ] General management dashboards/reports/exports and settings remain. The base dashboard and bounded Reader-access JSON/CSV report are complete.
+- [x] Reader POC P0 integration: functional catalogue discovery/detail, server-rendered user/session-watermarked pages drawn on canvas, integrated real-page progress, no Reader raw-PDF/download surface, bookmark hydration, durable access auditing, and scrape/rate/concurrency enforcement.
 - [ ] Cross-screen integration hardening and responsive/visual QA.
 
 ## Next execution target
 
-Phase 6 is verified and committed. The canonical next plan is `ai_artifacts/plans/plan-phase-7-admin-operations-users-reporting-settings-2026-07-23.md`, mirrored under `.omx/plans/` with Member D PRD/test-spec artifacts. Phase 7 treats Reader POC completion as P0: catalogue discovery/detail, server-rendered watermarked pages on canvas, integrated real-page progress, removal of Reader raw-PDF/download paths, persisted bookmark hydration, durable access events, and scrape/rate/concurrency enforcement. Existing user administration, taxonomy safeguards, date-filtered reporting, bounded CSV, supported settings, and notification/document polish remain in scope.
+Phase 7 Wave 4 closes the Reader POC P0 integration gate. Wave 5 is next under `ai_artifacts/plans/plan-phase-7-admin-operations-users-reporting-settings-2026-07-23.md`: remaining user administration, taxonomy safeguards, general reports/settings, and notification/document polish proceed in their existing member lanes while protected Reader surfaces remain regression-only.
 
 ## 80-90% Completion Team Backlog
 
@@ -199,7 +203,7 @@ Member D Phase 5 is complete and integrated with the merged Member A/B/C lanes; 
 
 - [x] Canonical team plan written to `ai_artifacts/plans/plan-phase-7-admin-operations-users-reporting-settings-2026-07-23.md` and mirrored under `.omx/plans/`.
 - [x] Member D Ralph prerequisites written to `.omx/plans/prd-phase-7-member-d.md` and `.omx/plans/test-spec-phase-7-member-d.md`.
-- [x] Repository audit confirmed the current catalogue lacks functional detail navigation/state, the viewer embeds and downloads the raw PDF, its page tracker is disconnected and hard-coded, and detail/viewer bookmark controls default to unsaved.
+- [x] The pre-Wave 3 repository audit captured missing catalogue detail/state, raw-PDF embedding/download, disconnected hard-coded progress, and false bookmark defaults; Waves 3–4 closed those P0 gaps.
 - [x] Phase 7 locks a server-authorized raster-page/HTML-canvas viewer boundary and explicitly rejects native PDF embedding, Reader source-file download, selectable OCR text, and false absolute-DRM claims.
 - [x] Validated research recorded at `ai_artifacts/research/document-drm-and-screenshot-prevention-2026-07-23.md`; Phase 7 now requires server-burned traceable watermarks, append-only Reader access events, Redis-backed scrape/rate/concurrency controls, and deduplicated staff alerts.
 - [x] Phase 7 workload is explicitly balanced by planning points: A=11 access/viewer, B=11 catalogue/taxonomy, C=10 rendering/alerts, D=12 schema/users/reporting/settings/integration.
@@ -214,7 +218,12 @@ Member D Phase 5 is complete and integrated with the merged Member A/B/C lanes; 
 - [x] Member D Wave 3 users backend is live at `GET /api/admin/users` and `GET /api/admin/users/:userId`; D7-004 product-settings persistence and normalization are implemented without generated-client churn.
 - [x] The Wave 3 contract exception is explicit: runtime users routes are not generated-client-ready, and the unchanged OpenAPI/client hashes preserve D7-005 as the single cross-lane refresh.
 - [ ] `GET/PATCH /api/admin/settings/general` remains gated on Member A's tested watermark-signing and scrape-protection capability source; no hard-coded or inferred capability state is published.
-- [ ] Reader page/detail/state routes remain pending; no protected Reader manifest/raster route is marked live yet.
+- [x] Wave 4 P0 Reader integration is live: published detail/state, protected manifest/raster pages, server-burned watermarks, canvas navigation/retry, render-confirmed progress, and explicit Reader denial on source-PDF token/stream/file routes.
+- [x] Redis-backed rate/concurrency/scrape enforcement uses deployment-owned thresholds, stable `429`/`Retry-After`, hashed scopes, and fail-closed production behavior when Redis is unavailable.
+- [x] Committed high-risk scrape facts create deterministic, deduplicated, content-safe alerts for active Admin/Librarian recipients.
+- [x] Admin Reader-access JSON/CSV reporting is live with bounded UTC ranges, safe reader labels, deterministic ordering, formula-neutralized CSV, and seeded trace/risk scenarios backed by a usable private sample PDF.
+- [x] Wave 4 targeted verification: 16 API suites / 103 tests across access/Reader/rendering/notifications/reporting/catalogue, plus 2 protected Reader/catalogue web files / 5 tests and 4 API e2e suites / 24 tests.
+- [ ] D7-005 remains the only approved OpenAPI/generated-client refresh; tracked generated contracts stay unchanged through Wave 4.
 - [x] Member D Wave 3 regression: root lint; 29 API suites/124 tests; 15 web files/62 tests; API/web/shared builds; 9 API e2e suites/41 tests; worker OCR/privacy suite/5 scenarios; Prisma validate/status; unchanged schema, migrations, rendering, OpenAPI, and generated client; `git diff --check`; architect approval; and post-cleanup re-verification.
 
 ### Phase 4 Member D verification

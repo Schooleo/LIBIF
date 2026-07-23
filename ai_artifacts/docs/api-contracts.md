@@ -2,7 +2,7 @@
 
 Last updated: 2026-07-23
 
-This document records the current runtime HTTP contract from the merged Phase 6 code. Member D regenerated `apps/api/openapi/libif-api.json` and `apps/web/lib/generated/api-types.ts` from the frozen Phase 6 DTOs on 2026-07-23; controller/service code remains authoritative if later feature changes introduce drift.
+This document records the current runtime HTTP contract through Phase 7 Wave 4. The tracked `apps/api/openapi/libif-api.json` and `apps/web/lib/generated/api-types.ts` intentionally remain at the Wave 2 freeze until D7-005 performs one unified refresh; controller/service code and tests are authoritative for later live routes.
 
 ## Runtime implemented endpoints
 
@@ -40,17 +40,21 @@ This document records the current runtime HTTP contract from the merged Phase 6 
 | `PATCH /api/notifications/:id/read` | `NotificationsModule` | Notification list actions | Marks one notification as read; enforces recipient ownership. |
 | `PATCH /api/notifications/read-all` | `NotificationsModule` | Notification list actions | Marks all unread notifications for the current user as read. |
 | `GET /api/access/documents/:documentId/decision` | `AccessModule` | Reader and staff document routes | Returns allow/deny plus current document status and safe reason text. |
-| `POST /api/access/documents/:documentId/view-token` | `AccessModule` | Reader/staff viewer actions | Returns `{ token, expiresAt, url }` for inline viewing. |
-| `POST /api/access/documents/:documentId/download-token` | `AccessModule` | Reader/staff download actions | Returns `{ token, expiresAt, url }` for attachment download. |
-| `GET /api/access/documents/:documentId/stream?token=...` | `AccessModule` | Reader/staff viewer | Streams the active PDF inline after token validation. |
-| `GET /api/access/documents/:documentId/file?token=...` | `AccessModule` | Reader/staff download | Streams the active PDF as an attachment after token validation. |
+| `GET /api/access/documents/:documentId/manifest` | `AccessModule` | Protected Reader canvas | Returns safe page count/dimensions after authorization and records the viewer-open event. |
+| `GET /api/access/documents/:documentId/pages/:pageNumber` | `AccessModule` | Protected Reader canvas | Returns one authorized server-watermarked raster page with private/no-store headers, bounded enforcement, and trace audit. |
+| `POST /api/access/documents/:documentId/view-token` | `AccessModule` | Staff internal viewer | Staff-only; returns a short-lived HMAC-bound `{ token, expiresAt, url }` for inline source-file viewing. |
+| `POST /api/access/documents/:documentId/download-token` | `AccessModule` | Staff internal download | Staff-only; returns a short-lived HMAC-bound `{ token, expiresAt, url }` for source-file download. |
+| `GET /api/access/documents/:documentId/stream?token=...` | `AccessModule` | Staff internal viewer | Staff-only source PDF stream after role, document, purpose, expiry, and signature validation. |
+| `GET /api/access/documents/:documentId/file?token=...` | `AccessModule` | Staff internal download | Staff-only source PDF attachment after role, document, purpose, expiry, and signature validation. |
 | `GET /api/reader/library` | `ReaderModule` | Reader library route | Returns `ReaderLibraryResponseDto` with filtered items plus reading/bookmark counts. |
 | `GET /api/reader/history` | `ReaderModule` | Reader history route | Returns published books with persisted last-read ordering. |
 | `GET /api/reader/bookmarks` | `ReaderModule` | Reader bookmarks route | Returns published bookmarked books. |
+| `GET /api/reader/documents/:documentId/state` | `ReaderModule` | Catalogue detail and protected viewer | Returns published-only bookmark and progress state for one document. |
 | `POST /api/reader/bookmarks` | `ReaderModule` | Reader bookmark actions | Accepts `{ documentId }`; idempotent save. |
 | `DELETE /api/reader/bookmarks/:documentId` | `ReaderModule` | Reader bookmark actions | Idempotent removal by document ID. |
 | `PATCH /api/reader/progress/:documentId` | `ReaderModule` | Reader viewer actions | Upserts reading progress and auto-maps completion at 100%. |
 | `GET /api/catalog/books` | `CatalogModule` | Public catalogue routes | Returns published books only. |
+| `GET /api/catalog/books/:documentId` | `CatalogModule` | Public catalogue detail | Returns one published-only public detail projection without scanning a list page. |
 | `GET /api/categories` | `CatalogModule` | Legacy catalogue compatibility | Public category list compatibility surface. |
 | `GET /api/taxonomy/categories` | `TaxonomyModule` | Staff document forms and category manager | Staff selector list of `{ id, name, slug, parentId }`. |
 | `POST /api/admin/categories` | `TaxonomyModule` | Category manager | Admin-only category creation. |
@@ -59,6 +63,10 @@ This document records the current runtime HTTP contract from the merged Phase 6 
 | `POST /api/admin/tags` | `TaxonomyModule` | Tag manager | Admin-only tag creation. |
 | `PATCH /api/admin/tags/:id` | `TaxonomyModule` | Tag manager | Admin-only tag update. |
 | `GET /api/admin/dashboard/librarian` | `ReportingModule` | Admin dashboard | Returns generated timestamp, book counts, processing-job counts, taxonomy counts, user counts, recent books, grouped workflow activity counts, and a bounded newest-first activity feed. |
+| `GET /api/admin/reports/reader-access` | `ReportingModule` | Admin security reporting | Returns bounded UTC/risk-filtered audit summaries with opaque event/document aliases, a masked reader label, and no raw internal identifiers. |
+| `GET /api/admin/reports/reader-access.csv` | `ReportingModule` | Admin security export | Returns the same bounded safe projection as synchronous formula-safe CSV. |
+| `GET /api/admin/users` | `UsersModule` | Admin user management | Returns a paginated, filterable safe account summary without password/session secrets. |
+| `GET /api/admin/users/:userId` | `UsersModule` | Admin user detail | Returns safe account/session aggregates and bounded immutable administration history. |
 | `POST /api/admin/books/intake` | `BooksModule` | Legacy compatibility UI | Legacy intake surface kept for compatibility; primary staff flow uses `/api/uploads`. |
 | `GET /api/admin/books` | `BooksModule` | Legacy compatibility UI | Legacy list surface kept for compatibility. |
 | `GET /api/isbn/:isbn` | `IsbnModule` | Metadata form | ISBN lookup proxy. |
@@ -123,11 +131,13 @@ Source of truth: `apps/api/src/common/http-error.filter.ts`.
 
 ```json
 {
-  "token": "view_document-id_timestamp",
+  "token": "v1.view.<expiry-ms>.<nonce>.<hmac-signature>",
   "expiresAt": "2026-07-23T10:00:00.000Z",
-  "url": "/api/access/documents/document-id/stream?token=view_document-id_timestamp"
+  "url": "/api/access/documents/document-id/stream?token=v1.view..."
 }
 ```
+
+Source tokens are staff-only, purpose-specific, bound to the authenticated staff user and document, and require `LIBIF_SOURCE_ACCESS_TOKEN_SECRET` in production.
 
 ## Workflow-specific contract notes
 
@@ -152,16 +162,14 @@ Source of truth: `apps/api/src/common/http-error.filter.ts`.
 ### Reader access contracts
 
 - Reader access decisions can deny on `CORRECTION_REQUIRED`; the generated access-decision enum includes that state.
-- View/download token routes return application URLs, not storage-provider credentials.
-- Stream and file delivery always resolve the active file version for the document at request time.
-- The current Reader viewer still receives the source PDF through the application stream and exposes the download-token route. This is a documented Phase 7 P0 gap, not the target content-protection design.
-- Frozen Phase 7 code contracts cover `GET /api/catalog/books/:documentId`, `GET /api/reader/documents/:documentId/state`, `GET /api/access/documents/:documentId/manifest`, and `GET /api/access/documents/:documentId/pages/:pageNumber`. The DTO/port shapes exist, but these routes remain non-live until their owning controllers and tests land.
-- The planned Reader page route returns an authorized, bounded, individually server-watermarked raster image with private/no-store caching and never returns object keys, source-PDF bytes/URLs, or extracted OCR text. The web viewer draws it on canvas without a selectable text layer.
+- Live Phase 7 routes include `GET /api/catalog/books/:documentId`, `GET /api/reader/documents/:documentId/state`, `GET /api/access/documents/:documentId/manifest`, and `GET /api/access/documents/:documentId/pages/:pageNumber`.
+- The page route returns an authorized, bounded, individually server-watermarked raster image with private/no-store caching and never returns object keys, source-PDF bytes/URLs, or extracted OCR text. The web viewer draws it on canvas without a selectable text layer and persists progress only after a page renders successfully.
 - Every successful/denied page attempt produces a bounded `ReaderAccessEvent`; Redis-backed rate/concurrency/scrape enforcement returns stable `429` + `Retry-After` where applicable and emits committed risk facts for deduplicated staff alerts.
-- Planned Admin-only security projections are `GET /api/admin/reports/reader-access?from&to&risk` and the bounded `.csv` equivalent.
-- Reader access to source-file download is removed or denied by explicit role policy. Any retained staff download is a separate staff-authorized contract.
+- Admin-only security projections are live at `GET /api/admin/reports/reader-access?from&to&risk` and `GET /api/admin/reports/reader-access.csv`; both enforce a bounded UTC range, safe projections, and deterministic ordering.
+- Reader access to the source-file token, stream, and file routes is denied by explicit role policy. Retained source-file access is staff-only and uses a short-lived HMAC token bound to staff user, document, purpose, and expiry.
+- `LIBIF_SOURCE_ACCESS_TOKEN_SECRET` is required in production. Protected-page rate thresholds are deployment-owned environment configuration; production fails closed when Redis is unavailable unless the explicit in-memory development override is enabled.
 - Live Admin user routes are `GET /api/admin/users` and `GET /api/admin/users/:userId`; these expose only safe account, session, and administration-audit projections.
-- Wave 3 intentionally does not refresh `apps/api/openapi/libif-api.json` or `apps/web/lib/generated/api-types.ts`. These runtime-live routes are unavailable to generated-client consumers until D7-005 performs the single cross-lane contract refresh.
+- Waves 3–4 intentionally do not refresh `apps/api/openapi/libif-api.json` or `apps/web/lib/generated/api-types.ts`. Runtime-live Phase 7 routes remain unavailable to generated-client consumers until D7-005 performs the single cross-lane contract refresh.
 
 ## Deferred or absent endpoint families
 
@@ -171,7 +179,6 @@ These routes are not implemented in the current runtime code and must not be tre
 - Category deletion/reassignment endpoints.
 - Tag duplicate-detection or merge endpoints.
 - User role-change and account-deactivation endpoints.
-- Management dashboard, report-export, and general-settings endpoints. The product-settings persistence service is implemented, but the route remains gated on Member A's tested deployment-capability handoff.
-- Published catalogue detail, one-document reader state, and protected manifest/raster-page endpoints.
+- General management dashboard/export and general-settings endpoints. The Reader-access report and bounded CSV routes are live; product-settings persistence is implemented, but the settings route remains gated on a tested deployment-capability source.
 
-The approved contract sources are `ai_artifacts/plans/plan-phase-7-admin-operations-users-reporting-settings-2026-07-23.md` and `ai_artifacts/docs/phase-7-wave-1-2-foundation-contract-freeze.md`. Frozen TypeScript/Prisma shapes are not live endpoint evidence; controllers, tests, and regenerated OpenAPI remain required.
+The approved contract sources are `ai_artifacts/plans/plan-phase-7-admin-operations-users-reporting-settings-2026-07-23.md`, `ai_artifacts/docs/phase-7-wave-1-2-foundation-contract-freeze.md`, and `ai_artifacts/docs/phase-7-wave-4-p0-integration.md`. Controllers and tests are the runtime evidence until D7-005 performs the deferred unified OpenAPI/client refresh.

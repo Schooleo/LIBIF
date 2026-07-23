@@ -1,11 +1,19 @@
-import { INestApplication } from '@nestjs/common';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { HttpErrorFilter } from '../src/common/http-error.filter';
-import { BookAuditAction, BookStatus, UserRole } from '../src/generated/prisma/client';
+import {
+  BookAuditAction,
+  BookStatus,
+  ReaderAccessEventType,
+  ReaderAccessReasonCode,
+  ReaderAccessRiskLevel,
+  UserRole
+} from '../src/generated/prisma/client';
 import { PrismaService } from '../src/modules/database/prisma.service';
 import { ProcessingQueue } from '../src/modules/processing/processing.queue';
+import { buildOpaqueReference, buildReaderLabel } from '../src/modules/reporting/reporting.service';
 
 class FakeProcessingQueue {
   async enqueueBookUploaded(_event: unknown): Promise<void> {}
@@ -24,6 +32,7 @@ describe('Admin dashboard reporting (e2e)', () => {
     const moduleRef = await Test.createTestingModule({ imports: [AppModule] }).overrideProvider(ProcessingQueue).useClass(FakeProcessingQueue).compile();
     app = moduleRef.createNestApplication();
     app.setGlobalPrefix('api');
+    app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
     app.useGlobalFilters(new HttpErrorFilter());
     await app.init();
     prisma = app.get(PrismaService);
@@ -146,6 +155,204 @@ describe('Admin dashboard reporting (e2e)', () => {
     await request(app.getHttpServer()).get('/api/admin/dashboard/librarian').set(librarianHeaders).expect(200);
   });
 
+  it('returns reader access summaries with inclusive/exclusive ranges, deterministic ordering, and masked projections', async () => {
+    const { reader, book } = await seedReaderAccessFixture(prisma);
+    await prisma.readerAccessEvent.createMany({
+      data: [
+        {
+          id: 'evt-early',
+          eventType: ReaderAccessEventType.VIEWER_OPENED,
+          riskLevel: ReaderAccessRiskLevel.NONE,
+          userId: reader.id,
+          bookId: book.id,
+          traceFingerprint: null,
+          createdAt: new Date('2026-07-22T00:00:00.000Z')
+        },
+        {
+          id: 'evt-z-last',
+          eventType: ReaderAccessEventType.RATE_LIMITED,
+          riskLevel: ReaderAccessRiskLevel.LOW,
+          reasonCode: ReaderAccessReasonCode.RATE_LIMIT_EXCEEDED,
+          userId: reader.id,
+          bookId: book.id,
+          pageNumber: 3,
+          createdAt: new Date('2026-07-22T10:00:00.000Z')
+        },
+        {
+          id: 'evt-a-first',
+          eventType: ReaderAccessEventType.SCRAPE_SUSPECTED,
+          riskLevel: ReaderAccessRiskLevel.HIGH,
+          reasonCode: ReaderAccessReasonCode.PAGE_ENUMERATION,
+          userId: reader.id,
+          bookId: book.id,
+          pageNumber: 99,
+          createdAt: new Date('2026-07-22T10:00:00.000Z')
+        },
+        {
+          id: 'evt-excluded-end',
+          eventType: ReaderAccessEventType.PAGE_DENIED,
+          riskLevel: ReaderAccessRiskLevel.LOW,
+          reasonCode: ReaderAccessReasonCode.ACCESS_DENIED,
+          userId: reader.id,
+          bookId: book.id,
+          pageNumber: 4,
+          createdAt: new Date('2026-07-23T00:00:00.000Z')
+        }
+      ]
+    });
+
+    const beforeCount = await prisma.readerAccessEvent.count();
+    const response = await request(app.getHttpServer())
+      .get('/api/admin/reports/reader-access')
+      .query({ from: '2026-07-22T00:00:00.000Z', to: '2026-07-23T00:00:00.000Z', pageSize: 2 })
+      .set(adminHeaders)
+      .expect(200);
+    const afterCount = await prisma.readerAccessEvent.count();
+
+    expect(afterCount).toBe(beforeCount);
+    expect(response.body).toMatchObject({
+      totalCount: 3,
+      page: 1,
+      pageSize: 2,
+      riskCounts: { none: 1, low: 1, medium: 0, high: 1 },
+      items: [
+        {
+          eventReference: buildOpaqueReference('event', 'evt-z-last'),
+          documentReference: buildOpaqueReference('document', book.id),
+          readerLabel: buildReaderLabel(reader.id),
+          eventType: 'RATE_LIMITED',
+          riskLevel: 'LOW',
+          reasonCode: 'RATE_LIMIT_EXCEEDED',
+          pageNumber: 3,
+          traceFingerprint: null,
+          occurredAt: '2026-07-22T10:00:00.000Z'
+        },
+        {
+          eventReference: buildOpaqueReference('event', 'evt-a-first'),
+          documentReference: buildOpaqueReference('document', book.id),
+          readerLabel: buildReaderLabel(reader.id),
+          eventType: 'SCRAPE_SUSPECTED',
+          riskLevel: 'HIGH',
+          reasonCode: 'PAGE_ENUMERATION',
+          pageNumber: 99,
+          traceFingerprint: null,
+          occurredAt: '2026-07-22T10:00:00.000Z'
+        }
+      ]
+    });
+    expect(response.body.items[0]).not.toHaveProperty('userId');
+    expect(response.body.items[0]).not.toHaveProperty('sessionId');
+    expect(response.body.items[0]).not.toHaveProperty('bookFileId');
+    expect(response.body.items[0]).not.toHaveProperty('email');
+    expect(response.body.items[0]).not.toHaveProperty('id');
+    expect(response.body.items[0]).not.toHaveProperty('documentId');
+    expect(response.body.items[0].readerLabel).not.toContain('reader@libif.local');
+    expect(response.body.items[0].readerLabel).toMatch(/^reader-[0-9a-f]{12}$/);
+  });
+
+  it('filters by risk and validates bounded UTC ranges and page caps', async () => {
+    const { reader, book } = await seedReaderAccessFixture(prisma);
+    await prisma.readerAccessEvent.createMany({
+      data: [
+        {
+          id: 'evt-low',
+          eventType: ReaderAccessEventType.RATE_LIMITED,
+          riskLevel: ReaderAccessRiskLevel.LOW,
+          reasonCode: ReaderAccessReasonCode.RATE_LIMIT_EXCEEDED,
+          userId: reader.id,
+          bookId: book.id,
+          createdAt: new Date('2026-07-22T01:00:00.000Z')
+        },
+        {
+          id: 'evt-high',
+          eventType: ReaderAccessEventType.SCRAPE_SUSPECTED,
+          riskLevel: ReaderAccessRiskLevel.HIGH,
+          reasonCode: ReaderAccessReasonCode.PAGE_ENUMERATION,
+          userId: reader.id,
+          bookId: book.id,
+          createdAt: new Date('2026-07-22T02:00:00.000Z')
+        }
+      ]
+    });
+
+    await request(app.getHttpServer())
+      .get('/api/admin/reports/reader-access')
+      .query({ from: '2026-07-22T00:00:00.000Z', to: '2026-07-23T00:00:00.000Z', risk: 'HIGH' })
+      .set(adminHeaders)
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body.totalCount).toBe(1);
+        expect(body.riskCounts).toEqual({ none: 0, low: 0, medium: 0, high: 1 });
+        expect(body.items.map((item: { eventReference: string }) => item.eventReference)).toEqual([
+          buildOpaqueReference('event', 'evt-high')
+        ]);
+      });
+
+    await request(app.getHttpServer())
+      .get('/api/admin/reports/reader-access')
+      .query({ from: '2026-07-23T00:00:00.000Z', to: '2026-07-23T00:00:00.000Z' })
+      .set(adminHeaders)
+      .expect(400);
+
+    await request(app.getHttpServer())
+      .get('/api/admin/reports/reader-access')
+      .query({ from: '2026-07-23T00:00:00+07:00', to: '2026-07-24T00:00:00.000Z' })
+      .set(adminHeaders)
+      .expect(400);
+
+    await request(app.getHttpServer())
+      .get('/api/admin/reports/reader-access')
+      .query({ pageSize: 201 })
+      .set(adminHeaders)
+      .expect(400);
+  });
+
+  it('exports CSV with fixed headers, deterministic ordering, and no raw internal identifiers', async () => {
+    const admin = await prisma.user.create({ data: { email: 'admin@libif.local', passwordHash: 'dev-only', role: UserRole.ADMIN } });
+    const reader = await prisma.user.create({ data: { id: 'reader-csv', email: 'reader@libif.local', passwordHash: 'dev-only', role: UserRole.READER } });
+    const category = await prisma.category.create({ data: { name: 'CSV Reports', slug: 'csv-reports' } });
+    const book = await prisma.book.create({ data: { id: '@doc,1', title: 'CSV fixture', status: BookStatus.PUBLISHED, categoryId: category.id, createdById: admin.id } });
+    await prisma.readerAccessEvent.create({
+      data: {
+        id: '=row-1',
+        eventType: ReaderAccessEventType.PAGE_DENIED,
+        riskLevel: ReaderAccessRiskLevel.LOW,
+        reasonCode: ReaderAccessReasonCode.ACCESS_DENIED,
+        userId: reader.id,
+        bookId: book.id,
+        createdAt: new Date('2026-07-22T03:00:00.000Z')
+      }
+    });
+
+    const response = await request(app.getHttpServer())
+      .get('/api/admin/reports/reader-access.csv')
+      .query({ from: '2026-07-22T00:00:00.000Z', to: '2026-07-23T00:00:00.000Z' })
+      .set(adminHeaders)
+      .expect(200);
+
+    expect(response.headers['content-type']).toContain('text/csv; charset=utf-8');
+    expect(response.headers['content-disposition']).toBe('attachment; filename="reader-access-report.csv"');
+    const [header, row] = response.text.trimEnd().split('\n');
+    expect(header).toBe('eventReference,documentReference,readerLabel,eventType,riskLevel,reasonCode,pageNumber,traceFingerprint,occurredAt');
+    expect(row).toContain(`"${buildOpaqueReference('event', '=row-1')}"`);
+    expect(row).toContain(`"${buildOpaqueReference('document', '@doc,1')}"`);
+    expect(row).not.toContain('=row-1');
+    expect(row).not.toContain('@doc,1');
+    expect(row).toContain(`"${buildReaderLabel(reader.id)}"`);
+    expect(row).toContain('"PAGE_DENIED"');
+    expect(row).toContain('"LOW"');
+  });
+
+  it('keeps reader-access report routes admin-only without changing dashboard authorization', async () => {
+    await seedReaderAccessFixture(prisma);
+
+    await request(app.getHttpServer()).get('/api/admin/dashboard/librarian').set(librarianHeaders).expect(200);
+    await request(app.getHttpServer()).get('/api/admin/reports/reader-access').set(librarianHeaders).expect(403);
+    await request(app.getHttpServer()).get('/api/admin/reports/reader-access').set(readerHeaders).expect(403);
+    await request(app.getHttpServer()).get('/api/admin/reports/reader-access').expect(403);
+    await request(app.getHttpServer()).get('/api/admin/reports/reader-access.csv').set(librarianHeaders).expect(403);
+  });
+
   it('returns zeroed activity counts and no rows for empty datasets', async () => {
     const admin = await prisma.user.create({ data: { email: 'admin@libif.local', passwordHash: 'dev-only', role: UserRole.ADMIN } });
 
@@ -166,3 +373,23 @@ describe('Admin dashboard reporting (e2e)', () => {
     await request(app.getHttpServer()).get('/api/admin/dashboard/librarian').expect(403);
   });
 });
+
+async function seedReaderAccessFixture(prisma: PrismaService) {
+  const admin = await prisma.user.create({ data: { email: 'admin@libif.local', passwordHash: 'dev-only', role: UserRole.ADMIN } });
+  const reader = await prisma.user.create({ data: { email: 'reader@libif.local', passwordHash: 'dev-only', role: UserRole.READER } });
+  const category = await prisma.category.create({ data: { name: 'Reader Reports', slug: `reader-reports-${Date.now()}` } });
+  const book = await prisma.book.create({ data: { title: 'Reader Reporting Fixture', status: BookStatus.PUBLISHED, categoryId: category.id, createdById: admin.id } });
+  const bookFile = await prisma.bookFile.create({
+    data: {
+      bookId: book.id,
+      bucket: 'test',
+      objectKey: `reader-reporting/${book.id}.pdf`,
+      originalFilename: 'reader-reporting.pdf',
+      mimeType: 'application/pdf',
+      sizeBytes: 1,
+      checksumSha256: `checksum-${book.id}`
+    }
+  });
+
+  return { admin, reader, category, book, bookFile };
+}

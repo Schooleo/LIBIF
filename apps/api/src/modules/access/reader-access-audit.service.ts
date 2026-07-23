@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger, Optional } from '@nestjs/common';
 import { PrismaService } from '../database/prisma.service';
 import {
   ReaderAccessEventType,
@@ -8,18 +8,21 @@ import {
 import {
   CommittedReaderRiskFact,
   ReaderAccessEventInput,
+  READER_RISK_EVENT_SINK,
+  ReaderRiskEventSink,
 } from './contracts/reader-access.contract';
 
 @Injectable()
 export class ReaderAccessAuditService {
   private readonly logger = new Logger(ReaderAccessAuditService.name);
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    @Optional()
+    @Inject(READER_RISK_EVENT_SINK)
+    private readonly riskEventSink?: ReaderRiskEventSink,
+  ) {}
 
-  /**
-   * Durably records a reader access event in PostgreSQL.
-   * Fails closed if audit recording throws an error.
-   */
   async recordEvent(input: ReaderAccessEventInput) {
     try {
       const event = await this.prisma.readerAccessEvent.create({
@@ -36,19 +39,35 @@ export class ReaderAccessAuditService {
           createdAt: input.createdAt,
         },
       });
+
+      const fact = this.mapToCommittedRiskFact({
+        id: event.id,
+        eventType: event.eventType,
+        riskLevel: event.riskLevel,
+        reasonCode: event.reasonCode,
+        bookId: event.bookId,
+        pageNumber: event.pageNumber,
+        createdAt: event.createdAt,
+      });
+
+      if (fact && this.riskEventSink) {
+        try {
+          await this.riskEventSink.publishCommittedRiskFact(fact);
+        } catch (error) {
+          this.logger.warn(`Risk alert handoff failed for ${event.id}: ${errorMessage(error)}`);
+        }
+      }
+
       return event;
     } catch (error) {
       this.logger.error(
-        `Failed to persist ReaderAccessEvent for user ${input.userId}, book ${input.bookId}: ${(error as Error).message}`,
-        (error as Error).stack,
+        `Failed to persist ReaderAccessEvent for ${redactId(input.userId)}/${redactId(input.bookId)}: ${errorMessage(error)}`,
+        error instanceof Error ? error.stack : undefined,
       );
       throw error;
     }
   }
 
-  /**
-   * Helper to construct a CommittedReaderRiskFact fact from a persisted risk event.
-   */
   mapToCommittedRiskFact(event: {
     id: string;
     eventType: ReaderAccessEventType;
@@ -58,10 +77,15 @@ export class ReaderAccessAuditService {
     pageNumber: number | null;
     createdAt: Date;
   }): CommittedReaderRiskFact | null {
-    if (
-      event.eventType !== ReaderAccessEventType.RATE_LIMITED &&
-      event.eventType !== ReaderAccessEventType.SCRAPE_SUSPECTED
-    ) {
+    if (!event.reasonCode) {
+      return null;
+    }
+
+    const isCommittedRiskEvent =
+      event.eventType === ReaderAccessEventType.RATE_LIMITED ||
+      event.eventType === ReaderAccessEventType.SCRAPE_SUSPECTED;
+
+    if (!isCommittedRiskEvent) {
       return null;
     }
 
@@ -73,13 +97,9 @@ export class ReaderAccessAuditService {
       return null;
     }
 
-    if (!event.reasonCode) {
-      return null;
-    }
-
     return {
       accessEventId: event.id,
-      eventType: event.eventType,
+      eventType: event.eventType as CommittedReaderRiskFact['eventType'],
       riskLevel: event.riskLevel,
       reasonCode: event.reasonCode,
       documentId: event.bookId,
@@ -87,4 +107,13 @@ export class ReaderAccessAuditService {
       occurredAt: event.createdAt,
     };
   }
+}
+
+function redactId(value: string | undefined): string {
+  if (!value) return 'unknown';
+  return `…${value.slice(-6)}`;
+}
+
+function errorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
 }

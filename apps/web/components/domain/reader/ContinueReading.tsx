@@ -75,7 +75,7 @@ export function ContinueReading({ items }: ContinueReadingProps) {
                   <span style={{ color: 'var(--color-secondary, #0C6668)' }}>{item.progress?.percentage}%</span>
                 </div>
 
-                <ProgressBar value={item.progress?.percentage ?? 0} aria-label={`Reading progress: ${item.progress?.percentage}%`} />
+                <ProgressBar value={item.progress?.percentage ?? 0} label={`Reading progress: ${item.progress?.percentage}%`} />
 
                 <div style={{ marginTop: '0.75rem' }}>
                   <a

@@ -3,6 +3,7 @@ import type {
   AdminBookListItemDto as SharedAdminBookListItemDto,
   CategoryDto as SharedCategoryDto,
   PagedDto as SharedPagedDto,
+  ProtectedDocumentManifestDto as SharedProtectedDocumentManifestDto,
   PublicBookDetailDto as SharedPublicBookDetailDto,
   PublicBookListItemDto as SharedPublicBookListItemDto,
   ReaderDocumentStateDto as SharedReaderDocumentStateDto
@@ -41,6 +42,7 @@ export type BookListItemDto = SharedPublicBookListItemDto;
 export type PagedBookListDto = SharedPagedDto<SharedPublicBookListItemDto>;
 export type CategoryDto = SharedCategoryDto;
 export type ReaderDocumentStateDto = SharedReaderDocumentStateDto;
+export type ProtectedDocumentManifestDto = SharedProtectedDocumentManifestDto;
 
 export type CreateBookIntakeDto = {
   isbn?: string;

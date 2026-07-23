@@ -101,14 +101,14 @@ export class AuthService {
     const cookieUser = await this.resolveCookieUser(request, response);
     if (cookieUser) return { authenticated: true, user: cookieUser, permissions: cookieUser.permissions, strategy: 'persistent-cookie' };
 
-    const devUser = this.resolveDevelopmentUser(request);
+    const devUser = await this.resolveDevelopmentUser(request);
     if (devUser) return { authenticated: true, user: devUser, permissions: devUser.permissions, strategy: 'development-header' };
 
     return { authenticated: false, permissions: [], strategy: 'persistent-cookie' };
   }
 
   async resolveUser(request: Request): Promise<SessionUserDto | undefined> {
-    return (await this.resolveCookieUser(request)) ?? this.resolveDevelopmentUser(request);
+    return (await this.resolveCookieUser(request)) ?? (await this.resolveDevelopmentUser(request));
   }
 
   private async createSession(user: User, request: Request, response: Response): Promise<SessionDto> {
@@ -141,7 +141,7 @@ export class AuthService {
     return this.toSessionUser(session.user);
   }
 
-  private resolveDevelopmentUser(request: Request): SessionUserDto | undefined {
+  private async resolveDevelopmentUser(request: Request): Promise<SessionUserDto | undefined> {
     if (this.isProduction()) return undefined;
     if (this.config.get('LIBIF_ENABLE_DEV_AUTH') !== 'true') return undefined;
     const roleHeader = this.readHeader(request, 'x-libif-dev-role');
@@ -149,9 +149,14 @@ export class AuthService {
     const role = roleHeader.toUpperCase() as RoleKey;
     if (!ROLE_KEYS.includes(role)) return undefined;
     const defaultEmail = `${role.toLowerCase()}@libif.local`;
+    const email = normalizeEmail(this.readHeader(request, 'x-libif-dev-user-email') ?? defaultEmail);
+    const explicitUserId = this.readHeader(request, 'x-libif-dev-user-id');
+    const persistedUser = explicitUserId
+      ? null
+      : await this.prisma.user.findUnique({ where: { email }, select: { id: true } });
     return {
-      id: this.readHeader(request, 'x-libif-dev-user-id') ?? `dev-${role.toLowerCase()}`,
-      email: normalizeEmail(this.readHeader(request, 'x-libif-dev-user-email') ?? defaultEmail),
+      id: explicitUserId ?? persistedUser?.id ?? `dev-${role.toLowerCase()}`,
+      email,
       role,
       permissions: ROLE_PERMISSIONS[role]
     };
