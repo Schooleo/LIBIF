@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "predev": "npm --prefix ../../packages/shared run build && npm run prisma:generate",
+    "predev": "npm --prefix ../../packages/shared run build && npm run prisma:generate && npm run prisma:migrate:deploy",
     "dev": "nest start --watch",
     "prebuild": "npm --prefix ../../packages/shared run build && npm run prisma:generate",
     "build": "nest build",
@@ -20,7 +20,8 @@
     "test:worker": "jest --config ./test/jest-worker.json --runInBand",
     "db:migrate": "dotenv -e ../../.env -- prisma migrate dev && npm run prisma:generate",
     "db:seed": "npm run prisma:generate && dotenv -e ../../.env -- tsx prisma/seed.ts",
-    "prisma:generate": "dotenv -e ../../.env -- prisma generate"
+    "prisma:generate": "dotenv -e ../../.env -- prisma generate",
+    "prisma:migrate:deploy": "dotenv -e ../../.env -- prisma migrate deploy"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1089.0",
