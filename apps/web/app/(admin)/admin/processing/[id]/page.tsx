@@ -8,7 +8,7 @@ import { ProcessingStatusBadge } from '../../../../../components/domain/processi
 import { ProcessingStageStepper } from '../../../../../components/domain/processing/processing';
 import { ProcessingActions } from '../../../../../components/domain/processing/ProcessingActions';
 import { JobRetryHistory } from '../../../../../components/domain/processing/JobRetryHistory';
-import { API_BASE_URL } from '../../../../../lib/api-client';
+import { getApiBaseUrl } from '../../../../../lib/api-client';
 import { getDevAuthHeaders } from '../../../../../lib/auth/session';
 import type { ProcessingJob } from '../../../../../components/domain/processing/ProcessingQueue';
 
@@ -22,7 +22,7 @@ async function fetchProcessingJobHistory(id: string): Promise<JobHistoryResponse
   const cookie = incomingHeaders.get('cookie');
   const devHeaders = getDevAuthHeaders();
 
-  const res = await fetch(`${API_BASE_URL}/api/admin/processing/jobs/${id}/history`, {
+  const res = await fetch(`${getApiBaseUrl()}/api/admin/processing/jobs/${id}/history`, {
     cache: 'no-store',
     headers: {
       ...devHeaders,
@@ -32,7 +32,7 @@ async function fetchProcessingJobHistory(id: string): Promise<JobHistoryResponse
 
   if (!res.ok) {
     // Fallback to single job fetch if history endpoint fails
-    const singleRes = await fetch(`${API_BASE_URL}/api/admin/processing/jobs/${id}`, {
+    const singleRes = await fetch(`${getApiBaseUrl()}/api/admin/processing/jobs/${id}`, {
       cache: 'no-store',
       headers: {
         ...devHeaders,

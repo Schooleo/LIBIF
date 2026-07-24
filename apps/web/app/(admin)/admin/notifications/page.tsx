@@ -4,7 +4,7 @@ import { InlineAlert } from '../../../../components/ui';
 import { NotificationListContainer } from '../../../../components/domain/notifications/NotificationListContainer';
 import type { NotificationItem } from '../../../../components/domain/notifications/NotificationList';
 import type { NotificationFilter } from '../../../../components/domain/notifications/NotificationFilterTabs';
-import { API_BASE_URL } from '../../../../lib/api-client';
+import { getApiBaseUrl } from '../../../../lib/api-client';
 import { getDevAuthHeaders } from '../../../../lib/auth/session';
 
 interface PagedNotificationResponse {
@@ -25,7 +25,7 @@ async function fetchNotificationsPage(page: number, filter: NotificationFilter):
   if (filter && filter !== 'all') params.set('filter', filter);
 
   const queryString = params.toString() ? `?${params.toString()}` : '';
-  const res = await fetch(`${API_BASE_URL}/api/notifications${queryString}`, {
+  const res = await fetch(`${getApiBaseUrl()}/api/notifications${queryString}`, {
     cache: 'no-store',
     headers: {
       ...devHeaders,

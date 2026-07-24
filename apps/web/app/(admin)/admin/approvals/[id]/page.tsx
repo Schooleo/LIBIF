@@ -6,7 +6,7 @@ import { Card } from '../../../../../components/ui/surfaces/Card';
 import { DescriptionList } from '../../../../../components/ui/data/DataTable';
 import { StatusBadge } from '../../../../../components/ui/indicators/StatusBadge';
 import { ApprovalReviewPanel } from '../../../../../components/domain/approval/ApprovalReviewPanel';
-import { API_BASE_URL } from '../../../../../lib/api-client';
+import { getApiBaseUrl } from '../../../../../lib/api-client';
 import { getDevAuthHeaders } from '../../../../../lib/auth/session';
 import type { ApprovalReviewItem } from '../../../../../components/domain/approval/ApprovalQueue';
 
@@ -15,7 +15,7 @@ async function fetchApprovalReview(id: string): Promise<ApprovalReviewItem> {
   const cookie = incomingHeaders.get('cookie');
   const devHeaders = getDevAuthHeaders();
 
-  const res = await fetch(`${API_BASE_URL}/api/admin/approvals/${id}`, {
+  const res = await fetch(`${getApiBaseUrl()}/api/admin/approvals/${id}`, {
     cache: 'no-store',
     headers: {
       ...devHeaders,

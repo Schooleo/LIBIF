@@ -2,7 +2,7 @@ import { headers } from 'next/headers';
 import { PageHeader } from '../../../../components/layout';
 import { InlineAlert } from '../../../../components/ui';
 import { ProcessingQueue, type ProcessingJob } from '../../../../components/domain/processing/ProcessingQueue';
-import { API_BASE_URL } from '../../../../lib/api-client';
+import { getApiBaseUrl } from '../../../../lib/api-client';
 import { getDevAuthHeaders } from '../../../../lib/auth/session';
 
 async function fetchProcessingJobs(): Promise<ProcessingJob[]> {
@@ -10,7 +10,7 @@ async function fetchProcessingJobs(): Promise<ProcessingJob[]> {
   const cookie = incomingHeaders.get('cookie');
   const devHeaders = getDevAuthHeaders();
 
-  const res = await fetch(`${API_BASE_URL}/api/admin/processing/jobs`, {
+  const res = await fetch(`${getApiBaseUrl()}/api/admin/processing/jobs`, {
     cache: 'no-store',
     headers: {
       ...devHeaders,
