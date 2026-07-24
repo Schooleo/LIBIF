@@ -10,6 +10,7 @@ describe('CatalogService', () => {
     category: { findMany: jest.Mock };
     tag: { findMany: jest.Mock };
     book: { count: jest.Mock; findMany: jest.Mock; findFirst: jest.Mock };
+    $queryRaw: jest.Mock;
   };
 
   beforeEach(async () => {
@@ -20,7 +21,8 @@ describe('CatalogService', () => {
         count: jest.fn().mockResolvedValue(0),
         findMany: jest.fn().mockResolvedValue([]),
         findFirst: jest.fn().mockResolvedValue(null)
-      }
+      },
+      $queryRaw: jest.fn().mockResolvedValue([])
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -125,6 +127,7 @@ describe('CatalogService', () => {
       authors: [],
       createdAt: new Date('2026-07-21T00:00:00Z')
     };
+    prisma.$queryRaw.mockResolvedValue([{ id: 'b-1' }]);
     prisma.book.count.mockResolvedValue(1);
     prisma.book.findMany.mockResolvedValue([dummyBook]);
 
@@ -144,10 +147,22 @@ describe('CatalogService', () => {
         orderBy: { title: 'asc' },
         where: expect.objectContaining({
           status: BookStatus.PUBLISHED,
+          id: { in: ['b-1'] },
           categoryId: 'c-1'
         })
       })
     );
+  });
+
+  it('returns no public books when processed-text search has no matches', async () => {
+    prisma.$queryRaw.mockResolvedValue([]);
+
+    await expect(service.listPublicBooks({ q: 'absent scanned phrase' })).resolves.toMatchObject({
+      items: [],
+      totalCount: 0,
+    });
+    expect(prisma.book.count).not.toHaveBeenCalled();
+    expect(prisma.book.findMany).not.toHaveBeenCalled();
   });
 
   it('handles tag filtering and invalid sort fallback', async () => {

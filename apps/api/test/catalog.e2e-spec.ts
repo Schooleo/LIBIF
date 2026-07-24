@@ -78,6 +78,7 @@ describe('Catalog (e2e)', () => {
         title: 'Published closure detail',
         subtitle: 'Reader-safe subtitle',
         description: 'Reader-safe description',
+        searchText: 'This published document explains MapReduce batch processing and distributed analytics.',
         publisher: 'LIBIF',
         publishedYear: 2026,
         language: 'vi',
@@ -155,6 +156,18 @@ describe('Catalog (e2e)', () => {
     expect(res.body).toHaveProperty('page');
     expect(res.body).toHaveProperty('pageSize');
     expect(Array.isArray(res.body.items)).toBe(true);
+  });
+
+  it('GET /api/catalog/books searches published processed document text', async () => {
+    const response = await request(app.getHttpServer())
+      .get('/api/catalog/books')
+      .query({ q: 'MapReduce' })
+      .expect(200);
+
+    expect(response.body.items).toEqual(expect.arrayContaining([
+      expect.objectContaining({ id: publishedBookId }),
+    ]));
+    expect(response.body.totalCount).toBeGreaterThanOrEqual(1);
   });
 
   it('GET /api/catalog/books/:documentId returns 404 for non-existent document ID', async () => {

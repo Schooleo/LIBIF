@@ -195,6 +195,7 @@ model Book {
   title              String
   subtitle           String?
   description        String?
+  searchText         String?             @db.Text
   publisher          String?
   publishedYear      Int?
   language           String?             @default("vi")

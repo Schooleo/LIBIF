@@ -151,7 +151,7 @@ export class ProcessingProcessor implements OnModuleInit, OnModuleDestroy {
       });
 
       await this.setStage(processingJobId, 'indexing', 80);
-      await this.completeJob(processingJobId, bookId, fileId);
+      await this.completeJob(processingJobId, bookId, fileId, ocrResult.text);
       this.logger.log(`ProcessingJob ${processingJobId} completed successfully.`);
       try {
         await this.notifyReviewers(dbJob.book.title, bookId, processingJobId);
@@ -260,7 +260,12 @@ export class ProcessingProcessor implements OnModuleInit, OnModuleDestroy {
     }
   }
 
-  private async completeJob(processingJobId: string, bookId: string, fileId: string): Promise<void> {
+  private async completeJob(
+    processingJobId: string,
+    bookId: string,
+    fileId: string,
+    extractedText: string,
+  ): Promise<void> {
     await this.prisma.$transaction(async (tx) => {
       const activeFile = await tx.bookFile.findFirst({
         where: { id: fileId, bookId, status: BookFileStatus.ACTIVE },
@@ -290,7 +295,12 @@ export class ProcessingProcessor implements OnModuleInit, OnModuleDestroy {
 
       await tx.book.update({
         where: { id: bookId },
-        data: { status: BookStatus.PENDING_APPROVAL }
+        data: {
+          status: BookStatus.PENDING_APPROVAL,
+          // This is the searchable projection of the immutable MinIO artifact.
+          // It is updated only after the active-file check above succeeds.
+          searchText: extractedText,
+        }
       });
       await tx.bookAuditEvent.createMany({
         data: [

@@ -66,15 +66,19 @@ Then build and start the stack:
 make local-up
 # or: COMPOSE_PROJECT_NAME=libif-local docker compose -f docker-compose.local.yml up --build -d
 
-# Populate or refresh the local-only development accounts and documentation PDFs when needed.
+# Populate or refresh the local-only development accounts, documentation PDFs,
+# and the public catalogue search projection when needed.
 make local-seed
+
+# Rebuild search text from existing extracted/OCR artifacts without reseeding.
+make local-reindex-search
 ```
 
 Teammates then access `http://libif.local.com` through the tailnet: **teammate → shared Tailscale machine → Nginx → LIBIF services**. The API is available only through the same origin at `/api`; PostgreSQL, Redis, MinIO, the API, and worker do not publish host ports. Configure `SMTP_*` in `.env` for Gmail password-reset delivery (Gmail App Password, port `587`, `SMTP_SECURE=starttls`). Stop it with `make local-down`. This stack intentionally uses HTTP and development cookie settings for demonstration, so do not use it as a production deployment.
 
 ## Seeded development accounts
 
-`make local-seed` populates the self-contained Docker stack with one usable email/password account for each role and the documentation PDFs. `make db-seed` / `npm run db:seed` remains available for the non-Docker development database. These credentials are for local development only.
+`make local-seed` populates the self-contained Docker stack with one usable email/password account for each role, documentation PDFs, and a search projection of existing extracted/OCR artifacts. `make local-reindex-search` rebuilds that projection without reseeding. `make db-seed` / `npm run db:seed` remains available for the non-Docker development database. These credentials are for local development only.
 
 | Role | Email | Password |
 |---|---|---|
@@ -106,7 +110,8 @@ The repository includes a `Makefile` for common local workflows:
 | `make infra-logs` | Follow core service logs. |
 | `make db-migrate` | Apply Prisma migrations. |
 | `make db-seed` | Seed development users and starter categories. |
-| `make local-seed` | Explicitly migrate and seed the self-contained Docker stack without restarting application services. |
+| `make local-seed` | Explicitly migrate, seed, and index processed text in the self-contained Docker stack without restarting application services. |
+| `make local-reindex-search` | Rebuild public catalogue search text from existing extracted/OCR artifacts. |
 | `make prisma-generate` | Generate Prisma client. |
 | `make db-reset` | Reset local DB, run migrations, and seed data. |
 | `make dev` | Start the web app, HTTP API, and background OCR worker together. |
