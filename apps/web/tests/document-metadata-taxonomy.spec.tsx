@@ -14,6 +14,12 @@ const tags = [
 ];
 
 describe('document metadata taxonomy integration', () => {
+  it('aligns the ISBN prefill action with the ISBN input', () => {
+    render(<DocumentMetadataForm categories={categories} tags={tags} onSubmit={vi.fn()} />);
+
+    expect(screen.getByRole('button', { name: /prefill from isbn/i })).toHaveStyle({ alignSelf: 'flex-end' });
+  });
+
   it('submits taxonomy selections through the document metadata contract', async () => {
     const user = userEvent.setup();
     const onSubmit = vi.fn().mockResolvedValue(undefined);

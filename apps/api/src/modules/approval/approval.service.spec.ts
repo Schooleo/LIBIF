@@ -78,8 +78,7 @@ describe('ApprovalService', () => {
       expect(result).toHaveLength(1);
       expect(mockPrisma.approvalReview.findMany).toHaveBeenCalledWith(expect.objectContaining({
         where: {
-          status: ApprovalReviewStatus.PENDING,
-          book: { status: 'PENDING_APPROVAL' }
+          status: ApprovalReviewStatus.PENDING
         }
       }));
       expect(result[0]).toEqual({

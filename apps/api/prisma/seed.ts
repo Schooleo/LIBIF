@@ -210,7 +210,6 @@ export async function seedDocumentationPdfCatalogue(
       update: {
         title: file.title,
         description: `Seeded from docs/pdfs/${file.filename}.`,
-        status: BookStatus.PUBLISHED,
         categoryId: category.id,
         createdById: admin.id,
         language: 'en'

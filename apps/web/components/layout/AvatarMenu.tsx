@@ -4,8 +4,10 @@ import { useEffect, useRef, useState } from 'react';
 import { Avatar } from '../ui';
 import { signOut } from '../../lib/api-browser';
 
+type Workspace = 'reader' | 'staff';
+
 type AvatarMenuProps =
-  | { authenticated: true; name: string; email: string; role: string }
+  | { authenticated: true; name: string; email: string; role: string; workspace?: Workspace }
   | { authenticated: false };
 
 export function AvatarMenu(props: AvatarMenuProps) {
@@ -38,6 +40,7 @@ export function AvatarMenu(props: AvatarMenuProps) {
   };
 
   const label = props.authenticated ? props.name : 'Guest';
+  const workspaceLink = props.authenticated ? workspaceNavigation(props) : undefined;
 
   return (
     <div className="avatar-menu" ref={menuRef}>
@@ -69,6 +72,11 @@ export function AvatarMenu(props: AvatarMenuProps) {
                 <small className="avatar-menu__role">{props.role}</small>
               </div>
               <hr className="avatar-menu__divider" />
+              {workspaceLink ? (
+                <a href={workspaceLink.href} role="menuitem" className="avatar-menu__item">
+                  {workspaceLink.label}
+                </a>
+              ) : null}
               <button
                 type="button"
                 role="menuitem"
@@ -94,4 +102,14 @@ export function AvatarMenu(props: AvatarMenuProps) {
       )}
     </div>
   );
+}
+
+function isStaffRole(role: string): boolean {
+  return role === 'ADMIN' || role === 'LIBRARIAN';
+}
+
+function workspaceNavigation(props: Extract<AvatarMenuProps, { authenticated: true }>): { href: string; label: string } | undefined {
+  if (props.workspace === 'staff') return { href: '/', label: 'Reader workspace' };
+  if (props.workspace === 'reader' && isStaffRole(props.role)) return { href: '/admin/dashboard', label: 'Staff workspace' };
+  return undefined;
 }

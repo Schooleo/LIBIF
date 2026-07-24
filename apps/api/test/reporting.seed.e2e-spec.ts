@@ -141,6 +141,17 @@ describe('Reader-access reporting seed slice (e2e)', () => {
     };
 
     await seedDocumentationPdfCatalogue(prisma as never, [documentationPdf]);
+
+    const createdDocument = await prisma.book.findUniqueOrThrow({
+      where: { isbn: 'seed-documentation-proof-of-concept' },
+      select: { id: true, status: true }
+    });
+    expect(createdDocument.status).toBe('PUBLISHED');
+
+    await prisma.book.update({
+      where: { id: createdDocument.id },
+      data: { status: 'PENDING_APPROVAL' }
+    });
     await seedDocumentationPdfCatalogue(prisma as never, [documentationPdf]);
 
     const seededDocument = await prisma.book.findUniqueOrThrow({
@@ -150,7 +161,7 @@ describe('Reader-access reporting seed slice (e2e)', () => {
 
     expect(seededDocument).toMatchObject({
       title: 'LIBIF Proof of Concept',
-      status: 'PUBLISHED',
+      status: 'PENDING_APPROVAL',
       category: { slug: 'tai-lieu-du-an' }
     });
     expect(seededDocument.authors.map((record) => record.author.name)).toEqual(['LIBIF Project Team']);
