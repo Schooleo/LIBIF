@@ -85,6 +85,7 @@ services:
       minio:
         condition: service_healthy
     restart: "no"
+    profiles: ["seed"]
 
   api:
     build:
@@ -92,8 +93,10 @@ services:
       dockerfile: docker/api.Dockerfile
     environment: *api-environment
     depends_on:
-      seed:
+      migrate:
         condition: service_completed_successfully
+      minio:
+        condition: service_healthy
       redis:
         condition: service_healthy
     healthcheck:
@@ -109,8 +112,10 @@ services:
     command: node apps/api/dist/src/worker.main.js
     environment: *api-environment
     depends_on:
-      seed:
+      migrate:
         condition: service_completed_successfully
+      minio:
+        condition: service_healthy
       redis:
         condition: service_healthy
     restart: unless-stopped
