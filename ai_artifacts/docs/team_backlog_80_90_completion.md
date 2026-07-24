@@ -341,8 +341,8 @@ Member C tasks:
 Member D tasks:
 
 - Keep the single schema foundation for user administration, settings, and append-only `ReaderAccessEvent` facts stable.
-- Phase 7 Wave 5 completes Member D's backend user administration, deactivated-auth enforcement, UTC dashboards, bounded CSV exports, and safe general-settings routes. Generated clients, staff navigation, and Admin pages remain deferred to D7-005.
-- Coordinate frozen A/B/C handoffs, generated contracts, seeded watermark/audit/scrape scenarios, and phase closure gates.
+- Phase 7 Waves 5–7 complete Member D's user administration, deactivated-auth enforcement, UTC dashboards, bounded CSV exports, safe settings, generated clients, role-scoped Admin pages/navigation, and phase documentation.
+- The final cross-lane gate reconciles frozen A/B/C handoffs, two-reader watermark/audit/scrape seed scenarios, session-fingerprint privacy, and closure evidence.
 
 Expected end-of-phase result:
 

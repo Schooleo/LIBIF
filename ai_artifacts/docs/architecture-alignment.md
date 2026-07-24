@@ -1,6 +1,6 @@
 # Architecture Alignment
 
-Last updated: 2026-07-23
+Last updated: 2026-07-24
 
 ## Current repository structure
 
@@ -28,7 +28,7 @@ Last updated: 2026-07-23
 ## Current route and component baseline
 
 - Reader routes include catalogue, library, history, bookmarks, protected document viewing, and reader notifications.
-- Admin routes include dashboard, documents index/detail/edit/new, processing queue/detail, approvals queue/detail, notifications, categories, tags, and legacy `/admin/books` compatibility screens.
+- Admin routes include dashboard, documents index/detail/edit/new, processing queue/detail, approvals queue/detail, notifications, categories, tags, users/detail, management/reporting, general settings, and legacy `/admin/books` compatibility screens.
 - Auth routes include register, sign-in, forgot-password, reset-password, session-expired, and access-denied flows.
 - Shared shells remain split across Reader/Admin/Auth layouts; the root layout owns only app-level setup.
 - Staff desktop sidebar and mobile drawer reuse one navigation model and expose the current user's unread-notification count through the existing Notifications link.
@@ -41,11 +41,13 @@ Last updated: 2026-07-23
 - `ProcessingModule` owns queue publication, processing-job reads, retry/cancel/history, worker orchestration, and OCR artifact persistence.
 - `ApprovalModule` owns approval review reads and decision commands.
 - `NotificationsModule` owns persisted notification reads, unread counts, and read-state updates.
-- `AccessModule` owns reader/staff access decisions plus current protected raw-PDF delivery. Phase 7 keeps ownership here while replacing Reader delivery with authorized raster-page manifest/page endpoints.
-- `ReaderModule` owns reader library, bookmarks, and reading-progress persistence; Phase 7 adds a one-document personalized-state read rather than defaulting UI state.
-- Phase 7 adds a bounded `RenderingModule`, owned by Member C, that exports Poppler raster/watermark behavior to `AccessModule` without owning authorization or HTTP routes.
-- `ReportingModule` owns read-only dashboard aggregation.
-- `TaxonomyModule` owns staff selector contracts and starter admin category/tag management.
+- `AccessModule` owns reader/staff access decisions, staff-only source access, and protected Reader raster-page delivery; Reader source-PDF access is explicitly denied.
+- `ReaderModule` owns reader library, bookmarks, reading-progress persistence, and one-document personalized state.
+- `RenderingModule` exports bounded Poppler raster/watermark behavior to `AccessModule` without owning authorization or HTTP routes.
+- `ReportingModule` owns read-only librarian/management dashboards, Reader-security projections, and bounded synchronous CSV.
+- `TaxonomyModule` owns staff selector contracts plus guarded category delete/reassign and tag delete/merge operations.
+- `UsersModule` owns Admin-only account projections and guarded role/status commands.
+- `SettingsModule` owns product-managed general settings and safe read-only deployment capability metadata.
 - `BooksModule` remains a compatibility-only intake/list boundary and should not regain primary ownership.
 
 ## Database and persistence baseline
@@ -78,7 +80,7 @@ Last updated: 2026-07-23
 - Upload and resubmission commands enqueue `BookUploadedEvent`-shaped facts for processing.
 - Processing success creates approval work and approval-required notifications after durable transaction commits.
 - Approval decisions create audit records, mutate document status, and fan out creator notifications.
-- Committed high-risk Reader scrape facts are passed through a narrow sink to `RiskAlertService`, which creates deterministic, deduplicated notifications for active Admin/Librarian recipients without exposing page content or raw identifiers.
+- Committed rate-limit and scrape-risk facts are passed through a narrow sink to `RiskAlertService`, which creates deterministic, deduplicated notifications for active Admin/Librarian recipients without exposing page content or raw identifiers.
 - Correction requests do not have a separate correction aggregate; they reopen work by reusing document metadata replacement and submit-processing boundaries.
 - Cross-module coordination is still service-driven inside the modular monolith rather than through external message infrastructure.
 
@@ -92,11 +94,11 @@ Last updated: 2026-07-23
 6. Catalogue discovery/detail and published-only direct lookup are live; broader relevance/full-text search remains deferred.
 7. The Reader viewer now uses one canvas-backed page owner with real manifest totals, retry/navigation behavior, and no Reader raw-PDF/download action or selectable text layer. Absolute screenshot prevention remains impossible and is not claimed.
 8. Catalogue detail/viewer state hydrates through the one-document Reader state route; progress totals are checked against the backend renderer rather than trusted from the browser.
-9. Phase 7 D7-000 now supplies `User` lifecycle state, append-only user-administration history, append-only bounded Reader access facts, and typed singleton product settings.
-10. Phase 7 Wave 3 now adds runtime-live Admin-only `GET /api/admin/users` and `GET /api/admin/users/:userId` routes with explicit safe projections. The tracked OpenAPI/generated client intentionally remains at the Wave 2 contract until D7-005; no web consumer may treat the user routes as generated-client-ready. Product-settings persistence is implemented independently, but no general-settings route is live.
-11. Category deletion/reassignment, tag duplicate review/merge, user role/status mutations, general management reporting, and general-settings routes still do not have runtime endpoints. The bounded Reader-security report/CSV routes are live.
+9. Phase 7 D7-000 supplies `User` lifecycle state, append-only user-administration history, append-only bounded Reader access facts, and typed singleton product settings.
+10. Reader access events persist only opaque session and watermark trace fingerprints; raw cookies, tokens, object keys, source content, IPs, and user agents remain outside the audit row.
+11. Category delete/reassign, tag delete/merge, user role/status commands, general management reporting, and general settings are live behind their documented role boundaries.
 12. Settings distinguish safe database-backed product values from deployment-owned secrets and security configuration. The Admin-only general-settings route publishes only tested configured/not-configured capability facts; signing material and exact rate/scrape thresholds stay environment-owned and are never editable or returned.
-13. Phase 7 Wave 4 closes the P0 Reader integration gate with live catalogue/detail, protected manifest/page delivery, hydrated Reader state, committed-risk alerts, and Reader-access reporting. Generated OpenAPI/client reconciliation remains intentionally deferred to D7-005.
+13. D7-005 completed the one-time OpenAPI/generated-client refresh and added role-scoped Users, Management & Reports, and General Settings navigation/pages. Risk-alert links resolve at `/admin/reports/reader-access`.
 
 ## Migration strategy status
 
@@ -107,8 +109,8 @@ Last updated: 2026-07-23
 5. Phase 5 document lifecycle, taxonomy selectors, upload boundary, and persisted workflow tables remain the base consumed by the completed Phase 6 workflow and planned Phase 7 work.
 6. Phase 6 adds an isolated worker bootstrap, real embedded-text/OCR extraction, persisted notification reads, approval commands, processing lineage/artifacts, and runtime correction-loop reuse.
 7. The Phase 6 worker/OCR closure gate is reproducible through `npm run test:worker -w apps/api` and its CI job.
-8. Phase 7 follows `ai_artifacts/plans/plan-phase-7-admin-operations-users-reporting-settings-2026-07-23.md` and the validated DRM research. Waves 1–4 are complete; the P0 result is recorded in `ai_artifacts/docs/phase-7-wave-4-p0-integration.md`, and Wave 5 proceeds with parallel administration work.
-9. Existing Phase 7 admin decisions remain: one schema foundation precedes user administration/settings, risky taxonomy actions remain in `TaxonomyModule`, reporting remains read-only, and exports are bounded synchronous CSV rather than a second worker subsystem.
+8. Phase 7 is complete under `ai_artifacts/plans/plan-phase-7-admin-operations-users-reporting-settings-2026-07-23.md`; P0 integration is recorded in `phase-7-wave-4-p0-integration.md`, administration in `phase-7-wave-5-member-d-administration.md`, and final security/contract evidence in `phase-7-wave-6-7-closure.md`.
+9. Phase 8 receives release hardening, exhaustive visual/browser QA, production capacity/retention policy, and demo operations through `ai_artifacts/docs/phase-8-handoff.md`.
 
 ## Anti-fragmentation decisions
 

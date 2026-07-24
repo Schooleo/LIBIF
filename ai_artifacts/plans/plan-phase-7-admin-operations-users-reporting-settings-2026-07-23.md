@@ -3,7 +3,7 @@
 Date: 2026-07-23
 Planning mode: repository-grounded execution plan
 Phase owner / integration lane: Member D
-Implementation status: Waves 1–2 complete; Wave 3 parallel P0 implementation is next
+Implementation status: Waves 1–7 complete; Phase 7 closed on 2026-07-24
 
 ## Target Result and Stop Condition
 
@@ -190,16 +190,13 @@ Members work only in the current wave unless the dependency and handoff named be
 | 2 — Contract freeze | **Complete.** Frozen shapes are recorded in `ai_artifacts/docs/phase-7-wave-1-2-foundation-contract-freeze.md`. | Freeze manifest, page-delivery, stable 429, Reader-state, audit-write, and committed-risk shapes. | Freeze `PublicBookDetailDto` and published-only lookup semantics. | Freeze `ProtectedPageRenderer`, render profiles, image result, watermark input, and trace fingerprint. | Freeze Prisma enums/models, Reader-access report DTOs, safe settings DTOs, handoff matrix, and canonical documentation. |
 | 3 — Parallel P0 build | **Complete.** Published catalogue/detail, renderer, users-read, and settings-persistence prerequisites are merged. | A7-001/A7-004/A7-002/A7-003 implementation supplied the protected delivery, enforcement, canvas, and state inputs. | B7-001/B7-002 supplied published-only detail and catalogue discovery/navigation. | C7-001/C7-002 supplied the renderer/cache/watermark baseline. | D7-001 read routes and D7-004 persistence are live; generated-client/web closure remains deferred to D7-005. |
 | 4 — P0 integration | **Complete.** Protected Reader, committed-risk alerts, Reader-access reporting/CSV, and deterministic seed evidence are integrated; full closure evidence is recorded in `ai_artifacts/docs/phase-7-wave-4-p0-integration.md`. | Integrated B/C outputs; Reader source-PDF routes are denied; canvas/state and end-to-end enforcement are live. | Catalogue/detail defects required by the Reader path are reconciled; the lane now enters regression-only support. | **C7-003 complete:** committed high-risk facts create deduplicated, safe staff alerts. | Reader-access **D7-003** projection/CSV and trace/risk seed scenarios are live without moving allow/deny ownership into Reporting. |
-| 5 — Parallel P1 administration | **Active.** Member D's backend lane is complete; other member slices continue independently. | Reader regression, accessibility, and integration fixes only; no new administration scope. | **B7-003 → B7-004 → B7-005**; risky taxonomy transactions, UI reconciliation, then documented bulk-action decision. | **C7-004**; notification/read-state and approval-confirmation polish. | **Complete:** D7-001/D7-002 user reads and transactional role/status commands, D7-003 bounded dashboards/CSV, and D7-004 settings routes/capability metadata; evidence is in `ai_artifacts/docs/phase-7-wave-5-member-d-administration.md`. |
-| 6 — Cross-lane security gate | All P0/P1 task tests must be green; failures return to the owning lane. | Prove authorization, fail-closed audit/detectors, sequential-reading allowance, canvas/state behavior, and Reader PDF/download denial. | Prove published-only detail, catalogue navigation, taxonomy atomicity, and no unsafe metadata exposure. | Prove real-PDF bounds, unique watermark/trace resolution, private cache isolation/invalidation, and alert deduplication. | Prove migration/status invariants, reporting/CSV safety, settings boundaries, full regression, worker/OCR privacy, and evidence reconciliation. |
-| 7 — Phase closure | Starts only after Wave 6 evidence is accepted. | Freeze Reader routes and provide final smoke evidence. | Freeze catalogue/taxonomy routes and provide final smoke evidence. | Freeze renderer/notification routes and provide final smoke evidence. | **D7-005:** one OpenAPI/client regeneration, module/navigation/seed/docs reconciliation, final verification, and Phase 8 handoff. |
+| 5 — Parallel P1 administration | **Complete.** All member slices are merged: Reader regression/accessibility, risky taxonomy/UI/bulk decision, notification/approval polish, and users/reporting/settings administration. | Reader regression and accessibility fixes merged. | B7-003/B7-004/B7-005 merged with atomic taxonomy actions and documented bounded bulk deferral. | C7-004 notification/read-state and approval-confirmation polish merged. | D7-001/D7-002 user reads and transactional role/status commands, D7-003 bounded dashboards/CSV, and D7-004 settings routes/capability metadata complete. |
+| 6 — Cross-lane security gate | **Complete.** Fresh unit/component/e2e/worker evidence covers every A/B/C/D gate; closure fixes removed raw session-cookie persistence, restored published-only public category/tag filtering and URL view state, preserved 429 retry metadata, and alert all committed rate/scrape facts with deterministic deduplication. | Authorization, fail-closed dependencies/audit, sequential reading, canvas/state, and Reader source denial proven. | Published-only detail, public discovery/navigation, taxonomy atomicity, and safe metadata proven. | Real-PDF bounds, distinct trace resolution, cache isolation/invalidation, and risk-alert deduplication proven. | Migration/status, reporting/CSV, settings, regression, seed, and worker/OCR privacy proven. |
+| 7 — Phase closure | **Complete.** Frozen routes, generated contracts, role-scoped Admin pages/navigation, deterministic seed scenarios, canonical docs, and Phase 8 handoff are reconciled in `ai_artifacts/docs/phase-7-wave-6-7-closure.md`. | Reader routes frozen with final smoke evidence. | Catalogue/taxonomy routes frozen with final smoke evidence. | Renderer/notification routes frozen with final smoke evidence. | **D7-005 complete:** one OpenAPI/client regeneration, module/navigation/seed/docs reconciliation, final verification, and Phase 8 handoff. |
 
-#### Current member instruction
+#### Closure instruction
 
-- **Member A:** Wave 5 is Reader regression/accessibility/integration-fix support only; do not add administration scope.
-- **Member B:** begin B7-003, then B7-004/B7-005 after the named taxonomy handoffs and transaction tests.
-- **Member C:** begin C7-004 notification/read-state and approval-confirmation polish; preserve Wave 4 alert deduplication.
-- **Member D:** Wave 5 backend work is complete. Preserve the frozen runtime contracts and support regressions only until the Wave 6 gate; keep generated-client refresh, staff navigation/Admin-page reconciliation, and full phase closure in D7-005.
+- Phase 7 route/schema/contracts are frozen. Further feature scope moves to the Phase 8 handoff rather than reopening member-owned Phase 7 lanes.
 
 ### Member A — Reader Session, Access, and Viewer
 
@@ -318,9 +315,9 @@ If a handoff shape changes after freeze, its producer updates tests and notifies
 2. **P0 contract freeze — complete** — A defines access/event needs, B freezes catalogue detail, C freezes `ProtectedPageRenderer`, and D freezes audit/reporting DTOs. Frozen shapes are recorded in `ai_artifacts/docs/phase-7-wave-1-2-foundation-contract-freeze.md`.
 3. **Parallel P0 implementation — complete** — catalogue detail/discovery, bounded rendering/watermark/cache, access/audit/rate enforcement/canvas, and users/settings foundations are merged.
 4. **P0 integration gate — complete** — protected Reader, committed-risk alerts, Reader-access reporting, and seeded trace/risk scenarios are integrated.
-5. **Parallel P1 implementation — active** — Member D users/reporting/settings backend is complete; B taxonomy, C notification polish, and A regression support continue in their owned lanes.
-6. **Cross-lane security gate — next after Wave 5** — real-PDF rendering, watermark uniqueness/trace resolution, fail-closed audit, rate/concurrency/scrape behavior, source-PDF denial, and OCR privacy regression.
-7. **D7-005 closure** — one OpenAPI/client regeneration, navigation/seed/docs reconciliation, full repository verification, and Phase 8 handoff.
+5. **Parallel P1 implementation — complete** — Reader regression/accessibility, taxonomy transactions/UI, notification polish, and users/reporting/settings are merged.
+6. **Cross-lane security gate — complete** — real-PDF rendering, unique trace resolution, fail-closed dependencies/audit, rate/concurrency/scrape behavior, source-PDF denial, catalogue/taxonomy safety, and OCR privacy have fresh evidence.
+7. **D7-005 closure — complete** — one OpenAPI/client regeneration, typed Admin navigation/pages, deterministic seed scenarios, canonical docs, full verification, and Phase 8 handoff.
 
 Do not merge a raw-PDF iframe or Reader download compatibility shortcut as an interim “canvas” solution.
 
@@ -350,9 +347,9 @@ Add browser/manual evidence that:
 ### Full phase gate
 
 ```bash
-npm run prisma:validate -w apps/api
+npx dotenv -e .env -- npx prisma validate --config apps/api/prisma.config.ts
 npm run prisma:generate -w apps/api
-npm run db:migrate:status -w apps/api
+npx dotenv -e .env -- npx prisma migrate status --config apps/api/prisma.config.ts
 npm run db:seed -w apps/api
 npm run openapi:generate
 npm run lint
@@ -400,4 +397,4 @@ At completion, a Reader can discover a book, open a real detail page, see correc
 - [x] Wave 1–2 regression passes: empty Prisma diff, migration/seed, lint, 20 API suites/91 tests, 15 web files/62 tests, builds, 8 API e2e suites/36 tests, worker suite/5 scenarios, OpenAPI/client generation, and diff checks.
 - [x] Wave 3 parallel P0 implementation is merged across catalogue/detail, protected access, renderer, canvas/state, users-read, and settings-persistence prerequisites.
 - [x] Wave 4 P0 integration is complete: no Reader source-PDF route, server-watermarked raster pages on canvas, persisted state, Redis-backed enforcement, bounded audits, deduplicated staff alerts, Reader-access report/CSV, and deterministic seed evidence.
-- [ ] Wave 5 parallel administration is next; Wave 6 security verification and D7-005 contract/docs closure remain gated.
+- [x] Waves 5–7 are complete: all member administration slices merged, the cross-lane security gate passed, and D7-005 reconciled contracts, Admin pages/navigation, seed scenarios, docs, and Phase 8 handoff.
