@@ -20,10 +20,14 @@ describe('Authentication and access (e2e)', () => {
   let deliveries: PasswordResetDeliveryService;
   const originalScryptN = process.env.LIBIF_SCRYPT_N;
   const originalDevAuth = process.env.LIBIF_ENABLE_DEV_AUTH;
+  const smtpEnvironment = Object.fromEntries(
+    ['SMTP_HOST', 'SMTP_PORT', 'SMTP_USERNAME', 'SMTP_PASSWORD', 'SMTP_FROM', 'SMTP_SECURE'].map((name) => [name, process.env[name]])
+  );
 
   beforeAll(async () => {
     process.env.LIBIF_SCRYPT_N = '1024';
     process.env.LIBIF_ENABLE_DEV_AUTH = 'false';
+    for (const name of Object.keys(smtpEnvironment)) process.env[name] = '';
     const moduleRef = await Test.createTestingModule({ imports: [AppModule] })
       .overrideProvider(ProcessingQueue)
       .useClass(FakeProcessingQueue)
@@ -59,6 +63,10 @@ describe('Authentication and access (e2e)', () => {
     await prisma.$disconnect();
     process.env.LIBIF_SCRYPT_N = originalScryptN;
     process.env.LIBIF_ENABLE_DEV_AUTH = originalDevAuth;
+    for (const [name, value] of Object.entries(smtpEnvironment)) {
+      if (value === undefined) delete process.env[name];
+      else process.env[name] = value;
+    }
   });
 
   it('registers a reader, sets an http-only session cookie, and resolves the session', async () => {
