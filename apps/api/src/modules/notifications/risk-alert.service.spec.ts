@@ -91,14 +91,21 @@ describe('RiskAlertService', () => {
   });
 
   it.each([ReaderAccessRiskLevel.LOW, ReaderAccessRiskLevel.MEDIUM])(
-    'skips %s risk facts without querying recipients',
+    'creates a deduplicated staff alert for committed %s risk facts',
     async (riskLevel) => {
       const fact = buildFact({ riskLevel });
+      mockPrisma.user.findMany.mockResolvedValue([{ id: 'admin-1' }]);
+      mockPrisma.notification.createMany.mockResolvedValue({ count: 1 });
 
-      await expect(service.createAlertsForCommittedRiskFact(fact)).resolves.toBe(0);
+      await expect(service.createAlertsForCommittedRiskFact(fact)).resolves.toBe(1);
 
-      expect(mockPrisma.user.findMany).not.toHaveBeenCalled();
-      expect(mockPrisma.notification.createMany).not.toHaveBeenCalled();
+      expect(mockPrisma.notification.createMany).toHaveBeenCalledWith({
+        data: [expect.objectContaining({
+          recipientId: 'admin-1',
+          payload: expect.objectContaining({ riskLevel }),
+        })],
+        skipDuplicates: true,
+      });
     }
   );
 

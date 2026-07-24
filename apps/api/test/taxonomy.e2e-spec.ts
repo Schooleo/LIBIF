@@ -292,7 +292,7 @@ describe('Taxonomy APIs (e2e)', () => {
     });
 
     const tagImpact = await request(app.getHttpServer())
-      .get(`/api/admin/tags/${tag1.id}/impact`)
+      .get(`/api/taxonomy/tags/${tag1.id}/impact`)
       .set(librarianHeaders)
       .expect(200);
     expect(tagImpact.body).toEqual({ id: tag1.id, name: 'Tag One', documentCount: 2 });
@@ -323,4 +323,3 @@ describe('Taxonomy APIs (e2e)', () => {
     await prisma.book.deleteMany({ where: { id: { in: [book1.id, book2.id] } } });
   });
 });
-

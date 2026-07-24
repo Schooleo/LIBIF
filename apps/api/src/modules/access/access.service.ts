@@ -19,6 +19,8 @@ import { PrismaService } from '../database/prisma.service';
 import {
   PROTECTED_PAGE_RENDERER,
   ProtectedPageRenderer,
+  type RenderedBasePage,
+  type WatermarkedPage,
 } from '../rendering/protected-page-renderer.port';
 import { StorageService } from '../storage/storage.service';
 import { ReaderAccessAuditService } from './reader-access-audit.service';
@@ -181,13 +183,26 @@ export class AccessService {
     }
 
     const activeFile = await this.getActiveFile(documentId);
-    const initialBasePage = await this.pageRenderer.renderBasePage({
-      bookFileId: activeFile.id,
-      bucket: activeFile.bucket,
-      objectKey: activeFile.objectKey,
-      pageNumber: 1,
-      profile: 'READER_STANDARD',
-    });
+    let initialBasePage: RenderedBasePage;
+    try {
+      initialBasePage = await this.pageRenderer.renderBasePage({
+        bookFileId: activeFile.id,
+        bucket: activeFile.bucket,
+        objectKey: activeFile.objectKey,
+        pageNumber: 1,
+        profile: 'READER_STANDARD',
+      });
+    } catch {
+      await this.recordDependencyUnavailableEvent({
+        userId,
+        documentId,
+        sessionId,
+        bookFileId: activeFile.id,
+        pageNumber,
+        createdAt: now,
+      });
+      throw new ServiceUnavailableException(VIEWER_UNAVAILABLE_MESSAGE);
+    }
 
     let rateCheck;
     try {
@@ -243,29 +258,43 @@ export class AccessService {
 
     const traceFingerprint = createHash('sha256')
       .update(`${userId}:${sessionId ?? 'no_session'}:${documentId}:${pageNumber}:${now.toISOString()}`)
+      .update(randomBytes(16))
       .digest('hex');
 
     const maskedReaderLabel = `READER-${userId.slice(-4)}`;
 
-    const basePage =
-      pageNumber === 1
-        ? initialBasePage
-        : await this.pageRenderer.renderBasePage({
-            bookFileId: activeFile.id,
-            bucket: activeFile.bucket,
-            objectKey: activeFile.objectKey,
-            pageNumber,
-            profile: 'READER_STANDARD',
-          });
+    let watermarked: WatermarkedPage;
+    try {
+      const basePage =
+        pageNumber === 1
+          ? initialBasePage
+          : await this.pageRenderer.renderBasePage({
+              bookFileId: activeFile.id,
+              bucket: activeFile.bucket,
+              objectKey: activeFile.objectKey,
+              pageNumber,
+              profile: 'READER_STANDARD',
+            });
 
-    const watermarked = await this.pageRenderer.composeWatermark({
-      basePage,
-      maskedReaderLabel,
-      occurredAt: now,
-      documentId,
-      pageNumber,
-      opaqueTrace: traceFingerprint,
-    });
+      watermarked = await this.pageRenderer.composeWatermark({
+        basePage,
+        maskedReaderLabel,
+        occurredAt: now,
+        documentId,
+        pageNumber,
+        opaqueTrace: traceFingerprint,
+      });
+    } catch {
+      await this.recordDependencyUnavailableEvent({
+        userId,
+        documentId,
+        sessionId,
+        bookFileId: activeFile.id,
+        pageNumber,
+        createdAt: now,
+      });
+      throw new ServiceUnavailableException(VIEWER_UNAVAILABLE_MESSAGE);
+    }
 
     await this.auditService.recordEvent({
       eventType: ReaderAccessEventType.PAGE_SERVED,

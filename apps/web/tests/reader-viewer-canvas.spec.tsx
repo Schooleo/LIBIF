@@ -7,8 +7,6 @@ import * as apiBrowser from '../lib/api-browser';
 vi.mock('../lib/api-browser', () => ({
   fetchDocumentManifest: vi.fn(),
   fetchProtectedPageUrl: vi.fn(),
-  fetchViewToken: vi.fn(),
-  fetchDownloadToken: vi.fn(),
   fetchReaderDocumentState: vi.fn(),
   addBookmark: vi.fn().mockResolvedValue({ success: true }),
   removeBookmark: vi.fn().mockResolvedValue({ success: true }),

@@ -8,12 +8,14 @@ describe('CatalogService', () => {
   let service: CatalogService;
   let prisma: {
     category: { findMany: jest.Mock };
+    tag: { findMany: jest.Mock };
     book: { count: jest.Mock; findMany: jest.Mock; findFirst: jest.Mock };
   };
 
   beforeEach(async () => {
     prisma = {
       category: { findMany: jest.fn().mockResolvedValue([]) },
+      tag: { findMany: jest.fn().mockResolvedValue([]) },
       book: {
         count: jest.fn().mockResolvedValue(0),
         findMany: jest.fn().mockResolvedValue([]),
@@ -31,14 +33,43 @@ describe('CatalogService', () => {
     service = module.get<CatalogService>(CatalogService);
   });
 
-  it('lists public categories sorted by name', async () => {
+  it('lists tags attached to published books sorted by name', async () => {
+    prisma.tag.findMany.mockResolvedValue([
+      { id: 'tag-1', name: 'Security', slug: 'security' }
+    ]);
+
+    await expect(service.listTags()).resolves.toEqual([
+      { id: 'tag-1', name: 'Security', slug: 'security' }
+    ]);
+    expect(prisma.tag.findMany).toHaveBeenCalledWith({
+      where: {
+        books: {
+          some: {
+            book: { status: BookStatus.PUBLISHED }
+          }
+        }
+      },
+      orderBy: { name: 'asc' }
+    });
+  });
+
+  it('lists categories attached to published books sorted by name', async () => {
     prisma.category.findMany.mockResolvedValue([
       { id: 'cat-1', name: 'Computer Science', slug: 'computer-science', parentId: null }
     ]);
 
     const res = await service.listCategories();
     expect(res).toHaveLength(1);
-    expect(prisma.category.findMany).toHaveBeenCalledWith({ orderBy: { name: 'asc' } });
+    expect(prisma.category.findMany).toHaveBeenCalledWith({
+      where: {
+        books: {
+          some: {
+            status: BookStatus.PUBLISHED
+          }
+        }
+      },
+      orderBy: { name: 'asc' }
+    });
   });
 
   it('gets public book detail for a published book', async () => {
@@ -132,4 +163,3 @@ describe('CatalogService', () => {
     );
   });
 });
-

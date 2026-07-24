@@ -3,10 +3,7 @@ import type {
   AdminBookListItemDto as SharedAdminBookListItemDto,
   CategoryDto as SharedCategoryDto,
   PagedDto as SharedPagedDto,
-  ProtectedDocumentManifestDto as SharedProtectedDocumentManifestDto,
-  PublicBookDetailDto as SharedPublicBookDetailDto,
-  PublicBookListItemDto as SharedPublicBookListItemDto,
-  ReaderDocumentStateDto as SharedReaderDocumentStateDto
+  PublicBookListItemDto as SharedPublicBookListItemDto
 } from '@libif/shared';
 
 export type SessionDto = components['schemas']['SessionDto'];
@@ -17,6 +14,9 @@ export type SignInRequestDto = components['schemas']['SignInRequestDto'];
 export type PasswordResetRequestDto = components['schemas']['PasswordResetRequestDto'];
 export type PasswordResetDto = components['schemas']['PasswordResetDto'];
 export type LibrarianDashboardSummaryDto = components['schemas']['LibrarianDashboardSummaryDto'];
+export type ManagementDashboardSummaryDto = components['schemas']['ManagementDashboardSummaryDto'];
+export type ReaderAccessReportItemDto = components['schemas']['ReaderAccessReportItemDto'];
+export type ReaderAccessReportResponseDto = components['schemas']['ReaderAccessReportResponseDto'];
 export type CreateBookIntakeResponse = components['schemas']['CreateBookIntakeResponseDto'];
 export type IsbnLookupResponse = components['schemas']['IsbnLookupResponseDto'];
 export type TaxonomyCategoryDto = components['schemas']['TaxonomyCategoryDto'];
@@ -34,15 +34,25 @@ export type ApprovalReviewResponseDto = components['schemas']['ApprovalReviewRes
 export type NotificationResponseDto = components['schemas']['NotificationResponseDto'];
 export type DocumentListQuery = paths['/api/documents']['get']['parameters']['query'];
 export type UnreadNotificationCountDto = components['schemas']['UnreadNotificationCountDto'];
+export type UserListItemDto = components['schemas']['UserListItemDto'];
+export type UserListResponseDto = components['schemas']['UserListResponseDto'];
+export type UserDetailResponseDto = components['schemas']['UserDetailResponseDto'];
+export type ChangeUserRoleDto = components['schemas']['ChangeUserRoleDto'];
+export type ChangeUserStatusDto = components['schemas']['ChangeUserStatusDto'];
+export type GeneralSettingsResponseDto = components['schemas']['GeneralSettingsResponseDto'];
+export type UpdateGeneralSettingsDto = components['schemas']['UpdateGeneralSettingsDto'];
+export type UserListQuery = paths['/api/admin/users']['get']['parameters']['query'];
+export type ReaderAccessReportQuery = paths['/api/admin/reports/reader-access']['get']['parameters']['query'];
+export type OperationsReportRangeQuery = paths['/api/admin/dashboard/management']['get']['parameters']['query'];
 
 export type PublicBookListItemDto = SharedPublicBookListItemDto;
-export type PublicBookDetailDto = SharedPublicBookDetailDto;
+export type PublicBookDetailDto = components['schemas']['PublicBookDetailResponseDto'];
 export type AdminBookListItemDto = SharedAdminBookListItemDto;
 export type BookListItemDto = SharedPublicBookListItemDto;
 export type PagedBookListDto = SharedPagedDto<SharedPublicBookListItemDto>;
 export type CategoryDto = SharedCategoryDto;
-export type ReaderDocumentStateDto = SharedReaderDocumentStateDto;
-export type ProtectedDocumentManifestDto = SharedProtectedDocumentManifestDto;
+export type ReaderDocumentStateDto = components['schemas']['ReaderDocumentStateDto'];
+export type ProtectedDocumentManifestDto = components['schemas']['ProtectedDocumentManifestDto'];
 
 export type CreateBookIntakeDto = {
   isbn?: string;

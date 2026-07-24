@@ -1,6 +1,31 @@
 import { headers } from 'next/headers';
 import { createLibifApiClient, apiErrorMessage } from './api-client';
-import type { AccessDecisionDto, AdminBookListItemDto, DocumentDetailResponseDto, DocumentListQuery, LibrarianDashboardSummaryDto, NotificationResponseDto, PagedBookListDto, PagedDocumentListResponseDto, PublicBookDetailDto, ReaderDocumentStateDto, ReaderLibraryItemDto, ReaderLibraryResponseDto, SessionDto, TaxonomyCategoryDto, TaxonomyTagDto, UnreadNotificationCountDto } from './api-types';
+import type {
+  AccessDecisionDto,
+  AdminBookListItemDto,
+  DocumentDetailResponseDto,
+  DocumentListQuery,
+  GeneralSettingsResponseDto,
+  LibrarianDashboardSummaryDto,
+  ManagementDashboardSummaryDto,
+  NotificationResponseDto,
+  OperationsReportRangeQuery,
+  PagedBookListDto,
+  PagedDocumentListResponseDto,
+  PublicBookDetailDto,
+  ReaderAccessReportQuery,
+  ReaderAccessReportResponseDto,
+  ReaderDocumentStateDto,
+  ReaderLibraryItemDto,
+  ReaderLibraryResponseDto,
+  SessionDto,
+  TaxonomyCategoryDto,
+  TaxonomyTagDto,
+  UnreadNotificationCountDto,
+  UserDetailResponseDto,
+  UserListQuery,
+  UserListResponseDto,
+} from './api-types';
 import { getDevAuthHeaders } from './auth/session';
 
 type ReaderLibraryQuery = { filter?: 'ALL' | 'READING' | 'BOOKMARKED' | 'COMPLETED'; search?: string; page?: number; limit?: number };
@@ -33,6 +58,20 @@ export async function fetchTaxonomyTags(): Promise<TaxonomyTagDto[]> {
   return data;
 }
 
+export async function fetchPublicCategories(): Promise<TaxonomyCategoryDto[]> {
+  const client = await createServerClient();
+  const { data, error } = await client.GET('/api/categories');
+  if (error) throw new Error(apiErrorMessage(error, 'Public categories request failed'));
+  return data;
+}
+
+export async function fetchPublicTags(): Promise<TaxonomyTagDto[]> {
+  const client = await createServerClient();
+  const { data, error } = await client.GET('/api/tags');
+  if (error) throw new Error(apiErrorMessage(error, 'Public tags request failed'));
+  return data;
+}
+
 export async function fetchAdminBooks(): Promise<AdminBookListItemDto[]> {
   const client = await createServerClient();
   const { data, error } = await client.GET('/api/admin/books');
@@ -49,17 +88,16 @@ export async function fetchPublicBooks(query?: PublicCatalogQuery): Promise<Page
 
 export async function fetchPublicBookDetail(documentId: string): Promise<PublicBookDetailDto> {
   const client = await createServerClient();
-  // Wave 3 freezes runtime routes before the cross-lane OpenAPI refresh in D7-005.
-  const { data, error } = await (client as any).GET('/api/catalog/books/{documentId}', {
+  const { data, error } = await client.GET('/api/catalog/books/{documentId}', {
     params: { path: { documentId } }
   });
   if (error) throw new Error(apiErrorMessage(error, 'Public book detail request failed'));
-  return data as PublicBookDetailDto;
+  return data;
 }
 
 export async function fetchLibrarianDashboardSummary(): Promise<LibrarianDashboardSummaryDto> {
   const client = await createServerClient();
-  const { data, error } = await client.GET('/api/admin/dashboard/librarian');
+  const { data, error } = await client.GET('/api/admin/dashboard/librarian', { params: { query: {} } });
   if (error) throw new Error(apiErrorMessage(error, 'Dashboard summary request failed'));
   return data;
 }
@@ -82,11 +120,58 @@ export async function fetchAccessDecision(documentId: string): Promise<AccessDec
 
 export async function fetchReaderDocumentState(documentId: string): Promise<ReaderDocumentStateDto> {
   const client = await createServerClient();
-  const { data, error } = await (client as any).GET('/api/reader/documents/{documentId}/state', {
+  const { data, error } = await client.GET('/api/reader/documents/{documentId}/state', {
     params: { path: { documentId } },
   });
   if (error) throw new Error(apiErrorMessage(error, 'Reader state request failed'));
-  return data as ReaderDocumentStateDto;
+  return data;
+}
+
+export async function fetchAdminUsers(query?: UserListQuery): Promise<UserListResponseDto> {
+  const client = await createServerClient();
+  const { data, error } = await client.GET('/api/admin/users', {
+    params: { query: query ?? {} },
+  });
+  if (error) throw new Error(apiErrorMessage(error, 'User administration list request failed'));
+  return data;
+}
+
+export async function fetchAdminUserDetail(userId: string): Promise<UserDetailResponseDto> {
+  const client = await createServerClient();
+  const { data, error } = await client.GET('/api/admin/users/{userId}', {
+    params: { path: { userId } },
+  });
+  if (error) throw new Error(apiErrorMessage(error, 'User administration detail request failed'));
+  return data;
+}
+
+export async function fetchManagementDashboardSummary(
+  query?: OperationsReportRangeQuery,
+): Promise<ManagementDashboardSummaryDto> {
+  const client = await createServerClient();
+  const { data, error } = await client.GET('/api/admin/dashboard/management', {
+    params: { query: query ?? {} },
+  });
+  if (error) throw new Error(apiErrorMessage(error, 'Management dashboard request failed'));
+  return data;
+}
+
+export async function fetchReaderAccessReport(
+  query?: ReaderAccessReportQuery,
+): Promise<ReaderAccessReportResponseDto> {
+  const client = await createServerClient();
+  const { data, error } = await client.GET('/api/admin/reports/reader-access', {
+    params: { query: query ?? {} },
+  });
+  if (error) throw new Error(apiErrorMessage(error, 'Reader access report request failed'));
+  return data;
+}
+
+export async function fetchGeneralSettings(): Promise<GeneralSettingsResponseDto> {
+  const client = await createServerClient();
+  const { data, error } = await client.GET('/api/admin/settings/general');
+  if (error) throw new Error(apiErrorMessage(error, 'General settings request failed'));
+  return data;
 }
 
 export async function fetchReaderLibrary(query?: ReaderLibraryQuery): Promise<ReaderLibraryResponseDto> {
@@ -128,7 +213,7 @@ export async function fetchDocumentDetail(id: string): Promise<DocumentDetailRes
 
 export async function fetchMyNotifications(): Promise<NotificationResponseDto[]> {
   const client = await createServerClient();
-  const { data, error } = await client.GET('/api/notifications');
+  const { data, error } = await client.GET('/api/notifications', { params: { query: {} } });
   if (error) throw new Error(apiErrorMessage(error, 'Notifications request failed'));
   return data;
 }

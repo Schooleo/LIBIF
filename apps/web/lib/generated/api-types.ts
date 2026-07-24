@@ -74,6 +74,13 @@ export interface components {
     "readAt"?: string | null;
     "createdAt": string;
   };
+    "PagedNotificationListResponseDto": {
+    "items": components['schemas']["NotificationResponseDto"][];
+    "totalCount": number;
+    "page": number;
+    "pageSize": number;
+    "totalPages": number;
+  };
     "UnreadNotificationCountDto": {
     "count": number;
   };
@@ -165,6 +172,46 @@ export interface components {
     "recentBooks": components['schemas']["RecentBookSummaryDto"][];
     "activity": components['schemas']["ReportingActivitySummaryDto"];
   };
+    "ReaderSecuritySummaryDto": {
+    "total": number;
+    "rateLimited": number;
+    "scrapeSuspected": number;
+    "highRisk": number;
+  };
+    "ManagementDashboardSummaryDto": {
+    "generatedAt": string;
+    "from": string;
+    "to": string;
+    "documentsCreated": number;
+    "usersCreated": number;
+    "activityEvents": number;
+    "readerSecurity": components['schemas']["ReaderSecuritySummaryDto"];
+  };
+    "ReaderAccessRiskCountsDto": {
+    "none": number;
+    "low": number;
+    "medium": number;
+    "high": number;
+  };
+    "ReaderAccessReportItemDto": {
+    "eventReference": string;
+    "documentReference": string;
+    "readerLabel": string;
+    "eventType": "VIEWER_OPENED" | "PAGE_SERVED" | "PAGE_DENIED" | "RATE_LIMITED" | "SCRAPE_SUSPECTED";
+    "riskLevel": "NONE" | "LOW" | "MEDIUM" | "HIGH";
+    "reasonCode"?: "ACCESS_DENIED" | "DOCUMENT_UNAVAILABLE" | "PAGE_OUT_OF_RANGE" | "RATE_LIMIT_EXCEEDED" | "CONCURRENCY_LIMIT_EXCEEDED" | "PAGE_ENUMERATION" | "IMPOSSIBLE_READING_RATE" | "REPEATED_INVALID_PAGE" | "PARALLEL_SESSION_ABUSE" | "DEPENDENCY_UNAVAILABLE" | null;
+    "pageNumber"?: number | null;
+    "traceFingerprint"?: string | null;
+    "occurredAt": string;
+  };
+    "ReaderAccessReportResponseDto": {
+    "generatedAt": string;
+    "riskCounts": components['schemas']["ReaderAccessRiskCountsDto"];
+    "items": components['schemas']["ReaderAccessReportItemDto"][];
+    "totalCount": number;
+    "page": number;
+    "pageSize": number;
+  };
     "IntakeBookSummaryDto": {
     "id": string;
     "title": string;
@@ -230,6 +277,21 @@ export interface components {
     "totalCount"?: number;
     "page"?: number;
     "pageSize"?: number;
+  };
+    "PublicBookDetailResponseDto": {
+    "id": string;
+    "title": string;
+    "isbn"?: string | null;
+    "status": "DRAFT" | "PENDING_PROCESSING" | "PROCESSING" | "PENDING_APPROVAL" | "CORRECTION_REQUIRED" | "PUBLISHED" | "REJECTED";
+    "category"?: components['schemas']["CategoryResponseDto"];
+    "tags": components['schemas']["TagResponseDto"][];
+    "authors": components['schemas']["AuthorResponseDto"][];
+    "createdAt": string;
+    "subtitle"?: string | null;
+    "description"?: string | null;
+    "publisher"?: string | null;
+    "publishedYear"?: number | null;
+    "language"?: string | null;
   };
     "BookFileVersionDto": {
     "id": string;
@@ -367,12 +429,24 @@ export interface components {
     "readingCount": number;
     "bookmarkedCount": number;
   };
+    "ReaderDocumentProgressDto": {
+    "currentPage": number;
+    "totalPages"?: number | null;
+    "percentage": number;
+    "status": "READING" | "COMPLETED";
+    "lastReadAt": string;
+  };
+    "ReaderDocumentStateDto": {
+    "documentId": string;
+    "bookmarked": boolean;
+    "progress"?: components['schemas']["ReaderDocumentProgressDto"];
+  };
     "BookmarkDto": {
     "documentId": string;
   };
     "ReadingProgressDto": {
     "currentPage": number;
-    "totalPages"?: number;
+    "totalPages": number;
     "percentage"?: number;
   };
     "AccessDecisionDto": {
@@ -381,6 +455,18 @@ export interface components {
     "userRole": string;
     "documentStatus"?: "DRAFT" | "PENDING_PROCESSING" | "PROCESSING" | "PENDING_APPROVAL" | "CORRECTION_REQUIRED" | "PUBLISHED" | "REJECTED";
     "reason"?: string;
+  };
+    "ProtectedPageDescriptorDto": {
+    "pageNumber": number;
+    "width": number;
+    "height": number;
+  };
+    "ProtectedDocumentManifestDto": {
+    "documentId": string;
+    "pageCount": number;
+    "minZoom": number;
+    "maxZoom": number;
+    "pages": components['schemas']["ProtectedPageDescriptorDto"][];
   };
     "ProtectedDocumentUrlDto": {
     "token": string;
@@ -393,10 +479,24 @@ export interface components {
     "slug": string;
     "parentId": string | null;
   };
+    "TaxonomyCategoryImpactDto": {
+    "id": string;
+    "name": string;
+    "documentCount": number;
+    "childCount": number;
+    "totalDescendantCount": number;
+    "isLeaf": boolean;
+    "canDirectDelete": boolean;
+  };
     "TaxonomyTagDto": {
     "id": string;
     "name": string;
     "slug": string;
+  };
+    "TaxonomyTagImpactDto": {
+    "id": string;
+    "name": string;
+    "documentCount": number;
   };
     "CreateTaxonomyCategoryDto": {
     "name": string;
@@ -406,11 +506,93 @@ export interface components {
     "name"?: string;
     "parentId"?: string | null;
   };
+    "ReassignAndDeleteCategoryDto": {
+    "targetCategoryId"?: string | null;
+  };
     "CreateTaxonomyTagDto": {
     "name": string;
   };
     "UpdateTaxonomyTagDto": {
     "name"?: string;
+  };
+    "MergeTagDto": {
+    "targetTagId": string;
+  };
+    "UserListItemDto": {
+    "id": string;
+    "email": string;
+    "role": "ADMIN" | "LIBRARIAN" | "READER";
+    "status": "ACTIVE" | "DEACTIVATED";
+    "lastSignInAt"?: string | null;
+    "deactivatedAt"?: string | null;
+    "createdAt": string;
+    "updatedAt": string;
+    "activeSessionCount": number;
+  };
+    "UserListResponseDto": {
+    "items": components['schemas']["UserListItemDto"][];
+    "totalCount": number;
+    "page": number;
+    "pageSize": number;
+  };
+    "UserSessionSummaryDto": {
+    "activeCount": number;
+    "revokedCount": number;
+    "expiredCount": number;
+    "mostRecentCreatedAt"?: string | null;
+    "mostRecentLastSeenAt"?: string | null;
+    "mostRecentExpiresAt"?: string | null;
+    "mostRecentRevokedAt"?: string | null;
+  };
+    "UserAdministrationEventDto": {
+    "id": string;
+    "action": "ROLE_CHANGED" | "DEACTIVATED" | "REACTIVATED";
+    "previousRole"?: "ADMIN" | "LIBRARIAN" | "READER" | null;
+    "nextRole"?: "ADMIN" | "LIBRARIAN" | "READER" | null;
+    "reason"?: string | null;
+    "actorEmail"?: string | null;
+    "createdAt": string;
+  };
+    "UserDetailResponseDto": {
+    "id": string;
+    "email": string;
+    "role": "ADMIN" | "LIBRARIAN" | "READER";
+    "status": "ACTIVE" | "DEACTIVATED";
+    "lastSignInAt"?: string | null;
+    "deactivatedAt"?: string | null;
+    "createdAt": string;
+    "updatedAt": string;
+    "activeSessionCount": number;
+    "sessionSummary": components['schemas']["UserSessionSummaryDto"];
+    "administrationEvents": components['schemas']["UserAdministrationEventDto"][];
+  };
+    "ChangeUserRoleDto": {
+    "role": "ADMIN" | "LIBRARIAN" | "READER";
+    "reason": string;
+  };
+    "ChangeUserStatusDto": {
+    "reason": string;
+  };
+    "DeploymentSecurityMetadataDto": {
+    "watermarkSigningConfigured": boolean;
+    "scrapeProtectionConfigured": boolean;
+    "personalizedPageCachePolicy": "private, no-store";
+    "editable": false;
+  };
+    "GeneralSettingsResponseDto": {
+    "libraryName": string;
+    "supportEmail"?: string | null;
+    "defaultLocale": string;
+    "readerNotice"?: string | null;
+    "updatedAt": string;
+    "updatedById"?: string | null;
+    "deploymentSecurity": components['schemas']["DeploymentSecurityMetadataDto"];
+  };
+    "UpdateGeneralSettingsDto": {
+    "libraryName"?: string;
+    "supportEmail"?: string | null;
+    "defaultLocale"?: string;
+    "readerNotice"?: string | null;
   };
   };
 }
@@ -640,10 +822,17 @@ export interface paths {
   };
   "/api/notifications": {
     get: {
+      parameters: {
+        query: {
+          "page"?: number;
+          "pageSize"?: number;
+          "filter"?: "all" | "unread" | "read";
+        };
+      };
       responses: {
       "200": {
         content: {
-          "application/json": components['schemas']["NotificationResponseDto"][];
+          "application/json": components['schemas']["PagedNotificationListResponseDto"];
         };
       };
       "403": {
@@ -855,6 +1044,12 @@ export interface paths {
   };
   "/api/admin/dashboard/librarian": {
     get: {
+      parameters: {
+        query: {
+          "from"?: string;
+          "to"?: string;
+        };
+      };
       responses: {
       "200": {
         content: {
@@ -864,6 +1059,124 @@ export interface paths {
       "403": {
         content: {
           "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/admin/dashboard/management": {
+    get: {
+      parameters: {
+        query: {
+          "from"?: string;
+          "to"?: string;
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["ManagementDashboardSummaryDto"];
+        };
+      };
+      "403": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/admin/reports/reader-access": {
+    get: {
+      parameters: {
+        query: {
+          "from"?: string;
+          "to"?: string;
+          "risk"?: "NONE" | "LOW" | "MEDIUM" | "HIGH";
+          "page"?: number;
+          "pageSize"?: number;
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["ReaderAccessReportResponseDto"];
+        };
+      };
+      "403": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/admin/reports/reader-access.csv": {
+    get: {
+      parameters: {
+        query: {
+          "from"?: string;
+          "to"?: string;
+          "risk"?: "NONE" | "LOW" | "MEDIUM" | "HIGH";
+          "page"?: number;
+          "pageSize"?: number;
+        };
+      };
+      responses: {
+      "403": {
+        content: {
+          "text/csv": components['schemas']["AuthErrorDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/admin/reports/documents.csv": {
+    get: {
+      parameters: {
+        query: {
+          "from"?: string;
+          "to"?: string;
+        };
+      };
+      responses: {
+      "403": {
+        content: {
+          "text/csv": components['schemas']["AuthErrorDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/admin/reports/users.csv": {
+    get: {
+      parameters: {
+        query: {
+          "from"?: string;
+          "to"?: string;
+        };
+      };
+      responses: {
+      "403": {
+        content: {
+          "text/csv": components['schemas']["AuthErrorDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/admin/reports/activity.csv": {
+    get: {
+      parameters: {
+        query: {
+          "from"?: string;
+          "to"?: string;
+        };
+      };
+      responses: {
+      "403": {
+        content: {
+          "text/csv": components['schemas']["AuthErrorDto"];
         };
       };
       };
@@ -920,6 +1233,17 @@ export interface paths {
       };
     };
   };
+  "/api/tags": {
+    get: {
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["TagResponseDto"][];
+        };
+      };
+      };
+    };
+  };
   "/api/catalog/books": {
     get: {
       parameters: {
@@ -936,6 +1260,27 @@ export interface paths {
       "200": {
         content: {
           "application/json": components['schemas']["PagedPublicBookListResponseDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/catalog/books/{documentId}": {
+    get: {
+      parameters: {
+        path: {
+          "documentId": string;
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["PublicBookDetailResponseDto"];
+        };
+      };
+      "404": {
+        content: {
+          "application/json": unknown;
         };
       };
       };
@@ -1251,6 +1596,22 @@ export interface paths {
       };
     };
   };
+  "/api/reader/documents/{documentId}/state": {
+    get: {
+      parameters: {
+        path: {
+          "documentId": string;
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["ReaderDocumentStateDto"];
+        };
+      };
+      };
+    };
+  };
   "/api/reader/bookmarks/{documentId}": {
     delete: {
       parameters: {
@@ -1299,6 +1660,39 @@ export interface paths {
       "200": {
         content: {
           "application/json": components['schemas']["AccessDecisionDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/access/documents/{documentId}/manifest": {
+    get: {
+      parameters: {
+        path: {
+          "documentId": string;
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["ProtectedDocumentManifestDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/access/documents/{documentId}/pages/{pageNumber}": {
+    get: {
+      parameters: {
+        path: {
+          "documentId": string;
+          "pageNumber": number;
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": unknown;
         };
       };
       };
@@ -1390,6 +1784,32 @@ export interface paths {
       };
     };
   };
+  "/api/taxonomy/categories/{id}/impact": {
+    get: {
+      parameters: {
+        path: {
+          "id": string;
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["TaxonomyCategoryImpactDto"];
+        };
+      };
+      "403": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      "404": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      };
+    };
+  };
   "/api/taxonomy/tags": {
     get: {
       responses: {
@@ -1399,6 +1819,58 @@ export interface paths {
         };
       };
       "403": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/taxonomy/tags/{id}/impact": {
+    get: {
+      parameters: {
+        path: {
+          "id": string;
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["TaxonomyTagImpactDto"];
+        };
+      };
+      "403": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      "404": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/admin/categories/{id}/impact": {
+    get: {
+      parameters: {
+        path: {
+          "id": string;
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["TaxonomyCategoryImpactDto"];
+        };
+      };
+      "403": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      "404": {
         content: {
           "application/json": components['schemas']["AuthErrorDto"];
         };
@@ -1477,6 +1949,105 @@ export interface paths {
       };
       };
     };
+    delete: {
+      parameters: {
+        path: {
+          "id": string;
+        };
+        query: {
+          "targetCategoryId": string;
+        };
+      };
+      requestBody: {
+        content: {
+          "application/json": components['schemas']["ReassignAndDeleteCategoryDto"];
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": unknown;
+        };
+      };
+      "400": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      "403": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      "404": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/admin/categories/{id}/reassign-and-delete": {
+    post: {
+      parameters: {
+        path: {
+          "id": string;
+        };
+      };
+      requestBody: {
+        content: {
+          "application/json": components['schemas']["ReassignAndDeleteCategoryDto"];
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": unknown;
+        };
+      };
+      "400": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      "403": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      "404": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/admin/tags/{id}/impact": {
+    get: {
+      parameters: {
+        path: {
+          "id": string;
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["TaxonomyTagImpactDto"];
+        };
+      };
+      "403": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      "404": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      };
+    };
   };
   "/api/admin/tags": {
     post: {
@@ -1543,6 +2114,285 @@ export interface paths {
         };
       };
       "409": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      };
+    };
+    delete: {
+      parameters: {
+        path: {
+          "id": string;
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": unknown;
+        };
+      };
+      "403": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      "404": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/admin/tags/{id}/merge": {
+    post: {
+      parameters: {
+        path: {
+          "id": string;
+        };
+      };
+      requestBody: {
+        content: {
+          "application/json": components['schemas']["MergeTagDto"];
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": unknown;
+        };
+      };
+      "400": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      "403": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      "404": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/admin/users": {
+    get: {
+      parameters: {
+        query: {
+          "q"?: string;
+          "role"?: "ADMIN" | "LIBRARIAN" | "READER";
+          "status"?: "ACTIVE" | "DEACTIVATED";
+          "page"?: number;
+          "pageSize"?: number;
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["UserListResponseDto"];
+        };
+      };
+      "400": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      "403": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/admin/users/{userId}": {
+    get: {
+      parameters: {
+        path: {
+          "userId": string;
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["UserDetailResponseDto"];
+        };
+      };
+      "403": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      "404": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/admin/users/{userId}/role": {
+    patch: {
+      parameters: {
+        path: {
+          "userId": string;
+        };
+      };
+      requestBody: {
+        content: {
+          "application/json": components['schemas']["ChangeUserRoleDto"];
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["UserDetailResponseDto"];
+        };
+      };
+      "400": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      "403": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      "404": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      "409": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/admin/users/{userId}/deactivate": {
+    post: {
+      parameters: {
+        path: {
+          "userId": string;
+        };
+      };
+      requestBody: {
+        content: {
+          "application/json": components['schemas']["ChangeUserStatusDto"];
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["UserDetailResponseDto"];
+        };
+      };
+      "400": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      "403": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      "404": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      "409": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/admin/users/{userId}/reactivate": {
+    post: {
+      parameters: {
+        path: {
+          "userId": string;
+        };
+      };
+      requestBody: {
+        content: {
+          "application/json": components['schemas']["ChangeUserStatusDto"];
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["UserDetailResponseDto"];
+        };
+      };
+      "400": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      "403": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      "404": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      "409": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/admin/settings/general": {
+    get: {
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["GeneralSettingsResponseDto"];
+        };
+      };
+      "403": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      };
+    };
+    patch: {
+      requestBody: {
+        content: {
+          "application/json": components['schemas']["UpdateGeneralSettingsDto"];
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["GeneralSettingsResponseDto"];
+        };
+      };
+      "400": {
+        content: {
+          "application/json": components['schemas']["AuthErrorDto"];
+        };
+      };
+      "403": {
         content: {
           "application/json": components['schemas']["AuthErrorDto"];
         };

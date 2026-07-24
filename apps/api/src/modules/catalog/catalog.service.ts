@@ -11,7 +11,29 @@ export class CatalogService {
   constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
 
   listCategories() {
-    return this.prisma.category.findMany({ orderBy: { name: 'asc' } });
+    return this.prisma.category.findMany({
+      where: {
+        books: {
+          some: {
+            status: BookStatus.PUBLISHED
+          }
+        }
+      },
+      orderBy: { name: 'asc' }
+    });
+  }
+
+  listTags() {
+    return this.prisma.tag.findMany({
+      where: {
+        books: {
+          some: {
+            book: { status: BookStatus.PUBLISHED }
+          }
+        }
+      },
+      orderBy: { name: 'asc' }
+    });
   }
 
   async getPublicBookDetail(documentId: string) {
@@ -80,5 +102,3 @@ export class CatalogService {
     return mapPagedPublicBooks(books, page, pageSize, totalCount);
   }
 }
-
-

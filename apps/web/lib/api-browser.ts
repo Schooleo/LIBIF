@@ -1,12 +1,16 @@
 import { API_BASE_URL, createLibifApiClient, apiErrorMessage } from './api-client';
 import type {
   AuthMessageDto,
+  ChangeUserRoleDto,
+  ChangeUserStatusDto,
   CreateBookIntakeDto,
   CreateBookIntakeResponse,
   CreateTaxonomyCategoryDto,
   CreateTaxonomyTagDto,
   DocumentDetailResponseDto,
   IsbnLookupResponse,
+  GeneralSettingsResponseDto,
+  NotificationResponseDto,
   PasswordResetDto,
   PasswordResetRequestDto,
   ProtectedDocumentManifestDto,
@@ -17,9 +21,11 @@ import type {
   SignInRequestDto,
   TaxonomyCategoryDto,
   TaxonomyTagDto,
+  UpdateGeneralSettingsDto,
   UpdateTaxonomyCategoryDto,
   UpdateTaxonomyTagDto,
   UploadResultDto,
+  UserDetailResponseDto,
 } from './api-types';
 import { getDevAuthHeaders } from './auth/session';
 
@@ -264,11 +270,10 @@ export async function fetchProtectedPageUrl(documentId: string, pageNumber: numb
   if (response.status === 429) {
     const errPayload = await response.json().catch(() => ({}));
     const retryAfter = errPayload.retryAfterSeconds || 60;
-    const err = new Error(errPayload.message || 'Page rate limit exceeded');
-    const retryableError = err as Error & { retryAfterSeconds?: number; statusCode?: number };
-    retryableError.retryAfterSeconds = retryAfter;
-    retryableError.statusCode = 429;
-    throw err;
+    throw Object.assign(
+      new Error(errPayload.message || 'Page rate limit exceeded'),
+      { retryAfterSeconds: retryAfter, statusCode: 429 },
+    );
   }
   if (!response.ok) {
     const errPayload = await response.json().catch(() => ({}));
@@ -288,22 +293,6 @@ export async function fetchReaderDocumentState(documentId: string): Promise<Read
     throw new Error(apiErrorMessage(errPayload, 'Failed to fetch reader state'));
   }
   return response.json() as Promise<ReaderDocumentStateDto>;
-}
-
-export async function fetchViewToken(documentId: string): Promise<{ url: string; token: string; expiresAt: string }> {
-  const { data, error } = await client.POST('/api/access/documents/{documentId}/view-token', {
-    params: { path: { documentId } },
-  });
-  if (error) throw new Error(apiErrorMessage(error, 'View token request failed'));
-  return data as { url: string; token: string; expiresAt: string };
-}
-
-export async function fetchDownloadToken(documentId: string): Promise<{ url: string; token: string; expiresAt: string }> {
-  const { data, error } = await client.POST('/api/access/documents/{documentId}/download-token', {
-    params: { path: { documentId } },
-  });
-  if (error) throw new Error(apiErrorMessage(error, 'Download token request failed'));
-  return data as { url: string; token: string; expiresAt: string };
 }
 
 export async function addBookmark(documentId: string): Promise<{ success: boolean }> {
@@ -331,13 +320,13 @@ export async function updateReadingProgress(documentId: string, page: number, to
   return data as ReadingProgressStateDto;
 }
 
-export async function fetchMyNotifications(): Promise<any[]> {
-  const { data, error } = await client.GET('/api/notifications');
+export async function fetchMyNotifications(): Promise<NotificationResponseDto[]> {
+  const { data, error } = await client.GET('/api/notifications', { params: { query: {} } });
   if (error) throw new Error(apiErrorMessage(error, 'Failed to fetch notifications'));
-  return data as any[];
+  return data;
 }
 
-export async function markNotificationAsRead(id: string): Promise<any> {
+export async function markNotificationAsRead(id: string): Promise<NotificationResponseDto> {
   const { data, error } = await client.PATCH('/api/notifications/{id}/read', {
     params: { path: { id } },
   });
@@ -348,6 +337,52 @@ export async function markNotificationAsRead(id: string): Promise<any> {
 export async function markAllNotificationsAsRead(): Promise<void> {
   const { error } = await client.PATCH('/api/notifications/read-all');
   if (error) throw new Error(apiErrorMessage(error, 'Failed to mark all notifications as read'));
+}
+
+export async function changeAdminUserRole(
+  userId: string,
+  payload: ChangeUserRoleDto,
+): Promise<UserDetailResponseDto> {
+  const { data, error } = await client.PATCH('/api/admin/users/{userId}/role', {
+    params: { path: { userId } },
+    body: payload,
+  });
+  if (error) throw new Error(apiErrorMessage(error, 'User role update failed'));
+  return data;
+}
+
+export async function deactivateAdminUser(
+  userId: string,
+  payload: ChangeUserStatusDto,
+): Promise<UserDetailResponseDto> {
+  const { data, error } = await client.POST('/api/admin/users/{userId}/deactivate', {
+    params: { path: { userId } },
+    body: payload,
+  });
+  if (error) throw new Error(apiErrorMessage(error, 'User deactivation failed'));
+  return data;
+}
+
+export async function reactivateAdminUser(
+  userId: string,
+  payload: ChangeUserStatusDto,
+): Promise<UserDetailResponseDto> {
+  const { data, error } = await client.POST('/api/admin/users/{userId}/reactivate', {
+    params: { path: { userId } },
+    body: payload,
+  });
+  if (error) throw new Error(apiErrorMessage(error, 'User reactivation failed'));
+  return data;
+}
+
+export async function updateGeneralSettings(
+  payload: UpdateGeneralSettingsDto,
+): Promise<GeneralSettingsResponseDto> {
+  const { data, error } = await client.PATCH('/api/admin/settings/general', {
+    body: payload,
+  });
+  if (error) throw new Error(apiErrorMessage(error, 'General settings update failed'));
+  return data;
 }
 
 export type { ProtectedDocumentManifestDto, ReaderDocumentStateDto, ReadingProgressStateDto };
