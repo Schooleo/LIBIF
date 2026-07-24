@@ -3,9 +3,12 @@ SHELL := /usr/bin/env bash
 
 COMPOSE := docker compose
 COMPOSE_DEBUG := docker compose -f docker-compose.yml -f docker-compose.debug.yml --profile debug
+COMPOSE_LOCAL := COMPOSE_PROJECT_NAME=libif-local docker compose -f docker-compose.local.yml
+
 
 .PHONY: help install dev build lint test test-e2e test-worker verify \
 	infra-up infra-down infra-restart infra-logs infra-ps \
+	local-up local-down local-logs local-ps \
 	debug-up debug-down debug-logs pgadmin db-migrate db-seed db-reset prisma-generate api web worker clean
 
 help: ## Show available commands
@@ -28,6 +31,19 @@ infra-logs: ## Follow core service logs
 
 infra-ps: ## Show Docker service status
 	$(COMPOSE) ps
+
+local-up: ## Build and start the self-contained local stack at http://libif.local.com
+	$(COMPOSE_LOCAL) up --build -d
+	@echo "Open http://libif.local.com after mapping 127.0.0.1 libif.local.com in your hosts file."
+
+local-down: ## Stop the self-contained local stack
+	$(COMPOSE_LOCAL) down
+
+local-logs: ## Follow self-contained local stack logs
+	$(COMPOSE_LOCAL) logs -f
+
+local-ps: ## Show self-contained local stack status
+	$(COMPOSE_LOCAL) ps
 
 debug-up: ## Start core services plus debug tools such as pgAdmin
 	$(COMPOSE_DEBUG) up -d

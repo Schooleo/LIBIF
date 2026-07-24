@@ -4,6 +4,10 @@ ARG NODE_VERSION=22
 FROM node:${NODE_VERSION}-bookworm-slim AS base
 WORKDIR /app
 
+RUN apt-get update \
+    && apt-get install --yes --no-install-recommends openssl \
+    && rm -rf /var/lib/apt/lists/*
+
 FROM base AS dependencies
 COPY package.json package-lock.json ./
 COPY packages/shared/package.json packages/shared/package.json
@@ -15,6 +19,7 @@ FROM dependencies AS build
 ENV DATABASE_URL=postgresql://build:build@localhost:5432/libif?schema=public
 COPY packages/shared packages/shared
 COPY apps/api apps/api
+COPY docs/pdfs docs/pdfs
 RUN npm run build -w packages/shared \
     && npm pack --workspace=@libif/shared --pack-destination /tmp \
     && npm run prisma:generate -w apps/api \
@@ -35,6 +40,7 @@ ENV NODE_ENV=production
 RUN apt-get update \
     && apt-get install --yes --no-install-recommends \
       imagemagick \
+      openssl \
       poppler-utils \
       tesseract-ocr \
       tesseract-ocr-eng \

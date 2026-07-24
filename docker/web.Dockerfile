@@ -10,6 +10,8 @@ COPY apps/web/package.json apps/web/package.json
 RUN npm ci
 
 FROM dependencies AS build
+ARG NEXT_PUBLIC_API_BASE_URL=http://localhost:3001
+ENV NEXT_PUBLIC_API_BASE_URL=${NEXT_PUBLIC_API_BASE_URL}
 COPY packages/shared packages/shared
 COPY apps/web apps/web
 RUN npm run build -w packages/shared \

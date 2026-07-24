@@ -12,9 +12,9 @@ coverage
 .env
 .env.*
 !.env.example
+tailscale-data
 npm-debug.log*
 Dockerfile*
 docker-compose*.yml
 README.md
-docs
 ai_artifacts

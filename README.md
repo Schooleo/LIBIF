@@ -50,6 +50,25 @@ OCR stays inside the LIBIF deployment boundary: Redis jobs contain database iden
 
 API runs on `http://localhost:3001` and web runs on the Next.js dev port, usually `http://localhost:3000`.
 
+### Self-contained local Docker stack
+
+`docker-compose.local.yml` starts PostgreSQL, Redis, MinIO, migration and seed jobs, the API, worker, web app, Nginx, and a shared Tailscale demonstration machine. Tailscale persists its identity in the ignored `./tailscale-data` directory. Nginx shares the Tailscale network namespace and accepts requests exclusively for `libif.local.com`; no LIBIF service publishes a host port.
+
+Set `TAILSCALE_AUTHKEY` in `.env` to a reusable, non-ephemeral auth key and ask teammates to map the Tailscale machine's `tailscale ip -4` address to `libif.local.com` (or publish the same mapping through your shared DNS):
+
+```text
+<tailscale-machine-ip> libif.local.com
+```
+
+Then build and start the stack:
+
+```bash
+make local-up
+# or: COMPOSE_PROJECT_NAME=libif-local docker compose -f docker-compose.local.yml up --build -d
+```
+
+Teammates then access `http://libif.local.com` through the tailnet: **teammate → shared Tailscale machine → Nginx → LIBIF services**. The API is available only through the same origin at `/api`; PostgreSQL, Redis, MinIO, the API, and worker do not publish host ports. Configure `SMTP_*` in `.env` for Gmail password-reset delivery (Gmail App Password, port `587`, `SMTP_SECURE=starttls`). Stop it with `make local-down`. This stack intentionally uses HTTP and development cookie settings for demonstration, so do not use it as a production deployment.
+
 ## Seeded development accounts
 
 `make db-seed` / `npm run db:seed` creates one usable email/password account for each role. These credentials are for local development only.
