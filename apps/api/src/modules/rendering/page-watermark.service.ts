@@ -44,7 +44,7 @@ export class PageWatermarkService {
 
       await execFileAsync(
         'convert',
-        [basePath, svgPath, '-composite', '-quality', '85', outPath],
+        [basePath, '-background', 'none', svgPath, '-composite', '-quality', '85', outPath],
         { timeout: 15_000, maxBuffer: 20 * 1024 * 1024 }
       );
 
@@ -91,24 +91,24 @@ export class PageWatermarkService {
     const fullTrace = escapeXml(opaqueTrace);
 
     const fontSize = Math.max(14, Math.round(width / 60));
-    const diagFontSize = Math.max(18, Math.round(width / 45));
+    const diagFontSize = Math.max(32, Math.round(width / 30));
+    const diagonalAngle = -(Math.atan2(height, width) * 180 / Math.PI);
 
     return `<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
   <style>
-    .wm-header { font-family: DejaVu Sans, Arial, sans-serif; font-size: ${fontSize}px; font-weight: bold; fill: rgba(120, 120, 120, 0.40); }
-    .wm-footer { font-family: DejaVu Sans, Arial, sans-serif; font-size: ${fontSize}px; font-weight: bold; fill: rgba(120, 120, 120, 0.40); }
+    .wm-bar    { font-family: DejaVu Sans, Arial, sans-serif; font-size: ${fontSize}px; font-weight: bold; fill: rgba(120, 120, 120, 0.40); }
     .wm-diag   { font-family: DejaVu Sans, Arial, sans-serif; font-size: ${diagFontSize}px; font-weight: bold; fill: rgba(140, 140, 140, 0.22); }
   </style>
 
   <!-- Top Header Bar -->
-  <text x="20" y="${fontSize + 15}" class="wm-header">LIBIF PROTECTED • ${label} • ${isoTime} • Doc:${docShort}/P${pageNumber}</text>
+  <text x="20" y="${fontSize + 15}" class="wm-bar">LIBIF PROTECTED • ${label} • ${isoTime} • Doc:${docShort}/P${pageNumber}</text>
 
   <!-- Bottom Footer Bar -->
-  <text x="20" y="${height - 20}" class="wm-footer">TRACE: ${traceShort}... • ${isoTime}</text>
+  <text x="20" y="${height - 20}" class="wm-bar">TRACE: ${traceShort}... • ${isoTime}</text>
 
-  <!-- Diagonal Center Watermark -->
-  <g transform="rotate(-30 ${width / 2} ${height / 2})">
-    <text x="${width / 6}" y="${height / 2}" class="wm-diag">LIBIF • ${label} • TRACE:${fullTrace}</text>
+  <!-- Bottom-left to top-right diagonal watermark -->
+  <g transform="rotate(${diagonalAngle} 0 ${height})">
+    <text x="20" y="${height - 20}" class="wm-diag">LIBIF • ${label} • TRACE:${fullTrace}</text>
   </g>
 </svg>`;
   }
