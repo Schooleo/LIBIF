@@ -2,6 +2,9 @@ import { PageWatermarkService } from '../page-watermark.service';
 import { RenderedBasePage } from '../protected-page-renderer.port';
 import { WatermarkCompositionError } from '../rendering.errors';
 import { execFile } from 'node:child_process';
+import * as fs from 'node:fs/promises';
+import * as os from 'node:os';
+import * as path from 'node:path';
 import { promisify } from 'node:util';
 
 const execFileAsync = promisify(execFile);
@@ -70,6 +73,68 @@ describe('PageWatermarkService', () => {
     expect(res1.traceFingerprint).toBe('trace-111');
     expect(res2.traceFingerprint).toBe('trace-222');
     expect(res1.content.equals(res2.content)).toBe(false);
+  });
+
+  it('uses a larger bottom-left to top-right diagonal watermark', () => {
+    const generateWatermarkSvg = (service as unknown as {
+      generateWatermarkSvg: (params: {
+        width: number;
+        height: number;
+        maskedReaderLabel: string;
+        occurredAt: Date;
+        documentId: string;
+        pageNumber: number;
+        opaqueTrace: string;
+      }) => string;
+    }).generateWatermarkSvg;
+
+    const svg = generateWatermarkSvg({
+      width: 200,
+      height: 300,
+      maskedReaderLabel: 'R****123',
+      occurredAt: new Date('2026-07-23T12:00:00Z'),
+      documentId: 'doc-abc-12345',
+      pageNumber: 1,
+      opaqueTrace: 'trace-diagonal'
+    });
+
+    expect(svg).toContain('font-size: 32px');
+    expect(svg).toContain('transform="rotate(-56.309932474020215 0 300)"');
+    expect(svg).toContain('<text x="20" y="280" class="wm-diag">');
+  });
+
+  it.each([
+    ['PNG', 'image/png', 'png'],
+    ['WebP', 'image/webp', 'webp']
+  ] as const)('preserves the rendered document pixels beneath a %s watermark', async (_label, contentType, extension) => {
+    const { stdout } = await execFileAsync('convert', ['-size', '200x300', 'xc:black', `${extension}:-`], {
+      encoding: 'buffer'
+    });
+    const documentPage: RenderedBasePage = {
+      ...basePage,
+      content: Buffer.from(stdout),
+      contentType
+    };
+
+    const result = await service.composeWatermark({
+      basePage: documentPage,
+      maskedReaderLabel: 'R****123',
+      occurredAt: new Date('2026-07-23T12:00:00Z'),
+      documentId: 'doc-abc-12345',
+      pageNumber: 1,
+      opaqueTrace: 'trace-preserves-document'
+    });
+
+    const workspace = await fs.mkdtemp(path.join(os.tmpdir(), 'libif-watermark-test-'));
+    const outputPath = path.join(workspace, `watermarked.${extension}`);
+    try {
+      await fs.writeFile(outputPath, result.content);
+      const { stdout: meanOutput } = await execFileAsync('identify', ['-format', '%[fx:mean]', outputPath]);
+      expect(result.contentType).toBe(contentType);
+      expect(Number.parseFloat(meanOutput)).toBeLessThan(0.25);
+    } finally {
+      await fs.rm(workspace, { recursive: true, force: true });
+    }
   });
 
   it('throws WatermarkCompositionError on corrupt base page content', async () => {
