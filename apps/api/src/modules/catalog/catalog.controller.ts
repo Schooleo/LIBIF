@@ -1,7 +1,7 @@
 import { Controller, Get, Inject, Param, Query } from '@nestjs/common';
 import { ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CatalogService } from './catalog.service';
-import { CategoryResponseDto, PagedPublicBookListResponseDto, PublicBookDetailResponseDto } from './dto/catalog-response.dto';
+import { CategoryResponseDto, PagedPublicBookListResponseDto, PublicBookDetailResponseDto, TagResponseDto } from './dto/catalog-response.dto';
 import { CatalogQueryDto } from './dto/catalog-query.dto';
 
 @ApiTags('Catalog')
@@ -14,6 +14,13 @@ export class CatalogController {
   @ApiOkResponse({ type: [CategoryResponseDto] })
   listCategories() {
     return this.catalog.listCategories();
+  }
+
+  @Get('tags')
+  @ApiOperation({ summary: 'List public tag options.' })
+  @ApiOkResponse({ type: [TagResponseDto] })
+  listTags() {
+    return this.catalog.listTags();
   }
 
   @Get('catalog/books')
@@ -31,4 +38,3 @@ export class CatalogController {
     return this.catalog.getPublicBookDetail(documentId);
   }
 }
-

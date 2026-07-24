@@ -38,18 +38,18 @@ Development-header auth remains available only with explicit local opt-in throug
 
 ## Verified command set for latest completed wave
 
-Latest Phase 7 Wave 4 verification:
+Latest Phase 7 Waves 6–7 verification:
 
 - [x] `npx dotenv -e ../../.env -- prisma validate` from `apps/api`.
 - [x] `npm run prisma:generate -w apps/api`
 - [x] `npm run db:seed -w apps/api` twice; the published Reader sample PDF is stored privately and seed rows remain idempotent.
 - [x] `npm run lint`
-- [x] `npm test` — 32 API suites/166 tests and 17 web files/67 tests.
+- [x] `npm test` — 33 API suites/188 tests and 22 web files/90 tests.
 - [x] `npm run build`
-- [x] `npm run test:e2e -w apps/api` — 11 suites/58 tests.
+- [x] `npm run test:e2e -w apps/api -- --runInBand` — 12 suites/73 tests.
 - [x] `npm run test:worker -w apps/api` — 1 suite/5 infrastructure-backed scenarios.
-- [x] Manual cookie-authenticated network smoke: published detail/state/manifest and a watermarked WebP page returned successfully with `private, no-store`; Reader source download-token returned `403`. Opt-in development headers also resolve the seeded Reader identity and return the manifest successfully.
-- [x] Schema/migrations and tracked OpenAPI/generated client remain unchanged; the unified contract refresh is deferred to D7-005.
+- [x] Live cookie-authenticated network smoke: public tags/detail, Reader state/manifest, and a watermarked WebP page returned with `private, no-store` plus a 64-character trace; Reader source view-token returned `403`; Admin users/management/settings APIs and every new Admin web route returned successfully.
+- [x] D7-005 performed the one approved OpenAPI/generated-client refresh; generated-path and temporary-bypass scans pass.
 - [x] `git diff --check`
 
 Historical Phase 4 integration verification:
@@ -120,14 +120,14 @@ Latest Phase 5 planning/schema preflight:
 - [x] Upload/Documents boundary and document metadata workflow foundation.
 - [x] Processing worker implementation and retry history, including real PDF extraction/OCR, exact lineage, duplicate-delivery protection, and infrastructure-backed tests.
 - [x] Approval decision/correction loop and persisted notifications, including approve/reject/request-correction, resubmission reuse, publication fanout, and recipient ownership.
-- [ ] Taxonomy risky actions (delete/reassign/merge) remain. User administration reads and transactional role/deactivate/reactivate commands are complete.
+- [x] Taxonomy impact/delete/reassign/merge actions and user administration reads plus transactional role/deactivate/reactivate commands are complete.
 - [x] General management/librarian UTC dashboards, bounded document/user/activity/Reader-access CSV exports, and Admin-only general settings backend routes are complete.
 - [x] Reader POC P0 integration: functional catalogue discovery/detail, server-rendered user/session-watermarked pages drawn on canvas, integrated real-page progress, no Reader raw-PDF/download surface, bookmark hydration, durable access auditing, and scrape/rate/concurrency enforcement.
 - [ ] Cross-screen integration hardening and responsive/visual QA.
 
 ## Next execution target
 
-Phase 7 Wave 5 is active under `ai_artifacts/plans/plan-phase-7-admin-operations-users-reporting-settings-2026-07-23.md`. Member D's administration backend lane is complete; remaining taxonomy, notification, and Reader regression slices proceed in their existing member lanes before the Wave 6 cross-lane gate.
+Phase 7 is complete under `ai_artifacts/plans/plan-phase-7-admin-operations-users-reporting-settings-2026-07-23.md`. Wave 6 security evidence and Wave 7 D7-005 closure are recorded in `ai_artifacts/docs/phase-7-wave-6-7-closure.md`; the next work is the bounded Phase 8 handoff.
 
 ## 80-90% Completion Team Backlog
 
@@ -225,7 +225,10 @@ Member D Phase 5 is complete and integrated with the merged Member A/B/C lanes; 
 - [x] Wave 4 targeted verification: 16 API suites / 103 tests across access/Reader/rendering/notifications/reporting/catalogue, plus 2 protected Reader/catalogue web files / 5 tests and 4 API e2e suites / 24 tests.
 - [x] Member D Wave 5 completes transactional user role/status commands with concurrent last-admin protection and deactivated-auth enforcement, UTC management reporting, bounded formula-safe document/user/activity CSV, and safe general-settings routes.
 - [x] Member D Wave 5 verification: root lint; 32 API suites/171 tests; 17 web files/67 tests; shared/API/web builds; 12 API e2e suites/68 tests; worker OCR/privacy suite/5 scenarios; Prisma validate/migration status; idempotent seed; and `git diff --check`.
-- [ ] D7-005 remains the only approved OpenAPI/generated-client refresh; tracked generated contracts stay unchanged through Wave 4.
+- [x] D7-005 performed the single approved post-freeze OpenAPI/generated-client refresh; generated Reader/catalogue/taxonomy/users/reporting/settings contracts now match runtime routes.
+- [x] Wave 6 closure fixes hash session cookies before audit persistence, preserve structured Reader 429 retry metadata, expose published-only public category/tag options, persist catalogue view state in the URL, and alert/deduplicate all committed rate/scrape facts.
+- [x] Wave 7 adds Admin-only `/admin/users`, `/admin/users/[id]`, `/admin/management`, `/admin/reports/reader-access`, and `/admin/settings/general` pages with role-scoped navigation and generated-client-backed adapters.
+- [x] Phase 7 deterministic seed evidence includes two Readers/two opaque session fingerprints/two distinct page traces plus one deduplicated safe Admin risk alert.
 - [x] Member D Wave 3 regression: root lint; 29 API suites/124 tests; 15 web files/62 tests; API/web/shared builds; 9 API e2e suites/41 tests; worker OCR/privacy suite/5 scenarios; Prisma validate/status; unchanged schema, migrations, rendering, OpenAPI, and generated client; `git diff --check`; architect approval; and post-cleanup re-verification.
 
 ### Phase 4 Member D verification

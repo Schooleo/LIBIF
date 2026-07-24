@@ -183,6 +183,17 @@ describe('AccessService', () => {
     );
   });
 
+  it('creates a distinct opaque trace for repeated requests with the same access scope', async () => {
+    await service.getProtectedPage('user-1', 'READER', 'sess-1', 'pub-1', 1);
+    await service.getProtectedPage('user-1', 'READER', 'sess-1', 'pub-1', 1);
+
+    const firstTrace = pageRenderer.composeWatermark.mock.calls[0][0].opaqueTrace;
+    const secondTrace = pageRenderer.composeWatermark.mock.calls[1][0].opaqueTrace;
+    expect(firstTrace).toMatch(/^[a-f0-9]{64}$/);
+    expect(secondTrace).toMatch(/^[a-f0-9]{64}$/);
+    expect(secondTrace).not.toBe(firstTrace);
+  });
+
   it('throws 429 HttpException with stable retryAfterSeconds when page rate limit is exceeded', async () => {
     rateLimitService.checkPageAccessRate.mockResolvedValueOnce({
       allowed: false,
@@ -228,6 +239,22 @@ describe('AccessService', () => {
     await expect(
       service.getProtectedPage('user-1', 'READER', 'sess-1', 'pub-1', 1),
     ).rejects.toThrow('audit offline');
+  });
+
+  it('fails closed and records a denial when watermark composition is unavailable', async () => {
+    pageRenderer.composeWatermark.mockRejectedValueOnce(new Error('watermark unavailable'));
+
+    await expect(
+      service.getProtectedPage('user-1', 'READER', 'sess-1', 'pub-1', 1),
+    ).rejects.toThrow(ServiceUnavailableException);
+
+    expect(auditService.recordEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        eventType: ReaderAccessEventType.PAGE_DENIED,
+        reasonCode: ReaderAccessReasonCode.DEPENDENCY_UNAVAILABLE,
+        riskLevel: ReaderAccessRiskLevel.HIGH,
+      }),
+    );
   });
 
   it('denies raw document file access for readers and enforces token purpose for staff', async () => {

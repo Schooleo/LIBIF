@@ -19,6 +19,7 @@ type StaffNavGroup = {
 };
 
 const allStaffRoles: readonly StaffRole[] = ['ADMIN', 'LIBRARIAN'];
+const adminOnlyRoles: readonly StaffRole[] = ['ADMIN'];
 const notificationsHref = '/admin/notifications';
 
 const staffNavGroups: readonly StaffNavGroup[] = [
@@ -37,6 +38,9 @@ const staffNavGroups: readonly StaffNavGroup[] = [
     items: [
       { label: 'Categories', href: '/admin/categories', roles: allStaffRoles },
       { label: 'Tags', href: '/admin/tags', roles: allStaffRoles },
+      { label: 'Users', href: '/admin/users', roles: adminOnlyRoles },
+      { label: 'Management & Reports', href: '/admin/management', roles: adminOnlyRoles },
+      { label: 'General Settings', href: '/admin/settings/general', roles: adminOnlyRoles },
     ]
   }
 ];

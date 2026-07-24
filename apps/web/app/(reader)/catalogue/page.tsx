@@ -1,6 +1,6 @@
 import { PageHeader } from '../../../components/layout';
 import { InlineAlert } from '../../../components/ui';
-import { fetchPublicBooks, fetchTaxonomyCategories, fetchTaxonomyTags } from '../../../lib/api-server';
+import { fetchPublicBooks, fetchPublicCategories, fetchPublicTags } from '../../../lib/api-server';
 import type { PagedBookListDto, TaxonomyCategoryDto, TaxonomyTagDto } from '../../../lib/api-types';
 import { CatalogueDiscovery } from '../../../components/domain/reader/CatalogueDiscovery';
 
@@ -40,14 +40,14 @@ export default async function CatalogPage({ searchParams }: PageProps) {
   try {
     const [booksRes, catsRes, tagsRes] = await Promise.all([
       fetchPublicBooks(query),
-      fetchTaxonomyCategories().catch(() => []),
-      fetchTaxonomyTags().catch(() => [])
+      fetchPublicCategories(),
+      fetchPublicTags()
     ]);
     pagedBooks = booksRes;
     categories = catsRes;
     tags = tagsRes;
   } catch (error) {
-    loadError = (error as Error).message;
+    loadError = error instanceof Error ? error.message : 'Unknown catalogue error';
   }
 
   return (
@@ -56,7 +56,7 @@ export default async function CatalogPage({ searchParams }: PageProps) {
         title="Public Catalogue"
         description="Search, filter, and discover published digital library books. Only published items are accessible to readers."
       />
-      {loadError ? <InlineAlert tone="error">Catalog books could not be loaded: {loadError}</InlineAlert> : null}
+      {loadError ? <InlineAlert tone="error">Catalogue could not be loaded: {loadError}</InlineAlert> : null}
       <CatalogueDiscovery
         initialData={pagedBooks}
         categories={categories}

@@ -134,6 +134,10 @@ describe('AccessModule (e2e)', () => {
     await prisma.$disconnect();
   });
 
+  beforeEach(async () => {
+    await clearReaderAccessRateKeys();
+  });
+
   it('allows reader for published doc and denies for draft/correction docs', async () => {
     const pubRes = await request(app.getHttpServer())
       .get(`/api/access/documents/${publishedBookId}/decision`)
@@ -194,6 +198,18 @@ describe('AccessModule (e2e)', () => {
     expect(pageRes.headers['cache-control']).toBe('private, no-store');
     expect(pageRes.headers['x-trace-fingerprint']).toMatch(/^[a-f0-9]{64}$/);
     expect(pageRes.body).toBeInstanceOf(Buffer);
+
+    const event = await prisma.readerAccessEvent.findUnique({
+      where: { traceFingerprint: pageRes.headers['x-trace-fingerprint'] },
+    });
+    expect(event).toMatchObject({
+      eventType: 'PAGE_SERVED',
+      bookId: publishedBookId,
+      pageNumber: 1,
+      traceFingerprint: pageRes.headers['x-trace-fingerprint'],
+    });
+    expect(event?.sessionId).toMatch(/^[a-f0-9]{64}$/);
+    expect(readerCookie).not.toContain(event?.sessionId ?? '');
   });
 
   it('denies reader raw-source routes and denies fabricated staff tokens', async () => {
@@ -293,8 +309,7 @@ describe('AccessModule (e2e)', () => {
   });
 
   it('returns 429 with numeric Retry-After while keeping the stable JSON body', async () => {
-    // One successful page request is made by the preceding delivery test.
-    for (let i = 0; i < 29; i++) {
+    for (let i = 0; i < 30; i++) {
       await request(app.getHttpServer())
         .get(`/api/access/documents/${publishedBookId}/pages/1`)
         .set('Cookie', readerCookie)

@@ -4,7 +4,6 @@ import { createHash } from 'node:crypto';
 import {
   NotificationStatus,
   NotificationType,
-  ReaderAccessRiskLevel,
   UserAccountStatus,
   UserRole,
   type Prisma
@@ -43,10 +42,6 @@ export class RiskAlertService implements ReaderRiskEventSink {
   }
 
   async createAlertsForCommittedRiskFact(fact: CommittedReaderRiskFact): Promise<number> {
-    if (fact.riskLevel !== ReaderAccessRiskLevel.HIGH) {
-      return 0;
-    }
-
     const dedupWindowSeconds = this.getDedupWindowSeconds();
     const { windowStart, windowEnd } = toUtcWindow(fact.occurredAt, dedupWindowSeconds);
     const recipients = await this.prisma.user.findMany({

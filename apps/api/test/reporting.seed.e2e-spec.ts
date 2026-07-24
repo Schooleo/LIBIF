@@ -61,7 +61,7 @@ describe('Reader-access reporting seed slice (e2e)', () => {
     const seededEvents = await prisma.readerAccessEvent.findMany({
       where: { id: { startsWith: 'phase7-reader-event-' } },
       orderBy: { createdAt: 'asc' },
-      select: { id: true, traceFingerprint: true }
+      select: { id: true, traceFingerprint: true, sessionId: true, userId: true }
     });
 
     expect(seededBook).toHaveLength(1);
@@ -69,16 +69,31 @@ describe('Reader-access reporting seed slice (e2e)', () => {
     expect(seededEvents).toEqual([
       {
         id: 'phase7-reader-event-viewer-opened',
-        traceFingerprint: null
+        traceFingerprint: null,
+        sessionId: null,
+        userId: expect.any(String)
       },
       {
         id: 'phase7-reader-event-page-served',
-        traceFingerprint: '22a6b6df2f7939f0ddf6f1bb3981ee55137d593208ab8d1a11d8b1a7d9766e44'
+        traceFingerprint: '22a6b6df2f7939f0ddf6f1bb3981ee55137d593208ab8d1a11d8b1a7d9766e44',
+        sessionId: '6c58d5f6b8797786c58d5f6b8797786c58d5f6b8797786c58d5f6b8797786',
+        userId: expect.any(String)
       },
-      { id: 'phase7-reader-event-page-denied', traceFingerprint: null },
-      { id: 'phase7-reader-event-rate-limited', traceFingerprint: null },
-      { id: 'phase7-reader-event-scrape-suspected', traceFingerprint: null }
+      {
+        id: 'phase7-reader-event-page-served-second-reader',
+        traceFingerprint: '7743989bd1fcb3c3a9f3c34fef785a0e0de62b18d65da182c8821d3bd141b354',
+        sessionId: '13ecac240f3569c113ecac240f3569c113ecac240f3569c113ecac240f3569c1',
+        userId: expect.any(String)
+      },
+      { id: 'phase7-reader-event-page-denied', traceFingerprint: null, sessionId: null, userId: expect.any(String) },
+      { id: 'phase7-reader-event-rate-limited', traceFingerprint: null, sessionId: null, userId: expect.any(String) },
+      { id: 'phase7-reader-event-scrape-suspected', traceFingerprint: null, sessionId: null, userId: expect.any(String) }
     ]);
+    expect(seededEvents[1].userId).not.toBe(seededEvents[2].userId);
+    expect(seededEvents[1].sessionId).not.toBe(seededEvents[2].sessionId);
+    await expect(
+      prisma.notification.count({ where: { id: 'phase7-reader-risk-alert-admin' } }),
+    ).resolves.toBe(1);
 
     const response = await request(app.getHttpServer())
       .get('/api/admin/reports/reader-access')
@@ -86,12 +101,13 @@ describe('Reader-access reporting seed slice (e2e)', () => {
       .set(adminHeaders)
       .expect(200);
 
-    expect(response.body.totalCount).toBe(5);
-    expect(response.body.riskCounts).toEqual({ none: 2, low: 2, medium: 0, high: 1 });
+    expect(response.body.totalCount).toBe(6);
+    expect(response.body.riskCounts).toEqual({ none: 3, low: 2, medium: 0, high: 1 });
     expect(response.body.items.map((item: { eventType: string }) => item.eventType)).toEqual([
       'SCRAPE_SUSPECTED',
       'RATE_LIMITED',
       'PAGE_DENIED',
+      'PAGE_SERVED',
       'PAGE_SERVED',
       'VIEWER_OPENED'
     ]);
@@ -100,6 +116,7 @@ describe('Reader-access reporting seed slice (e2e)', () => {
         .filter((item: { traceFingerprint: string | null }) => item.traceFingerprint)
         .map((item: { traceFingerprint: string }) => item.traceFingerprint)
     ).toEqual([
+      '7743989bd1fcb3c3a9f3c34fef785a0e0de62b18d65da182c8821d3bd141b354',
       '22a6b6df2f7939f0ddf6f1bb3981ee55137d593208ab8d1a11d8b1a7d9766e44'
     ]);
 

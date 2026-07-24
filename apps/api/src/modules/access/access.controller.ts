@@ -13,6 +13,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import type { Request, Response } from 'express';
+import { createHash } from 'node:crypto';
 import {
   ApiBearerAuth,
   ApiOkResponse,
@@ -21,6 +22,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { CurrentUser } from '../auth/current-user.decorator';
+import { AuthCookieService } from '../auth/auth-cookie.service';
 import { SessionUserDto } from '../auth/dto/session.dto';
 import { Roles } from '../auth/roles.decorator';
 import { RolesGuard } from '../auth/roles.guard';
@@ -41,7 +43,10 @@ function formatContentDisposition(type: 'inline' | 'attachment', filename: strin
 @Roles('READER', 'LIBRARIAN', 'ADMIN')
 @Controller('access')
 export class AccessController {
-  constructor(@Inject(AccessService) private readonly accessService: AccessService) {}
+  constructor(
+    @Inject(AccessService) private readonly accessService: AccessService,
+    @Inject(AuthCookieService) private readonly authCookies: AuthCookieService,
+  ) {}
 
   @Get('documents/:documentId/decision')
   @ApiOperation({ summary: 'Check access decision for a document by reader or staff role.' })
@@ -73,7 +78,9 @@ export class AccessController {
     @Req() req: Request,
     @Res() res: Response,
   ): Promise<void> {
-    const sessionId = (req.cookies as Record<string, string> | undefined)?.['libif_session'];
+    const sessionId = fingerprintSession(
+      this.authCookies.readSessionToken(req),
+    );
 
     try {
       const pageResult = await this.accessService.getProtectedPage(
@@ -149,6 +156,11 @@ export class AccessController {
     res.setHeader('Content-Disposition', formatContentDisposition('attachment', file.originalFilename));
     res.send(buffer);
   }
+}
+
+function fingerprintSession(sessionToken: string | undefined): string | undefined {
+  if (!sessionToken) return undefined;
+  return createHash('sha256').update(`libif-reader-session:${sessionToken}`).digest('hex');
 }
 
 function applyRetryAfterHeader(error: unknown, res: Response): void {

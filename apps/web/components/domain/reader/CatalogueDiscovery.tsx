@@ -27,7 +27,7 @@ export function CatalogueDiscovery({ initialData, categories, tags, currentParam
   const [isPending, startTransition] = useTransition();
 
   const [search, setSearch] = useState(currentParams.q || '');
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>(currentParams.view || 'grid');
+  const viewMode = currentParams.view || 'grid';
 
   const updateFilters = (newParams: Record<string, string | number | undefined | null>) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -155,7 +155,7 @@ export function CatalogueDiscovery({ initialData, categories, tags, currentParam
               <button
                 type="button"
                 className={`ui-button ${viewMode === 'grid' ? 'ui-button--primary' : 'ui-button--secondary'}`}
-                onClick={() => setViewMode('grid')}
+                onClick={() => updateFilters({ view: 'grid' })}
                 title="Grid view"
                 aria-label="Grid view"
               >
@@ -166,7 +166,7 @@ export function CatalogueDiscovery({ initialData, categories, tags, currentParam
               <button
                 type="button"
                 className={`ui-button ${viewMode === 'list' ? 'ui-button--primary' : 'ui-button--secondary'}`}
-                onClick={() => setViewMode('list')}
+                onClick={() => updateFilters({ view: 'list' })}
                 title="List view"
                 aria-label="List view"
               >

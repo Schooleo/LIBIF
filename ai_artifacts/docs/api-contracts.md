@@ -1,8 +1,8 @@
 # API Contracts
 
-Last updated: 2026-07-23
+Last updated: 2026-07-24
 
-This document records the current runtime HTTP contract through Phase 7 Wave 4. The tracked `apps/api/openapi/libif-api.json` and `apps/web/lib/generated/api-types.ts` intentionally remain at the Wave 2 freeze until D7-005 performs one unified refresh; controller/service code and tests are authoritative for later live routes.
+This document records the current runtime HTTP contract through Phase 7 Wave 7. D7-005 completed the single post-freeze refresh of `apps/api/openapi/libif-api.json` and `apps/web/lib/generated/api-types.ts`; generated web clients now cover the live Phase 7 Reader, catalogue, taxonomy, users, reporting, and settings routes.
 
 ## Runtime implemented endpoints
 
@@ -55,7 +55,8 @@ This document records the current runtime HTTP contract through Phase 7 Wave 4. 
 | `PATCH /api/reader/progress/:documentId` | `ReaderModule` | Reader viewer actions | Upserts reading progress and auto-maps completion at 100%. |
 | `GET /api/catalog/books` | `CatalogModule` | Public catalogue routes | Returns published books only. |
 | `GET /api/catalog/books/:documentId` | `CatalogModule` | Public catalogue detail | Returns one published-only public detail projection without scanning a list page. |
-| `GET /api/categories` | `CatalogModule` | Legacy catalogue compatibility | Public category list compatibility surface. |
+| `GET /api/categories` | `CatalogModule` | Public catalogue filters | Returns category options reachable from published books only; draft-only taxonomy is not enumerable. |
+| `GET /api/tags` | `CatalogModule` | Public catalogue filters | Returns reader-safe tag options reachable from published books only; draft-only taxonomy is not enumerable. |
 | `GET /api/taxonomy/categories` | `TaxonomyModule` | Staff document forms and category manager | Staff selector list of `{ id, name, slug, parentId }`. |
 | `POST /api/admin/categories` | `TaxonomyModule` | Category manager | Admin-only category creation. |
 | `PATCH /api/admin/categories/:id` | `TaxonomyModule` | Category manager | Admin-only category update with cycle prevention. |
@@ -164,22 +165,21 @@ Source tokens are staff-only, purpose-specific, bound to the authenticated staff
 - Reader access decisions can deny on `CORRECTION_REQUIRED`; the generated access-decision enum includes that state.
 - Live Phase 7 routes include `GET /api/catalog/books/:documentId`, `GET /api/reader/documents/:documentId/state`, `GET /api/access/documents/:documentId/manifest`, and `GET /api/access/documents/:documentId/pages/:pageNumber`.
 - The page route returns an authorized, bounded, individually server-watermarked raster image with private/no-store caching and never returns object keys, source-PDF bytes/URLs, or extracted OCR text. The web viewer draws it on canvas without a selectable text layer and persists progress only after a page renders successfully.
-- Every successful/denied page attempt produces a bounded `ReaderAccessEvent`; Redis-backed rate/concurrency/scrape enforcement returns stable `429` + `Retry-After` where applicable and emits committed risk facts for deduplicated staff alerts.
+- Every successful/denied page attempt produces a bounded `ReaderAccessEvent`; only an opaque SHA-256 session fingerprint is persisted, never the raw session cookie. Redis-backed rate/concurrency/scrape enforcement returns stable `429` + `Retry-After` where applicable and emits committed risk facts for deduplicated staff alerts.
 - Admin-only security projections are live at `GET /api/admin/reports/reader-access?from&to&risk` and `GET /api/admin/reports/reader-access.csv`; both enforce a bounded UTC range, safe projections, and deterministic ordering.
 - Reader access to the source-file token, stream, and file routes is denied by explicit role policy. Retained source-file access is staff-only and uses a short-lived HMAC token bound to staff user, document, purpose, and expiry.
 - `LIBIF_SOURCE_ACCESS_TOKEN_SECRET` is required in production. Protected-page rate thresholds are deployment-owned environment configuration; production fails closed when Redis is unavailable unless the explicit in-memory development override is enabled.
 - Live Admin user routes are `GET /api/admin/users`, `GET /api/admin/users/:userId`, `PATCH /api/admin/users/:userId/role`, and `POST /api/admin/users/:userId/{deactivate|reactivate}`. Reads expose only safe account/session/audit projections; commands require a reason and enforce self/last-admin/session-revocation/immutable-event invariants.
 - Live reporting routes include UTC-filtered librarian/management dashboards and bounded Admin-only `documents.csv`, `users.csv`, `activity.csv`, and `reader-access.csv` exports.
 - Live settings routes are `GET/PATCH /api/admin/settings/general`; only product-owned values are editable, while cache/detector/watermark capability metadata is read-only and secret-free.
-- Waves 3–5 intentionally do not refresh `apps/api/openapi/libif-api.json` or `apps/web/lib/generated/api-types.ts`. Runtime-live Phase 7 routes remain unavailable to generated-client consumers until D7-005 performs the single cross-lane contract refresh.
+- D7-005 refreshed `apps/api/openapi/libif-api.json` and `apps/web/lib/generated/api-types.ts` once after the Wave 6 route freeze. Temporary `as any` Phase 7 route calls were removed, and the Admin pages consume typed server/browser adapters.
 
 ## Deferred or absent endpoint families
 
 These routes are not implemented in the current runtime code and must not be treated as live contracts:
 
 - Dedicated correction history/resubmission endpoints such as `/api/admin/documents/{documentId}/corrections` or `/resubmit`.
-- Category deletion/reassignment endpoints.
-- Tag duplicate-detection or merge endpoints.
-- Admin web pages for users, reporting, and settings; these wait for the D7-005 unified generated-client and staff-navigation reconciliation.
+- Standalone tag duplicate-detection screens/endpoints; bounded tag merge is live through the canonical Admin tag surface.
+- Asynchronous report-export job endpoints; Phase 7 intentionally uses bounded synchronous CSV.
 
-The approved contract sources are `ai_artifacts/plans/plan-phase-7-admin-operations-users-reporting-settings-2026-07-23.md`, `ai_artifacts/docs/phase-7-wave-1-2-foundation-contract-freeze.md`, `ai_artifacts/docs/phase-7-wave-4-p0-integration.md`, and `ai_artifacts/docs/phase-7-wave-5-member-d-administration.md`. Controllers and tests are the runtime evidence until D7-005 performs the deferred unified OpenAPI/client refresh.
+The approved contract sources are `ai_artifacts/plans/plan-phase-7-admin-operations-users-reporting-settings-2026-07-23.md`, `ai_artifacts/docs/phase-7-wave-1-2-foundation-contract-freeze.md`, `ai_artifacts/docs/phase-7-wave-4-p0-integration.md`, `ai_artifacts/docs/phase-7-wave-5-member-d-administration.md`, and `ai_artifacts/docs/phase-7-wave-6-7-closure.md`. Controllers, generated contracts, and tests now describe the same frozen Phase 7 surface.
