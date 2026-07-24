@@ -6,6 +6,7 @@ import { Card } from '../../../../../components/ui/surfaces/Card';
 import { DescriptionList } from '../../../../../components/ui/data/DataTable';
 import { StatusBadge } from '../../../../../components/ui/indicators/StatusBadge';
 import { ApprovalReviewPanel } from '../../../../../components/domain/approval/ApprovalReviewPanel';
+import { ProtectedDocumentViewer } from '../../../../../components/domain/reader';
 import { getApiBaseUrl } from '../../../../../lib/api-client';
 import { getDevAuthHeaders } from '../../../../../lib/auth/session';
 import type { ApprovalReviewItem } from '../../../../../components/domain/approval/ApprovalQueue';
@@ -64,6 +65,12 @@ export default async function AdminApprovalReviewDetailPage({ params }: PageProp
       {review && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="md:col-span-2 ui-stack">
+            <ProtectedDocumentViewer
+              documentId={review.bookId}
+              title={review.bookTitle || 'Untitled document'}
+              mode="review"
+            />
+
             <Card>
               <h2 className="text-lg font-semibold mb-4">Review Information</h2>
               <DescriptionList

@@ -20,6 +20,7 @@
     "test:worker": "jest --config ./test/jest-worker.json --runInBand",
     "db:migrate": "dotenv -e ../../.env -- prisma migrate dev && npm run prisma:generate",
     "db:seed": "npm run prisma:generate && dotenv -e ../../.env -- tsx prisma/seed.ts",
+    "db:reindex-search": "npm run prisma:generate && dotenv -e ../../.env -- tsx scripts/backfill-search-index.ts",
     "prisma:generate": "dotenv -e ../../.env -- prisma generate",
     "prisma:migrate:deploy": "dotenv -e ../../.env -- prisma migrate deploy"
   },

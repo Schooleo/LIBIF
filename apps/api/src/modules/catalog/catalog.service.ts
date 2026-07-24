@@ -1,5 +1,5 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { BookStatus } from '../../generated/prisma/client';
+import { BookStatus, Prisma } from '../../generated/prisma/client';
 import { PrismaService } from '../database/prisma.service';
 import { CatalogQueryDto } from './dto/catalog-query.dto';
 import { mapPagedPublicBooks, mapPublicBookDetail } from './catalog.mapper';
@@ -62,12 +62,14 @@ export class CatalogService {
     const skip = (page - 1) * pageSize;
 
     const where: any = { status: BookStatus.PUBLISHED };
+    const searchQuery = query.q?.trim();
 
-    if (query.q) {
-      where.OR = [
-        { title: { contains: query.q, mode: 'insensitive' } },
-        { isbn: { contains: query.q } }
-      ];
+    if (searchQuery) {
+      const matchingBookIds = await this.findPublishedFullTextMatches(searchQuery);
+      if (matchingBookIds.length === 0) {
+        return mapPagedPublicBooks([], page, pageSize, 0);
+      }
+      where.id = { in: matchingBookIds };
     }
 
     if (query.categoryId) {
@@ -100,5 +102,21 @@ export class CatalogService {
     });
 
     return mapPagedPublicBooks(books, page, pageSize, totalCount);
+  }
+
+  private async findPublishedFullTextMatches(searchQuery: string): Promise<string[]> {
+    const matchingBooks = await this.prisma.$queryRaw<{ id: string }[]>(
+      Prisma.sql`
+        SELECT "id"
+        FROM "Book"
+        WHERE "status" = ${BookStatus.PUBLISHED}::"BookStatus"
+          AND to_tsvector(
+            'simple',
+            "title" || ' ' || COALESCE("isbn", '') || ' ' || COALESCE("searchText", '')
+          ) @@ websearch_to_tsquery('simple', ${searchQuery})
+      `,
+    );
+
+    return matchingBooks.map((book) => book.id);
   }
 }

@@ -7,12 +7,15 @@ import { fetchDocumentManifest, fetchProtectedPageUrl, updateReadingProgress, ty
 import { BookmarkButton } from './BookmarkButton';
 import { ReadingProgressTracker } from './ReadingProgressTracker';
 
+export type ProtectedDocumentViewerMode = 'reader' | 'review';
+
 export interface ProtectedDocumentViewerProps {
   documentId: string;
   title: string;
   initialPage?: number;
   totalPages?: number;
   bookmarked?: boolean;
+  mode?: ProtectedDocumentViewerMode;
 }
 
 const clampPage = (page: number, totalPages: number) => Math.min(Math.max(page, 1), Math.max(totalPages, 1));
@@ -23,6 +26,7 @@ export function ProtectedDocumentViewer({
   initialPage = 1,
   totalPages: propTotalPages,
   bookmarked = false,
+  mode = 'reader',
 }: ProtectedDocumentViewerProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [manifest, setManifest] = useState<ProtectedDocumentManifestDto | null>(null);
@@ -45,6 +49,7 @@ export function ProtectedDocumentViewer({
 
   const totalPages = manifest?.pageCount ?? propTotalPages ?? 1;
   const safeTotalPages = Math.max(totalPages, 1);
+  const isReviewMode = mode === 'review';
 
   const clearSaveStatusTimer = useCallback(() => {
     if (saveStatusTimeoutRef.current) {
@@ -174,7 +179,7 @@ export function ProtectedDocumentViewer({
   }, [retryAfterSeconds]);
 
   const runPersistLoop = useCallback(async () => {
-    if (persistLoopActiveRef.current || !manifest) return;
+    if (isReviewMode || persistLoopActiveRef.current || !manifest) return;
     persistLoopActiveRef.current = true;
 
     try {
@@ -202,14 +207,14 @@ export function ProtectedDocumentViewer({
         void runPersistLoop();
       }
     }
-  }, [documentId, manifest, setTransientSaveStatus]);
+  }, [documentId, isReviewMode, manifest, setTransientSaveStatus]);
 
   useEffect(() => {
-    if (!manifest) return;
+    if (isReviewMode || !manifest) return;
     if (renderedPage === null || renderedPage === latestPersistedPageRef.current) return;
     desiredPersistPageRef.current = renderedPage;
     void runPersistLoop();
-  }, [manifest, renderedPage, runPersistLoop]);
+  }, [isReviewMode, manifest, renderedPage, runPersistLoop]);
 
   const handlePageChange = useCallback(
     (requestedPage: number) => {
@@ -247,7 +252,8 @@ export function ProtectedDocumentViewer({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [currentPage, handlePageChange, safeTotalPages]);
 
-  const progressIndicatorLabel = `Reading progress: ${Math.min(100, Math.round((currentPage / safeTotalPages) * 100))}%`;
+  const progressIndicatorLabel = `${isReviewMode ? 'Review position' : 'Reading progress'}: ${Math.min(100, Math.round((currentPage / safeTotalPages) * 100))}%`;
+  const viewerLabel = isReviewMode ? 'Review Canvas Viewer' : 'Watermarked Canvas Viewer';
 
   if (loadingManifest) {
     return (
@@ -268,11 +274,13 @@ export function ProtectedDocumentViewer({
         <div className="ui-stack" style={{ gap: '1rem', padding: '0.5rem' }}>
           <InlineAlert tone="error">Access Denied: {manifestError}</InlineAlert>
           <p style={{ color: 'var(--color-text-secondary, #414846)' }}>
-            You do not have entitlement to view this document or the document is currently restricted.
+            {isReviewMode
+              ? 'The review canvas could not be opened for this document.'
+              : 'You do not have entitlement to view this document or the document is currently restricted.'}
           </p>
           <div>
-            <a className="ui-button ui-button--secondary" href="/library">
-              ← Return to My Library
+            <a className="ui-button ui-button--secondary" href={isReviewMode ? '/admin/approvals' : '/library'}>
+              {isReviewMode ? '← Return to approval queue' : '← Return to My Library'}
             </a>
           </div>
         </div>
@@ -299,23 +307,25 @@ export function ProtectedDocumentViewer({
         <div className="ui-stack" style={{ gap: '0.25rem' }}>
           <div className="ui-cluster" style={{ alignItems: 'center', gap: '0.5rem' }}>
             <h1 style={{ margin: 0, fontSize: '1.4rem', color: 'var(--color-text-primary, #151C27)' }}>{title}</h1>
-            <Badge tone="success">Watermarked Canvas Viewer</Badge>
+            <Badge tone="success">{viewerLabel}</Badge>
           </div>
           <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--color-text-secondary, #666)' }}>
             Document ID: <code>{documentId}</code>
           </p>
         </div>
 
-        <div className="ui-cluster" style={{ alignItems: 'center', gap: '0.5rem' }}>
-          <BookmarkButton documentId={documentId} initialBookmarked={bookmarked} />
-        </div>
+        {!isReviewMode ? (
+          <div className="ui-cluster" style={{ alignItems: 'center', gap: '0.5rem' }}>
+            <BookmarkButton documentId={documentId} initialBookmarked={bookmarked} />
+          </div>
+        ) : null}
       </div>
 
       <ReadingProgressTracker
         currentPage={currentPage}
         totalPages={safeTotalPages}
-        saveStatus={saveStatus}
-        saving={persistingPage !== null}
+        saveStatus={isReviewMode ? null : saveStatus}
+        saving={!isReviewMode && persistingPage !== null}
         progressLabel={progressIndicatorLabel}
         onPageChange={handlePageChange}
       />
@@ -408,7 +418,9 @@ export function ProtectedDocumentViewer({
               textAlign: 'center',
             }}
           >
-            Pages are individually server-watermarked with session &amp; traceable identifiers. HTML canvas rendering provides controlled page delivery and copy deterrence.
+            {isReviewMode
+              ? 'Review pages are individually server-watermarked with session and traceable identifiers. Navigation is not saved as reader progress.'
+              : 'Pages are individually server-watermarked with session & traceable identifiers. HTML canvas rendering provides controlled page delivery and copy deterrence.'}
           </div>
         </div>
       </Card>

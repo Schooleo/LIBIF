@@ -144,4 +144,24 @@ describe('ProtectedDocumentViewer canvas integration', () => {
       expect(apiBrowser.updateReadingProgress).toHaveBeenLastCalledWith('doc-1', 2, 5);
     });
   });
+
+  it('uses the canvas viewer for staff review without creating reader progress or bookmarks', async () => {
+    vi.mocked(apiBrowser.fetchProtectedPageUrl).mockResolvedValue('blob:http://localhost/review-page');
+
+    render(<ProtectedDocumentViewer documentId="review-doc" title="Review document" mode="review" />);
+
+    await waitFor(() => {
+      expect(screen.getByRole('img', { name: /Page 1 of 5/i })).toBeInTheDocument();
+    });
+
+    expect(screen.getByText('Review Canvas Viewer')).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /bookmark/i })).not.toBeInTheDocument();
+    expect(screen.getByText(/Navigation is not saved as reader progress/i)).toBeInTheDocument();
+
+    fireEvent.keyDown(window, { key: 'PageDown' });
+    await waitFor(() => {
+      expect(screen.getByRole('img', { name: /Page 2 of 5/i })).toBeInTheDocument();
+    });
+    expect(apiBrowser.updateReadingProgress).not.toHaveBeenCalled();
+  });
 });

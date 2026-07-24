@@ -3,7 +3,7 @@ import { Type } from 'class-transformer';
 import { IsInt, IsOptional, IsString, Min } from 'class-validator';
 
 export class CatalogQueryDto {
-  @ApiPropertyOptional({ description: 'Full-text search over title and isbn' })
+  @ApiPropertyOptional({ description: 'Full-text search over published titles, ISBNs, and processed document text.' })
   @IsOptional()
   @IsString()
   q?: string;
