@@ -42,6 +42,7 @@ RUN apt-get update \
       imagemagick \
       openssl \
       poppler-utils \
+      librsvg2-bin \
       tesseract-ocr \
       tesseract-ocr-eng \
       tesseract-ocr-vie \

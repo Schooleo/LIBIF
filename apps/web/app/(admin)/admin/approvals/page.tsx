@@ -2,7 +2,7 @@ import { headers } from 'next/headers';
 import { PageHeader } from '../../../../components/layout';
 import { InlineAlert } from '../../../../components/ui';
 import { ApprovalQueue, type ApprovalReviewItem } from '../../../../components/domain/approval/ApprovalQueue';
-import { API_BASE_URL } from '../../../../lib/api-client';
+import { getApiBaseUrl } from '../../../../lib/api-client';
 import { getDevAuthHeaders } from '../../../../lib/auth/session';
 
 async function fetchPendingApprovals(): Promise<ApprovalReviewItem[]> {
@@ -10,7 +10,7 @@ async function fetchPendingApprovals(): Promise<ApprovalReviewItem[]> {
   const cookie = incomingHeaders.get('cookie');
   const devHeaders = getDevAuthHeaders();
 
-  const res = await fetch(`${API_BASE_URL}/api/admin/approvals`, {
+  const res = await fetch(`${getApiBaseUrl()}/api/admin/approvals`, {
     cache: 'no-store',
     headers: {
       ...devHeaders,
