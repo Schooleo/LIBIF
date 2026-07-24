@@ -4,7 +4,7 @@ import request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { HttpErrorFilter } from '../src/common/http-error.filter';
 import { ReaderAccessRiskLevel } from '../src/generated/prisma/client';
-import { seedDevelopmentData } from '../prisma/seed';
+import { type DocumentationSeedFile, seedDevelopmentData, seedDocumentationPdfCatalogue } from '../prisma/seed';
 import { PrismaService } from '../src/modules/database/prisma.service';
 import { ProcessingQueue } from '../src/modules/processing/processing.queue';
 
@@ -126,5 +126,40 @@ describe('Reader-access reporting seed slice (e2e)', () => {
       .set(adminHeaders)
       .expect(200);
     expect(filtered.body.items.map((item: { eventType: string }) => item.eventType)).toEqual(['SCRAPE_SUSPECTED']);
+  });
+
+  it('seeds documentation PDFs as published catalogue records idempotently', async () => {
+    await seedDevelopmentData(prisma as never);
+    const documentationPdf: DocumentationSeedFile = {
+      filename: 'Proof-of-concept.pdf',
+      title: 'LIBIF Proof of Concept',
+      tags: ['Documentation', 'Proof of Concept'],
+      objectKey: 'seed/documentation/proof-of-concept.pdf',
+      checksumSha256: 'a'.repeat(64),
+      sizeBytes: 1024,
+      content: Buffer.from('%PDF-1.4 seed fixture')
+    };
+
+    await seedDocumentationPdfCatalogue(prisma as never, [documentationPdf]);
+    await seedDocumentationPdfCatalogue(prisma as never, [documentationPdf]);
+
+    const seededDocument = await prisma.book.findUniqueOrThrow({
+      where: { isbn: 'seed-documentation-proof-of-concept' },
+      include: { category: true, authors: { include: { author: true } }, tags: { include: { tag: true } }, files: true }
+    });
+
+    expect(seededDocument).toMatchObject({
+      title: 'LIBIF Proof of Concept',
+      status: 'PUBLISHED',
+      category: { slug: 'tai-lieu-du-an' }
+    });
+    expect(seededDocument.authors.map((record) => record.author.name)).toEqual(['LIBIF Project Team']);
+    expect(seededDocument.tags.map((record) => record.tag.name).sort()).toEqual(['Documentation', 'Proof of Concept']);
+    expect(seededDocument.files).toHaveLength(1);
+    expect(seededDocument.files[0]).toMatchObject({
+      objectKey: 'seed/documentation/proof-of-concept.pdf',
+      originalFilename: 'Proof-of-concept.pdf',
+      mimeType: 'application/pdf'
+    });
   });
 });
