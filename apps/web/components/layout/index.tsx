@@ -78,18 +78,15 @@ export function AppShell({
           {variant === 'reader' ? (
             /* Reader shell: avatar menu with auth links for guests or sign-out for users */
             user ? (
-              <AvatarMenu authenticated name={user.name} email={user.email ?? ''} role={user.role} />
+              <AvatarMenu authenticated name={user.name} email={user.email ?? ''} role={user.role} workspace="reader" />
             ) : (
               <AvatarMenu authenticated={false} />
             )
           ) : user ? (
-            /* Staff shell: top bar is utility-only; primary navigation remains in the sidebar/drawer. */
+            /* Staff shell keeps primary navigation in the sidebar/drawer and exposes a reader return link in the account menu. */
             <div className="app-shell__user">
               <Badge tone="info">{user.role === 'ADMIN' ? 'Administrator' : 'Librarian'}</Badge>
-              <span>
-                <strong>{user.name}</strong>
-                <small>{user.email ?? user.role}</small>
-              </span>
+              <AvatarMenu authenticated name={user.name} email={user.email ?? ''} role={user.role} workspace="staff" />
             </div>
           ) : variant === 'auth' ? null : (
             <Badge tone="info">Session boundary</Badge>
@@ -109,8 +106,9 @@ export function AppShell({
  * When no user is provided the avatar menu shows guest auth links.
  */
 export function ReaderShell({ children, user }: { children: ReactNode; user?: ShellUser }) {
+  const navItems = user && isStaffRole(user.role) ? [...readerNav, staffWorkspaceNav] : readerNav;
   return (
-    <AppShell variant="reader" navItems={readerNav} user={user}>
+    <AppShell variant="reader" navItems={navItems} user={user}>
       {children}
     </AppShell>
   );
@@ -150,6 +148,12 @@ const readerNav: NavItem[] = [
   { label: 'Home', href: '/', description: 'Reader landing' },
   { label: 'Catalogue', href: '/catalogue', description: 'Published books' },
 ];
+
+const staffWorkspaceNav: NavItem = { label: 'Staff workspace', href: '/admin/dashboard', description: 'Staff operations' };
+
+function isStaffRole(role: string): boolean {
+  return role === 'ADMIN' || role === 'LIBRARIAN';
+}
 
 /** Auth layout: minimal — just a back-to-home link in the nav. */
 const authNav: NavItem[] = [

@@ -49,8 +49,9 @@ export default async function DocumentDetailPage({ params }: DocumentDetailPageP
 
   const auditEvents = doc.auditHistory?.map((evt: any) => ({
     id: evt.id,
-    title: `${evt.action}${evt.actorEmail ? ` by ${evt.actorEmail}` : ''}`,
+    status: evt.action,
     time: new Date(evt.createdAt).toLocaleString(),
+    actor: evt.actorEmail,
     detail: evt.message
   })) ?? [];
 
@@ -91,12 +92,7 @@ export default async function DocumentDetailPage({ params }: DocumentDetailPageP
           {doc.approvalHistory?.length > 0 ? (
             <ApprovalHistoryTimeline reviews={doc.approvalHistory} />
           ) : null}
-          {auditEvents.length > 0 ? (
-            <div className="ui-stack ui-stack-tight">
-              <h3>Audit History Timeline</h3>
-              <AuditTimeline events={auditEvents} />
-            </div>
-          ) : null}
+          {auditEvents.length > 0 ? <AuditTimeline events={auditEvents} /> : null}
         </div>
 
         <div>

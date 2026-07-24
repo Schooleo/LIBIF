@@ -26,8 +26,19 @@ describe('route-group shells and auth helper', () => {
     expect(screen.getByRole('main')).toHaveAttribute('id', 'main-content');
   });
 
-  it('uses the desktop sidebar as the single primary staff navigation', () => {
+  it('keeps a staff workspace escape route in the reader shell', () => {
+    render(<ReaderShell user={{ name: 'Ada Admin', email: 'ada@example.test', role: 'ADMIN' }}><h1>Reader home</h1></ReaderShell>);
+
+    const navigation = screen.getByRole('navigation', { name: /reader workspace navigation/i });
+    expect(within(navigation).getByRole('link', { name: /staff workspace/i })).toHaveAttribute('href', '/admin/dashboard');
+  });
+
+  it('uses the desktop sidebar as the single primary staff navigation', async () => {
+    const user = userEvent.setup();
     render(<AdminShell user={{ name: 'Ada Admin', email: 'ada@example.test', role: 'ADMIN' }}><h1>Admin books</h1></AdminShell>);
+
+    await user.click(screen.getByRole('button', { name: /account menu/i }));
+    expect(screen.getByRole('menuitem', { name: /reader workspace/i })).toHaveAttribute('href', '/');
 
     const navigation = screen.getByRole('navigation', { name: /staff workspace navigation/i });
     expect(screen.queryByRole('navigation', { name: /admin workspace navigation/i })).not.toBeInTheDocument();

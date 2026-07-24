@@ -17,7 +17,7 @@ export class ApprovalService {
     const isPendingQueue = !status || status === ApprovalReviewStatus.PENDING;
     const reviews = await this.prisma.approvalReview.findMany({
       where: isPendingQueue
-        ? { status: ApprovalReviewStatus.PENDING, book: { status: BookStatus.PENDING_APPROVAL } }
+        ? { status: ApprovalReviewStatus.PENDING }
         : { status },
       orderBy: { createdAt: 'desc' },
       include: {

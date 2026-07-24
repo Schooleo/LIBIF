@@ -144,6 +144,7 @@ export function DocumentMetadataForm({
           variant="secondary"
           onClick={handleIsbnLookup}
           disabled={isbnLookupLoading || !form.isbn.trim()}
+          style={{ alignSelf: 'flex-end' }}
         >
           {isbnLookupLoading ? 'Looking up...' : 'Prefill from ISBN'}
         </Button>

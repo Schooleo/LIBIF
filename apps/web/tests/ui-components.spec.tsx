@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { useState } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { Button, DataTable, Dialog, Drawer, FileDropzone, FormField, IconButton, InlineAlert, Pagination, ProgressBar, StatusBadge, TextInput, statusConfig, type DataTableState } from '../components/ui';
-import { DocumentMetadataSummary, ProcessingJobSummary } from '../components/domain';
+import { AuditTimeline, DocumentMetadataSummary, ProcessingJobSummary } from '../components/domain';
 
 const sampleFile = new File(['%PDF-1.4'], 'book.pdf', { type: 'application/pdf' });
 
@@ -107,6 +107,21 @@ describe('shared UI components', () => {
     expect(screen.getByRole('dialog', { name: /filters/i })).toHaveAttribute('aria-modal', 'true');
     await user.click(screen.getByRole('button', { name: /close drawer/i }));
     expect(screen.queryByRole('dialog', { name: /filters/i })).not.toBeInTheDocument();
+  });
+
+  it('renders audit events as numbered, spaced information blocks', () => {
+    render(<AuditTimeline events={[
+      { id: 'audit-1', status: 'METADATA_UPDATED', time: '24/07/2026, 10:00', actor: 'admin@libif.local', detail: 'Updated title' },
+      { id: 'audit-2', status: 'APPROVED', time: '24/07/2026, 11:00', detail: 'Document published' }
+    ]} />);
+
+    expect(screen.getByRole('heading', { name: /audit history timeline/i })).toBeInTheDocument();
+    expect(screen.getByText('[1]')).toBeInTheDocument();
+    expect(screen.getByText('[2]')).toBeInTheDocument();
+    expect(screen.getAllByText('TIME')).toHaveLength(2);
+    expect(screen.getAllByText('STATUS')).toHaveLength(2);
+    expect(screen.getAllByRole('listitem')).toHaveLength(2);
+    expect(screen.getByText('admin@libif.local')).toBeInTheDocument();
   });
 
   it('renders domain summary foundations', () => {
