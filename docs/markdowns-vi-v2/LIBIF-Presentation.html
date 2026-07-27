@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thuyết trình Dự án LIBIF - Thư viện Số Thương mại & Quản lý Bản quyền Số</title>
+    
+    <!-- Reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/theme/white.min.css" id="theme">
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        * { box-sizing: border-box; }
+        
+        :root {
+            --r-background-color: #FAFAFA;
+            --r-main-font: 'Inter', sans-serif;
+            --r-heading-font: 'Inter', sans-serif;
+            --r-main-color: #1F2937;
+            --r-heading-color: #111827;
+            --r-link-color: #2563EB;
+            --primary: #2563EB;
+            --secondary: #0F766E;
+            --accent: #F59E0B;
+            --border: #E5E7EB;
+            --bg-card: #FFFFFF;
+        }
+
+        .reveal {
+            font-family: var(--r-main-font);
+            color: var(--r-main-color);
+            background-color: var(--r-background-color);
+        }
+
+        .reveal .slides {
+            text-align: left;
+        }
+
+        .reveal h1, .reveal h2, .reveal h3, .reveal h4 {
+            font-weight: 700;
+            color: var(--r-heading-color);
+            text-transform: none;
+            letter-spacing: -0.02em;
+            margin: 0;
+            padding: 0;
+        }
+
+        .reveal h2 {
+            font-size: 1.4em;
+            margin-bottom: 0.3em;
+            color: var(--primary);
+            border-bottom: 2px solid #E5E7EB;
+            padding-bottom: 0.2em;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .reveal h3 {
+            font-size: 0.98em;
+            color: var(--secondary);
+            margin-bottom: 0.2em;
+        }
+
+        .reveal p, .reveal li {
+            font-size: 0.66em;
+            line-height: 1.4;
+            color: #374151;
+            margin: 0 0 0.3em 0;
+            word-wrap: break-word;
+        }
+
+        .reveal ul {
+            margin: 0 0 0.35em 1.1em;
+            padding: 0;
+        }
+
+        .reveal li {
+            margin-bottom: 0.2em;
+        }
+
+        /* Slide Layout Container */
+        .slide-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            padding: 0.1rem 0;
+            overflow: hidden;
+        }
+
+        /* Grid Utilities */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.8rem;
+            align-items: stretch;
+            margin-top: 0.25rem;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 0.65rem;
+            align-items: stretch;
+            margin-top: 0.25rem;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 0.55rem;
+            align-items: stretch;
+            margin-top: 0.25rem;
+        }
+
+        /* Card Component */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.7rem 0.85rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .card h4 {
+            margin: 0;
+            font-size: 0.82em;
+            color: var(--primary);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.15em 0.5em;
+            font-size: 0.58em;
+            font-weight: 600;
+            border-radius: 4px;
+            background: #E0E7FF;
+            color: #3730A3;
+            margin-bottom: 0.2em;
+            width: fit-content;
+        }
+
+        .badge-success { background: #DCFCE7; color: #166534; font-weight: 600; }
+        .badge-warning { background: #FEF3C7; color: #92400E; font-weight: 600; }
+        .badge-danger  { background: #FEE2E2; color: #991B1B; font-weight: 600; }
+
+        /* Tables Styling */
+        .reveal table {
+            font-size: 0.6em;
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 0.25em 0;
+            background: #FFFFFF;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        .reveal th {
+            background: #F9FAFB;
+            color: #111827;
+            font-weight: 700;
+            padding: 0.5em 0.6em;
+            border-bottom: 2px solid #E5E7EB;
+            text-align: left;
+            font-size: 0.86em;
+        }
+
+        .reveal td {
+            padding: 0.4em 0.6em;
+            border-bottom: 1px solid #F3F4F6;
+            vertical-align: middle;
+        }
+
+        .reveal tr:last-child td {
+            border-bottom: none;
+        }
+
+        .reveal tr:hover td {
+            background-color: #F9FAFB;
+        }
+
+        /* RACI Specific Badge Styling */
+        .raci-pill {
+            display: inline-block;
+            padding: 0.18em 0.5em;
+            font-size: 0.78em;
+            font-weight: 700;
+            border-radius: 12px;
+            text-align: center;
+            line-height: 1.2;
+        }
+        .raci-a { background: #FEE2E2; color: #991B1B; border: 1px solid #FCA5A5; }
+        .raci-r { background: #DCFCE7; color: #166534; border: 1px solid #86EFAC; }
+        .raci-c { background: #FEF3C7; color: #92400E; border: 1px solid #FDE047; }
+        .raci-i { background: #F3F4F6; color: #4B5563; border: 1px solid #D1D5DB; }
+
+        /* Metric Box Components */
+        .metric-card {
+            background: #FFFFFF;
+            border: 1px solid #E5E7EB;
+            border-top: 4px solid var(--primary);
+            border-radius: 8px;
+            padding: 0.7rem;
+            text-align: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+        }
+
+        .metric-value {
+            font-size: 1.4em;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 0.15rem 0;
+        }
+
+        .metric-label {
+            font-size: 0.6em;
+            color: #6B7280;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        /* Process Flow Components */
+        .flow-step {
+            background: #FFFFFF;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.5rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .flow-step-num {
+            width: 20px;
+            height: 20px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.6em;
+            font-weight: 700;
+            margin: 0 auto 0.25rem auto;
+        }
+
+        .flow-arrow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .highlight-box {
+            background: #EFF6FF;
+            border-left: 4px solid var(--primary);
+            padding: 0.4rem 0.7rem;
+            margin-top: 0.3rem;
+            border-radius: 0 6px 6px 0;
+            font-size: 0.64em;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .slide-footer {
+            position: absolute;
+            bottom: 5px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.45em;
+            color: #9CA3AF;
+            border-top: 1px solid #F3F4F6;
+            padding-top: 3px;
+        }
+
+        .icon-inline {
+            vertical-align: middle;
+            width: 15px;
+            height: 15px;
+            stroke-width: 2.2;
+        }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- SLIDE 1: Title Slide -->
+            <section>
+                <div class="slide-container" style="justify-content: center; align-items: center; text-align: center;">
+                    <span class="badge"><i data-lucide="shield-check" class="icon-inline"></i> CDLS-2026</span>
+                    <h1 style="font-size: 2.1em; color: var(--primary); margin-top: 0.2em; margin-bottom: 0.2em;">DỰ ÁN LIBIF: THƯ VIỆN SỐ THƯƠNG MẠI</h1>
+                    <p style="font-size: 0.95em; color: var(--secondary); font-weight: 500; margin-bottom: 1.2em;">Số hóa OCR & Quản lý Bản quyền Số Đa lớp (DRM)</p>
+                    <div style="font-size: 0.7em; color: #4B5563; background: white; border: 1px solid #E5E7EB; padding: 0.8rem 1.5rem; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.03);">
+                        <p style="margin-bottom: 0.2em;"><strong>Báo cáo Chiến lược Quản lý Dự án Phần mềm</strong></p>
+                        <p style="margin-bottom: 0.2em;"><i data-lucide="users" class="icon-inline"></i> Đội ngũ Thực hiện: 06 Sinh viên năm 4 (Chuyên ngành CNTT)</p>
+                        <p><i data-lucide="bot" class="icon-inline"></i> Trợ lý Công nghệ: Antigravity IDE + Google AI Pro</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 2: Tại sao thực hiện Project này - Phần 1 -->
+            <section>
+                <div class="slide-container">
+                    <span class="badge"><i data-lucide="help-circle" class="icon-inline"></i> Phần 1: Tổng quan Đề xuất</span>
+                    <h2><i data-lucide="alert-circle" class="icon-inline" style="width:22px;height:22px;"></i> Tại sao nên thực hiện Dự án này?</h2>
+                    <div class="grid-2">
+                        <div class="card">
+                            <div class="card-header">
+                                <i data-lucide="archive" style="color: #DC2626; width:18px; height:18px;"></i>
+                                <h4>1. Hạn chế Thư viện Truyền thống</h4>
+                            </div>
+                            <ul>
+                                <li><strong>Hạn chế vật lý:</strong> Sách giấy nguy cơ xuống cấp, chỉ phục vụ 1 người tại 1 thời điểm.</li>
+                                <li><strong>Thiếu khả năng tra cứu:</strong> Tài liệu scan thô không thể tìm kiếm từ khóa toàn văn.</li>
+                                <li><strong>Chi phí lưu kho cao:</strong> Diện tích lưu trữ vật lý ngày càng tải nặng và đắt đỏ.</li>
+                            </ul>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">
+                                <i data-lucide="lock" style="color: #EA580C; width:18px; height:18px;"></i>
+                                <h4>2. Nguy cơ Rò rỉ Bản quyền Số</h4>
+                            </div>
+                            <ul>
+                                <li><strong>File PDF thô dễ phát tán:</strong> Đăng tải file thô lên Google Drive/Web dễ bị tải lậu 100%.</li>
+                                <li><strong>Rào cản Pháp lý:</strong> NXB từ chối cấp phép sách số nếu hệ thống không bảo vệ bản quyền.</li>
+                                <li><strong>Nhu cầu truy cập 24/7:</strong> Độc giả yêu cầu học tập từ xa mọi lúc mọi nơi.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="highlight-box">
+                        <i data-lucide="check-circle-2" style="color: var(--primary); width:18px; height:18px; flex-shrink:0;"></i>
+                        <span><strong>Giải pháp LIBIF:</strong> Số hóa OCR chuẩn hóa kết hợp trình đọc **Zero-Download Canvas DRM** giúp thư viện chuyển đổi số an toàn tuyệt đối.</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 3: So sánh (Bảng giống trong Proposal) -->
+            <section>
+                <div class="slide-container">
+                    <span class="badge"><i data-lucide="bar-chart-2" class="icon-inline"></i> Phần 1: Proposal</span>
+                    <h2><i data-lucide="git-compare" class="icon-inline" style="width:22px;height:22px;"></i> So sánh Đề xuất LIBIF với Các Phương án Hiện hữu</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 20%;">Tiêu chí So sánh</th>
+                                <th style="width: 22%;">Quy trình Thủ công</th>
+                                <th style="width: 22%;">Kết hợp Công cụ Rời rạc</th>
+                                <th style="width: 20%;">Mã nguồn Mở (DSpace)</th>
+                                <th style="width: 16%;">LIBIF Đề xuất</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Đối soát OCR</strong></td>
+                                <td>Không có</td>
+                                <td>Sửa thủ công Word/Txt rời rạc</td>
+                                <td>Không có Side-by-side UI</td>
+                                <td><span class="badge-success">Side-by-side UI</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Bảo vệ Bản quyền</strong></td>
+                                <td>Không hỗ trợ</td>
+                                <td>Rất yếu (Watermark tĩnh bị tải)</td>
+                                <td>Hạn chế (Chỉ phân quyền xem)</td>
+                                <td><span class="badge-success">Zero-Download DRM</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Tìm kiếm Full-text</strong></td>
+                                <td>Không có</td>
+                                <td>Tìm kiếm cơ bản trên file PDF</td>
+                                <td>Hỗ trợ cơ bản qua Lucene</td>
+                                <td><span class="badge-success">Full-text chuẩn OCR</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Chi phí Đầu tư</strong></td>
+                                <td>Nhân công cao</td>
+                                <td>Chi phí bản quyền phần mềm rời</td>
+                                <td>Tùy biến & bảo trì IT đắt</td>
+                                <td><span class="badge-success">112 triệu VNĐ</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Độ phức tạp Vận hành</strong></td>
+                                <td>Rời rạc, tốn thời gian</td>
+                                <td>Rủi ro nhầm file, đứt gãy quy trình</td>
+                                <td>Đội ngũ IT chuyên trách duy trì</td>
+                                <td><span class="badge-success">Nghiệp vụ All-in-one</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- SLIDE 4: Phân tích Các bên Liên quan (Stakeholder Analysis) -->
+            <section>
+                <div class="slide-container">
+                    <span class="badge"><i data-lucide="users" class="icon-inline"></i> Phần 1: Proposal</span>
+                    <h2><i data-lucide="user-check" class="icon-inline" style="width:22px;height:22px;"></i> Phân tích Các bên Liên quan (Stakeholder Analysis)</h2>
+                    <div class="grid-3">
+                        <div class="card">
+                            <div class="card-header">
+                                <i data-lucide="building-2" style="color: var(--primary); width:18px; height:18px;"></i>
+                                <h4>Ban Giám đốc Thư viện</h4>
+                            </div>
+                            <p><strong>Mục tiêu:</strong> Hiện đại hóa thư viện, nâng cao số lượng phục vụ.</p>
+                            <p><strong>Lo ngại:</strong> Nguy cơ bị kiện bản quyền, chi phí đầu tư kém hiệu quả.</p>
+                            <p><strong>Lợi ích LIBIF:</strong> Đảm bảo 100% bản quyền, chi phí tối ưu 112 triệu VNĐ.</p>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">
+                                <i data-lucide="book-open-check" style="color: var(--secondary); width:18px; height:18px;"></i>
+                                <h4>Thủ thư Nghiệp vụ</h4>
+                            </div>
+                            <p><strong>Mục tiêu:</strong> Số hóa nhanh, kiểm duyệt OCR tiện lợi.</p>
+                            <p><strong>Lo ngại:</strong> Giao diện phức tạp, tăng khối lượng công việc hàng ngày.</p>
+                            <p><strong>Lợi ích LIBIF:</strong> Giao diện màn hình kép Side-by-side dễ dùng.</p>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">
+                                <i data-lucide="graduation-cap" style="color: var(--accent); width:18px; height:18px;"></i>
+                                <h4>Độc giả / Sinh viên</h4>
+                            </div>
+                            <p><strong>Mục tiêu:</strong> Tìm kiếm tài liệu nhanh, đọc mượt 24/7.</p>
+                            <p><strong>Lo ngại:</strong> Khó tra cứu, bị bắt cài đặt plugin rắc rối.</p>
+                            <p><strong>Lợi ích LIBIF:</strong> Tra cứu từ khóa toàn văn, đọc trên Web không cài app.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 5: Phân tích 8 loại Tính Khả thi - Phần 1 -->
+            <section>
+                <div class="slide-container">
+                    <span class="badge"><i data-lucide="shield-check" class="icon-inline"></i> Phần 1: Proposal</span>
+                    <h2><i data-lucide="check-square" class="icon-inline" style="width:22px;height:22px;"></i> Phân tích Tính Khả thi (4/8 Loại Khả thi Đầu)</h2>
+                    <div class="grid-2">
+                        <div class="card">
+                            <div class="card-header">
+                                <i data-lucide="trending-up" style="color: var(--primary); width:18px; height:18px;"></i>
+                                <h4>1. Khả thi Kinh doanh (Business)</h4>
+                            </div>
+                            <p>Nhu cầu chuyển đổi số thư viện đại học và tỉnh thành rất lớn. Mô hình SaaS hoặc On-premise bản quyền đóng gói mang lại doanh thu bền vững. <span class="badge-success">Khả thi cao</span></p>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">
+                                <i data-lucide="cpu" style="color: var(--secondary); width:18px; height:18px;"></i>
+                                <h4>2. Khả thi Kỹ thuật (Technical)</h4>
+                            </div>
+                            <p>Tesseract OCR engine self-hosted kết hợp Web Crypto API & HTML5 Canvas mã hóa trên RAM giải quyết triệt để bài toán DRM mà không cần plugin. <span class="badge-success">Khả thi cao</span></p>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">
+                                <i data-lucide="settings" style="color: var(--accent); width:18px; height:18px;"></i>
+                                <h4>3. Khả thi Vận hành (Operational)</h4>
+                            </div>
+                            <p>Quy trình nghiệp vụ mô phỏng chính xác luồng truyền thống. Giao diện Side-by-side UI giúp thủ thư thao tác ngay không cần đào tạo IT sâu. <span class="badge-success">Khả thi cao</span></p>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">
+                                <i data-lucide="dollar-sign" style="color: #16A34A; width:18px; height:18px;"></i>
+                                <h4>4. Khả thi Tài chính (Financial)</h4>
+                            </div>
+                            <p>Tận dụng Tesseract OCR $0$ VNĐ bản quyền API và công cụ AI trợ lý sinh viên $0$ VNĐ. Tổng ngân sách tối ưu 112.000.000 VNĐ. <span class="badge-success">Khả thi cao</span></p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 6: Phân tích 8 loại Tính Khả thi - Phần 2 -->
+            <section>
+                <div class="slide-container">
+                    <span class="badge"><i data-lucide="shield-check" class="icon-inline"></i> Phần 1: Proposal</span>
+                    <h2><i data-lucide="check-square" class="icon-inline" style="width:22px;height:22px;"></i> Phân tích Tính Khả thi (4/8 Loại Khả thi Sau)</h2>
+                    <div class="grid-2">
+                        <div class="card">
+                            <div class="card-header">
+                                <i data-lucide="calendar" style="color: var(--primary); width:18px; height:18px;"></i>
+                                <h4>5. Khả thi Tiến độ (Schedule)</h4>
+                            </div>
+                            <p>Tiến độ 10 tuần (5 Sprints) phù hợp với năng lực 06 sinh viên năm 4 được Antigravity AI hỗ trợ tăng $38.5\%$ năng suất. <span class="badge-success">Khả thi cao</span></p>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">
+                                <i data-lucide="scale" style="color: var(--secondary); width:18px; height:18px;"></i>
+                                <h4>6. Khả thi Pháp lý (Legal / Copyright)</h4>
+                            </div>
+                            <p>Tuân thủ Luật Sở hữu trí tuệ & Luật An ninh mạng Việt Nam. Cung cấp Audit Trail Log ghi vết giải trình minh bạch với Nhà xuất bản. <span class="badge-success">Khả thi cao</span></p>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">
+                                <i data-lucide="briefcase" style="color: var(--accent); width:18px; height:18px;"></i>
+                                <h4>7. Khả thi Quản lý (Management)</h4>
+                            </div>
+                            <p>Phân định rõ ràng trách nhiệm RACI và áp dụng quy trình Change Management với nguyên tắc Trade-off giữ vững tiến độ. <span class="badge-success">Khả thi cao</span></p>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">
+                                <i data-lucide="heart" style="color: #E11D48; width:18px; height:18px;"></i>
+                                <h4>8. Khả thi Văn hóa & Rủi ro (Cultural/Risk)</h4>
+                            </div>
+                            <p>Phù hợp với văn hóa đọc trực tuyến của độc giả thế hệ mới. Đã có phương án giảm thiểu rủi ro cho tất cả 4 rủi ro kỹ thuật chính. <span class="badge-success">Khả thi cao</span></p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 7: Project Vision & Scope - Workflow -->
+            <section>
+                <div class="slide-container">
+                    <span class="badge"><i data-lucide="compass" class="icon-inline"></i> Phần 2: Vision & Scope</span>
+                    <h2><i data-lucide="eye" class="icon-inline" style="width:22px;height:22px;"></i> Project Vision and Scope (Tầm nhìn & Quy trình)</h2>
+                    <div class="card" style="margin-bottom: 0.4rem; background: #EFF6FF; border-left: 4px solid var(--primary);">
+                        <p style="margin:0; font-weight: 600; color: #1E40AF;">
+                            <strong>Tầm nhìn (Vision Statement):</strong> Xây dựng hệ thống thư viện số thương mại tiêu chuẩn, biến tài sản sách giấy thành kho tri thức số tìm kiếm toàn văn và bảo vệ 100% bản quyền số.
+                        </p>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr auto 1fr; gap: 0.25rem; align-items: center; margin-top: 0.4rem;">
+                        <div class="flow-step">
+                            <div class="flow-step-num">1</div>
+                            <h4 style="font-size:0.7em; margin-bottom:0.1em;">Upload Scan</h4>
+                            <p style="font-size:0.58em; margin:0;">File thô máy quét</p>
+                        </div>
+                        <div class="flow-arrow">→</div>
+                        
+                        <div class="flow-step">
+                            <div class="flow-step-num">2</div>
+                            <h4 style="font-size:0.7em; margin-bottom:0.1em;">Tesseract OCR</h4>
+                            <p style="font-size:0.58em; margin:0;">Xử lý Redis Queue</p>
+                        </div>
+                        <div class="flow-arrow">→</div>
+                        
+                        <div class="flow-step" style="border: 2px solid var(--primary); background: #EFF6FF;">
+                            <div class="flow-step-num">3</div>
+                            <h4 style="font-size:0.7em; margin-bottom:0.1em; color: var(--primary);">Side-by-side UI</h4>
+                            <p style="font-size:0.58em; margin:0;">Thủ thư đối soát duyệt</p>
+                        </div>
+                        <div class="flow-arrow">→</div>
+                        
+                        <div class="flow-step">
+                            <div class="flow-step-num">4</div>
+                            <h4 style="font-size:0.7em; margin-bottom:0.1em;">Mã hóa AES-256</h4>
+                            <p style="font-size:0.58em; margin:0;">Lưu kho MinIO Vault</p>
+                        </div>
+                        <div class="flow-arrow">→</div>
+
+                        <div class="flow-step" style="border: 2px solid var(--secondary); background: #E6F4F1;">
+                            <div class="flow-step-num">5</div>
+                            <h4 style="font-size:0.7em; margin-bottom:0.1em; color: var(--secondary);">Canvas DRM</h4>
+                            <p style="font-size:0.58em; margin:0;">Đọc an toàn + Watermark</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 8: Project Scope Boundaries -->
+            <section>
+                <div class="slide-container">
+                    <span class="badge"><i data-lucide="box" class="icon-inline"></i> Phần 2: Vision & Scope</span>
+                    <h2><i data-lucide="layers" class="icon-inline" style="width:22px;height:22px;"></i> Ranh giới Phạm vi Dự án (Project Scope)</h2>
+                    <div class="grid-3">
+                        <div class="card">
+                            <div class="card-header">
+                                <i data-lucide="check-circle" style="color: #16A34A; width:18px; height:18px;"></i>
+                                <h4>Trong Phạm vi (In Scope)</h4>
+                            </div>
+                            <ul>
+                                <li>Upload & Tesseract OCR ngầm.</li>
+                                <li>Giao diện Side-by-side UI đối soát.</li>
+                                <li>Mã hóa AES-256 & Kho MinIO.</li>
+                                <li>HTML5 Canvas Reader + Watermark.</li>
+                                <li>Chặn tải file, Screenshot Blur & Log.</li>
+                            </ul>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">
+                                <i data-lucide="x-circle" style="color: #DC2626; width:18px; height:18px;"></i>
+                                <h4>Ngoài Phạm vi (Out of Scope)</h4>
+                            </div>
+                            <ul>
+                                <li>Cung cấp thiết bị máy quét phần cứng.</li>
+                                <li>Mua sắm bản quyền sách giấy đầu vào.</li>
+                                <li>Phát triển Mobile Native App offline.</li>
+                                <li>Tính năng in ấn tài liệu ra giấy.</li>
+                            </ul>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">
+                                <i data-lucide="sparkles" style="color: var(--accent); width:18px; height:18px;"></i>
+                                <h4>Phạm vi Tương lai (Future Scope)</h4>
+                            </div>
+                            <ul>
+                                <li>AI LLM tóm tắt nội dung sách.</li>
+                                <li>Mobile Reader App hỗ trợ DRM.</li>
+                                <li>Nhận dạng chữ viết tay cổ Hán Nôm.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 9: Ma trận RACI - Slide 1/2 -->
+            <section>
+                <div class="slide-container">
+                    <span class="badge"><i data-lucide="grid" class="icon-inline"></i> Phần 2: Charter & RACI</span>
+                    <h2><i data-lucide="table" class="icon-inline" style="width:22px;height:22px;"></i> Ma trận RACI - Giai đoạn 1 (Planning, SRS & Arch)</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 34%;">Hạng mục Công việc (Phase 1)</th>
+                                <th style="width: 13%; text-align: center;">Sponsor</th>
+                                <th style="width: 13%; text-align: center;">PM</th>
+                                <th style="width: 13%; text-align: center;">BA Lead</th>
+                                <th style="width: 13%; text-align: center;">Dev Lead</th>
+                                <th style="width: 14%; text-align: center;">SecOps Lead</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Phê duyệt Điều lệ & Ngân sách</strong></td>
+                                <td style="text-align: center;"><span class="raci-pill raci-a">A</span></td>
+                                <td style="text-align: center;"><span class="raci-pill raci-r">R</span></td>
+                                <td style="text-align: center;"><span class="raci-pill raci-c">C</span></td>
+                                <td style="text-align: center;"><span class="raci-pill raci-i">I</span></td>
+                                <td style="text-align: center;"><span class="raci-pill raci-i">I</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Thu thập & Phân tích Yêu cầu (SRS)</strong></td>
+                                <td style="text-align: center;"><span class="raci-pill raci-i">I</span></td>
+                                <td style="text-align: center;"><span class="raci-pill raci-a">A</span></td>
+                                <td style="text-align: center;"><span class="raci-pill raci-r">R</span></td>
+                                <td style="text-align: center;"><span class="raci-pill raci-c">C</span></td>
+                                <td style="text-align: center;"><span class="raci-pill raci-c">C</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Thiết kế Kiến trúc DRM & MinIO Storage</strong></td>
+                                <td style="text-align: center;"><span class="raci-pill raci-i">I</span></td>
+                                <td style="text-align: center;"><span class="raci-pill raci-a">A</span></td>
+                                <td style="text-align: center;"><span class="raci-pill raci-c">C</span></td>
+                                <td style="text-align: center;"><span class="raci-pill raci-r">R</span></td>
+                                <td style="text-align: center;"><span class="raci-pill raci-c">C</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Phát triển Tesseract OCR & Side-by-side UI</strong></td>
+                                <td style="text-align: center;"><span class="raci-pill raci-i">I</span></td>
+                                <td style="text-align: center;"><span class="raci-pill raci-a">A</span></td>
+                                <td style="text-align: center;"><span class="raci-pill raci-c">C</span></td>
+                                <td style="text-align: center;"><span class="raci-pill raci-r">R</span></td>
+                                <td style="text-align: center;"><span class="raci-pill raci-i">I</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div style="display: flex; justify-content: center; gap: 1.5rem; margin-top: 0.3rem; font-size: 0.62em;">
+                        <span><strong style="color: #991B1B;">A</strong>: Accountable (Giải trình)</span>
+                        <span><strong style="color: #166534;">R</strong>: Responsible (Thực hiện)</span>
+                        <span><strong style="color: #92400E;">C</strong>: Consulted (Tham vấn)</span>
+                        <span><strong style="color: #4B5563;">I</strong>: Informed (Thông báo)</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 10: Ma trận RACI - Slide 2/2 -->
+            <section>
+                <div class="slide-container">
+                    <span class="badge"><i data-lucide="grid" class="icon-inline"></i> Phần 2: Charter & RACI</span>
+                    <h2><i data-lucide="table" class="icon-inline" style="width:22px;height:22px;"></i> Ma trận RACI - Giai đoạn 2 (DRM Canvas, Test & UAT)</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 34%;">Hạng mục Công việc (Phase 2)</th>
+                                <th style="width: 13%; text-align: center;">Dev Lead</th>
+                                <th style="width: 13%; text-align: center;">SecOps Lead</th>
+                                <th style="width: 13%; text-align: center;">QA Lead</th>
+                                <th style="width: 13%; text-align: center;">Thủ thư</th>
+                                <th style="width: 14%; text-align: center;">Khách hàng</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Phát triển HTML5 Canvas Reader & Watermark</strong></td>
+                                <td style="text-align: center;"><span class="raci-pill raci-r">R</span></td>
+                                <td style="text-align: center;"><span class="raci-pill raci-c">C</span></td>
+                                <td style="text-align: center;"><span class="raci-pill raci-c">C</span></td>
+                                <td style="text-align: center;"><span class="raci-pill raci-i">I</span></td>
+                                <td style="text-align: center;"><span class="raci-pill raci-i">I</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Kiểm thử Bảo mật & Chống Rò rỉ File (Pentest)</strong></td>
+                                <td style="text-align: center;"><span class="raci-pill raci-c">C</span></td>
+                                <td style="text-align: center;"><span class="raci-pill raci-r">R / A</span></td>
+                                <td style="text-align: center;"><span class="raci-pill raci-c">C</span></td>
+                                <td style="text-align: center;"><span class="raci-pill raci-i">I</span></td>
+                                <td style="text-align: center;"><span class="raci-pill raci-i">I</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Kiểm thử Chức năng & Đảm bảo Chất lượng</strong></td>
+                                <td style="text-align: center;"><span class="raci-pill raci-c">C</span></td>
+                                <td style="text-align: center;"><span class="raci-pill raci-i">I</span></td>
+                                <td style="text-align: center;"><span class="raci-pill raci-r">R / A</span></td>
+                                <td style="text-align: center;"><span class="raci-pill raci-i">I</span></td>
+                                <td style="text-align: center;"><span class="raci-pill raci-i">I</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Nghiệm thu UAT & Bàn giao Sản phẩm</strong></td>
+                                <td style="text-align: center;"><span class="raci-pill raci-i">I</span></td>
+                                <td style="text-align: center;"><span class="raci-pill raci-i">I</span></td>
+                                <td style="text-align: center;"><span class="raci-pill raci-c">C</span></td>
+                                <td style="text-align: center;"><span class="raci-pill raci-a">A</span></td>
+                                <td style="text-align: center;"><span class="raci-pill raci-a">A / R</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- SLIDE 11: Ma trận Mức độ Ảnh hưởng (Stakeholder Influence vs Interest) -->
+            <section>
+                <div class="slide-container">
+                    <span class="badge"><i data-lucide="layout-grid" class="icon-inline"></i> Phần 2: Charter Matrix</span>
+                    <h2><i data-lucide="pie-chart" class="icon-inline" style="width:22px;height:22px;"></i> Ma trận Mức độ Ảnh hưởng vs Quan tâm (Stakeholders)</h2>
+                    
+                    <div class="grid-2" style="margin-top: 0.4rem;">
+                        <div class="card" style="border-left: 4px solid #DC2626; background: #FEF2F2;">
+                            <h4>HỢP TÁC TÍCH CỰC (High Influence, High Interest)</h4>
+                            <p><strong>Các bên:</strong> Project Sponsor, Ban Giám đốc Thư viện, Security Lead.</p>
+                            <p><strong>Chiến lược:</strong> Báo cáo tiến độ hàng tuần; tham vấn trực tiếp ngân sách, bảo mật DRM và nghiệm thu.</p>
+                        </div>
+                        <div class="card" style="border-left: 4px solid #EA580C; background: #FFF7ED;">
+                            <h4>QUẢN LÝ CHẶT CHẼ (High Influence, Low Interest)</h4>
+                            <p><strong>Các bên:</strong> Đội ngũ Pháp lý, Cơ quan Quản lý Bản quyền Nhà nước.</p>
+                            <p><strong>Chiến lược:</strong> Đảm bảo tuân thủ 100% Luật Sở hữu Trí tuệ & Luật An ninh mạng để tránh rủi ro pháp lý.</p>
+                        </div>
+                        <div class="card" style="border-left: 4px solid var(--primary); background: #EFF6FF;">
+                            <h4>THÔNG TIN THƯỜNG XUYÊN (Low Influence, High Interest)</h4>
+                            <p><strong>Các bên:</strong> Thủ thư Nghiệp vụ (Primary User), Độc giả (End User).</p>
+                            <p><strong>Chiến lược:</strong> Tổ chức Demo UI/UX Side-by-side UI và khảo sát ý kiến độc giả định kỳ.</p>
+                        </div>
+                        <div class="card" style="border-left: 4px solid #6B7280; background: #F9FAFB;">
+                            <h4>GIÁM SÁT TỐI THIỂU (Low Influence, Low Interest)</h4>
+                            <p><strong>Các bên:</strong> Nhà cung cấp Máy quét phần cứng (Scanner Vendors).</p>
+                            <p><strong>Chiến lược:</strong> Giám sát chuẩn hóa định dạng ảnh đầu vào (300 DPI) cho Tesseract OCR Engine.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 12: Architecture & Tech Stack Overview -->
+            <section>
+                <div class="slide-container">
+                    <span class="badge"><i data-lucide="cpu" class="icon-inline"></i> Phần 3: Architecture & PoC</span>
+                    <h2><i data-lucide="layers" class="icon-inline" style="width:22px;height:22px;"></i> Kiến trúc Tổng thể Modular Monolith & Tech Stack</h2>
+                    <div class="grid-2">
+                        <div class="card">
+                            <div class="card-header">
+                                <i data-lucide="code" style="color: var(--primary); width:18px; height:18px;"></i>
+                                <h4>Công nghệ Lựa chọn</h4>
+                            </div>
+                            <ul>
+                                <li><strong>Frontend:</strong> React.js / Next.js + HTML5 Canvas API.</li>
+                                <li><strong>Backend:</strong> NestJS (Modular Monolith) + TypeScript.</li>
+                                <li><strong>Storage Vault:</strong> <strong>MinIO Object Storage (Mã hóa AES-256)</strong>.</li>
+                                <li><strong>Database & Queue:</strong> PostgreSQL 16 + Redis 7 & BullMQ.</li>
+                                <li><strong>OCR Engine:</strong> Tesseract OCR (`vie`).</li>
+                            </ul>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">
+                                <i data-lucide="boxes" style="color: var(--secondary); width:18px; height:18px;"></i>
+                                <h4>Ưu điểm Kiến trúc Modular Monolith</h4>
+                            </div>
+                            <ul>
+                                <li>Triển khai gọn nhẹ qua 01 gói Docker Container.</li>
+                                <li>Tận dụng $100\%$ hạ tầng MinIO/NestJS sẵn có của nhóm.</li>
+                                <li>Tách luồng OCR ngầm qua Redis Queue, không nghẽn Web API.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 13: Architecture - MinIO Storage Encryption & Stream -->
+            <section>
+                <div class="slide-container">
+                    <span class="badge"><i data-lucide="lock" class="icon-inline"></i> Phần 3: Architecture & PoC</span>
+                    <h2><i data-lucide="database" class="icon-inline" style="width:22px;height:22px;"></i> Mô hình Mã hóa Kho MinIO & Secure Stream</h2>
+                    <div class="grid-2">
+                        <div class="card">
+                            <div class="card-header">
+                                <i data-lucide="shield" style="color: var(--primary); width:18px; height:18px;"></i>
+                                <h4>1. Lưu kho Mã hóa MinIO Vault</h4>
+                            </div>
+                            <ul>
+                                <li>Tài liệu scan sau khi duyệt được cắt nhỏ thành Chunks/Pages.</li>
+                                <li>Mã hóa thuật toán <strong>AES-256-GCM</strong> trước khi ghi vào MinIO.</li>
+                                <li>Tuyệt đối không lưu file PDF thô nguyên bản trên máy chủ.</li>
+                            </ul>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">
+                                <i data-lucide="wifi" style="color: var(--secondary); width:18px; height:18px;"></i>
+                                <h4>2. Secure Memory Streaming</h4>
+                            </div>
+                            <ul>
+                                <li>Không cấp Presigned URL tĩnh của MinIO ra ngoài Client.</li>
+                                <li>Backend cấp <strong>Signed Token (TTL 30s)</strong> và đẩy luồng byte mã hóa qua WebSockets/API về RAM Client.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 14: Proof of Concept - Zero-Download Canvas DRM -->
+            <section>
+                <div class="slide-container">
+                    <span class="badge"><i data-lucide="flask-conical" class="icon-inline"></i> Phần 3: Architecture & PoC</span>
+                    <h2><i data-lucide="shield-check" class="icon-inline" style="width:22px;height:22px;"></i> Proof of Concept: Giải quyết Bài toán Khó nhất</h2>
+                    <div class="card" style="margin-bottom: 0.35rem; background: #EFF6FF; border-left: 4px solid var(--primary);">
+                        <p style="margin:0; font-weight: 600; color: #1E40AF;">
+                            <i data-lucide="info" class="icon-inline"></i> Bài toán Khó nhất: Chống Rò rỉ File Gốc trên Trình duyệt Web (Zero-Download DRM) mà KHÔNG dùng Extension/Plugin. (Không phải OCR vì OCR đã có Tesseract engine + Thủ thư duyệt).
+                        </p>
+                    </div>
+
+                    <div class="grid-3" style="margin-top: 0.35rem;">
+                        <div class="metric-card">
+                            <div class="metric-label">Bắt link IDM / F12</div>
+                            <div class="metric-value" style="color: #DC2626;">Thất bại 100%</div>
+                            <p style="font-size:0.58em; margin:0;">Không phát hiện URL file thô</p>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Tốc độ Render Canvas</div>
+                            <div class="metric-value" style="color: #16A34A;">45 ms / trang</div>
+                            <p style="font-size:0.58em; margin:0;">Giải mã RAM siêu mượt</p>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">RAM Trình duyệt</div>
+                            <div class="metric-value" style="color: var(--primary);">45MB - 65MB</div>
+                            <p style="font-size:0.58em; margin:0;">Mức tải siêu nhẹ</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 15: Development Method - Hybrid Scrum -->
+            <section>
+                <div class="slide-container">
+                    <span class="badge"><i data-lucide="code-2" class="icon-inline"></i> Phần 4: Development Method</span>
+                    <h2><i data-lucide="refresh-cw" class="icon-inline" style="width:22px;height:22px;"></i> Mô hình Lai Hybrid Waterfall-Scrum</h2>
+                    <div class="grid-2">
+                        <div class="card">
+                            <div class="card-header">
+                                <i data-lucide="git-commit" style="color: var(--primary); width:18px; height:18px;"></i>
+                                <h4>1. Khung Thác nước (Waterfall)</h4>
+                            </div>
+                            <p>Áp dụng ở Giai đoạn Khởi động/Kiến trúc (Sprint 1) và Nghiệm thu UAT/Đóng gói bàn giao (Sprint 5) để kiểm soát mốc tiến độ hợp đồng SOW.</p>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">
+                                <i data-lucide="rotate-cw" style="color: var(--secondary); width:18px; height:18px;"></i>
+                                <h4>2. Lõi Agile / Scrum</h4>
+                            </div>
+                            <p>Áp dụng ở 3 Sprint cốt lõi (Sprints 2, 3, 4) chu kỳ 2 tuần/Sprint. 6 sinh viên phát triển cuốn chiếu 16 PBIs, họp Daily Standup & Demo cuối mỗi Sprint.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 16: Development Method - AI Assistant Integration -->
+            <section>
+                <div class="slide-container">
+                    <span class="badge"><i data-lucide="bot" class="icon-inline"></i> Phần 4: Development Method</span>
+                    <h2><i data-lucide="sparkles" class="icon-inline" style="width:22px;height:22px;"></i> Ứng dụng Trợ lý AI Coding & Tích hợp Mã nguồn</h2>
+                    <div class="grid-3">
+                        <div class="card">
+                            <div class="card-header">
+                                <i data-lucide="zap" style="color: var(--primary); width:18px; height:18px;"></i>
+                                <h4>1. AI Senior Mentor</h4>
+                            </div>
+                            <p>Antigravity IDE + Google AI Pro hỗ trợ sinh code boilerplate, gợi ý thuật toán Canvas & viết Unit Test suite. Tăng $38.5\%$ năng suất ($1\text{ SP} \approx 8\text{h}$).</p>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">
+                                <i data-lucide="git-branch" style="color: var(--secondary); width:18px; height:18px;"></i>
+                                <h4>2. Git Branching Strategy</h4>
+                            </div>
+                            <p>Mỗi PBI phát triển trên 1 Feature Branch riêng. Pull Request bắt buộc qua Peer Review của Tech Lead (SV-1) & AI Security scan.</p>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">
+                                <i data-lucide="container" style="color: var(--accent); width:18px; height:18px;"></i>
+                                <h4>3. CI/CD & Docker</h4>
+                            </div>
+                            <p>Tự động chạy Unit Test suite và đóng gói Docker Image đẩy lên máy chủ Staging thử nghiệm.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 17: Estimation - Effort & Schedule -->
+            <section>
+                <div class="slide-container">
+                    <span class="badge"><i data-lucide="clock" class="icon-inline"></i> Phần 5: Estimation & Planning</span>
+                    <h2><i data-lucide="calculator" class="icon-inline" style="width:22px;height:22px;"></i> Ước tính Nỗ lực & Lịch trình Dự án</h2>
+                    <div class="grid-3">
+                        <div class="metric-card">
+                            <div class="metric-label">Đội ngũ Thực hiện</div>
+                            <div class="metric-value" style="color: var(--primary);">06 SV NĂM 4</div>
+                            <p style="font-size:0.58em; margin:0;">20 giờ / tuần / sinh viên</p>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Tổng Nỗ lực Thực tế</div>
+                            <div class="metric-value" style="color: var(--secondary);">568 GIỜ</div>
+                            <p style="font-size:0.58em; margin:0;">71 Story Points × 8.0 giờ/SP</p>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Thời gian Thực hiện</div>
+                            <div class="metric-value" style="color: #16A34A;">10 TUẦN</div>
+                            <p style="font-size:0.58em; margin:0;">5 Sprints (2 tuần / Sprint)</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 18: Estimation - Cost & AI Tokens -->
+            <section>
+                <div class="slide-container">
+                    <span class="badge"><i data-lucide="dollar-sign" class="icon-inline"></i> Phần 5: Estimation & Planning</span>
+                    <h2><i data-lucide="coins" class="icon-inline" style="width:22px;height:22px;"></i> Ước tính Ngân sách & AI Tokens tiêu thụ</h2>
+                    <div class="grid-3">
+                        <div class="metric-card">
+                            <div class="metric-label">Tổng Ngân sách Dự án</div>
+                            <div class="metric-value" style="color: var(--primary);">112 TRIỆU VNĐ</div>
+                            <p style="font-size:0.58em; margin:0;">95tr Phụ cấp SV + 4tr VPS + 13tr Dự phòng</p>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Chi phí Gói AI Assistant</div>
+                            <div class="metric-value" style="color: #16A34A;">0 VNĐ (MIỄN PHÍ)</div>
+                            <p style="font-size:0.58em; margin:0;">Gói Google AI Student Developer Program</p>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Tổng AI Tokens Tiêu thụ</div>
+                            <div class="metric-value" style="color: var(--secondary);">139.6 TRIỆU</div>
+                            <p style="font-size:0.58em; margin:0;">Đo lường qua IDE Status & AI Dashboard</p>
+                        </div>
+                    </div>
+
+                    <div class="highlight-box" style="margin-top: 0.5rem;">
+                        <i data-lucide="function-square" style="color: var(--primary); width:18px; height:18px; flex-shrink:0;"></i>
+                        <span><strong>Công thức toán ước tính Token:</strong> <code>Tong_Tokens = 6_SV × 50_ngay × 35_prompts × (12.000_input + 1.200_output) = 139.650.000 Tokens</code></span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 19: Planning - Master Plan & Critical Path -->
+            <section>
+                <div class="slide-container">
+                    <span class="badge"><i data-lucide="calendar" class="icon-inline"></i> Phần 5: Estimation & Planning</span>
+                    <h2><i data-lucide="map-pin" class="icon-inline" style="width:22px;height:22px;"></i> Master Plan Tiến độ & Đường Găng (Critical Path)</h2>
+                    <div class="highlight-box" style="margin-bottom: 0.35rem; font-size: 0.6em;">
+                        <i data-lucide="route" style="color: var(--primary); width:16px; height:16px; flex-shrink:0;"></i>
+                        <span><strong>Critical Path:</strong> PBI-01 (Upload) → PBI-02 (OCR) → PBI-04 (Side-by-side) → PBI-05 (Duyệt) → PBI-07 (AES-256) → PBI-11 (Canvas) → PBI-12 (Chặn Tải) → UAT</span>
+                    </div>
+                    <div class="grid-2">
+                        <div class="card">
+                            <div class="card-header">
+                                <i data-lucide="clock" style="color: var(--primary); width:18px; height:18px;"></i>
+                                <h4>Lịch trình 5 Sprints (10 Tuần)</h4>
+                            </div>
+                            <ul>
+                                <li><strong>Sprint 1:</strong> Architecture Baseline & Tesseract OCR.</li>
+                                <li><strong>Sprint 2:</strong> Side-by-side Review UI & Mã hóa AES-256.</li>
+                                <li><strong>Sprint 3:</strong> Canvas Reader & Chặn tải file.</li>
+                                <li><strong>Sprint 4:</strong> Watermark, Screenshot Blur & Audit Log.</li>
+                                <li><strong>Sprint 5:</strong> Hardening, Nghiệm thu UAT & Docker Release.</li>
+                            </ul>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">
+                                <i data-lucide="shield-alert" style="color: var(--accent); width:18px; height:18px;"></i>
+                                <h4>Kế hoạch Quản lý Rủi ro</h4>
+                            </div>
+                            <ul>
+                                <li><strong>Thi cử Sinh viên:</strong> Đã dự phòng 1 tuần trong tiến độ 10 tuần.</li>
+                                <li><strong>OCR sai lệch:</strong> Kiểm duyệt qua Side-by-side UI.</li>
+                                <li><strong>Lag Canvas:</strong> Thuật toán Lazy loading 5 trang.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 20: SOW - Contractual Expectations -->
+            <section>
+                <div class="slide-container">
+                    <span class="badge"><i data-lucide="file-check-2" class="icon-inline"></i> Phần 5: Estimation & Planning</span>
+                    <h2><i data-lucide="scroll" class="icon-inline" style="width:22px;height:22px;"></i> Ý nghĩa Hợp đồng Phát biểu Công việc (SOW)</h2>
+                    <div class="grid-3">
+                        <div class="card">
+                            <div class="card-header">
+                                <i data-lucide="file-text" style="color: var(--primary); width:18px; height:18px;"></i>
+                                <h4>1. Cam kết Rõ ràng</h4>
+                            </div>
+                            <p>Chốt cứng 16 PBIs bàn giao, 4 Sản phẩm DEL-01 đến DEL-04 và các tiêu chí an ninh.</p>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">
+                                <i data-lucide="coins" style="color: var(--secondary); width:18px; height:18px;"></i>
+                                <h4>2. Mốc Giải ngân</h4>
+                            </div>
+                            <p>3 đợt giải ngân: <strong>Tạm ứng 30% → Milestone 3 (40%) → UAT Bàn giao (30%)</strong>.</p>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">
+                                <i data-lucide="scale" style="color: var(--accent); width:18px; height:18px;"></i>
+                                <h4>3. Quản lý Thay đổi</h4>
+                            </div>
+                            <p>Áp dụng <strong>Nguyên tắc Đánh đổi (Trade-off)</strong>: Bổ sung 1 PBI mới phải loại bỏ 1 PBI tương đương.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 21: Conclusion & Q&A -->
+            <section>
+                <div class="slide-container" style="justify-content: center; align-items: center; text-align: center;">
+                    <span class="badge"><i data-lucide="check-circle" class="icon-inline"></i> Tổng kết</span>
+                    <h2 style="border: none; margin-bottom: 0.5em;"><i data-lucide="messages-square" class="icon-inline" style="width:26px;height:26px;"></i> TỔNG KẾT & THẢO LUẬN (Q&A)</h2>
+                    <div class="grid-2" style="width: 100%;">
+                        <div class="card" style="text-align: left;">
+                            <div class="card-header">
+                                <i data-lucide="star" style="color: var(--primary); width:18px; height:18px;"></i>
+                                <h4>Giá trị Cốt lõi của Dự án LIBIF</h4>
+                            </div>
+                            <ul>
+                                <li>Giải quyết triệt để bài toán <strong>Bảo vệ Bản quyền Số</strong> trên Web.</li>
+                                <li>Quy trình <strong>Tesseract OCR + Side-by-side UI</strong> chuẩn xác.</li>
+                                <li>Thực thi khả thi trong <strong>10 tuần</strong> với ngân sách <strong>112 triệu VNĐ</strong>.</li>
+                            </ul>
+                        </div>
+                        <div class="card" style="text-align: center; justify-content: center; background: #EFF6FF;">
+                            <h3 style="color: var(--primary); margin-bottom: 0.3em;">CẢM ƠN QUÝ THẦY CÔ & HỘI ĐỒNG!</h3>
+                            <p style="font-size: 0.78em; color: var(--secondary);">Xin mời Quý Thầy Cô đặt câu hỏi thảo luận.</p>
+                        </div>
+                    </div>
+                    <div class="slide-footer">
+                        <span>LIBIF Project Presentation</span>
+                        <span>Commercial Digital Library System 2026</span>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <!-- Reveal.js JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.js"></script>
+    <script>
+        Reveal.initialize({
+            // Structure & Navigation Configuration
+            width: 1280,
+            height: 720,
+            margin: 0.05,
+            minScale: 0.2,
+            maxScale: 2.0,
+            
+            // Linear Navigation Mode (Strict Horizontal Left-to-Right Flow)
+            navigationMode: 'linear',
+            controls: true,
+            controlsLayout: 'edges',
+            progress: true,
+            center: false,
+            hash: true,
+            transition: 'slide',
+            slideNumber: 'c/t'
+        });
+
+        // Initialize Lucide Icons
+        lucide.createIcons();
+    </script>
+</body>
+</html>
