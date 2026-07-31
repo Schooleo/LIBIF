@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Processing Quick Detail Drawer</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-fixed-dim": "#a4cfc5",
+                        "on-error-container": "#93000a",
+                        "on-secondary-container": "#1a6d6f",
+                        "on-surface": "#151c27",
+                        "secondary-fixed-dim": "#89d3d5",
+                        "on-primary-container": "#7ca79d",
+                        "tertiary": "#002525",
+                        "surface-container-highest": "#dce2f3",
+                        "primary": "#002520",
+                        "on-secondary-fixed-variant": "#004f51",
+                        "tertiary-fixed-dim": "#74d6d6",
+                        "secondary": "#12696b",
+                        "on-secondary": "#ffffff",
+                        "surface-bright": "#f9f9ff",
+                        "primary-container": "#103c35",
+                        "on-tertiary-fixed": "#002020",
+                        "error-container": "#ffdad6",
+                        "on-background": "#151c27",
+                        "surface-container-high": "#e2e8f8",
+                        "outline-variant": "#c0c8c5",
+                        "primary-fixed": "#bfece1",
+                        "surface": "#f9f9ff",
+                        "surface-container-low": "#f0f3ff",
+                        "on-tertiary": "#ffffff",
+                        "secondary-fixed": "#a5eff1",
+                        "on-error": "#ffffff",
+                        "on-surface-variant": "#414846",
+                        "surface-container-lowest": "#ffffff",
+                        "background": "#f9f9ff",
+                        "on-tertiary-fixed-variant": "#004f50",
+                        "on-primary-fixed-variant": "#244e46",
+                        "surface-container": "#e7eefe",
+                        "error": "#ba1a1a",
+                        "on-primary": "#ffffff",
+                        "on-primary-fixed": "#00201b",
+                        "inverse-surface": "#2a313d",
+                        "surface-tint": "#3d665e",
+                        "secondary-container": "#a2edee",
+                        "tertiary-container": "#003c3c",
+                        "surface-dim": "#d3daea",
+                        "inverse-primary": "#a4cfc5",
+                        "on-tertiary-container": "#47adac",
+                        "on-secondary-fixed": "#002021",
+                        "inverse-on-surface": "#ebf1ff",
+                        "surface-variant": "#dce2f3",
+                        "outline": "#717976",
+                        "tertiary-fixed": "#91f3f2"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "md": "16px",
+                        "sm": "8px",
+                        "lg": "24px",
+                        "unit": "8px",
+                        "gutter": "16px",
+                        "container-max": "1440px",
+                        "xl": "32px"
+                    },
+                    "fontFamily": {
+                        "title-sm": ["Be Vietnam Pro"],
+                        "headline-md": ["Be Vietnam Pro"],
+                        "display-lg-mobile": ["Be Vietnam Pro"],
+                        "body-md": ["Be Vietnam Pro"],
+                        "body-sm": ["Be Vietnam Pro"],
+                        "label-caps": ["Be Vietnam Pro"],
+                        "display-lg": ["Be Vietnam Pro"]
+                    },
+                    "fontSize": {
+                        "title-sm": ["18px", { "lineHeight": "24px", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "display-lg-mobile": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .drawer-slide-in {
+            animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+        .pulse-ring {
+            animation: pulseRing 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulseRing {
+            0% { transform: scale(0.8); opacity: 0.5; }
+            50% { transform: scale(1.5); opacity: 0; }
+            100% { transform: scale(0.8); opacity: 0; }
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex overflow-hidden">
+<!-- TopNavBar -->
+<header class="fixed z-20 flex justify-between items-center w-full px-lg py-md max-w-container-max mx-auto bg-surface border-b border-outline-variant full-width top-0">
+<div class="flex items-center gap-lg">
+<span class="font-display-lg text-display-lg font-bold text-primary tracking-tight">LIBIF</span>
+</div>
+<nav class="hidden md:flex gap-md h-full items-center">
+<a class="text-on-surface-variant hover:text-secondary hover:bg-surface-container-low transition-colors px-md py-sm rounded" href="#">Browse</a>
+<a class="text-on-surface-variant hover:text-secondary hover:bg-surface-container-low transition-colors px-md py-sm rounded" href="#">Collections</a>
+<a class="text-on-surface-variant hover:text-secondary hover:bg-surface-container-low transition-colors px-md py-sm rounded" href="#">History</a>
+<a class="text-secondary border-b-2 border-secondary font-semibold pb-2 px-md py-sm rounded" href="#">Reserved</a>
+</nav>
+<div class="flex items-center gap-md">
+<div class="relative cursor-pointer hover:bg-surface-container-low p-sm rounded-full transition-colors">
+<span class="material-symbols-outlined text-primary">notifications</span>
+<span class="absolute top-1 right-1 w-2 h-2 bg-error rounded-full"></span>
+</div>
+<div class="cursor-pointer hover:bg-surface-container-low p-sm rounded-full transition-colors">
+<span class="material-symbols-outlined text-primary">help</span>
+</div>
+<img alt="User Profile Menu" class="w-8 h-8 rounded-full border border-outline-variant object-cover cursor-pointer" data-alt="A small, professional headshot of an administrative user in a brightly lit library setting. The image should be a close-up portrait, clearly showing a focused expression suitable for a corporate or institutional avatar. The lighting should be soft and even, highlighting a clean, minimalist background to ensure the profile image reads clearly at small sizes within the UI." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBePeUdSMvX2aQfFipZKqdqM4PC8p0eUim30p5Se66ce4PDidKmj-24cVpPjUjS47k9FcFt_9IqxmLC8Uq1M8s91IOGZdBaxwxi2jBJFLl2SvVeZzo4Dk0fkRqkSYcYMXosxM6umpmfeTU2J_YK7dnsbI9wT7qEJTpdAZUQXQjzZ1RArq4yxUO5LLleBbyxt5lfbChFber5Zu02gvD8Y9yUF2rcrEZSS2_JfD2xh22vx-bwCrPp6xpA9pETED04wf89l6rAW3rtdHw"/>
+</div>
+</header>
+<!-- SideNavBar -->
+<aside class="fixed z-10 left-0 top-0 h-full w-[248px] pt-[80px] bg-primary text-on-primary flex flex-col py-lg shadow-sm">
+<div class="px-lg mb-lg">
+<div class="flex items-center gap-md mb-md">
+<img alt="Admin Avatar" class="w-10 h-10 rounded-full border-2 border-on-primary-container object-cover" data-alt="A small, professional headshot of an administrative user in a brightly lit library setting. The image should be a close-up portrait, clearly showing a focused expression suitable for a corporate or institutional avatar. The lighting should be soft and even, highlighting a clean, minimalist background to ensure the profile image reads clearly at small sizes within the UI." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2xpWcMIRCV8MPw0mySoKzyUmcXZTnoVaIWEHRGAyZdmgdHVhyiRUeQT4ZtjxY0dY10S6b3dwv-bj793KDtR0Mdku7JvVYVsRTXTysAGk7SH-eF4gWSmIiGHs24nVPKwt-neWDxdKan0EgwKwEgQ3R9ZI45XjXGS-G1OXbPdblN3XFL41PEVTAq8_6dMDp3ajzRgeNedyK-qGRvYFDKwJ2raiJikcPbWfSKVpjnuyOQ5fhEkHHLMN99Nb2244fACXpOgLc7HKReuE"/>
+<div>
+<h2 class="font-title-sm text-title-sm">LIBIF Admin</h2>
+<p class="font-body-sm text-body-sm text-on-primary/70">Institutional Control</p>
+</div>
+</div>
+<button class="w-full bg-surface text-primary py-sm px-md rounded font-title-sm text-title-sm hover:bg-surface-container-low transition-colors active:scale-95 flex items-center justify-center gap-sm">
+<span class="material-symbols-outlined">upload</span>
+                Upload Document
+            </button>
+</div>
+<nav class="flex-1 flex flex-col gap-xs font-body-sm text-body-sm overflow-y-auto">
+<a class="text-on-primary-container/70 hover:bg-primary-fixed-dim/10 flex items-center gap-md px-lg py-md transition-all" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+                Dashboard
+            </a>
+<a class="text-on-primary-container/70 hover:bg-primary-fixed-dim/10 flex items-center gap-md px-lg py-md transition-all" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+                Repository
+            </a>
+<a class="text-on-primary-container/70 hover:bg-primary-fixed-dim/10 flex items-center gap-md px-lg py-md transition-all" href="#">
+<span class="material-symbols-outlined">label</span>
+                Metadata
+            </a>
+<a class="text-on-primary-container/70 hover:bg-primary-fixed-dim/10 flex items-center gap-md px-lg py-md transition-all" href="#">
+<span class="material-symbols-outlined">key</span>
+                Access Control
+            </a>
+<a class="bg-primary-container border-l-4 border-on-tertiary-container text-on-tertiary-container flex items-center gap-md px-lg py-md transition-all" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">analytics</span>
+                Analytics
+            </a>
+<a class="text-on-primary-container/70 hover:bg-primary-fixed-dim/10 flex items-center gap-md px-lg py-md transition-all" href="#">
+<span class="material-symbols-outlined">terminal</span>
+                System Logs
+            </a>
+</nav>
+<div class="mt-auto px-lg pt-md border-t border-primary-container">
+<a class="text-on-primary-container/70 hover:bg-primary-fixed-dim/10 flex items-center gap-md py-sm transition-all" href="#">
+<span class="material-symbols-outlined">settings</span>
+                Settings
+            </a>
+<a class="text-on-primary-container/70 hover:bg-primary-fixed-dim/10 flex items-center gap-md py-sm transition-all" href="#">
+<span class="material-symbols-outlined">contact_support</span>
+                Support
+            </a>
+</div>
+</aside>
+<!-- Main Content Area with Dimmer Overlay -->
+<main class="ml-[248px] mt-[80px] w-full p-lg relative transition-all duration-300 bg-surface-container-low h-[calc(100vh-80px)] overflow-hidden">
+<!-- Mock Background Table Content (Dimmed) -->
+<div class="opacity-40 pointer-events-none transition-opacity duration-300 blur-[1px]">
+<h1 class="font-headline-md text-headline-md text-primary mb-md">Processing Queue</h1>
+<div class="bg-surface border border-outline-variant rounded-lg overflow-hidden">
+<table class="w-full text-left border-collapse">
+<thead class="bg-surface-container text-on-surface-variant font-label-caps text-label-caps border-b border-outline-variant">
+<tr>
+<th class="p-md font-semibold">Document Title</th>
+<th class="p-md font-semibold">Status</th>
+<th class="p-md font-semibold">Progress</th>
+<th class="p-md font-semibold">Time Elapsed</th>
+<th class="p-md font-semibold text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="font-body-sm text-body-sm">
+<tr class="border-b border-outline-variant hover:bg-surface-container-low bg-surface-container-high/50">
+<td class="p-md flex items-center gap-md">
+<span class="material-symbols-outlined text-outline">description</span>
+<span class="font-semibold text-on-surface">The Silk Road.pdf</span>
+</td>
+<td class="p-md"><span class="bg-[#a2edee] text-primary px-sm py-xs rounded-full text-xs font-semibold">Processing</span></td>
+<td class="p-md">OCR Text (3/4)</td>
+<td class="p-md">00:04:12</td>
+<td class="p-md text-right"><span class="material-symbols-outlined text-outline">more_vert</span></td>
+</tr>
+<tr class="border-b border-outline-variant hover:bg-surface-container-low">
+<td class="p-md flex items-center gap-md">
+<span class="material-symbols-outlined text-outline">description</span>
+<span class="text-on-surface">Byzantine Art History.docx</span>
+</td>
+<td class="p-md"><span class="bg-surface-container-highest text-on-surface-variant px-sm py-xs rounded-full text-xs font-semibold">Pending</span></td>
+<td class="p-md">Queued</td>
+<td class="p-md">--:--:--</td>
+<td class="p-md text-right"><span class="material-symbols-outlined text-outline">more_vert</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Dimmer Overlay -->
+<div class="absolute inset-0 bg-primary/10 z-20 backdrop-blur-[1px]"></div>
+<!-- Right Side Detail Drawer -->
+<aside class="absolute right-0 top-0 h-full w-[400px] bg-surface shadow-[0px_4px_24px_rgba(16,60,53,0.15)] z-30 flex flex-col drawer-slide-in border-l border-outline-variant">
+<!-- Drawer Header -->
+<div class="p-md border-b border-outline-variant flex justify-between items-center bg-surface-container-lowest sticky top-0 z-40">
+<h2 class="font-title-sm text-title-sm text-primary">Processing Details</h2>
+<button class="text-outline hover:text-on-surface transition-colors p-xs rounded-full hover:bg-surface-container-high">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<div class="flex-1 overflow-y-auto p-md flex flex-col gap-lg bg-surface">
+<!-- Summary Card -->
+<div class="flex gap-md items-start bg-surface-container-lowest p-md rounded-lg border border-outline-variant shadow-sm">
+<img alt="Document Thumbnail" class="w-16 h-20 object-cover rounded border border-outline-variant shadow-sm" data-alt="A stylized, low-resolution thumbnail preview of a historic manuscript document titled 'The Silk Road'. The thumbnail shows dense paragraphs of text with a slightly aged, warm paper texture, indicating it is an archival scan being processed. The composition is cropped to fit a small vertical rectangular aspect ratio, perfect for a file icon representation in a UI." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCi2dJevQh7scGiSkbSLeCtsYkhwgsIEOfiZkPab3C6h_SMMLU1Vwl4MFBFVN8KyoUIR8jCmTQ_B_ZhEMZ5wDNPybDttNQAkDXxMMKILl-FepZ2_D3Ip7iu7F1UrmuImWyKiRWnQiy5XYb1tX4fFffi83WSkPWM-XnyOD3slg3pItTwo30tnd4ddE9_wInYfWqdDR_LkfATk3pnueCXwXU2Fus6zKHAOFGE7Uhlc44n8hUjKGIIeG3DQKWKmDeSUwp0TUsZsvouh20"/>
+<div>
+<h3 class="font-title-sm text-title-sm text-on-surface mb-xs leading-tight">The Silk Road</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Archival_Scan_v2.pdf</p>
+<p class="font-body-sm text-body-sm text-outline mt-sm text-xs">Size: 145 MB • Pages: 420</p>
+</div>
+</div>
+<!-- Pipeline Stepper -->
+<div class="bg-surface-container-lowest p-md rounded-lg border border-outline-variant">
+<h4 class="font-label-caps text-label-caps text-on-surface-variant mb-md tracking-wider">Pipeline Status</h4>
+<div class="relative pl-md border-l-2 border-surface-variant ml-sm space-y-md">
+<!-- Step 1: Validation -->
+<div class="relative flex items-center">
+<div class="absolute -left-[23px] w-6 h-6 rounded-full bg-surface-container flex items-center justify-center border-2 border-surface-variant z-10">
+<span class="material-symbols-outlined text-[14px] text-primary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="ml-sm">
+<p class="font-title-sm text-title-sm text-on-surface text-sm">Validation</p>
+<p class="font-body-sm text-body-sm text-outline text-xs">Done</p>
+</div>
+</div>
+<!-- Step 2: Compression -->
+<div class="relative flex items-center">
+<div class="absolute -left-[23px] w-6 h-6 rounded-full bg-surface-container flex items-center justify-center border-2 border-surface-variant z-10">
+<span class="material-symbols-outlined text-[14px] text-primary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="ml-sm">
+<p class="font-title-sm text-title-sm text-on-surface text-sm">Compression</p>
+<p class="font-body-sm text-body-sm text-outline text-xs">Done</p>
+</div>
+</div>
+<!-- Step 3: OCR Text (Active) -->
+<div class="relative flex items-center">
+<div class="absolute -left-[23px] w-6 h-6 rounded-full bg-primary-container flex items-center justify-center border-2 border-primary z-10">
+<div class="w-full h-full rounded-full border-2 border-primary border-t-transparent animate-spin"></div>
+<div class="absolute inset-0 rounded-full border-2 border-primary pulse-ring"></div>
+</div>
+<div class="ml-sm">
+<p class="font-title-sm text-title-sm text-primary text-sm font-semibold">OCR Text</p>
+<p class="font-body-sm text-body-sm text-on-tertiary-container text-xs font-semibold">Processing (72%)</p>
+</div>
+</div>
+<!-- Step 4: Search Indexing -->
+<div class="relative flex items-center opacity-50">
+<div class="absolute -left-[23px] w-6 h-6 rounded-full bg-surface-container-lowest flex items-center justify-center border-2 border-outline-variant z-10">
+<span class="w-2 h-2 rounded-full bg-outline-variant"></span>
+</div>
+<div class="ml-sm">
+<p class="font-title-sm text-title-sm text-on-surface text-sm">Search Indexing</p>
+<p class="font-body-sm text-body-sm text-outline text-xs">Pending</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Activity Log & Timers -->
+<div class="grid grid-cols-2 gap-sm">
+<div class="bg-surface-container-low p-sm rounded border border-outline-variant/50">
+<p class="font-label-caps text-label-caps text-outline text-[10px]">Start Time</p>
+<p class="font-body-sm text-body-sm text-on-surface font-semibold">14:02:45</p>
+</div>
+<div class="bg-surface-container-low p-sm rounded border border-outline-variant/50">
+<p class="font-label-caps text-label-caps text-outline text-[10px]">Elapsed Time</p>
+<p class="font-body-sm text-body-sm text-primary font-semibold flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px] animate-pulse">timer</span>
+                            00:04:12
+                        </p>
+</div>
+</div>
+<!-- System Messages -->
+<div class="bg-[#151c27] text-[#a4cfc5] p-sm rounded-lg font-mono text-xs overflow-hidden shadow-inner h-24 relative border border-[#2a313d]">
+<div class="absolute top-sm right-sm flex gap-xs">
+<span class="w-2 h-2 rounded-full bg-[#3d665e]"></span>
+<span class="w-2 h-2 rounded-full bg-[#12696b]"></span>
+</div>
+<div class="space-y-1">
+<p class="opacity-50">&gt; Validating structure... OK</p>
+<p class="opacity-50">&gt; Compressing images... OK</p>
+<p>&gt; Node OCR-v4 assigned</p>
+<p class="text-[#89d3d5] font-semibold">&gt; Extracting text blocks (page 294/420)... <span class="animate-pulse">_</span></p>
+</div>
+</div>
+</div>
+<!-- Drawer Footer Action -->
+<div class="p-md border-t border-outline-variant bg-surface-container-lowest sticky bottom-0 z-40">
+<button class="w-full bg-primary-container text-on-primary py-sm px-md rounded font-title-sm text-title-sm hover:bg-tertiary-container transition-colors active:scale-[0.98] shadow-sm flex items-center justify-center gap-sm">
+                    View Full Details
+                    <span class="material-symbols-outlined text-sm">open_in_new</span>
+</button>
+</div>
+</aside>
+</main>
+</body></html>

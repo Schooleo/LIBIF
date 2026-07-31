@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Processing Queue Empty - LIBIF</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary-fixed-dim": "#a4cfc5",
+                        "on-error-container": "#93000a",
+                        "on-secondary-container": "#1a6d6f",
+                        "on-surface": "#151c27",
+                        "secondary-fixed-dim": "#89d3d5",
+                        "on-primary-container": "#7ca79d",
+                        "tertiary": "#002525",
+                        "surface-container-highest": "#dce2f3",
+                        "primary": "#002520",
+                        "on-secondary-fixed-variant": "#004f51",
+                        "tertiary-fixed-dim": "#74d6d6",
+                        "secondary": "#12696b",
+                        "on-secondary": "#ffffff",
+                        "surface-bright": "#f9f9ff",
+                        "primary-container": "#103c35",
+                        "on-tertiary-fixed": "#002020",
+                        "error-container": "#ffdad6",
+                        "on-background": "#151c27",
+                        "surface-container-high": "#e2e8f8",
+                        "outline-variant": "#c0c8c5",
+                        "primary-fixed": "#bfece1",
+                        "surface": "#f9f9ff",
+                        "surface-container-low": "#f0f3ff",
+                        "on-tertiary": "#ffffff",
+                        "secondary-fixed": "#a5eff1",
+                        "on-error": "#ffffff",
+                        "on-surface-variant": "#414846",
+                        "surface-container-lowest": "#ffffff",
+                        "background": "#f9f9ff",
+                        "on-tertiary-fixed-variant": "#004f50",
+                        "on-primary-fixed-variant": "#244e46",
+                        "surface-container": "#e7eefe",
+                        "error": "#ba1a1a",
+                        "on-primary": "#ffffff",
+                        "on-primary-fixed": "#00201b",
+                        "inverse-surface": "#2a313d",
+                        "surface-tint": "#3d665e",
+                        "secondary-container": "#a2edee",
+                        "tertiary-container": "#003c3c",
+                        "surface-dim": "#d3daea",
+                        "inverse-primary": "#a4cfc5",
+                        "on-tertiary-container": "#47adac",
+                        "on-secondary-fixed": "#002021",
+                        "inverse-on-surface": "#ebf1ff",
+                        "surface-variant": "#dce2f3",
+                        "outline": "#717976",
+                        "tertiary-fixed": "#91f3f2"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    spacing: {
+                        "xs": "4px",
+                        "md": "16px",
+                        "sm": "8px",
+                        "lg": "24px",
+                        "unit": "8px",
+                        "gutter": "16px",
+                        "container-max": "1440px",
+                        "xl": "32px"
+                    },
+                    fontFamily: {
+                        "title-sm": ["Be Vietnam Pro", "sans-serif"],
+                        "headline-md": ["Be Vietnam Pro", "sans-serif"],
+                        "display-lg-mobile": ["Be Vietnam Pro", "sans-serif"],
+                        "body-md": ["Be Vietnam Pro", "sans-serif"],
+                        "body-sm": ["Be Vietnam Pro", "sans-serif"],
+                        "label-caps": ["Be Vietnam Pro", "sans-serif"],
+                        "display-lg": ["Be Vietnam Pro", "sans-serif"]
+                    },
+                    fontSize: {
+                        "title-sm": ["18px", { lineHeight: "24px", fontWeight: "600" }],
+                        "headline-md": ["24px", { lineHeight: "32px", fontWeight: "600" }],
+                        "display-lg-mobile": ["28px", { lineHeight: "34px", letterSpacing: "-0.01em", fontWeight: "700" }],
+                        "body-md": ["16px", { lineHeight: "24px", fontWeight: "400" }],
+                        "body-sm": ["14px", { lineHeight: "20px", fontWeight: "400" }],
+                        "label-caps": ["12px", { lineHeight: "16px", letterSpacing: "0.05em", fontWeight: "700" }],
+                        "display-lg": ["36px", { lineHeight: "44px", letterSpacing: "-0.02em", fontWeight: "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body-md flex h-screen overflow-hidden">
+<!-- SideNavBar -->
+<nav class="bg-primary dark:bg-primary-container text-on-primary dark:text-on-primary-container font-body-sm text-body-sm fixed left-0 top-0 h-full w-[248px] shadow-sm flex flex-col h-full py-lg z-20 hidden md:flex">
+<!-- Header -->
+<div class="px-lg pb-xl mb-md border-b border-primary-container flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-primary-fixed-dim/20 flex items-center justify-center text-primary-fixed overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional minimalist portrait photo of an administrator, well-lit, sharp focus, corporate aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCNF_BgpYlvXuswmXyexfZejhkSdu-oOEgIKUBOJHvwEPoA8qd3FkkDy9YydIiAHoY-i8XmFm71U9yJkgNV_7oEANR_Z03P4-VV2KDxzu7OMPoOvG58LeMYQ43XXcEwdSBe7bkYSg4vrhOk6xKXfbi2ZKF4JH8WlosZIRPhUE_IzRrDWG2p9luDcIeVeEr93SWpQsPeyiRhXbB3z3K0odR5iMylfxA08FUk0ewIhnmK1Cq2WHVPhrl99sd11k2_Ad4WDq-fF2muneA"/>
+</div>
+<div>
+<h2 class="font-title-sm text-title-sm font-bold text-on-primary">LIBIF Admin</h2>
+<p class="text-on-primary-container/70 text-xs">Institutional Control</p>
+</div>
+</div>
+<!-- CTA -->
+<div class="px-lg mb-lg">
+<button class="w-full bg-on-primary text-primary hover:bg-surface transition-colors py-sm px-md rounded-lg flex items-center justify-center gap-sm font-title-sm text-sm">
+<span class="material-symbols-outlined" data-icon="upload_file">upload_file</span>
+                Upload Document
+            </button>
+</div>
+<!-- Main Navigation -->
+<div class="flex-1 overflow-y-auto">
+<ul class="flex flex-col gap-xs">
+<li>
+<a class="bg-primary-container dark:bg-primary border-l-4 border-on-tertiary-container text-on-tertiary-container flex items-center gap-md px-lg py-md transition-transform duration-150 active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+                        Dashboard
+                    </a>
+</li>
+<li>
+<a class="text-on-primary-container/70 dark:text-on-primary-fixed-variant hover:bg-primary-container/20 flex items-center gap-md px-lg py-md transition-transform duration-150 active:scale-95 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+                        Repository
+                    </a>
+</li>
+<li>
+<a class="text-on-primary-container/70 dark:text-on-primary-fixed-variant hover:bg-primary-container/20 flex items-center gap-md px-lg py-md transition-transform duration-150 active:scale-95 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="label">label</span>
+                        Metadata
+                    </a>
+</li>
+<li>
+<a class="text-on-primary-container/70 dark:text-on-primary-fixed-variant hover:bg-primary-container/20 flex items-center gap-md px-lg py-md transition-transform duration-150 active:scale-95 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="key">key</span>
+                        Access Control
+                    </a>
+</li>
+<li>
+<a class="text-on-primary-container/70 dark:text-on-primary-fixed-variant hover:bg-primary-container/20 flex items-center gap-md px-lg py-md transition-transform duration-150 active:scale-95 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+                        Analytics
+                    </a>
+</li>
+<li>
+<a class="text-on-primary-container/70 dark:text-on-primary-fixed-variant hover:bg-primary-container/20 flex items-center gap-md px-lg py-md transition-transform duration-150 active:scale-95 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="terminal">terminal</span>
+                        System Logs
+                    </a>
+</li>
+</ul>
+</div>
+<!-- Footer Navigation -->
+<div class="mt-auto pt-md">
+<ul class="flex flex-col gap-xs">
+<li>
+<a class="text-on-primary-container/70 dark:text-on-primary-fixed-variant hover:bg-primary-container/20 flex items-center gap-md px-lg py-md transition-transform duration-150 active:scale-95 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+                        Settings
+                    </a>
+</li>
+<li>
+<a class="text-on-primary-container/70 dark:text-on-primary-fixed-variant hover:bg-primary-container/20 flex items-center gap-md px-lg py-md transition-transform duration-150 active:scale-95 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="contact_support">contact_support</span>
+                        Support
+                    </a>
+</li>
+</ul>
+</div>
+</nav>
+<!-- Main Content Area Wrapper -->
+<div class="flex-1 flex flex-col md:ml-[248px] h-full w-full bg-background relative">
+<!-- TopNavBar (acting as contextual header here) -->
+<header class="bg-surface dark:bg-surface-container text-primary dark:text-primary-fixed font-body-md text-body-md border-b border-outline-variant dark:border-outline flat no shadows flex justify-between items-center w-full px-lg py-md max-w-container-max mx-auto z-10 shrink-0">
+<div class="flex items-center gap-lg">
+<span class="font-display-lg text-display-lg font-bold text-primary dark:text-primary-fixed tracking-tight md:hidden">LIBIF</span>
+<!-- Desktop Navigation Links (Disabled style for inactive context) -->
+<nav class="hidden md:flex items-center gap-md">
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-secondary hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-colors cursor-pointer duration-200 ease-in-out px-sm py-xs rounded" href="#">Browse</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-secondary hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-colors cursor-pointer duration-200 ease-in-out px-sm py-xs rounded" href="#">Collections</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-secondary hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-colors cursor-pointer duration-200 ease-in-out px-sm py-xs rounded" href="#">History</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-secondary hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-colors cursor-pointer duration-200 ease-in-out px-sm py-xs rounded" href="#">Reserved</a>
+</nav>
+</div>
+<div class="flex items-center gap-md">
+<div class="relative hidden sm:block">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-outline" data-icon="search">search</span>
+<input class="pl-[36px] pr-sm py-xs bg-surface-container-lowest border border-outline-variant rounded-md focus:border-secondary focus:ring-2 focus:ring-secondary/20 transition-all text-sm w-48" placeholder="Search..." type="text"/>
+</div>
+<button class="p-xs text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-xs text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors hidden sm:block">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+</button>
+</div>
+</header>
+<!-- Main Workspace -->
+<main class="flex-1 overflow-y-auto p-md md:p-lg flex flex-col gap-lg bg-background">
+<!-- Page Header & Filter Bar -->
+<div class="flex flex-col gap-md">
+<div>
+<h1 class="font-headline-md text-headline-md text-on-surface">Processing Queue</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-xs">Manage and monitor document ingestion tasks.</p>
+</div>
+<!-- Structural Filter Bar -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-sm flex flex-wrap items-center justify-between gap-sm">
+<div class="flex flex-wrap items-center gap-sm">
+<!-- Simulated active filter -->
+<div class="flex items-center gap-xs bg-surface-container text-on-surface-variant px-sm py-xs rounded-md border border-outline-variant text-sm">
+<span class="font-medium">Status:</span> Failed, Pending
+                            <button class="hover:text-error transition-colors ml-xs flex items-center">
+<span class="material-symbols-outlined !text-[16px]" data-icon="close">close</span>
+</button>
+</div>
+<div class="flex items-center gap-xs bg-surface-container text-on-surface-variant px-sm py-xs rounded-md border border-outline-variant text-sm">
+<span class="font-medium">Date:</span> Last 24 Hours
+                            <button class="hover:text-error transition-colors ml-xs flex items-center">
+<span class="material-symbols-outlined !text-[16px]" data-icon="close">close</span>
+</button>
+</div>
+</div>
+<button class="flex items-center gap-xs text-secondary hover:text-on-secondary-container text-sm font-medium transition-colors px-sm py-xs rounded hover:bg-surface-container-low">
+<span class="material-symbols-outlined !text-[18px]" data-icon="filter_list">filter_list</span>
+                        More Filters
+                    </button>
+</div>
+</div>
+<!-- Empty State Canvas -->
+<div class="flex-1 bg-surface-container-lowest border border-outline-variant rounded-xl border-dashed flex flex-col items-center justify-center p-xl min-h-[400px]">
+<!-- Illustration/Icon -->
+<div class="w-24 h-24 rounded-full bg-surface-container-low flex items-center justify-center mb-lg text-primary-fixed-dim">
+<span class="material-symbols-outlined !text-[48px]" data-icon="plagiarism">plagiarism</span>
+</div>
+<!-- Text Content -->
+<h2 class="font-headline-md text-headline-md text-on-surface text-center mb-sm">No processing jobs found</h2>
+<p class="font-body-md text-body-md text-on-surface-variant text-center max-w-md mb-lg">
+                    There are currently no active or queued jobs matching your filter criteria. Adjust your view or upload a new document to initiate processing.
+                </p>
+<!-- Actions -->
+<div class="flex items-center gap-md">
+<button class="px-md py-sm border border-secondary text-secondary rounded-lg font-title-sm text-sm hover:bg-secondary/5 transition-colors">
+                        Clear Filters
+                    </button>
+<button class="px-md py-sm bg-primary text-on-primary rounded-lg font-title-sm text-sm hover:bg-primary-container transition-colors flex items-center gap-xs shadow-sm">
+<span class="material-symbols-outlined !text-[18px]" data-icon="upload">upload</span>
+                        Upload Document
+                    </button>
+</div>
+</div>
+</main>
+</div>
+</body></html>

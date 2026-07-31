@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LIBIF Admin - Upload Validation Error</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-tertiary-fixed-variant": "#004f50",
+                      "on-error": "#ffffff",
+                      "on-tertiary-container": "#47adac",
+                      "on-error-container": "#93000a",
+                      "surface-bright": "#f9f9ff",
+                      "surface": "#f9f9ff",
+                      "on-primary-container": "#7ca79d",
+                      "inverse-surface": "#2a313d",
+                      "primary-fixed": "#bfece1",
+                      "secondary-fixed": "#a5eff1",
+                      "on-tertiary-fixed": "#002020",
+                      "on-surface": "#151c27",
+                      "on-primary": "#ffffff",
+                      "tertiary-container": "#003c3c",
+                      "surface-container-high": "#e2e8f8",
+                      "surface-variant": "#dce2f3",
+                      "on-secondary-container": "#1a6d6f",
+                      "surface-tint": "#3d665e",
+                      "on-primary-fixed-variant": "#244e46",
+                      "surface-container-highest": "#dce2f3",
+                      "secondary-container": "#a2edee",
+                      "on-primary-fixed": "#00201b",
+                      "on-secondary-fixed": "#002021",
+                      "outline-variant": "#c0c8c5",
+                      "on-background": "#151c27",
+                      "secondary": "#12696b",
+                      "inverse-primary": "#a4cfc5",
+                      "on-secondary-fixed-variant": "#004f51",
+                      "surface-container-lowest": "#ffffff",
+                      "on-tertiary": "#ffffff",
+                      "on-surface-variant": "#414846",
+                      "primary": "#002520",
+                      "tertiary-fixed-dim": "#74d6d6",
+                      "surface-container-low": "#f0f3ff",
+                      "surface-dim": "#d3daea",
+                      "outline": "#717976",
+                      "inverse-on-surface": "#ebf1ff",
+                      "secondary-fixed-dim": "#89d3d5",
+                      "on-secondary": "#ffffff",
+                      "primary-fixed-dim": "#a4cfc5",
+                      "error": "#ba1a1a",
+                      "surface-container": "#e7eefe",
+                      "tertiary": "#002525",
+                      "background": "#f9f9ff",
+                      "primary-container": "#103c35",
+                      "tertiary-fixed": "#91f3f2",
+                      "error-container": "#ffdad6"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "xs": "4px",
+                      "lg": "24px",
+                      "gutter": "16px",
+                      "xl": "32px",
+                      "unit": "8px",
+                      "md": "16px",
+                      "sm": "8px",
+                      "container-max": "1440px"
+              },
+              "fontFamily": {
+                      "body-sm": [
+                              "Be Vietnam Pro"
+                      ],
+                      "body-md": [
+                              "Be Vietnam Pro"
+                      ],
+                      "title-sm": [
+                              "Be Vietnam Pro"
+                      ],
+                      "display-lg-mobile": [
+                              "Be Vietnam Pro"
+                      ],
+                      "display-lg": [
+                              "Be Vietnam Pro"
+                      ],
+                      "label-caps": [
+                              "Be Vietnam Pro"
+                      ],
+                      "headline-md": [
+                              "Be Vietnam Pro"
+                      ]
+              },
+              "fontSize": {
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "title-sm": [
+                              "18px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "display-lg-mobile": [
+                              "28px",
+                              {
+                                      "lineHeight": "34px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "display-lg": [
+                              "36px",
+                              {
+                                      "lineHeight": "44px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "label-caps": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+</head>
+<body class="bg-surface text-on-surface font-body-md min-h-screen flex">
+<!-- Side Navigation Shell -->
+<nav class="fixed left-0 top-0 h-full w-[248px] bg-primary dark:bg-primary-container flex flex-col py-lg shadow-sm z-50">
+<div class="px-lg pb-xl border-b border-on-primary-container/20 flex flex-col items-center">
+<div class="w-16 h-16 rounded-full bg-surface overflow-hidden flex items-center justify-center mb-md border-2 border-primary-container shadow-md">
+<span class="material-symbols-outlined text-3xl text-primary" data-weight="fill">shield_person</span>
+</div>
+<h1 class="font-headline-md text-headline-md font-bold text-on-primary text-center">LIBIF Admin</h1>
+<p class="font-body-sm text-body-sm text-on-primary/80 mt-xs text-center">Institutional Control</p>
+</div>
+<div class="flex-1 overflow-y-auto py-md space-y-sm px-sm">
+<a class="text-on-primary-container/70 hover:bg-primary-container/20 flex items-center gap-md px-md py-md rounded transition-all duration-150 active:scale-95 group" href="#">
+<span class="material-symbols-outlined transition-colors group-hover:text-on-primary">dashboard</span>
+<span class="font-body-md text-body-md transition-colors group-hover:text-on-primary">Dashboard</span>
+</a>
+<a class="bg-primary-container border-l-4 border-on-tertiary-container text-on-tertiary-container flex items-center gap-md px-md py-md rounded-r transition-all duration-150 active:scale-95 group" href="#">
+<span class="material-symbols-outlined" data-weight="fill">inventory_2</span>
+<span class="font-body-md text-body-md font-semibold">Repository</span>
+</a>
+<a class="text-on-primary-container/70 hover:bg-primary-container/20 flex items-center gap-md px-md py-md rounded transition-all duration-150 active:scale-95 group" href="#">
+<span class="material-symbols-outlined transition-colors group-hover:text-on-primary">label</span>
+<span class="font-body-md text-body-md transition-colors group-hover:text-on-primary">Metadata</span>
+</a>
+<a class="text-on-primary-container/70 hover:bg-primary-container/20 flex items-center gap-md px-md py-md rounded transition-all duration-150 active:scale-95 group" href="#">
+<span class="material-symbols-outlined transition-colors group-hover:text-on-primary">key</span>
+<span class="font-body-md text-body-md transition-colors group-hover:text-on-primary">Access Control</span>
+</a>
+<a class="text-on-primary-container/70 hover:bg-primary-container/20 flex items-center gap-md px-md py-md rounded transition-all duration-150 active:scale-95 group" href="#">
+<span class="material-symbols-outlined transition-colors group-hover:text-on-primary">analytics</span>
+<span class="font-body-md text-body-md transition-colors group-hover:text-on-primary">Analytics</span>
+</a>
+<a class="text-on-primary-container/70 hover:bg-primary-container/20 flex items-center gap-md px-md py-md rounded transition-all duration-150 active:scale-95 group" href="#">
+<span class="material-symbols-outlined transition-colors group-hover:text-on-primary">terminal</span>
+<span class="font-body-md text-body-md transition-colors group-hover:text-on-primary">System Logs</span>
+</a>
+</div>
+<div class="px-lg pt-lg border-t border-on-primary-container/20">
+<button class="w-full bg-secondary hover:bg-secondary-fixed text-on-secondary font-body-md text-body-md py-sm px-md rounded flex items-center justify-center gap-sm transition-colors mb-lg shadow-sm">
+<span class="material-symbols-outlined text-sm">upload_file</span>
+                Upload Document
+            </button>
+<div class="space-y-sm">
+<a class="text-on-primary-container/70 hover:bg-primary-container/20 flex items-center gap-md px-sm py-sm rounded transition-all duration-150 active:scale-95 group" href="#">
+<span class="material-symbols-outlined transition-colors group-hover:text-on-primary text-sm">settings</span>
+<span class="font-body-sm text-body-sm transition-colors group-hover:text-on-primary">Settings</span>
+</a>
+<a class="text-on-primary-container/70 hover:bg-primary-container/20 flex items-center gap-md px-sm py-sm rounded transition-all duration-150 active:scale-95 group" href="#">
+<span class="material-symbols-outlined transition-colors group-hover:text-on-primary text-sm">contact_support</span>
+<span class="font-body-sm text-body-sm transition-colors group-hover:text-on-primary">Support</span>
+</a>
+</div>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="ml-[248px] flex-1 min-h-screen bg-background p-xl">
+<div class="max-w-4xl mx-auto">
+<!-- Header -->
+<div class="mb-xl border-b border-outline-variant pb-md flex justify-between items-end">
+<div>
+<h2 class="font-display-lg text-display-lg font-bold text-primary tracking-tight">Upload Validation Error</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-sm">Error state for failed ingestion (LIB-04).</p>
+</div>
+<a class="text-secondary hover:text-primary font-body-sm flex items-center gap-xs transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">arrow_back</span>
+                    Back to Repository
+                </a>
+</div>
+<!-- Bento Grid Layout for Error Display -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- Main Upload Area (Simulated failed drag-and-drop zone) -->
+<div class="md:col-span-12 bg-surface-container-lowest border border-outline-variant rounded-lg p-xl flex flex-col items-center justify-center min-h-[320px] relative overflow-hidden group">
+<!-- Dotted Border overlay for drag zone feel -->
+<div class="absolute inset-4 border-2 border-dashed border-error/30 rounded-lg pointer-events-none transition-colors group-hover:border-error/50"></div>
+<div class="z-10 flex flex-col items-center text-center max-w-lg">
+<div class="w-20 h-20 rounded-full bg-error-container/50 flex items-center justify-center mb-lg relative">
+<span class="material-symbols-outlined text-5xl text-error" data-weight="fill">error</span>
+<div class="absolute inset-0 rounded-full animate-ping border border-error opacity-20"></div>
+</div>
+<h3 class="font-title-sm text-title-sm text-on-surface mb-xs">Upload Failed: Oversized File</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-xl">
+                            The selected file exceeds the 200MB institutional limit for single file ingestion.
+                        </p>
+<!-- Error Detail Card -->
+<div class="bg-error-container/20 border border-error/30 rounded-md w-full p-md text-left mb-xl flex flex-col sm:flex-row items-start sm:items-center gap-md shadow-[0px_4px_12px_rgba(186,26,26,0.05)]">
+<div class="p-sm bg-surface rounded shadow-sm border border-outline-variant shrink-0 flex items-center justify-center">
+<span class="material-symbols-outlined text-3xl text-on-surface-variant" data-weight="fill">description</span>
+</div>
+<div class="flex-1 overflow-hidden">
+<p class="font-body-sm text-body-sm font-semibold text-on-surface truncate" title="Archive_Manuscript_Scan_2024.zip">Archive_Manuscript_Scan_2024.zip</p>
+<p class="font-body-sm text-body-sm text-error mt-xs flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]">file_upload_off</span>
+                                     215 MB detected. Max allowed: 200 MB.
+                                 </p>
+</div>
+</div>
+<!-- Secondary Error Context (Format warning) -->
+<div class="w-full text-left mb-xl pl-md border-l-2 border-secondary-container">
+<p class="font-body-sm text-body-sm text-on-surface-variant flex items-start gap-sm">
+<span class="material-symbols-outlined text-secondary text-[18px] mt-[2px]">info</span>
+<span><strong class="font-semibold text-on-surface">Format Notice:</strong> Only PDF documents are currently supported for immediate archival processing. ZIP archives require manual extraction prior to ingestion.</span>
+</p>
+</div>
+<!-- Actions -->
+<div class="flex flex-col sm:flex-row gap-md w-full sm:justify-center">
+<button class="bg-primary-container text-on-primary hover:bg-primary font-body-md text-body-md py-sm px-xl rounded shadow-sm transition-all active:scale-95 flex items-center justify-center gap-sm">
+<span class="material-symbols-outlined text-sm">find_replace</span>
+                                Replace file
+                            </button>
+<button class="bg-transparent border border-secondary text-secondary hover:bg-surface-container-low font-body-md text-body-md py-sm px-xl rounded transition-all active:scale-95 flex items-center justify-center gap-sm">
+<span class="material-symbols-outlined text-sm">refresh</span>
+                                Try again
+                            </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Institutional Guidelines Footer -->
+<div class="mt-xl flex flex-col md:flex-row justify-between items-start md:items-center text-on-surface-variant gap-md pt-lg border-t border-outline-variant">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary text-[20px]">policy</span>
+<span class="font-body-sm text-body-sm">Refer to the <a class="text-secondary underline hover:text-primary transition-colors" href="#">Institutional Ingestion Policy (v2.4)</a> for size exemptions.</span>
+</div>
+<div class="font-label-caps text-label-caps uppercase tracking-wider text-outline">
+                    Secure Processing Environment
+                </div>
+</div>
+</div>
+</main>
+</body></html>

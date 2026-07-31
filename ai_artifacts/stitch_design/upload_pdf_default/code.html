@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LIBIF Admin - Upload Document</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-tertiary-fixed-variant": "#004f50",
+                      "on-error": "#ffffff",
+                      "on-tertiary-container": "#47adac",
+                      "on-error-container": "#93000a",
+                      "surface-bright": "#f9f9ff",
+                      "surface": "#f9f9ff",
+                      "on-primary-container": "#7ca79d",
+                      "inverse-surface": "#2a313d",
+                      "primary-fixed": "#bfece1",
+                      "secondary-fixed": "#a5eff1",
+                      "on-tertiary-fixed": "#002020",
+                      "on-surface": "#151c27",
+                      "on-primary": "#ffffff",
+                      "tertiary-container": "#003c3c",
+                      "surface-container-high": "#e2e8f8",
+                      "surface-variant": "#dce2f3",
+                      "on-secondary-container": "#1a6d6f",
+                      "surface-tint": "#3d665e",
+                      "on-primary-fixed-variant": "#244e46",
+                      "surface-container-highest": "#dce2f3",
+                      "secondary-container": "#a2edee",
+                      "on-primary-fixed": "#00201b",
+                      "on-secondary-fixed": "#002021",
+                      "outline-variant": "#c0c8c5",
+                      "on-background": "#151c27",
+                      "secondary": "#12696b",
+                      "inverse-primary": "#a4cfc5",
+                      "on-secondary-fixed-variant": "#004f51",
+                      "surface-container-lowest": "#ffffff",
+                      "on-tertiary": "#ffffff",
+                      "on-surface-variant": "#414846",
+                      "primary": "#002520",
+                      "tertiary-fixed-dim": "#74d6d6",
+                      "surface-container-low": "#f0f3ff",
+                      "surface-dim": "#d3daea",
+                      "outline": "#717976",
+                      "inverse-on-surface": "#ebf1ff",
+                      "secondary-fixed-dim": "#89d3d5",
+                      "on-secondary": "#ffffff",
+                      "primary-fixed-dim": "#a4cfc5",
+                      "error": "#ba1a1a",
+                      "surface-container": "#e7eefe",
+                      "tertiary": "#002525",
+                      "background": "#f9f9ff",
+                      "primary-container": "#103c35",
+                      "tertiary-fixed": "#91f3f2",
+                      "error-container": "#ffdad6"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "xs": "4px",
+                      "lg": "24px",
+                      "gutter": "16px",
+                      "xl": "32px",
+                      "unit": "8px",
+                      "md": "16px",
+                      "sm": "8px",
+                      "container-max": "1440px"
+              },
+              "fontFamily": {
+                      "body-sm": [
+                              "Be Vietnam Pro"
+                      ],
+                      "body-md": [
+                              "Be Vietnam Pro"
+                      ],
+                      "title-sm": [
+                              "Be Vietnam Pro"
+                      ],
+                      "display-lg-mobile": [
+                              "Be Vietnam Pro"
+                      ],
+                      "display-lg": [
+                              "Be Vietnam Pro"
+                      ],
+                      "label-caps": [
+                              "Be Vietnam Pro"
+                      ],
+                      "headline-md": [
+                              "Be Vietnam Pro"
+                      ]
+              },
+              "fontSize": {
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "title-sm": [
+                              "18px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "display-lg-mobile": [
+                              "28px",
+                              {
+                                      "lineHeight": "34px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "display-lg": [
+                              "36px",
+                              {
+                                      "lineHeight": "44px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "label-caps": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.filled {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased min-h-screen flex flex-col md:flex-row overflow-x-hidden">
+<!-- TopNavBar for Mobile (Hidden on MD+) -->
+<header class="md:hidden flex justify-between items-center w-full px-lg py-md max-w-container-max mx-auto bg-surface border-b border-outline-variant flat no shadows h-16 sticky top-0 z-50">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-primary cursor-pointer text-2xl">menu</span>
+<span class="font-display-lg-mobile text-display-lg-mobile font-bold text-primary tracking-tight">LIBIF</span>
+</div>
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:bg-surface-container-low transition-colors duration-200 ease-in-out p-1 rounded-full">search</span>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-outline-variant cursor-pointer hover:bg-surface-container-low transition-colors duration-200 ease-in-out">
+<img alt="User Profile Menu" class="w-full h-full object-cover" data-alt="A small, professional headshot of an individual, serving as a user profile avatar. The person has a neutral, approachable expression, set against a solid, light-colored background. Lighting is soft and even, highlighting facial features clearly without harsh shadows. The style is clean, corporate, and trustworthy, fitting for an administrative dashboard interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC81iWnEg9rorWOYsZu0Ian6MFhFdCvC-_cvoZFwYTJwxlBPFIHlQaECz2tEd5RCNbp5YirayLxKoUrt0XE3UNpleNXTqHtxvSv3AoZGc9wepikJTT7B2Pm_JokrctGw7-pNLyvcJUEpxUGax3A-HpAb_Q4BG9-WluPin272UGrhU6UZKvTxQDC6HGquvRDiTf_5d7VGU_r4Sh1R8qcFJlBN_wjbaA0ToGSPDhjN-6QRSDz39B831pDevGoaVd2zO_B8TwTVYcA20s"/>
+</div>
+</div>
+</header>
+<!-- SideNavBar (Hidden on Mobile) -->
+<nav class="hidden md:flex bg-primary text-on-primary font-body-sm text-body-sm fixed left-0 top-0 h-full w-[248px] shadow-sm flex-col py-lg z-40">
+<div class="px-lg pb-xl flex items-center gap-md border-b border-on-primary-container/20 mb-md">
+<div class="w-10 h-10 rounded-full overflow-hidden bg-primary-container border-2 border-primary-fixed-dim">
+<img alt="Admin Avatar" class="w-full h-full object-cover" data-alt="A small, high-quality headshot of a professional individual used as an admin avatar. The person looks confident and approachable, wearing business casual attire. The background is a subtle, neutral tone that does not distract. The lighting is professional studio quality, ensuring clarity and a sense of institutional authority." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCngMPDZo8H53EFVljYv_pl7vPEVnNb9eiejKOO__LN7Ku2a_efxTAQcvzinV67HtqJU10x8LlQnI4yM8M2sy9GRM4HBy_xRGqmVeDi661frGNOreDsAmRDsyjL3hs_b1bbntpNh5zbAiT59zrsXOsxbk-nK-hwDYpGVBG3di5iub_iDbaPFSEQc7a2GnLLLOP3-hpuYCBS_R9W0_tSQ8kRuQzcIsmr8BCcYg_pdHwrj1XLBYYUkaExXMWsmegTbU1NipAYo2IagEQ"/>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md font-bold text-on-primary">LIBIF Admin</h2>
+<p class="text-on-primary-container/70 text-xs mt-xs">Institutional Control</p>
+</div>
+</div>
+<div class="px-lg pb-md">
+<button class="w-full bg-primary-fixed text-on-primary-fixed py-sm px-md rounded font-title-sm text-title-sm flex items-center justify-center gap-sm hover:bg-primary-fixed-dim transition-colors shadow-sm">
+<span class="material-symbols-outlined text-lg">add</span>
+                Upload Document
+            </button>
+</div>
+<div class="flex-1 overflow-y-auto mt-sm">
+<ul class="flex flex-col gap-xs">
+<!-- Inactive Tab -->
+<li>
+<a class="text-on-primary-container/70 hover:bg-primary-fixed-dim/10 flex items-center gap-md px-lg py-md transition-transform duration-150 active:scale-95 group" href="#">
+<span class="material-symbols-outlined text-on-primary-container/70 group-hover:text-primary-fixed transition-colors">dashboard</span>
+<span>Dashboard</span>
+</a>
+</li>
+<!-- Active Tab (Intent: We are in the document upload flow, which relates to the Repository) -->
+<li>
+<a class="bg-primary-container border-l-4 border-on-tertiary-container text-on-tertiary-container flex items-center gap-md px-lg py-md transition-transform duration-150 active:scale-95" href="#">
+<span class="material-symbols-outlined filled text-on-tertiary-container">inventory_2</span>
+<span class="font-semibold">Repository</span>
+</a>
+</li>
+<!-- Inactive Tab -->
+<li>
+<a class="text-on-primary-container/70 hover:bg-primary-fixed-dim/10 flex items-center gap-md px-lg py-md transition-transform duration-150 active:scale-95 group" href="#">
+<span class="material-symbols-outlined text-on-primary-container/70 group-hover:text-primary-fixed transition-colors">label</span>
+<span>Metadata</span>
+</a>
+</li>
+<!-- Inactive Tab -->
+<li>
+<a class="text-on-primary-container/70 hover:bg-primary-fixed-dim/10 flex items-center gap-md px-lg py-md transition-transform duration-150 active:scale-95 group" href="#">
+<span class="material-symbols-outlined text-on-primary-container/70 group-hover:text-primary-fixed transition-colors">key</span>
+<span>Access Control</span>
+</a>
+</li>
+<!-- Inactive Tab -->
+<li>
+<a class="text-on-primary-container/70 hover:bg-primary-fixed-dim/10 flex items-center gap-md px-lg py-md transition-transform duration-150 active:scale-95 group" href="#">
+<span class="material-symbols-outlined text-on-primary-container/70 group-hover:text-primary-fixed transition-colors">analytics</span>
+<span>Analytics</span>
+</a>
+</li>
+<!-- Inactive Tab -->
+<li>
+<a class="text-on-primary-container/70 hover:bg-primary-fixed-dim/10 flex items-center gap-md px-lg py-md transition-transform duration-150 active:scale-95 group" href="#">
+<span class="material-symbols-outlined text-on-primary-container/70 group-hover:text-primary-fixed transition-colors">terminal</span>
+<span>System Logs</span>
+</a>
+</li>
+</ul>
+</div>
+<div class="mt-auto border-t border-on-primary-container/20 pt-sm">
+<ul class="flex flex-col gap-xs">
+<li>
+<a class="text-on-primary-container/70 hover:bg-primary-fixed-dim/10 flex items-center gap-md px-lg py-md transition-transform duration-150 active:scale-95 group" href="#">
+<span class="material-symbols-outlined text-on-primary-container/70 group-hover:text-primary-fixed transition-colors">settings</span>
+<span>Settings</span>
+</a>
+</li>
+<li>
+<a class="text-on-primary-container/70 hover:bg-primary-fixed-dim/10 flex items-center gap-md px-lg py-md transition-transform duration-150 active:scale-95 group" href="#">
+<span class="material-symbols-outlined text-on-primary-container/70 group-hover:text-primary-fixed transition-colors">contact_support</span>
+<span>Support</span>
+</a>
+</li>
+</ul>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 md:ml-[248px] w-full min-h-screen bg-background relative flex flex-col">
+<!-- Header / Breadcrumbs Area (Optional but good for context) -->
+<div class="w-full px-lg py-xl max-w-[1000px] mx-auto pt-8 md:pt-xl">
+<div class="flex items-center gap-sm text-on-surface-variant font-body-sm text-body-sm mb-md">
+<a class="hover:text-primary transition-colors" href="#">Repository</a>
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+<span class="text-on-surface">Ingest Document</span>
+</div>
+<h1 class="font-display-lg text-display-lg font-bold text-on-surface tracking-tight mb-xs">Upload Document</h1>
+<p class="text-on-surface-variant font-body-md text-body-md">Select a document to begin the digitization process.</p>
+</div>
+<!-- Centered Container -->
+<div class="flex-1 w-full flex flex-col items-center justify-start px-lg pb-xl pt-md">
+<div class="w-full max-w-[800px] bg-surface-container-lowest border border-[#E2E8F0] rounded-xl overflow-hidden shadow-[0px_4px_12px_rgba(16,60,53,0.04)] flex flex-col relative z-10 backdrop-blur-sm bg-white/90">
+<!-- Decorative Top Border -->
+<div class="h-1 w-full bg-gradient-to-r from-secondary-container via-primary-container to-secondary-container opacity-80"></div>
+<div class="p-lg md:p-xl flex flex-col gap-xl">
+<!-- Stepper -->
+<div class="w-full flex items-center justify-between relative px-md md:px-xl">
+<!-- Connecting Line -->
+<div class="absolute left-[10%] right-[10%] top-1/2 -translate-y-1/2 h-[2px] bg-surface-variant -z-10"></div>
+<div class="absolute left-[10%] right-[66%] top-1/2 -translate-y-1/2 h-[2px] bg-primary-container transition-all duration-500 ease-in-out -z-10" style="width: 0%"></div> <!-- Progress Line -->
+<!-- Step 1 (Active) -->
+<div class="flex flex-col items-center gap-sm bg-surface-container-lowest relative z-10 px-sm">
+<div class="w-8 h-8 rounded-full bg-primary-container text-on-primary flex items-center justify-center font-title-sm text-title-sm shadow-sm ring-4 ring-surface-container-lowest">
+                                1
+                            </div>
+<span class="font-title-sm text-title-sm text-on-surface">Upload</span>
+</div>
+<!-- Step 2 (Inactive) -->
+<div class="flex flex-col items-center gap-sm bg-surface-container-lowest relative z-10 px-sm">
+<div class="w-8 h-8 rounded-full bg-surface-variant text-on-surface-variant flex items-center justify-center font-title-sm text-title-sm ring-4 ring-surface-container-lowest">
+                                2
+                            </div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Metadata</span>
+</div>
+<!-- Step 3 (Inactive) -->
+<div class="flex flex-col items-center gap-sm bg-surface-container-lowest relative z-10 px-sm">
+<div class="w-8 h-8 rounded-full bg-surface-variant text-on-surface-variant flex items-center justify-center font-title-sm text-title-sm ring-4 ring-surface-container-lowest">
+                                3
+                            </div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Review</span>
+</div>
+</div>
+<hr class="border-t border-[#E2E8F0] w-full"/>
+<!-- Upload Zone -->
+<div class="w-full relative group">
+<!-- Hidden File Input -->
+<input accept=".pdf" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20" id="file-upload" type="file"/>
+<!-- Drag & Drop Canvas -->
+<div class="w-full min-h-[300px] border-2 border-dashed border-[#E2E8F0] rounded-lg bg-[#F7F9F8] group-hover:bg-[#E8F3F2] group-hover:border-[#0C6668] transition-all duration-300 flex flex-col items-center justify-center p-xl text-center relative z-10 overflow-hidden">
+<!-- Subtle Background Texture/Pattern for Visual Interest -->
+<div class="absolute inset-0 opacity-[0.03] pointer-events-none" style="background-image: radial-gradient(circle at 2px 2px, #103C35 1px, transparent 0); background-size: 24px 24px;"></div>
+<div class="w-16 h-16 rounded-full bg-white shadow-sm flex items-center justify-center mb-md group-hover:scale-110 group-hover:shadow-md transition-transform duration-300 ease-out border border-[#E2E8F0] group-hover:border-[#0C6668]/30">
+<span class="material-symbols-outlined text-4xl text-primary-container group-hover:text-[#0C6668]">upload_file</span>
+</div>
+<h3 class="font-title-sm text-title-sm text-on-surface mb-xs">Drag and drop document here</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-md">or click to browse your computer</p>
+<button class="bg-[#103C35] text-white px-md py-sm rounded font-title-sm text-title-sm shadow-sm hover:bg-[#138A8A] transition-colors relative z-30 pointer-events-none">
+                                Browse files
+                            </button>
+<div class="mt-lg flex flex-col gap-xs items-center text-center">
+<p class="font-body-sm text-body-sm text-on-surface-variant bg-surface-container-low px-sm py-xs rounded text-xs border border-outline-variant/30">
+                                    PDF files only. Maximum file size: 200MB.
+                                </p>
+</div>
+</div>
+</div>
+<!-- Security Note -->
+<div class="flex items-start gap-sm bg-[#E8F3F2]/50 p-sm rounded border border-[#E2E8F0] text-[#0B2F2D]">
+<span class="material-symbols-outlined text-[#103C35] text-lg mt-0.5">verified_user</span>
+<p class="font-body-sm text-body-sm">All documents are encrypted and scanned for malware upon upload.</p>
+</div>
+</div>
+<!-- Footer Actions -->
+<div class="px-lg py-md bg-[#F7F9F8] border-t border-[#E2E8F0] flex items-center justify-end gap-md">
+<button class="px-md py-sm font-title-sm text-title-sm text-[#0C6668] border border-[#0C6668] rounded hover:bg-[#E8F3F2] transition-colors">
+                        Cancel
+                    </button>
+<!-- Disabled State -->
+<button class="px-md py-sm font-title-sm text-title-sm bg-surface-variant text-on-surface-variant/50 rounded cursor-not-allowed">
+                        Continue
+                    </button>
+</div>
+</div>
+</div>
+</main>
+<!-- Optional: Add a subtle atmospheric background effect to the main canvas to prevent pure flat white expanses -->
+<div class="fixed inset-0 pointer-events-none z-0 opacity-40 mix-blend-multiply hidden md:block" style="background: radial-gradient(circle at 100% 0%, #E8F3F2 0%, transparent 40%), radial-gradient(circle at 0% 100%, #F0F3FF 0%, transparent 40%);"></div>
+</body></html>

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Approval Confirmation Modal - LIBIF</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container": "#e7eefe",
+                        "surface-container-high": "#e2e8f8",
+                        "tertiary-fixed-dim": "#74d6d6",
+                        "tertiary-container": "#003c3c",
+                        "inverse-on-surface": "#ebf1ff",
+                        "tertiary": "#002525",
+                        "surface-container-highest": "#dce2f3",
+                        "secondary-fixed-dim": "#89d3d5",
+                        "inverse-primary": "#a4cfc5",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-container": "#47adac",
+                        "error": "#ba1a1a",
+                        "on-primary-container": "#7ca79d",
+                        "tertiary-fixed": "#91f3f2",
+                        "surface-container-low": "#f0f3ff",
+                        "surface-dim": "#d3daea",
+                        "on-tertiary-fixed-variant": "#004f50",
+                        "on-secondary-fixed": "#002021",
+                        "on-secondary-fixed-variant": "#004f51",
+                        "on-primary-fixed-variant": "#244e46",
+                        "primary-fixed": "#bfece1",
+                        "on-background": "#151c27",
+                        "background": "#f9f9ff",
+                        "inverse-surface": "#2a313d",
+                        "primary-fixed-dim": "#a4cfc5",
+                        "primary": "#002520",
+                        "on-primary-fixed": "#00201b",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-fixed": "#002020",
+                        "surface-tint": "#3d665e",
+                        "error-container": "#ffdad6",
+                        "surface": "#f9f9ff",
+                        "on-error-container": "#93000a",
+                        "on-error": "#ffffff",
+                        "surface-bright": "#f9f9ff",
+                        "outline-variant": "#c0c8c5",
+                        "outline": "#717976",
+                        "on-secondary-container": "#1a6d6f",
+                        "on-secondary": "#ffffff",
+                        "on-surface-variant": "#414846",
+                        "surface-variant": "#dce2f3",
+                        "secondary-container": "#a2edee",
+                        "on-tertiary": "#ffffff",
+                        "primary-container": "#103c35",
+                        "secondary-fixed": "#a5eff1",
+                        "secondary": "#12696b",
+                        "on-surface": "#151c27"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-max": "1440px",
+                        "xl": "32px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "xs": "4px",
+                        "unit": "8px",
+                        "lg": "24px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Be Vietnam Pro"],
+                        "title-sm": ["Be Vietnam Pro"],
+                        "display-lg-mobile": ["Be Vietnam Pro"],
+                        "display-lg": ["Be Vietnam Pro"],
+                        "body-md": ["Be Vietnam Pro"],
+                        "label-caps": ["Be Vietnam Pro"],
+                        "body-sm": ["Be Vietnam Pro"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "title-sm": ["18px", { "lineHeight": "24px", "fontWeight": "600" }],
+                        "display-lg-mobile": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.filled {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen overflow-hidden">
+<!-- Background Context (Dimmed ADM-02 Screen Simulation) -->
+<div class="fixed inset-0 z-0 flex blur-sm opacity-50 pointer-events-none">
+<!-- SideNav (Mockup for context) -->
+<nav class="fixed left-0 top-0 bottom-0 z-50 flex flex-col py-lg h-screen w-64 bg-primary text-on-primary shadow-sm hidden md:flex">
+<div class="px-md mb-xl flex items-center gap-md">
+<div class="w-10 h-10 bg-primary-container rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined">account_balance</span>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-on-primary">Admin Workspace</h2>
+<p class="font-body-sm text-body-sm text-on-primary/70">University Library</p>
+</div>
+</div>
+<div class="px-md mb-xl">
+<button class="w-full bg-secondary text-on-secondary py-sm px-md rounded-lg flex items-center justify-center gap-sm font-title-sm text-title-sm hover:bg-opacity-90 transition-colors">
+<span class="material-symbols-outlined">add</span>
+                    New Document
+                </button>
+</div>
+<div class="flex-1 overflow-y-auto">
+<ul class="flex flex-col gap-xs font-label-caps text-label-caps">
+<li><a class="flex items-center gap-md px-lg py-md text-on-primary/70 hover:bg-primary-fixed-variant transition-all" href="#"><span class="material-symbols-outlined">dashboard</span> Dashboard</a></li>
+<li><a class="flex items-center gap-md px-lg py-md text-on-primary/70 hover:bg-primary-fixed-variant transition-all" href="#"><span class="material-symbols-outlined">library_books</span> Collections</a></li>
+<li><a class="flex items-center gap-md px-lg py-md text-on-primary/70 hover:bg-primary-fixed-variant transition-all" href="#"><span class="material-symbols-outlined">inventory_2</span> Archives</a></li>
+<li><a class="flex items-center gap-md px-lg py-md bg-primary-container text-on-primary-container border-l-4 border-secondary-fixed transition-all" href="#"><span class="material-symbols-outlined">pending_actions</span> Requests</a></li>
+<li><a class="flex items-center gap-md px-lg py-md text-on-primary/70 hover:bg-primary-fixed-variant transition-all" href="#"><span class="material-symbols-outlined">analytics</span> Analytics</a></li>
+</ul>
+</div>
+<div class="mt-auto px-md pt-lg border-t border-primary-container">
+<ul class="flex flex-col gap-xs font-label-caps text-label-caps">
+<li><a class="flex items-center gap-md px-lg py-md text-on-primary/70 hover:bg-primary-fixed-variant transition-all" href="#"><span class="material-symbols-outlined">help_outline</span> Support</a></li>
+<li><a class="flex items-center gap-md px-lg py-md text-on-primary/70 hover:bg-primary-fixed-variant transition-all" href="#"><span class="material-symbols-outlined">logout</span> Sign Out</a></li>
+</ul>
+</div>
+</nav>
+<!-- Main Content Area (Mockup for context) -->
+<main class="flex-1 ml-0 md:ml-64 flex flex-col">
+<!-- TopNavBar (Mockup) -->
+<header class="flex items-center justify-between px-lg w-full sticky top-0 z-40 bg-surface h-16 border-b border-outline-variant">
+<div class="flex items-center gap-md w-1/3">
+<span class="font-display-lg text-display-lg text-primary tracking-tight md:hidden">LIBIF</span>
+<div class="relative w-full hidden md:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full pl-10 pr-4 py-sm bg-surface-container-low border border-outline-variant rounded-lg focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary text-body-md font-body-md text-on-surface" placeholder="Search..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-md text-on-surface-variant">
+<button class="p-sm rounded-full hover:bg-surface-container-low transition-colors"><span class="material-symbols-outlined">notifications</span></button>
+<button class="p-sm rounded-full hover:bg-surface-container-low transition-colors"><span class="material-symbols-outlined">settings</span></button>
+<button class="hidden md:block font-label-caps text-label-caps hover:bg-surface-container-low px-md py-sm rounded-lg transition-colors">Help</button>
+<div class="w-8 h-8 rounded-full bg-surface-container-high border border-outline-variant overflow-hidden ml-sm">
+<img alt="User profile" class="w-full h-full object-cover" data-alt="A professional headshot of a librarian or academic administrator in a clean, brightly lit modern office setting. The image is cropped to a small circle, suitable for a user profile avatar." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBliqiIgID169niLj_4C2BOD19sbnpaCRCKBj04u5PsDpzHbVoBNeEN44ilQvPhCALSHK9_PTQTfSY6JxJNSfLKkpJTp_LF-V4qJT_9p1TMUzs96lwUGA4l5uno8gNWDk59U8K13mzXuRNnwq_OjamcaLpearQIh4sXlq57lr0k6MjsLI9A2kvS8tZqGU1saRdKZU7Q6-g8DpzplMHtDg7NaEctgYRG4SUc4zdwN74qhQT_ruUab_BuzajEX9TdnK4s9SGzHj1HW7M"/>
+</div>
+</div>
+</header>
+<div class="p-lg lg:p-xl flex-1 max-w-container-max mx-auto w-full">
+<h1 class="font-display-lg text-display-lg text-on-surface mb-lg">Document Review</h1>
+<!-- Dummy content layout to simulate the screen behind -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-lg">
+<div class="md:col-span-8 space-y-md">
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-lg">
+<div class="h-64 bg-surface-container rounded mb-md"></div>
+<div class="h-8 bg-surface-container rounded w-3/4 mb-sm"></div>
+<div class="h-4 bg-surface-container rounded w-full mb-sm"></div>
+<div class="h-4 bg-surface-container rounded w-5/6"></div>
+</div>
+</div>
+<div class="md:col-span-4 space-y-md">
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-lg">
+<div class="h-8 bg-surface-container rounded w-1/2 mb-md"></div>
+<div class="space-y-sm">
+<div class="h-10 bg-surface-container rounded w-full"></div>
+<div class="h-10 bg-surface-container rounded w-full"></div>
+<div class="h-10 bg-surface-container rounded w-full"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- Modal Overlay Backdrop -->
+<div class="fixed inset-0 z-50 flex items-center justify-center p-md bg-inverse-surface/40 backdrop-blur-[2px]">
+<!-- Confirmation Modal -->
+<div class="bg-surface-container-lowest w-full max-w-lg rounded-xl border border-outline-variant shadow-[0px_4px_12px_rgba(16,60,53,0.08)] flex flex-col overflow-hidden animate-in fade-in zoom-in duration-200">
+<!-- Modal Header -->
+<div class="px-lg py-md border-b border-outline-variant flex items-start gap-md bg-surface">
+<div class="w-10 h-10 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center shrink-0 mt-xs">
+<span class="material-symbols-outlined">publish</span>
+</div>
+<div class="flex-1">
+<h2 class="font-headline-md text-headline-md text-on-surface">Approve and Publish Document</h2>
+</div>
+</div>
+<!-- Modal Body -->
+<div class="p-lg flex flex-col gap-lg">
+<p class="font-body-md text-body-md text-on-surface-variant">
+                    This action will make <span class="font-semibold text-on-surface">"The Structural Transformation of the Public Sphere"</span> visible to all authorized readers in the Reader Portal. This cannot be undone once published.
+                </p>
+<!-- Metadata Summary Box -->
+<div class="bg-surface-container-low border border-outline-variant rounded-lg p-md">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant mb-md uppercase tracking-wider">Document Details</h3>
+<ul class="space-y-sm">
+<li class="flex justify-between items-start gap-md">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Title</span>
+<span class="font-body-sm text-body-sm text-on-surface font-medium text-right">The Structural Transformation of the Public Sphere</span>
+</li>
+<li class="flex justify-between items-center gap-md">
+<span class="font-body-sm text-body-sm text-on-surface-variant">ISBN</span>
+<span class="font-body-sm text-body-sm text-on-surface font-medium">978-0262581080</span>
+</li>
+<li class="flex justify-between items-center gap-md">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Collection</span>
+<div class="bg-surface-variant text-on-surface px-sm py-xs rounded text-xs font-medium">
+                                Social Theory Archive
+                            </div>
+</li>
+</ul>
+</div>
+<div class="bg-error-container/30 border border-error-container rounded-lg p-sm flex items-center gap-sm">
+<span class="material-symbols-outlined text-error text-sm">info</span>
+<span class="font-body-sm text-body-sm text-on-surface">Ensure all metadata is finalized before proceeding.</span>
+</div>
+</div>
+<!-- Modal Actions -->
+<div class="px-lg py-md border-t border-outline-variant bg-surface flex justify-end gap-md">
+<button class="px-md py-sm rounded-lg border border-secondary text-secondary font-title-sm text-title-sm hover:bg-surface-container-low focus:ring-2 focus:ring-secondary focus:outline-none transition-colors" type="button">
+                    Cancel
+                </button>
+<button class="px-md py-sm rounded-lg bg-secondary text-on-secondary font-title-sm text-title-sm hover:bg-primary-container focus:ring-2 focus:ring-primary focus:outline-none transition-colors shadow-sm" type="button">
+                    Approve and publish
+                </button>
+</div>
+</div>
+</div>
+</body></html>

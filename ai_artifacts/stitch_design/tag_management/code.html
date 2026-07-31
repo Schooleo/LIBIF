@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Tag Management - LIBIF Enterprise</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-fixed": "#bfece1",
+                        "on-primary": "#ffffff",
+                        "surface-variant": "#dce2f3",
+                        "outline-variant": "#c0c8c5",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-fixed": "#002020",
+                        "tertiary-container": "#003c3c",
+                        "primary-fixed-dim": "#a4cfc5",
+                        "primary-container": "#103c35",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-container": "#47adac",
+                        "surface-container-high": "#e2e8f8",
+                        "tertiary-fixed-dim": "#74d6d6",
+                        "secondary-container": "#a2edee",
+                        "on-secondary-container": "#1a6d6f",
+                        "on-secondary-fixed-variant": "#004f51",
+                        "inverse-primary": "#a4cfc5",
+                        "secondary-fixed-dim": "#89d3d5",
+                        "surface-container-low": "#f0f3ff",
+                        "on-primary-container": "#7ca79d",
+                        "inverse-surface": "#2a313d",
+                        "surface-tint": "#3d665e",
+                        "secondary": "#12696b",
+                        "tertiary": "#002525",
+                        "surface-bright": "#f9f9ff",
+                        "on-secondary-fixed": "#002021",
+                        "tertiary-fixed": "#91f3f2",
+                        "primary": "#002520",
+                        "error": "#ba1a1a",
+                        "background": "#f9f9ff",
+                        "surface-container-highest": "#dce2f3",
+                        "secondary-fixed": "#a5eff1",
+                        "on-error": "#ffffff",
+                        "surface-container": "#e7eefe",
+                        "surface": "#f9f9ff",
+                        "on-primary-fixed-variant": "#244e46",
+                        "on-background": "#151c27",
+                        "on-error-container": "#93000a",
+                        "on-tertiary": "#ffffff",
+                        "on-surface-variant": "#414846",
+                        "on-surface": "#151c27",
+                        "on-tertiary-fixed-variant": "#004f50",
+                        "on-primary-fixed": "#00201b",
+                        "error-container": "#ffdad6",
+                        "surface-dim": "#d3daea",
+                        "inverse-on-surface": "#ebf1ff",
+                        "outline": "#717976"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "lg": "24px",
+                        "gutter": "16px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "xl": "32px",
+                        "container-max": "1440px",
+                        "xs": "4px",
+                        "unit": "8px"
+                    },
+                    "fontFamily": {
+                        "title-sm": ["Be Vietnam Pro"],
+                        "display-lg": ["Be Vietnam Pro"],
+                        "display-lg-mobile": ["Be Vietnam Pro"],
+                        "body-sm": ["Be Vietnam Pro"],
+                        "label-caps": ["Be Vietnam Pro"],
+                        "body-md": ["Be Vietnam Pro"],
+                        "headline-md": ["Be Vietnam Pro"]
+                    },
+                    "fontSize": {
+                        "title-sm": ["18px", { "lineHeight": "24px", "fontWeight": "600" }],
+                        "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "display-lg-mobile": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { background-color: #F7F9F8; }
+        .focus-glow:focus-within {
+            border-color: #0C6668 !important;
+            box-shadow: 0 0 0 2px #E8F3F2;
+        }
+        .table-row-hover:hover { background-color: #F7F9F8; }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md text-body-md antialiased min-h-screen flex">
+<!-- SideNavBar Component -->
+<nav aria-label="Main Navigation" class="h-screen w-64 fixed left-0 top-0 border-r border-outline-variant bg-[#0B2F2D] dark:bg-primary z-40 hidden md:flex flex-col py-lg">
+<!-- Brand Header -->
+<div class="px-lg pb-md mb-md border-b border-outline-variant/20 flex items-center gap-md">
+<div class="w-10 h-10 rounded bg-primary-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-on-primary" data-icon="account_balance">account_balance</span>
+</div>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-on-primary">LIBIF</h1>
+<p class="font-label-caps text-label-caps text-on-primary-fixed-variant opacity-80">Enterprise Management</p>
+</div>
+</div>
+<!-- CTA -->
+<div class="px-md mb-lg">
+<button class="w-full bg-[#103C35] hover:bg-[#138A8A] text-on-primary font-title-sm text-title-sm py-sm px-md rounded flex items-center justify-center gap-sm transition-colors duration-200 ease-in-out">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+                New Document
+            </button>
+</div>
+<!-- Main Nav Links -->
+<div class="flex-1 overflow-y-auto flex flex-col gap-xs px-sm">
+<a class="flex items-center gap-md px-md py-sm rounded text-on-primary-fixed-variant opacity-80 hover:bg-primary-container/50 transition-colors duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-title-sm text-title-sm">Workspace</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded text-on-primary-fixed-variant opacity-80 hover:bg-primary-container/50 transition-colors duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span class="font-title-sm text-title-sm">Collections</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded text-on-primary-fixed-variant opacity-80 hover:bg-primary-container/50 transition-colors duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="history_edu">history_edu</span>
+<span class="font-title-sm text-title-sm">Archives</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-r border-l-4 border-secondary bg-primary-container text-on-primary font-semibold transition-colors duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="admin_panel_settings">admin_panel_settings</span>
+<span class="font-title-sm text-title-sm">Administration</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded text-on-primary-fixed-variant opacity-80 hover:bg-primary-container/50 transition-colors duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-title-sm text-title-sm">Users</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded text-on-primary-fixed-variant opacity-80 hover:bg-primary-container/50 transition-colors duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-title-sm text-title-sm">Settings</span>
+</a>
+</div>
+<!-- Footer Nav Links -->
+<div class="mt-auto px-sm pt-md border-t border-outline-variant/20 flex flex-col gap-xs">
+<a class="flex items-center gap-md px-md py-sm rounded text-on-primary-fixed-variant opacity-80 hover:bg-primary-container/50 transition-colors duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="check_circle">check_circle</span>
+<span class="font-title-sm text-title-sm">System Status</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded text-on-primary-fixed-variant opacity-80 hover:bg-primary-container/50 transition-colors duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span class="font-title-sm text-title-sm">Support</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 ml-0 md:ml-64 flex flex-col min-h-screen">
+<!-- TopNavBar equivalent for Admin Context (simplified as per standard admin shell, overriding strict TopNavBar since SideNav is primary) -->
+<header class="bg-surface-container-lowest border-b border-outline-variant px-lg py-md flex items-center justify-between sticky top-0 z-30 shadow-[0px_4px_12px_rgba(16,60,53,0.02)]">
+<div class="flex items-center gap-sm">
+<!-- Mobile Menu Trigger -->
+<button class="md:hidden p-sm text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+<h2 class="font-headline-md text-headline-md text-primary font-semibold">Tag Management</h2>
+</div>
+<div class="flex items-center gap-md">
+<div class="relative hidden sm:block w-64 focus-glow rounded">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]" data-icon="search">search</span>
+<input class="w-full pl-10 pr-sm py-2 bg-surface-container-lowest border border-[#E2E8F0] rounded text-body-md text-on-surface placeholder:text-on-surface-variant outline-none transition-all duration-200" placeholder="Search taxonomy..." type="text"/>
+</div>
+<button class="p-sm text-on-surface-variant hover:text-primary transition-colors rounded-full hover:bg-surface-container-low">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-surface-container-highest overflow-hidden border border-outline-variant shrink-0">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="A professional headshot of a librarian in a well-lit, modern archive room, soft natural lighting, high-key white aesthetic with subtle teal accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAF576pV_I2Y5NuQxqBGDYpy0d19N1uV8IIC1s3t2OPVfJXpNufCcwCBPv9Fy_r047oqvMvsxb-R_UF-cPBMf-wYMCjoy8jf6gMpnpMr9ED-3Kzva5Zx9Yjha3lz7OiYN9BysbSCu3xjN8Hls0nEy0Sii21MTIQA__YtdLjB8UMLUU11Rq8VVhrJWBfsut1ElGXZpcRaClV_sw425p88gjycYY-Jy_RVRaW3Uj0lis83fV_xEwA_RMqtE2AiiSrMpbAelvWXTSAfgQ"/>
+</div>
+</div>
+</header>
+<!-- Page Canvas -->
+<div class="p-lg md:p-xl flex-1 flex flex-col gap-lg max-w-container-max mx-auto w-full">
+<!-- Context & Actions Row -->
+<div class="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-md">
+<div class="max-w-2xl">
+<p class="text-on-surface-variant font-body-md text-body-md">Manage the central library taxonomy. Standardize terminology to ensure consistent indexing across all collections and archives.</p>
+</div>
+<div class="flex gap-sm shrink-0 w-full sm:w-auto">
+<button class="flex-1 sm:flex-none px-md py-2 border border-[#0C6668] text-[#0C6668] rounded font-title-sm text-title-sm hover:bg-[#E8F3F2] transition-colors flex items-center justify-center gap-sm">
+<span class="material-symbols-outlined text-[18px]" data-icon="download">download</span>
+                        Export
+                    </button>
+<button class="flex-1 sm:flex-none px-md py-2 bg-[#103C35] text-white rounded font-title-sm text-title-sm hover:bg-[#138A8A] transition-colors flex items-center justify-center gap-sm shadow-[0px_2px_4px_rgba(16,60,53,0.1)]">
+<span class="material-symbols-outlined text-[18px]" data-icon="add_circle">add_circle</span>
+                        Add Tag
+                    </button>
+</div>
+</div>
+<!-- Mobile Search (Visible only on small screens) -->
+<div class="sm:hidden relative focus-glow rounded w-full">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]" data-icon="search">search</span>
+<input class="w-full pl-10 pr-sm py-2 bg-surface-container-lowest border border-[#E2E8F0] rounded text-body-md text-on-surface placeholder:text-on-surface-variant outline-none" placeholder="Search taxonomy..." type="text"/>
+</div>
+<!-- Data Table Container (Bento/Card style approach for density) -->
+<div class="bg-surface-container-lowest border border-[#E2E8F0] rounded-lg flex flex-col flex-1 overflow-hidden">
+<!-- Table Controls / Filters -->
+<div class="px-md py-sm border-b border-[#E2E8F0] flex flex-wrap gap-md items-center justify-between bg-[#F7F9F8]">
+<div class="flex gap-2">
+<span class="inline-flex items-center px-2 py-1 rounded bg-[#E8F3F2] text-primary font-label-caps text-[11px] border border-transparent">All Tags (1,248)</span>
+<span class="inline-flex items-center px-2 py-1 rounded bg-transparent text-on-surface-variant hover:bg-surface-container-low cursor-pointer font-label-caps text-[11px] border border-transparent">Needs Review (12)</span>
+</div>
+<div class="flex items-center gap-xs text-on-surface-variant font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[18px]" data-icon="sort">sort</span>
+<span>Sort by:</span>
+<select class="bg-transparent border-none py-1 pr-6 pl-1 text-primary font-semibold focus:ring-0 cursor-pointer text-sm">
+<option>Created (Newest)</option>
+<option>Name (A-Z)</option>
+<option>Usage (High to Low)</option>
+</select>
+</div>
+</div>
+<!-- Dense Table -->
+<div class="overflow-x-auto flex-1">
+<table class="w-full text-left border-collapse">
+<thead class="bg-surface-container-lowest border-b border-[#E2E8F0]">
+<tr>
+<th class="px-md py-sm font-label-caps text-label-caps text-on-surface-variant font-semibold tracking-wider">Tag Name</th>
+<th class="px-md py-sm font-label-caps text-label-caps text-on-surface-variant font-semibold tracking-wider w-32">Books</th>
+<th class="px-md py-sm font-label-caps text-label-caps text-on-surface-variant font-semibold tracking-wider hidden sm:table-cell">Created</th>
+<th class="px-md py-sm font-label-caps text-label-caps text-on-surface-variant font-semibold tracking-wider hidden lg:table-cell">Last Used</th>
+<th class="px-md py-sm font-label-caps text-label-caps text-on-surface-variant font-semibold tracking-wider">Status / Warnings</th>
+<th class="px-md py-sm font-label-caps text-label-caps text-on-surface-variant font-semibold tracking-wider text-right w-24">Actions</th>
+</tr>
+</thead>
+<tbody class="font-body-sm text-body-sm text-on-surface divide-y divide-[#E2E8F0]">
+<!-- Row 1: Standard Active -->
+<tr class="table-row-hover transition-colors">
+<td class="px-md py-[12px]">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-outline text-[18px]" data-icon="label">label</span>
+<span class="font-semibold text-primary">Open Access</span>
+</div>
+</td>
+<td class="px-md py-[12px]">
+<a class="text-[#0C6668] hover:underline font-semibold" href="#">4,192</a>
+</td>
+<td class="px-md py-[12px] text-on-surface-variant hidden sm:table-cell">Oct 12, 2018</td>
+<td class="px-md py-[12px] text-on-surface-variant hidden lg:table-cell">Today, 09:41</td>
+<td class="px-md py-[12px]">
+<span class="inline-flex items-center px-2 py-0.5 rounded bg-[#E8F3F2] text-primary font-body-sm text-[12px]">Active Core Tag</span>
+</td>
+<td class="px-md py-[12px] text-right">
+<div class="flex justify-end gap-1 opacity-60 hover:opacity-100 transition-opacity">
+<button class="p-1 rounded text-on-surface-variant hover:bg-surface-container-low hover:text-primary transition-colors" title="Rename">
+<span class="material-symbols-outlined text-[18px]" data-icon="edit">edit</span>
+</button>
+<button class="p-1 rounded text-outline-variant cursor-not-allowed" disabled="" title="Cannot delete in-use tag">
+<span class="material-symbols-outlined text-[18px]" data-icon="delete">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2: Similarity Warning -->
+<tr class="table-row-hover transition-colors bg-[#fffaf0]">
+<td class="px-md py-[12px]">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-outline text-[18px]" data-icon="label">label</span>
+<span class="font-semibold text-primary">Quantum Physics</span>
+</div>
+</td>
+<td class="px-md py-[12px]">
+<a class="text-[#0C6668] hover:underline font-semibold" href="#">843</a>
+</td>
+<td class="px-md py-[12px] text-on-surface-variant hidden sm:table-cell">Jan 05, 2021</td>
+<td class="px-md py-[12px] text-on-surface-variant hidden lg:table-cell">2 days ago</td>
+<td class="px-md py-[12px]">
+<div class="flex items-center gap-xs text-[#935a00] bg-[#fff0d4] px-2 py-0.5 rounded w-max">
+<span class="material-symbols-outlined text-[14px]" data-icon="warning">warning</span>
+<span class="font-body-sm text-[12px]">Similar to 'Quantum-Physics'</span>
+</div>
+</td>
+<td class="px-md py-[12px] text-right">
+<div class="flex justify-end gap-1 opacity-60 hover:opacity-100 transition-opacity">
+<button class="p-1 rounded text-on-surface-variant hover:bg-surface-container-low hover:text-primary transition-colors" title="Merge/Rename">
+<span class="material-symbols-outlined text-[18px]" data-icon="edit">edit</span>
+</button>
+<button class="p-1 rounded text-outline-variant cursor-not-allowed" disabled="">
+<span class="material-symbols-outlined text-[18px]" data-icon="delete">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3: Similar Target -->
+<tr class="table-row-hover transition-colors bg-[#fffaf0]">
+<td class="px-md py-[12px]">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-outline text-[18px]" data-icon="label">label</span>
+<span class="font-semibold text-primary">Quantum-Physics</span>
+</div>
+</td>
+<td class="px-md py-[12px]">
+<a class="text-[#0C6668] hover:underline font-semibold" href="#">12</a>
+</td>
+<td class="px-md py-[12px] text-on-surface-variant hidden sm:table-cell">Nov 18, 2023</td>
+<td class="px-md py-[12px] text-on-surface-variant hidden lg:table-cell">4 months ago</td>
+<td class="px-md py-[12px]">
+<div class="flex items-center gap-xs text-[#935a00] bg-[#fff0d4] px-2 py-0.5 rounded w-max">
+<span class="material-symbols-outlined text-[14px]" data-icon="warning">warning</span>
+<span class="font-body-sm text-[12px]">Similar to 'Quantum Physics'</span>
+</div>
+</td>
+<td class="px-md py-[12px] text-right">
+<div class="flex justify-end gap-1 opacity-60 hover:opacity-100 transition-opacity">
+<button class="p-1 rounded text-on-surface-variant hover:bg-surface-container-low hover:text-primary transition-colors" title="Rename">
+<span class="material-symbols-outlined text-[18px]" data-icon="edit">edit</span>
+</button>
+<button class="p-1 rounded text-error hover:bg-error-container/50 transition-colors" title="Delete unused/low-use tag">
+<span class="material-symbols-outlined text-[18px]" data-icon="delete">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 4: Unused Tag -->
+<tr class="table-row-hover transition-colors">
+<td class="px-md py-[12px]">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-outline-variant text-[18px]" data-icon="label_off">label_off</span>
+<span class="font-semibold text-on-surface-variant">Obsolete: v1-System</span>
+</div>
+</td>
+<td class="px-md py-[12px]">
+<span class="text-on-surface-variant">0</span>
+</td>
+<td class="px-md py-[12px] text-on-surface-variant hidden sm:table-cell">Mar 02, 2015</td>
+<td class="px-md py-[12px] text-on-surface-variant hidden lg:table-cell">Never</td>
+<td class="px-md py-[12px]">
+<span class="inline-flex items-center px-2 py-0.5 rounded bg-surface-container-highest text-on-surface-variant font-body-sm text-[12px]">Unused</span>
+</td>
+<td class="px-md py-[12px] text-right">
+<div class="flex justify-end gap-1 opacity-60 hover:opacity-100 transition-opacity">
+<button class="p-1 rounded text-on-surface-variant hover:bg-surface-container-low hover:text-primary transition-colors" title="Rename">
+<span class="material-symbols-outlined text-[18px]" data-icon="edit">edit</span>
+</button>
+<button class="p-1 rounded text-error hover:bg-error-container/50 transition-colors" title="Delete">
+<span class="material-symbols-outlined text-[18px]" data-icon="delete">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 5: Peer Reviewed -->
+<tr class="table-row-hover transition-colors">
+<td class="px-md py-[12px]">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-outline text-[18px]" data-icon="label">label</span>
+<span class="font-semibold text-primary">Peer Reviewed</span>
+</div>
+</td>
+<td class="px-md py-[12px]">
+<a class="text-[#0C6668] hover:underline font-semibold" href="#">12,450</a>
+</td>
+<td class="px-md py-[12px] text-on-surface-variant hidden sm:table-cell">Aug 22, 2017</td>
+<td class="px-md py-[12px] text-on-surface-variant hidden lg:table-cell">Just now</td>
+<td class="px-md py-[12px]">
+<span class="inline-flex items-center px-2 py-0.5 rounded bg-[#E8F3F2] text-primary font-body-sm text-[12px]">Active Core Tag</span>
+</td>
+<td class="px-md py-[12px] text-right">
+<div class="flex justify-end gap-1 opacity-60 hover:opacity-100 transition-opacity">
+<button class="p-1 rounded text-on-surface-variant hover:bg-surface-container-low hover:text-primary transition-colors" title="Rename">
+<span class="material-symbols-outlined text-[18px]" data-icon="edit">edit</span>
+</button>
+<button class="p-1 rounded text-outline-variant cursor-not-allowed" disabled="">
+<span class="material-symbols-outlined text-[18px]" data-icon="delete">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 6: Monograph -->
+<tr class="table-row-hover transition-colors">
+<td class="px-md py-[12px]">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-outline text-[18px]" data-icon="label">label</span>
+<span class="font-semibold text-primary">Monograph</span>
+</div>
+</td>
+<td class="px-md py-[12px]">
+<a class="text-[#0C6668] hover:underline font-semibold" href="#">3,205</a>
+</td>
+<td class="px-md py-[12px] text-on-surface-variant hidden sm:table-cell">Sep 14, 2019</td>
+<td class="px-md py-[12px] text-on-surface-variant hidden lg:table-cell">Yesterday, 14:20</td>
+<td class="px-md py-[12px]">
+<span class="inline-flex items-center px-2 py-0.5 rounded bg-surface-container text-on-surface font-body-sm text-[12px]">Active</span>
+</td>
+<td class="px-md py-[12px] text-right">
+<div class="flex justify-end gap-1 opacity-60 hover:opacity-100 transition-opacity">
+<button class="p-1 rounded text-on-surface-variant hover:bg-surface-container-low hover:text-primary transition-colors" title="Rename">
+<span class="material-symbols-outlined text-[18px]" data-icon="edit">edit</span>
+</button>
+<button class="p-1 rounded text-outline-variant cursor-not-allowed" disabled="">
+<span class="material-symbols-outlined text-[18px]" data-icon="delete">delete</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination Footer -->
+<div class="px-md py-sm border-t border-[#E2E8F0] bg-surface-container-lowest flex items-center justify-between text-body-sm text-on-surface-variant">
+<div>Showing 1 to 6 of 1,248 entries</div>
+<div class="flex items-center gap-sm">
+<button class="p-1 rounded hover:bg-surface-container-low disabled:opacity-50" disabled="">
+<span class="material-symbols-outlined text-[20px]" data-icon="chevron_left">chevron_left</span>
+</button>
+<span class="font-semibold text-primary">1</span>
+<a class="hover:bg-surface-container-low px-2 py-1 rounded" href="#">2</a>
+<a class="hover:bg-surface-container-low px-2 py-1 rounded" href="#">3</a>
+<span>...</span>
+<a class="hover:bg-surface-container-low px-2 py-1 rounded" href="#">208</a>
+<button class="p-1 rounded hover:bg-surface-container-low">
+<span class="material-symbols-outlined text-[20px]" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

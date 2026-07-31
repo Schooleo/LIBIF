@@ -1,0 +1,6678 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/api/auth/register": {
+      "post": {
+        "operationId": "register",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Register a reader account and start a session.",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/api/auth/sign-in": {
+      "post": {
+        "operationId": "signIn",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignInRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Sign in with email and password.",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/api/auth/sign-out": {
+      "post": {
+        "operationId": "signOut",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthMessageDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Revoke the current session and clear the session cookie.",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/api/auth/session": {
+      "get": {
+        "operationId": "getSession",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Return the current session boundary state.",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/api/auth/password-reset-requests": {
+      "post": {
+        "operationId": "requestPasswordReset",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PasswordResetRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthMessageDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Request a password reset link if an account exists.",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/api/auth/password-resets": {
+      "post": {
+        "operationId": "resetPassword",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PasswordResetDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthMessageDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Reset a password with a valid reset token.",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/api/admin/processing/jobs": {
+      "get": {
+        "operationId": "listJobs",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProcessingJobResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "List processing jobs.",
+        "tags": [
+          "Admin Processing"
+        ]
+      }
+    },
+    "/api/admin/processing/jobs/{id}": {
+      "get": {
+        "operationId": "getJobById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProcessingJobResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get processing job details.",
+        "tags": [
+          "Admin Processing"
+        ]
+      }
+    },
+    "/api/admin/processing/jobs/{id}/status": {
+      "get": {
+        "operationId": "getJobStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The status of the processing job.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get processing job status only.",
+        "tags": [
+          "Admin Processing"
+        ]
+      }
+    },
+    "/api/admin/processing/jobs/{id}/history": {
+      "get": {
+        "operationId": "getJobHistory",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProcessingJobHistoryDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get processing job history and retry lineage.",
+        "tags": [
+          "Admin Processing"
+        ]
+      }
+    },
+    "/api/admin/processing/jobs/{id}/retry": {
+      "post": {
+        "operationId": "retryJob",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProcessingJobResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Retry a failed processing job.",
+        "tags": [
+          "Admin Processing"
+        ]
+      }
+    },
+    "/api/admin/processing/jobs/{id}/cancel": {
+      "post": {
+        "operationId": "cancelJob",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProcessingJobResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Cancel an active processing job.",
+        "tags": [
+          "Admin Processing"
+        ]
+      }
+    },
+    "/api/notifications": {
+      "get": {
+        "operationId": "listMyNotifications",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "filter",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": "all",
+              "type": "string",
+              "enum": [
+                "all",
+                "unread",
+                "read"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedNotificationListResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "List notifications for the current user.",
+        "tags": [
+          "Notifications"
+        ]
+      }
+    },
+    "/api/notifications/unread-count": {
+      "get": {
+        "operationId": "getUnreadCount",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnreadNotificationCountDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get unread notifications count for current user.",
+        "tags": [
+          "Notifications"
+        ]
+      }
+    },
+    "/api/notifications/{id}/read": {
+      "patch": {
+        "operationId": "markAsRead",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Mark a notification as read.",
+        "tags": [
+          "Notifications"
+        ]
+      }
+    },
+    "/api/notifications/read-all": {
+      "patch": {
+        "operationId": "markAllAsRead",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "All notifications marked as read."
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Mark all notifications for the current user as read.",
+        "tags": [
+          "Notifications"
+        ]
+      }
+    },
+    "/api/admin/approvals": {
+      "get": {
+        "operationId": "listReviews",
+        "parameters": [
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "enum": [
+                "PENDING",
+                "APPROVED",
+                "REJECTED",
+                "CORRECTION_REQUESTED",
+                "SUPERSEDED"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ApprovalReviewResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "List pending approval reviews.",
+        "tags": [
+          "Admin Approvals"
+        ]
+      }
+    },
+    "/api/admin/approvals/{id}": {
+      "get": {
+        "operationId": "getReviewById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApprovalReviewResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get approval review details.",
+        "tags": [
+          "Admin Approvals"
+        ]
+      }
+    },
+    "/api/admin/approvals/{id}/approve": {
+      "post": {
+        "operationId": "approveReview",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApproveReviewDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApprovalReviewResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Approve a document review.",
+        "tags": [
+          "Admin Approvals"
+        ]
+      }
+    },
+    "/api/admin/approvals/{id}/approve-and-publish": {
+      "post": {
+        "operationId": "approveAndPublish",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApproveReviewDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApprovalReviewResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Approve and publish a document to the catalogue.",
+        "tags": [
+          "Admin Approvals"
+        ]
+      }
+    },
+    "/api/admin/approvals/{id}/reject": {
+      "post": {
+        "operationId": "rejectReview",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RejectReviewDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApprovalReviewResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Reject a document review.",
+        "tags": [
+          "Admin Approvals"
+        ]
+      }
+    },
+    "/api/admin/approvals/{id}/request-correction": {
+      "post": {
+        "operationId": "requestCorrection",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestCorrectionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApprovalReviewResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Request metadata or file corrections from the uploader.",
+        "tags": [
+          "Admin Approvals"
+        ]
+      }
+    },
+    "/api/admin/dashboard/librarian": {
+      "get": {
+        "operationId": "getLibrarianDashboardSummary",
+        "parameters": [
+          {
+            "name": "from",
+            "required": false,
+            "in": "query",
+            "description": "Inclusive UTC range start.",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "required": false,
+            "in": "query",
+            "description": "Exclusive UTC range end.",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LibrarianDashboardSummaryDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Return librarian dashboard summary counts.",
+        "tags": [
+          "Admin Dashboard"
+        ]
+      }
+    },
+    "/api/admin/dashboard/management": {
+      "get": {
+        "operationId": "getManagementDashboardSummary",
+        "parameters": [
+          {
+            "name": "from",
+            "required": false,
+            "in": "query",
+            "description": "Inclusive UTC range start.",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "required": false,
+            "in": "query",
+            "description": "Exclusive UTC range end.",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ManagementDashboardSummaryDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Return a bounded UTC management and reader-security summary.",
+        "tags": [
+          "Admin Dashboard"
+        ]
+      }
+    },
+    "/api/admin/reports/reader-access": {
+      "get": {
+        "operationId": "getReaderAccessReport",
+        "parameters": [
+          {
+            "name": "from",
+            "required": false,
+            "in": "query",
+            "description": "Inclusive UTC range start.",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "required": false,
+            "in": "query",
+            "description": "Exclusive UTC range end.",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          {
+            "name": "risk",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "NONE",
+                "LOW",
+                "MEDIUM",
+                "HIGH"
+              ]
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 200,
+              "default": 50,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReaderAccessReportResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Return bounded reader access report rows for admins.",
+        "tags": [
+          "Admin Reports"
+        ]
+      }
+    },
+    "/api/admin/reports/reader-access.csv": {
+      "get": {
+        "operationId": "exportReaderAccessCsv",
+        "parameters": [
+          {
+            "name": "from",
+            "required": false,
+            "in": "query",
+            "description": "Inclusive UTC range start.",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "required": false,
+            "in": "query",
+            "description": "Exclusive UTC range end.",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          {
+            "name": "risk",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "NONE",
+                "LOW",
+                "MEDIUM",
+                "HIGH"
+              ]
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 200,
+              "default": 50,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "403": {
+            "description": "",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Export bounded reader access report rows as CSV for admins.",
+        "tags": [
+          "Admin Reports"
+        ]
+      }
+    },
+    "/api/admin/reports/documents.csv": {
+      "get": {
+        "operationId": "exportDocumentsCsv",
+        "parameters": [
+          {
+            "name": "from",
+            "required": false,
+            "in": "query",
+            "description": "Inclusive UTC range start.",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "required": false,
+            "in": "query",
+            "description": "Exclusive UTC range end.",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "403": {
+            "description": "",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Export a bounded UTC document operations report.",
+        "tags": [
+          "Admin Reports"
+        ]
+      }
+    },
+    "/api/admin/reports/users.csv": {
+      "get": {
+        "operationId": "exportUsersCsv",
+        "parameters": [
+          {
+            "name": "from",
+            "required": false,
+            "in": "query",
+            "description": "Inclusive UTC range start.",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "required": false,
+            "in": "query",
+            "description": "Exclusive UTC range end.",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "403": {
+            "description": "",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Export a bounded UTC safe user administration report.",
+        "tags": [
+          "Admin Reports"
+        ]
+      }
+    },
+    "/api/admin/reports/activity.csv": {
+      "get": {
+        "operationId": "exportActivityCsv",
+        "parameters": [
+          {
+            "name": "from",
+            "required": false,
+            "in": "query",
+            "description": "Inclusive UTC range start.",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "required": false,
+            "in": "query",
+            "description": "Exclusive UTC range end.",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "403": {
+            "description": "",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Export a bounded UTC document activity report.",
+        "tags": [
+          "Admin Reports"
+        ]
+      }
+    },
+    "/api/admin/books/intake": {
+      "post": {
+        "operationId": "createIntake",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "file",
+                  "metadata"
+                ],
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "metadata": {
+                    "type": "string",
+                    "description": "JSON string matching CreateBookIntakeDto."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateBookIntakeResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Create a digital book intake and queue processing.",
+        "tags": [
+          "Admin Books"
+        ]
+      }
+    },
+    "/api/admin/books": {
+      "get": {
+        "operationId": "listAdminBooks",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AdminBookListItemResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "List digital book intake records for staff.",
+        "tags": [
+          "Admin Books"
+        ]
+      }
+    },
+    "/api/categories": {
+      "get": {
+        "operationId": "listCategories",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CategoryResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "List public category options.",
+        "tags": [
+          "Catalog"
+        ]
+      }
+    },
+    "/api/tags": {
+      "get": {
+        "operationId": "listTags",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TagResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "List public tag options.",
+        "tags": [
+          "Catalog"
+        ]
+      }
+    },
+    "/api/catalog/books": {
+      "get": {
+        "operationId": "listPublicBooks",
+        "parameters": [
+          {
+            "name": "q",
+            "required": false,
+            "in": "query",
+            "description": "Full-text search over title and isbn",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "categoryId",
+            "required": false,
+            "in": "query",
+            "description": "Category id to filter",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tagIds",
+            "required": false,
+            "in": "query",
+            "description": "Comma-separated tag ids to filter",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number (1-based)",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "description": "Page size",
+            "schema": {
+              "example": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "sort",
+            "required": false,
+            "in": "query",
+            "description": "Sort spec, e.g. createdAt_desc or title_asc",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedPublicBookListResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "List published public catalogue books.",
+        "tags": [
+          "Catalog"
+        ]
+      }
+    },
+    "/api/catalog/books/{documentId}": {
+      "get": {
+        "operationId": "getPublicBookDetail",
+        "parameters": [
+          {
+            "name": "documentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicBookDetailResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Book not found or not published."
+          }
+        },
+        "summary": "Get published public catalogue book detail.",
+        "tags": [
+          "Catalog"
+        ]
+      }
+    },
+    "/api/documents": {
+      "get": {
+        "operationId": "listDocuments",
+        "parameters": [
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Search title, author, or ISBN",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "Filter by document lifecycle status",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "DRAFT",
+                "PENDING_PROCESSING",
+                "PROCESSING",
+                "PENDING_APPROVAL",
+                "PUBLISHED",
+                "REJECTED"
+              ]
+            }
+          },
+          {
+            "name": "categoryId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by category ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "default": 10,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedDocumentListResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "List digital document records for staff with filtering and pagination.",
+        "tags": [
+          "Documents"
+        ]
+      }
+    },
+    "/api/documents/{id}": {
+      "get": {
+        "operationId": "getDocumentDetail",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentDetailResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Document not found"
+          }
+        },
+        "summary": "Get detailed document record including active file version, processing status, and audit history.",
+        "tags": [
+          "Documents"
+        ]
+      }
+    },
+    "/api/documents/{id}/metadata": {
+      "patch": {
+        "operationId": "updateMetadata",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateDocumentMetadataDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentDetailResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Document not found"
+          }
+        },
+        "summary": "Update document metadata.",
+        "tags": [
+          "Documents"
+        ]
+      }
+    },
+    "/api/documents/{id}/submit-processing": {
+      "post": {
+        "operationId": "submitProcessing",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentDetailResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Document not found"
+          }
+        },
+        "summary": "Submit or re-queue document active file into processing.",
+        "tags": [
+          "Documents"
+        ]
+      }
+    },
+    "/api/documents/{id}/replace-file": {
+      "post": {
+        "operationId": "replaceFile",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "file"
+                ],
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "PDF file to replace current active version."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentDetailResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Replace the active PDF file of a document.",
+        "tags": [
+          "Documents"
+        ]
+      }
+    },
+    "/api/uploads": {
+      "post": {
+        "operationId": "createUpload",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "file",
+                  "metadata"
+                ],
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Document PDF file."
+                  },
+                  "metadata": {
+                    "type": "string",
+                    "description": "JSON string matching CreateUploadDto."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadResultDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Create a digital document upload and queue processing intake.",
+        "tags": [
+          "Uploads"
+        ]
+      }
+    },
+    "/api/uploads/{id}": {
+      "get": {
+        "operationId": "getUploadState",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadResultDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Upload record not found"
+          }
+        },
+        "summary": "Get upload intake and file validation status.",
+        "tags": [
+          "Uploads"
+        ]
+      }
+    },
+    "/api/uploads/{id}/cancel": {
+      "post": {
+        "operationId": "cancelUpload",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cancellation result message"
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Cancel pending upload intake.",
+        "tags": [
+          "Uploads"
+        ]
+      }
+    },
+    "/api/uploads/{id}/retry": {
+      "post": {
+        "operationId": "retryUpload",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadResultDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Retry failed or cancelled upload intake processing.",
+        "tags": [
+          "Uploads"
+        ]
+      }
+    },
+    "/api/isbn/{isbn}": {
+      "get": {
+        "operationId": "lookup",
+        "parameters": [
+          {
+            "name": "isbn",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IsbnLookupResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Look up metadata for an ISBN.",
+        "tags": [
+          "ISBN"
+        ]
+      }
+    },
+    "/api/health": {
+      "get": {
+        "operationId": "health",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Health"
+        ]
+      }
+    },
+    "/api/reader/library": {
+      "get": {
+        "operationId": "getLibrary",
+        "parameters": [
+          {
+            "name": "filter",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": "ALL",
+              "type": "string",
+              "enum": [
+                "ALL",
+                "READING",
+                "BOOKMARKED",
+                "COMPLETED"
+              ]
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Search term for title or author",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 20,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReaderLibraryResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get reader library items with progress and bookmark status.",
+        "tags": [
+          "Reader"
+        ]
+      }
+    },
+    "/api/reader/history": {
+      "get": {
+        "operationId": "getHistory",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReaderLibraryItemDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get reader recent reading history.",
+        "tags": [
+          "Reader"
+        ]
+      }
+    },
+    "/api/reader/bookmarks": {
+      "get": {
+        "operationId": "getBookmarks",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReaderLibraryItemDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get reader bookmarked documents.",
+        "tags": [
+          "Reader"
+        ]
+      },
+      "post": {
+        "operationId": "addBookmark",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BookmarkDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Bookmark saved successfully."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Add a document bookmark for current reader.",
+        "tags": [
+          "Reader"
+        ]
+      }
+    },
+    "/api/reader/documents/{documentId}/state": {
+      "get": {
+        "operationId": "getDocumentState",
+        "parameters": [
+          {
+            "name": "documentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReaderDocumentStateDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get reader personalized state (bookmarked, progress) for one document.",
+        "tags": [
+          "Reader"
+        ]
+      }
+    },
+    "/api/reader/bookmarks/{documentId}": {
+      "delete": {
+        "operationId": "removeBookmark",
+        "parameters": [
+          {
+            "name": "documentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Bookmark removed successfully."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Remove a document bookmark for current reader.",
+        "tags": [
+          "Reader"
+        ]
+      }
+    },
+    "/api/reader/progress/{documentId}": {
+      "patch": {
+        "operationId": "updateProgress",
+        "parameters": [
+          {
+            "name": "documentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReadingProgressDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReadingProgressStateDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update reading progress for a document.",
+        "tags": [
+          "Reader"
+        ]
+      }
+    },
+    "/api/access/documents/{documentId}/decision": {
+      "get": {
+        "operationId": "getDecision",
+        "parameters": [
+          {
+            "name": "documentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccessDecisionDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Check access decision for a document by reader or staff role.",
+        "tags": [
+          "Access"
+        ]
+      }
+    },
+    "/api/access/documents/{documentId}/manifest": {
+      "get": {
+        "operationId": "getManifest",
+        "parameters": [
+          {
+            "name": "documentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProtectedDocumentManifestDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get protected document manifest metadata for reader canvas viewing.",
+        "tags": [
+          "Access"
+        ]
+      }
+    },
+    "/api/access/documents/{documentId}/pages/{pageNumber}": {
+      "get": {
+        "operationId": "getPage",
+        "parameters": [
+          {
+            "name": "documentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageNumber",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get an authorized, server-watermarked page image.",
+        "tags": [
+          "Access"
+        ]
+      }
+    },
+    "/api/access/documents/{documentId}/view-token": {
+      "post": {
+        "operationId": "createViewToken",
+        "parameters": [
+          {
+            "name": "documentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProtectedDocumentUrlDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Obtain a protected viewing URL token for staff or legacy viewer.",
+        "tags": [
+          "Access"
+        ]
+      }
+    },
+    "/api/access/documents/{documentId}/download-token": {
+      "post": {
+        "operationId": "createDownloadToken",
+        "parameters": [
+          {
+            "name": "documentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProtectedDocumentUrlDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Obtain a protected download URL token (staff only).",
+        "tags": [
+          "Access"
+        ]
+      }
+    },
+    "/api/access/documents/{documentId}/stream": {
+      "get": {
+        "operationId": "streamDocument",
+        "parameters": [
+          {
+            "name": "documentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "token",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Stream protected document PDF content (staff internal).",
+        "tags": [
+          "Access"
+        ]
+      }
+    },
+    "/api/access/documents/{documentId}/file": {
+      "get": {
+        "operationId": "downloadDocument",
+        "parameters": [
+          {
+            "name": "documentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "token",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Download protected document PDF file (staff internal).",
+        "tags": [
+          "Access"
+        ]
+      }
+    },
+    "/api/taxonomy/categories": {
+      "get": {
+        "operationId": "listCategories",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TaxonomyCategoryDto"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "List category options for staff document metadata.",
+        "tags": [
+          "Taxonomy"
+        ]
+      }
+    },
+    "/api/taxonomy/categories/{id}/impact": {
+      "get": {
+        "operationId": "getCategoryImpact",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaxonomyCategoryImpactDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get category deletion and reassignment impact metrics.",
+        "tags": [
+          "Taxonomy"
+        ]
+      }
+    },
+    "/api/taxonomy/tags": {
+      "get": {
+        "operationId": "listTags",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TaxonomyTagDto"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "List tag options for staff document metadata.",
+        "tags": [
+          "Taxonomy"
+        ]
+      }
+    },
+    "/api/taxonomy/tags/{id}/impact": {
+      "get": {
+        "operationId": "getTagImpact",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaxonomyTagImpactDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get tag usage impact metrics.",
+        "tags": [
+          "Taxonomy"
+        ]
+      }
+    },
+    "/api/admin/categories/{id}/impact": {
+      "get": {
+        "operationId": "getCategoryImpact",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaxonomyCategoryImpactDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get category deletion and reassignment impact metrics.",
+        "tags": [
+          "Admin Taxonomy"
+        ]
+      }
+    },
+    "/api/admin/categories": {
+      "post": {
+        "operationId": "createCategory",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTaxonomyCategoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaxonomyCategoryDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Create a category.",
+        "tags": [
+          "Admin Taxonomy"
+        ]
+      }
+    },
+    "/api/admin/categories/{id}": {
+      "patch": {
+        "operationId": "updateCategory",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTaxonomyCategoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaxonomyCategoryDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Edit a category name or parent.",
+        "tags": [
+          "Admin Taxonomy"
+        ]
+      },
+      "delete": {
+        "operationId": "deleteCategory",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "targetCategoryId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReassignAndDeleteCategoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Category deleted successfully."
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Delete a category safely or reassign its contents before deletion.",
+        "tags": [
+          "Admin Taxonomy"
+        ]
+      }
+    },
+    "/api/admin/categories/{id}/reassign-and-delete": {
+      "post": {
+        "operationId": "reassignAndDeleteCategory",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReassignAndDeleteCategoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Category contents reassigned and category deleted."
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Reassign associated documents and subcategories then delete category.",
+        "tags": [
+          "Admin Taxonomy"
+        ]
+      }
+    },
+    "/api/admin/tags/{id}/impact": {
+      "get": {
+        "operationId": "getTagImpact",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaxonomyTagImpactDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get tag usage impact metrics.",
+        "tags": [
+          "Admin Taxonomy"
+        ]
+      }
+    },
+    "/api/admin/tags": {
+      "post": {
+        "operationId": "createTag",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTaxonomyTagDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaxonomyTagDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Create a tag.",
+        "tags": [
+          "Admin Taxonomy"
+        ]
+      }
+    },
+    "/api/admin/tags/{id}": {
+      "patch": {
+        "operationId": "updateTag",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTaxonomyTagDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaxonomyTagDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Edit a tag.",
+        "tags": [
+          "Admin Taxonomy"
+        ]
+      },
+      "delete": {
+        "operationId": "deleteTag",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tag deleted successfully."
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Delete a tag and detach it from all documents.",
+        "tags": [
+          "Admin Taxonomy"
+        ]
+      }
+    },
+    "/api/admin/tags/{id}/merge": {
+      "post": {
+        "operationId": "mergeTag",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MergeTagDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Tag merged successfully."
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Merge source tag into target tag and delete source tag.",
+        "tags": [
+          "Admin Taxonomy"
+        ]
+      }
+    },
+    "/api/admin/users": {
+      "get": {
+        "operationId": "listUsers",
+        "parameters": [
+          {
+            "name": "q",
+            "required": false,
+            "in": "query",
+            "description": "Case-insensitive email search.",
+            "schema": {
+              "maxLength": 254,
+              "type": "string"
+            }
+          },
+          {
+            "name": "role",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ADMIN",
+                "LIBRARIAN",
+                "READER"
+              ]
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ACTIVE",
+                "DEACTIVATED"
+              ]
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserListResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "List user administration records with safe account and session metadata.",
+        "tags": [
+          "Admin Users"
+        ]
+      }
+    },
+    "/api/admin/users/{userId}": {
+      "get": {
+        "operationId": "getUserDetail",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDetailResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Return one user administration record with safe session and audit summaries.",
+        "tags": [
+          "Admin Users"
+        ]
+      }
+    },
+    "/api/admin/users/{userId}/role": {
+      "patch": {
+        "operationId": "changeUserRole",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangeUserRoleDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDetailResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Change a user role transactionally and revoke active sessions.",
+        "tags": [
+          "Admin Users"
+        ]
+      }
+    },
+    "/api/admin/users/{userId}/deactivate": {
+      "post": {
+        "operationId": "deactivateUser",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangeUserStatusDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDetailResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Deactivate a user transactionally and revoke active sessions.",
+        "tags": [
+          "Admin Users"
+        ]
+      }
+    },
+    "/api/admin/users/{userId}/reactivate": {
+      "post": {
+        "operationId": "reactivateUser",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangeUserStatusDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDetailResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Reactivate a deactivated user transactionally.",
+        "tags": [
+          "Admin Users"
+        ]
+      }
+    },
+    "/api/admin/settings/general": {
+      "get": {
+        "operationId": "getGeneralSettings",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeneralSettingsResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Return product-owned settings and safe read-only deployment metadata.",
+        "tags": [
+          "Admin Settings"
+        ]
+      },
+      "patch": {
+        "operationId": "updateGeneralSettings",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateGeneralSettingsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeneralSettingsResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Update product-owned general settings.",
+        "tags": [
+          "Admin Settings"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "LIBIF API",
+    "description": "OpenAPI contract for LIBIF web and API integration.",
+    "version": "0.1.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      }
+    },
+    "schemas": {
+      "RegisterRequestDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "reader@example.edu"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 12,
+            "example": "correct horse battery staple"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "SessionUserDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "dev-librarian"
+          },
+          "email": {
+            "type": "string",
+            "example": "librarian@libif.local"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "ADMIN",
+              "LIBRARIAN",
+              "READER"
+            ]
+          },
+          "permissions": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "catalogue:read",
+                "reader:library:read",
+                "admin:books:read",
+                "admin:books:write",
+                "admin:taxonomy:manage",
+                "admin:users:manage"
+              ]
+            }
+          }
+        },
+        "required": [
+          "id",
+          "email",
+          "role",
+          "permissions"
+        ]
+      },
+      "SessionDto": {
+        "type": "object",
+        "properties": {
+          "authenticated": {
+            "type": "boolean",
+            "example": true
+          },
+          "user": {
+            "$ref": "#/components/schemas/SessionUserDto"
+          },
+          "permissions": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "catalogue:read",
+                "reader:library:read",
+                "admin:books:read",
+                "admin:books:write",
+                "admin:taxonomy:manage",
+                "admin:users:manage"
+              ]
+            }
+          },
+          "strategy": {
+            "type": "string",
+            "enum": [
+              "persistent-cookie",
+              "development-header"
+            ]
+          }
+        },
+        "required": [
+          "authenticated",
+          "permissions",
+          "strategy"
+        ]
+      },
+      "AuthErrorDto": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "AUTHENTICATION_REQUIRED"
+          },
+          "message": {
+            "type": "string",
+            "example": "Authentication is required."
+          },
+          "fieldErrors": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "example": {}
+          },
+          "traceId": {
+            "type": "string",
+            "example": "request-trace-id"
+          },
+          "status": {
+            "type": "number",
+            "example": 403
+          }
+        },
+        "required": [
+          "code",
+          "message",
+          "fieldErrors",
+          "traceId",
+          "status"
+        ]
+      },
+      "SignInRequestDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "reader@example.edu"
+          },
+          "password": {
+            "type": "string",
+            "example": "correct horse battery staple"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "AuthMessageDto": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "If an account exists for that email, a reset link has been sent."
+          }
+        },
+        "required": [
+          "message"
+        ]
+      },
+      "PasswordResetRequestDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "reader@example.edu"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "PasswordResetDto": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "example": "reset-token-from-email"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 12,
+            "example": "new correct horse battery staple"
+          }
+        },
+        "required": [
+          "token",
+          "password"
+        ]
+      },
+      "ProcessingJobResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "bookId": {
+            "type": "string"
+          },
+          "bookFileId": {
+            "type": "string"
+          },
+          "bookTitle": {
+            "type": "string",
+            "nullable": true
+          },
+          "bookStatus": {
+            "type": "string",
+            "nullable": true
+          },
+          "type": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "QUEUED",
+              "RUNNING",
+              "SUCCEEDED",
+              "FAILED",
+              "CANCELLED",
+              "SUPERSEDED"
+            ]
+          },
+          "stage": {
+            "type": "string",
+            "nullable": true
+          },
+          "progressPercent": {
+            "type": "number"
+          },
+          "attemptNumber": {
+            "type": "number"
+          },
+          "attempts": {
+            "type": "number"
+          },
+          "retryOfJobId": {
+            "type": "string",
+            "nullable": true
+          },
+          "terminalReason": {
+            "type": "string",
+            "nullable": true
+          },
+          "errorMessage": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "bookId",
+          "bookFileId",
+          "type",
+          "status",
+          "attemptNumber",
+          "attempts",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "ProcessingJobHistoryDto": {
+        "type": "object",
+        "properties": {
+          "current": {
+            "$ref": "#/components/schemas/ProcessingJobResponseDto"
+          },
+          "history": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProcessingJobResponseDto"
+            }
+          }
+        },
+        "required": [
+          "current",
+          "history"
+        ]
+      },
+      "NotificationResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "recipientId": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "body": {
+            "type": "string"
+          },
+          "payload": {
+            "type": "object",
+            "nullable": true
+          },
+          "actionHref": {
+            "type": "string",
+            "nullable": true
+          },
+          "isRead": {
+            "type": "boolean"
+          },
+          "readAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "recipientId",
+          "type",
+          "title",
+          "body",
+          "isRead",
+          "createdAt"
+        ]
+      },
+      "PagedNotificationListResponseDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NotificationResponseDto"
+            }
+          },
+          "totalCount": {
+            "type": "number"
+          },
+          "page": {
+            "type": "number"
+          },
+          "pageSize": {
+            "type": "number"
+          },
+          "totalPages": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "items",
+          "totalCount",
+          "page",
+          "pageSize",
+          "totalPages"
+        ]
+      },
+      "UnreadNotificationCountDto": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "number",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "count"
+        ]
+      },
+      "ApprovalReviewResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "bookId": {
+            "type": "string"
+          },
+          "bookFileId": {
+            "type": "string"
+          },
+          "processingJobId": {
+            "type": "string"
+          },
+          "round": {
+            "type": "number"
+          },
+          "bookTitle": {
+            "type": "string",
+            "nullable": true
+          },
+          "reviewerId": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "APPROVED",
+              "REJECTED",
+              "CORRECTION_REQUESTED",
+              "SUPERSEDED"
+            ]
+          },
+          "reason": {
+            "type": "string",
+            "nullable": true
+          },
+          "requestedChanges": {
+            "type": "string",
+            "nullable": true
+          },
+          "decidedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "supersededAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "bookId",
+          "bookFileId",
+          "processingJobId",
+          "round",
+          "status",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "ApproveReviewDto": {
+        "type": "object",
+        "properties": {
+          "comment": {
+            "type": "string",
+            "description": "Optional reviewer comment"
+          }
+        }
+      },
+      "RejectReviewDto": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "description": "Required reason for rejecting document"
+          }
+        },
+        "required": [
+          "reason"
+        ]
+      },
+      "RequestCorrectionDto": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "description": "Reason for requesting correction"
+          },
+          "requestedChanges": {
+            "type": "string",
+            "description": "Specific metadata or file changes requested"
+          }
+        },
+        "required": [
+          "reason",
+          "requestedChanges"
+        ]
+      },
+      "BookStatusCountsDto": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "number"
+          },
+          "draft": {
+            "type": "number"
+          },
+          "pendingProcessing": {
+            "type": "number"
+          },
+          "processing": {
+            "type": "number"
+          },
+          "pendingApproval": {
+            "type": "number"
+          },
+          "correctionRequired": {
+            "type": "number"
+          },
+          "published": {
+            "type": "number"
+          },
+          "rejected": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "total",
+          "draft",
+          "pendingProcessing",
+          "processing",
+          "pendingApproval",
+          "correctionRequired",
+          "published",
+          "rejected"
+        ]
+      },
+      "ProcessingJobStatusCountsDto": {
+        "type": "object",
+        "properties": {
+          "queued": {
+            "type": "number"
+          },
+          "running": {
+            "type": "number"
+          },
+          "succeeded": {
+            "type": "number"
+          },
+          "failed": {
+            "type": "number"
+          },
+          "cancelled": {
+            "type": "number"
+          },
+          "superseded": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "queued",
+          "running",
+          "succeeded",
+          "failed",
+          "cancelled",
+          "superseded"
+        ]
+      },
+      "TaxonomyCountsDto": {
+        "type": "object",
+        "properties": {
+          "categories": {
+            "type": "number"
+          },
+          "tags": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "categories",
+          "tags"
+        ]
+      },
+      "UserRoleCountsDto": {
+        "type": "object",
+        "properties": {
+          "admins": {
+            "type": "number"
+          },
+          "librarians": {
+            "type": "number"
+          },
+          "readers": {
+            "type": "number"
+          },
+          "total": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "admins",
+          "librarians",
+          "readers",
+          "total"
+        ]
+      },
+      "RecentBookSummaryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "DRAFT",
+              "PENDING_PROCESSING",
+              "PROCESSING",
+              "PENDING_APPROVAL",
+              "CORRECTION_REQUIRED",
+              "PUBLISHED",
+              "REJECTED"
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "status",
+          "createdAt"
+        ]
+      },
+      "ReportingActivityCountsDto": {
+        "type": "object",
+        "properties": {
+          "processing": {
+            "type": "number"
+          },
+          "approval": {
+            "type": "number"
+          },
+          "correction": {
+            "type": "number"
+          },
+          "total": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "processing",
+          "approval",
+          "correction",
+          "total"
+        ]
+      },
+      "ReportingActivityItemDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "documentId": {
+            "type": "string"
+          },
+          "documentTitle": {
+            "type": "string"
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "CREATED",
+              "METADATA_UPDATED",
+              "FILE_UPLOADED",
+              "FILE_REPLACED",
+              "PROCESSING_QUEUED",
+              "PROCESSING_STARTED",
+              "PROCESSING_COMPLETED",
+              "APPROVAL_REQUESTED",
+              "APPROVED",
+              "REJECTED",
+              "CORRECTION_REQUESTED",
+              "PUBLISHED"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "actorEmail": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "documentId",
+          "documentTitle",
+          "action",
+          "createdAt"
+        ]
+      },
+      "ReportingActivitySummaryDto": {
+        "type": "object",
+        "properties": {
+          "counts": {
+            "$ref": "#/components/schemas/ReportingActivityCountsDto"
+          },
+          "recent": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReportingActivityItemDto"
+            }
+          }
+        },
+        "required": [
+          "counts",
+          "recent"
+        ]
+      },
+      "LibrarianDashboardSummaryDto": {
+        "type": "object",
+        "properties": {
+          "generatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "books": {
+            "$ref": "#/components/schemas/BookStatusCountsDto"
+          },
+          "processingJobs": {
+            "$ref": "#/components/schemas/ProcessingJobStatusCountsDto"
+          },
+          "taxonomy": {
+            "$ref": "#/components/schemas/TaxonomyCountsDto"
+          },
+          "users": {
+            "$ref": "#/components/schemas/UserRoleCountsDto"
+          },
+          "recentBooks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RecentBookSummaryDto"
+            }
+          },
+          "activity": {
+            "$ref": "#/components/schemas/ReportingActivitySummaryDto"
+          }
+        },
+        "required": [
+          "generatedAt",
+          "books",
+          "processingJobs",
+          "taxonomy",
+          "users",
+          "recentBooks",
+          "activity"
+        ]
+      },
+      "ReaderSecuritySummaryDto": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "number"
+          },
+          "rateLimited": {
+            "type": "number"
+          },
+          "scrapeSuspected": {
+            "type": "number"
+          },
+          "highRisk": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "total",
+          "rateLimited",
+          "scrapeSuspected",
+          "highRisk"
+        ]
+      },
+      "ManagementDashboardSummaryDto": {
+        "type": "object",
+        "properties": {
+          "generatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "from": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "to": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "documentsCreated": {
+            "type": "number"
+          },
+          "usersCreated": {
+            "type": "number"
+          },
+          "activityEvents": {
+            "type": "number"
+          },
+          "readerSecurity": {
+            "$ref": "#/components/schemas/ReaderSecuritySummaryDto"
+          }
+        },
+        "required": [
+          "generatedAt",
+          "from",
+          "to",
+          "documentsCreated",
+          "usersCreated",
+          "activityEvents",
+          "readerSecurity"
+        ]
+      },
+      "ReaderAccessRiskCountsDto": {
+        "type": "object",
+        "properties": {
+          "none": {
+            "type": "number"
+          },
+          "low": {
+            "type": "number"
+          },
+          "medium": {
+            "type": "number"
+          },
+          "high": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "none",
+          "low",
+          "medium",
+          "high"
+        ]
+      },
+      "ReaderAccessReportItemDto": {
+        "type": "object",
+        "properties": {
+          "eventReference": {
+            "type": "string",
+            "description": "Opaque event alias; never the persisted event identifier."
+          },
+          "documentReference": {
+            "type": "string",
+            "description": "Opaque document alias; never the persisted document identifier."
+          },
+          "readerLabel": {
+            "type": "string",
+            "description": "Masked display label; never a raw account identifier."
+          },
+          "eventType": {
+            "type": "string",
+            "enum": [
+              "VIEWER_OPENED",
+              "PAGE_SERVED",
+              "PAGE_DENIED",
+              "RATE_LIMITED",
+              "SCRAPE_SUSPECTED"
+            ]
+          },
+          "riskLevel": {
+            "type": "string",
+            "enum": [
+              "NONE",
+              "LOW",
+              "MEDIUM",
+              "HIGH"
+            ]
+          },
+          "reasonCode": {
+            "type": "string",
+            "enum": [
+              "ACCESS_DENIED",
+              "DOCUMENT_UNAVAILABLE",
+              "PAGE_OUT_OF_RANGE",
+              "RATE_LIMIT_EXCEEDED",
+              "CONCURRENCY_LIMIT_EXCEEDED",
+              "PAGE_ENUMERATION",
+              "IMPOSSIBLE_READING_RATE",
+              "REPEATED_INVALID_PAGE",
+              "PARALLEL_SESSION_ABUSE",
+              "DEPENDENCY_UNAVAILABLE"
+            ],
+            "nullable": true
+          },
+          "pageNumber": {
+            "type": "number",
+            "nullable": true,
+            "minimum": 1
+          },
+          "traceFingerprint": {
+            "type": "string",
+            "nullable": true,
+            "description": "Opaque SHA-256 fingerprint used to resolve a visible watermark trace."
+          },
+          "occurredAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "eventReference",
+          "documentReference",
+          "readerLabel",
+          "eventType",
+          "riskLevel",
+          "occurredAt"
+        ]
+      },
+      "ReaderAccessReportResponseDto": {
+        "type": "object",
+        "properties": {
+          "generatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "riskCounts": {
+            "$ref": "#/components/schemas/ReaderAccessRiskCountsDto"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReaderAccessReportItemDto"
+            }
+          },
+          "totalCount": {
+            "type": "number"
+          },
+          "page": {
+            "type": "number"
+          },
+          "pageSize": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "generatedAt",
+          "riskCounts",
+          "items",
+          "totalCount",
+          "page",
+          "pageSize"
+        ]
+      },
+      "IntakeBookSummaryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "DRAFT",
+              "PENDING_PROCESSING",
+              "PROCESSING",
+              "PENDING_APPROVAL",
+              "CORRECTION_REQUIRED",
+              "PUBLISHED",
+              "REJECTED"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "status"
+        ]
+      },
+      "IntakeFileSummaryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "originalFilename": {
+            "type": "string"
+          },
+          "sizeBytes": {
+            "type": "string",
+            "example": "123456"
+          }
+        },
+        "required": [
+          "id",
+          "originalFilename",
+          "sizeBytes"
+        ]
+      },
+      "IntakeProcessingJobSummaryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "QUEUED",
+              "RUNNING",
+              "SUCCEEDED",
+              "FAILED",
+              "CANCELLED",
+              "SUPERSEDED"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "status"
+        ]
+      },
+      "CreateBookIntakeResponseDto": {
+        "type": "object",
+        "properties": {
+          "book": {
+            "$ref": "#/components/schemas/IntakeBookSummaryDto"
+          },
+          "file": {
+            "$ref": "#/components/schemas/IntakeFileSummaryDto"
+          },
+          "processingJob": {
+            "$ref": "#/components/schemas/IntakeProcessingJobSummaryDto"
+          }
+        },
+        "required": [
+          "book",
+          "file",
+          "processingJob"
+        ]
+      },
+      "CategoryResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "parentId": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "slug"
+        ]
+      },
+      "TagResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "slug"
+        ]
+      },
+      "AuthorResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ]
+      },
+      "BookFileSummaryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "originalFilename": {
+            "type": "string"
+          },
+          "sizeBytes": {
+            "type": "string",
+            "example": "123456"
+          }
+        },
+        "required": [
+          "id",
+          "originalFilename",
+          "sizeBytes"
+        ]
+      },
+      "AdminBookListItemResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "isbn": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "DRAFT",
+              "PENDING_PROCESSING",
+              "PROCESSING",
+              "PENDING_APPROVAL",
+              "CORRECTION_REQUIRED",
+              "PUBLISHED",
+              "REJECTED"
+            ]
+          },
+          "category": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CategoryResponseDto"
+              }
+            ]
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TagResponseDto"
+            }
+          },
+          "authors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AuthorResponseDto"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "file": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/BookFileSummaryDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "status",
+          "tags",
+          "authors",
+          "createdAt"
+        ]
+      },
+      "PublicBookListItemResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "isbn": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "DRAFT",
+              "PENDING_PROCESSING",
+              "PROCESSING",
+              "PENDING_APPROVAL",
+              "CORRECTION_REQUIRED",
+              "PUBLISHED",
+              "REJECTED"
+            ]
+          },
+          "category": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CategoryResponseDto"
+              }
+            ]
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TagResponseDto"
+            }
+          },
+          "authors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AuthorResponseDto"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "status",
+          "tags",
+          "authors",
+          "createdAt"
+        ]
+      },
+      "PagedPublicBookListResponseDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PublicBookListItemResponseDto"
+            }
+          },
+          "totalCount": {
+            "type": "number",
+            "description": "Total number of items matching the query"
+          },
+          "page": {
+            "type": "number",
+            "description": "Current page (1-based)"
+          },
+          "pageSize": {
+            "type": "number",
+            "description": "Page size requested"
+          }
+        }
+      },
+      "PublicBookDetailResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "isbn": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "DRAFT",
+              "PENDING_PROCESSING",
+              "PROCESSING",
+              "PENDING_APPROVAL",
+              "CORRECTION_REQUIRED",
+              "PUBLISHED",
+              "REJECTED"
+            ]
+          },
+          "category": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CategoryResponseDto"
+              }
+            ]
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TagResponseDto"
+            }
+          },
+          "authors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AuthorResponseDto"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "subtitle": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "publisher": {
+            "type": "string",
+            "nullable": true
+          },
+          "publishedYear": {
+            "type": "number",
+            "nullable": true
+          },
+          "language": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "status",
+          "tags",
+          "authors",
+          "createdAt"
+        ]
+      },
+      "BookFileVersionDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "originalFilename": {
+            "type": "string"
+          },
+          "sizeBytes": {
+            "type": "string"
+          },
+          "mimeType": {
+            "type": "string"
+          },
+          "version": {
+            "type": "number"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "REPLACED",
+              "REJECTED"
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "originalFilename",
+          "sizeBytes",
+          "mimeType",
+          "version",
+          "status",
+          "createdAt"
+        ]
+      },
+      "ProcessingJobSummaryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "QUEUED",
+              "RUNNING",
+              "SUCCEEDED",
+              "FAILED",
+              "CANCELLED",
+              "SUPERSEDED"
+            ]
+          },
+          "stage": {
+            "type": "string",
+            "nullable": true
+          },
+          "progressPercent": {
+            "type": "number"
+          },
+          "errorMessage": {
+            "type": "string",
+            "nullable": true
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "progressPercent",
+          "updatedAt"
+        ]
+      },
+      "ApprovalReviewSummaryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "APPROVED",
+              "REJECTED",
+              "CORRECTION_REQUESTED",
+              "SUPERSEDED"
+            ]
+          },
+          "reason": {
+            "type": "string",
+            "nullable": true
+          },
+          "requestedChanges": {
+            "type": "string",
+            "nullable": true
+          },
+          "reviewerEmail": {
+            "type": "string",
+            "nullable": true
+          },
+          "decidedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "createdAt"
+        ]
+      },
+      "BookAuditEventDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "CREATED",
+              "METADATA_UPDATED",
+              "FILE_UPLOADED",
+              "FILE_REPLACED",
+              "PROCESSING_QUEUED",
+              "PROCESSING_STARTED",
+              "PROCESSING_COMPLETED",
+              "APPROVAL_REQUESTED",
+              "APPROVED",
+              "REJECTED",
+              "CORRECTION_REQUESTED",
+              "PUBLISHED"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "actorEmail": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "action",
+          "createdAt"
+        ]
+      },
+      "DocumentDetailResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "subtitle": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "publisher": {
+            "type": "string",
+            "nullable": true
+          },
+          "publishedYear": {
+            "type": "number",
+            "nullable": true
+          },
+          "language": {
+            "type": "string",
+            "nullable": true
+          },
+          "isbn": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "DRAFT",
+              "PENDING_PROCESSING",
+              "PROCESSING",
+              "PENDING_APPROVAL",
+              "CORRECTION_REQUIRED",
+              "PUBLISHED",
+              "REJECTED"
+            ]
+          },
+          "category": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CategoryResponseDto"
+              }
+            ]
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TagResponseDto"
+            }
+          },
+          "authors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AuthorResponseDto"
+            }
+          },
+          "files": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BookFileVersionDto"
+            }
+          },
+          "activeFile": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/BookFileVersionDto"
+              }
+            ]
+          },
+          "activeProcessingJob": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ProcessingJobSummaryDto"
+              }
+            ]
+          },
+          "processingHistory": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProcessingJobSummaryDto"
+            }
+          },
+          "approvalHistory": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ApprovalReviewSummaryDto"
+            }
+          },
+          "latestApprovalReview": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ApprovalReviewSummaryDto"
+              }
+            ]
+          },
+          "auditHistory": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BookAuditEventDto"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "status",
+          "tags",
+          "authors",
+          "files",
+          "processingHistory",
+          "approvalHistory",
+          "auditHistory",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "PagedDocumentListResponseDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DocumentDetailResponseDto"
+            }
+          },
+          "totalCount": {
+            "type": "number"
+          },
+          "page": {
+            "type": "number"
+          },
+          "pageSize": {
+            "type": "number"
+          },
+          "totalPages": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "items",
+          "totalCount",
+          "page",
+          "pageSize",
+          "totalPages"
+        ]
+      },
+      "UpdateDocumentMetadataDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "Clean Code: A Handbook of Agile Software Craftsmanship"
+          },
+          "subtitle": {
+            "type": "string",
+            "example": "Refactoring and Design Principles"
+          },
+          "description": {
+            "type": "string",
+            "example": "A comprehensive guide to code craftsmanship."
+          },
+          "publisher": {
+            "type": "string",
+            "example": "Prentice Hall"
+          },
+          "publishedYear": {
+            "type": "number",
+            "example": 2008
+          },
+          "language": {
+            "type": "string",
+            "example": "en"
+          },
+          "isbn": {
+            "type": "string",
+            "example": "9780132350884"
+          },
+          "categoryId": {
+            "type": "string",
+            "example": "cat_software"
+          },
+          "authors": {
+            "example": [
+              "Robert C. Martin"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "tags": {
+            "example": [
+              "software",
+              "clean-code"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "title",
+          "authors"
+        ]
+      },
+      "UploadResultBookDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "DRAFT",
+              "PENDING_PROCESSING",
+              "PROCESSING",
+              "PENDING_APPROVAL",
+              "CORRECTION_REQUIRED",
+              "PUBLISHED",
+              "REJECTED"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "status"
+        ]
+      },
+      "UploadResultFileDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "originalFilename": {
+            "type": "string"
+          },
+          "sizeBytes": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "originalFilename",
+          "sizeBytes"
+        ]
+      },
+      "UploadResultJobDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "QUEUED",
+              "RUNNING",
+              "SUCCEEDED",
+              "FAILED",
+              "CANCELLED",
+              "SUPERSEDED"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "status"
+        ]
+      },
+      "UploadResultDto": {
+        "type": "object",
+        "properties": {
+          "book": {
+            "$ref": "#/components/schemas/UploadResultBookDto"
+          },
+          "file": {
+            "$ref": "#/components/schemas/UploadResultFileDto"
+          },
+          "processingJob": {
+            "$ref": "#/components/schemas/UploadResultJobDto"
+          }
+        },
+        "required": [
+          "book",
+          "file",
+          "processingJob"
+        ]
+      },
+      "IsbnMetadataDto": {
+        "type": "object",
+        "properties": {
+          "isbn": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "authors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "publisher": {
+            "type": "string"
+          },
+          "publishedYear": {
+            "type": "number"
+          },
+          "description": {
+            "type": "string"
+          },
+          "language": {
+            "type": "string"
+          }
+        }
+      },
+      "IsbnLookupResponseDto": {
+        "type": "object",
+        "properties": {
+          "found": {
+            "type": "boolean"
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/IsbnMetadataDto"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "found"
+        ]
+      },
+      "HealthResponseDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "ok"
+          },
+          "service": {
+            "type": "string",
+            "example": "libif-api"
+          }
+        },
+        "required": [
+          "status",
+          "service"
+        ]
+      },
+      "ReadingProgressStateDto": {
+        "type": "object",
+        "properties": {
+          "currentPage": {
+            "type": "number",
+            "example": 5
+          },
+          "totalPages": {
+            "type": "number",
+            "example": 100
+          },
+          "percentage": {
+            "type": "number",
+            "example": 5
+          },
+          "lastReadAt": {
+            "type": "string",
+            "example": "2026-07-21T10:00:00.000Z"
+          }
+        },
+        "required": [
+          "currentPage",
+          "totalPages",
+          "percentage",
+          "lastReadAt"
+        ]
+      },
+      "ReaderLibraryItemDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "cm123456789"
+          },
+          "title": {
+            "type": "string",
+            "example": "Intro to Algorithms"
+          },
+          "subtitle": {
+            "type": "string",
+            "example": "2nd Edition"
+          },
+          "authors": {
+            "example": [
+              "Thomas H. Cormen"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "publisher": {
+            "type": "string",
+            "example": "MIT Press"
+          },
+          "publishedYear": {
+            "type": "number",
+            "example": 2009
+          },
+          "status": {
+            "type": "string",
+            "example": "PUBLISHED"
+          },
+          "bookmarked": {
+            "type": "boolean",
+            "example": true
+          },
+          "progress": {
+            "$ref": "#/components/schemas/ReadingProgressStateDto"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2026-07-21T10:00:00.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "authors",
+          "status",
+          "bookmarked",
+          "updatedAt"
+        ]
+      },
+      "ReaderLibraryResponseDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReaderLibraryItemDto"
+            }
+          },
+          "total": {
+            "type": "number",
+            "example": 10
+          },
+          "readingCount": {
+            "type": "number",
+            "example": 3
+          },
+          "bookmarkedCount": {
+            "type": "number",
+            "example": 5
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "readingCount",
+          "bookmarkedCount"
+        ]
+      },
+      "ReaderDocumentProgressDto": {
+        "type": "object",
+        "properties": {
+          "currentPage": {
+            "type": "number",
+            "minimum": 1
+          },
+          "totalPages": {
+            "type": "number",
+            "nullable": true,
+            "minimum": 1
+          },
+          "percentage": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "READING",
+              "COMPLETED"
+            ]
+          },
+          "lastReadAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "currentPage",
+          "percentage",
+          "status",
+          "lastReadAt"
+        ]
+      },
+      "ReaderDocumentStateDto": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "string"
+          },
+          "bookmarked": {
+            "type": "boolean"
+          },
+          "progress": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ReaderDocumentProgressDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "documentId",
+          "bookmarked"
+        ]
+      },
+      "BookmarkDto": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "string",
+            "example": "cm123456789",
+            "description": "Document ID to bookmark"
+          }
+        },
+        "required": [
+          "documentId"
+        ]
+      },
+      "ReadingProgressDto": {
+        "type": "object",
+        "properties": {
+          "currentPage": {
+            "type": "number",
+            "example": 5,
+            "description": "Current page number"
+          },
+          "totalPages": {
+            "type": "number",
+            "example": 120,
+            "description": "Authoritative total pages in document"
+          },
+          "percentage": {
+            "type": "number",
+            "example": 45.5,
+            "description": "Reading progress percentage"
+          }
+        },
+        "required": [
+          "currentPage",
+          "totalPages"
+        ]
+      },
+      "AccessDecisionDto": {
+        "type": "object",
+        "properties": {
+          "allowed": {
+            "type": "boolean",
+            "example": true,
+            "description": "Whether the current user is eligible to view/download this document"
+          },
+          "documentId": {
+            "type": "string",
+            "example": "cm123456789"
+          },
+          "userRole": {
+            "type": "string",
+            "example": "READER"
+          },
+          "documentStatus": {
+            "type": "string",
+            "example": "PUBLISHED",
+            "description": "Current lifecycle status of the document (reader-safe subset)",
+            "enum": [
+              "DRAFT",
+              "PENDING_PROCESSING",
+              "PROCESSING",
+              "PENDING_APPROVAL",
+              "CORRECTION_REQUIRED",
+              "PUBLISHED",
+              "REJECTED"
+            ]
+          },
+          "reason": {
+            "type": "string",
+            "example": "Document is published and available."
+          }
+        },
+        "required": [
+          "allowed",
+          "documentId",
+          "userRole"
+        ]
+      },
+      "ProtectedPageDescriptorDto": {
+        "type": "object",
+        "properties": {
+          "pageNumber": {
+            "type": "number",
+            "minimum": 1
+          },
+          "width": {
+            "type": "number",
+            "minimum": 1
+          },
+          "height": {
+            "type": "number",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "pageNumber",
+          "width",
+          "height"
+        ]
+      },
+      "ProtectedDocumentManifestDto": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "string"
+          },
+          "pageCount": {
+            "type": "number",
+            "minimum": 1
+          },
+          "minZoom": {
+            "type": "number",
+            "example": 0.5
+          },
+          "maxZoom": {
+            "type": "number",
+            "example": 2
+          },
+          "pages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProtectedPageDescriptorDto"
+            }
+          }
+        },
+        "required": [
+          "documentId",
+          "pageCount",
+          "minZoom",
+          "maxZoom",
+          "pages"
+        ]
+      },
+      "ProtectedDocumentUrlDto": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "example": "access_token_abc123"
+          },
+          "expiresAt": {
+            "type": "string",
+            "example": "2026-07-21T11:45:00.000Z"
+          },
+          "url": {
+            "type": "string",
+            "example": "/api/access/stream?token=access_token_abc123"
+          }
+        },
+        "required": [
+          "token",
+          "expiresAt",
+          "url"
+        ]
+      },
+      "TaxonomyCategoryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "parentId": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "slug",
+          "parentId"
+        ]
+      },
+      "TaxonomyCategoryImpactDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "documentCount": {
+            "type": "number"
+          },
+          "childCount": {
+            "type": "number"
+          },
+          "totalDescendantCount": {
+            "type": "number"
+          },
+          "isLeaf": {
+            "type": "boolean"
+          },
+          "canDirectDelete": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "documentCount",
+          "childCount",
+          "totalDescendantCount",
+          "isLeaf",
+          "canDirectDelete"
+        ]
+      },
+      "TaxonomyTagDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "slug"
+        ]
+      },
+      "TaxonomyTagImpactDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "documentCount": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "documentCount"
+        ]
+      },
+      "CreateTaxonomyCategoryDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Institutional Archives"
+          },
+          "parentId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Parent category ID. Omit or pass null for a root category."
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "UpdateTaxonomyCategoryDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Institutional Archives"
+          },
+          "parentId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Parent category ID. Pass null to move the category to the root."
+          }
+        }
+      },
+      "ReassignAndDeleteCategoryDto": {
+        "type": "object",
+        "properties": {
+          "targetCategoryId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Target category ID to reassign associated documents and child categories before deletion."
+          }
+        }
+      },
+      "CreateTaxonomyTagDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Digital Preservation"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "UpdateTaxonomyTagDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Digital Preservation"
+          }
+        }
+      },
+      "MergeTagDto": {
+        "type": "object",
+        "properties": {
+          "targetTagId": {
+            "type": "string",
+            "description": "Target tag ID to merge source tag into."
+          }
+        },
+        "required": [
+          "targetTagId"
+        ]
+      },
+      "UserListItemDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "ADMIN",
+              "LIBRARIAN",
+              "READER"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "DEACTIVATED"
+            ]
+          },
+          "lastSignInAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "deactivatedAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "activeSessionCount": {
+            "type": "number",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "id",
+          "email",
+          "role",
+          "status",
+          "createdAt",
+          "updatedAt",
+          "activeSessionCount"
+        ]
+      },
+      "UserListResponseDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserListItemDto"
+            }
+          },
+          "totalCount": {
+            "type": "number",
+            "minimum": 0
+          },
+          "page": {
+            "type": "number",
+            "minimum": 1
+          },
+          "pageSize": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 100
+          }
+        },
+        "required": [
+          "items",
+          "totalCount",
+          "page",
+          "pageSize"
+        ]
+      },
+      "UserSessionSummaryDto": {
+        "type": "object",
+        "properties": {
+          "activeCount": {
+            "type": "number",
+            "minimum": 0
+          },
+          "revokedCount": {
+            "type": "number",
+            "minimum": 0
+          },
+          "expiredCount": {
+            "type": "number",
+            "minimum": 0
+          },
+          "mostRecentCreatedAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "mostRecentLastSeenAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "mostRecentExpiresAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "mostRecentRevokedAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "activeCount",
+          "revokedCount",
+          "expiredCount"
+        ]
+      },
+      "UserAdministrationEventDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "ROLE_CHANGED",
+              "DEACTIVATED",
+              "REACTIVATED"
+            ]
+          },
+          "previousRole": {
+            "type": "string",
+            "enum": [
+              "ADMIN",
+              "LIBRARIAN",
+              "READER"
+            ],
+            "nullable": true
+          },
+          "nextRole": {
+            "type": "string",
+            "enum": [
+              "ADMIN",
+              "LIBRARIAN",
+              "READER"
+            ],
+            "nullable": true
+          },
+          "reason": {
+            "type": "string",
+            "nullable": true
+          },
+          "actorEmail": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "action",
+          "createdAt"
+        ]
+      },
+      "UserDetailResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "ADMIN",
+              "LIBRARIAN",
+              "READER"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "DEACTIVATED"
+            ]
+          },
+          "lastSignInAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "deactivatedAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "activeSessionCount": {
+            "type": "number",
+            "minimum": 0
+          },
+          "sessionSummary": {
+            "$ref": "#/components/schemas/UserSessionSummaryDto"
+          },
+          "administrationEvents": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserAdministrationEventDto"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "email",
+          "role",
+          "status",
+          "createdAt",
+          "updatedAt",
+          "activeSessionCount",
+          "sessionSummary",
+          "administrationEvents"
+        ]
+      },
+      "ChangeUserRoleDto": {
+        "type": "object",
+        "properties": {
+          "role": {
+            "type": "string",
+            "enum": [
+              "ADMIN",
+              "LIBRARIAN",
+              "READER"
+            ]
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "role",
+          "reason"
+        ]
+      },
+      "ChangeUserStatusDto": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "reason"
+        ]
+      },
+      "DeploymentSecurityMetadataDto": {
+        "type": "object",
+        "properties": {
+          "watermarkSigningConfigured": {
+            "type": "boolean"
+          },
+          "scrapeProtectionConfigured": {
+            "type": "boolean"
+          },
+          "personalizedPageCachePolicy": {
+            "type": "string",
+            "enum": [
+              "private, no-store"
+            ]
+          },
+          "editable": {
+            "type": "boolean",
+            "enum": [
+              false
+            ]
+          }
+        },
+        "required": [
+          "watermarkSigningConfigured",
+          "scrapeProtectionConfigured",
+          "personalizedPageCachePolicy",
+          "editable"
+        ]
+      },
+      "GeneralSettingsResponseDto": {
+        "type": "object",
+        "properties": {
+          "libraryName": {
+            "type": "string"
+          },
+          "supportEmail": {
+            "type": "string",
+            "nullable": true
+          },
+          "defaultLocale": {
+            "type": "string"
+          },
+          "readerNotice": {
+            "type": "string",
+            "nullable": true
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedById": {
+            "type": "string",
+            "nullable": true
+          },
+          "deploymentSecurity": {
+            "$ref": "#/components/schemas/DeploymentSecurityMetadataDto"
+          }
+        },
+        "required": [
+          "libraryName",
+          "defaultLocale",
+          "updatedAt",
+          "deploymentSecurity"
+        ]
+      },
+      "UpdateGeneralSettingsDto": {
+        "type": "object",
+        "properties": {
+          "libraryName": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "supportEmail": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 254
+          },
+          "defaultLocale": {
+            "type": "string",
+            "example": "vi"
+          },
+          "readerNotice": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 500
+          }
+        }
+      }
+    }
+  }
+}

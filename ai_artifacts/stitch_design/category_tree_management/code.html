@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+
+<html class="h-full bg-background dark:bg-inverse-surface" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>InstiVault - Category Tree Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-dim": "#d3daea",
+                      "on-secondary-fixed": "#002021",
+                      "outline": "#717976",
+                      "tertiary-container": "#003c3c",
+                      "surface-container-lowest": "#ffffff",
+                      "surface-container-low": "#f0f3ff",
+                      "secondary": "#12696b",
+                      "on-primary-fixed": "#00201b",
+                      "secondary-container": "#a2edee",
+                      "surface-container": "#e7eefe",
+                      "primary-fixed-dim": "#a4cfc5",
+                      "primary": "#002520",
+                      "surface-tint": "#3d665e",
+                      "on-tertiary": "#ffffff",
+                      "on-primary-container": "#7ca79d",
+                      "background": "#f9f9ff",
+                      "outline-variant": "#c0c8c5",
+                      "on-error-container": "#93000a",
+                      "on-error": "#ffffff",
+                      "on-secondary": "#ffffff",
+                      "tertiary-fixed-dim": "#74d6d6",
+                      "on-secondary-container": "#1a6d6f",
+                      "on-surface-variant": "#414846",
+                      "inverse-primary": "#a4cfc5",
+                      "primary-container": "#103c35",
+                      "on-primary": "#ffffff",
+                      "surface-bright": "#f9f9ff",
+                      "on-primary-fixed-variant": "#244e46",
+                      "error": "#ba1a1a",
+                      "on-tertiary-fixed": "#002020",
+                      "primary-fixed": "#bfece1",
+                      "on-surface": "#151c27",
+                      "surface-container-highest": "#dce2f3",
+                      "secondary-fixed-dim": "#89d3d5",
+                      "on-tertiary-container": "#47adac",
+                      "on-background": "#151c27",
+                      "error-container": "#ffdad6",
+                      "inverse-on-surface": "#ebf1ff",
+                      "tertiary": "#002525",
+                      "secondary-fixed": "#a5eff1",
+                      "on-tertiary-fixed-variant": "#004f50",
+                      "surface-container-high": "#e2e8f8",
+                      "surface-variant": "#dce2f3",
+                      "surface": "#f9f9ff",
+                      "on-secondary-fixed-variant": "#004f51",
+                      "tertiary-fixed": "#91f3f2",
+                      "inverse-surface": "#2a313d"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "xl": "32px",
+                      "sm": "8px",
+                      "container-max": "1440px",
+                      "xs": "4px",
+                      "gutter": "16px",
+                      "unit": "8px",
+                      "lg": "24px",
+                      "md": "16px"
+              },
+              "fontFamily": {
+                      "title-sm": ["Be Vietnam Pro"],
+                      "body-md": ["Be Vietnam Pro"],
+                      "display-lg-mobile": ["Be Vietnam Pro"],
+                      "label-caps": ["Be Vietnam Pro"],
+                      "display-lg": ["Be Vietnam Pro"],
+                      "body-sm": ["Be Vietnam Pro"],
+                      "headline-md": ["Be Vietnam Pro"]
+              },
+              "fontSize": {
+                      "title-sm": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "display-lg-mobile": ["28px", {"lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                      "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                      "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        .tree-line::before {
+            content: '';
+            position: absolute;
+            left: 12px;
+            top: 24px;
+            bottom: -24px;
+            width: 1px;
+            background-color: #E2E8F0;
+        }
+        .tree-item-last::before {
+            display: none;
+        }
+    </style>
+</head>
+<body class="flex h-full overflow-hidden text-on-surface bg-surface font-body-md">
+<!-- SideNavBar -->
+<nav class="hidden md:flex flex-col h-full z-40 h-screen w-64 flex flex-col fixed left-0 top-0 border-r border-outline-variant bg-primary text-on-primary">
+<div class="p-lg flex items-center gap-sm">
+<span class="material-symbols-outlined text-4xl" data-icon="account_balance">account_balance</span>
+<div>
+<h1 class="font-headline-md text-headline-md text-on-primary">InstiVault</h1>
+<p class="font-label-caps text-label-caps opacity-70">Institutional Archive</p>
+</div>
+</div>
+<button class="mx-md mb-lg bg-on-primary text-primary px-md py-sm rounded font-title-sm text-title-sm flex items-center justify-center gap-sm hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined" data-icon="upload">upload</span>
+            Upload Document
+        </button>
+<ul class="flex flex-col flex-grow">
+<li>
+<a class="flex items-center gap-md px-lg py-md text-on-primary/70 hover:bg-primary-container/20 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="account_tree">account_tree</span>
+<span class="font-body-md text-body-md">Repository</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-lg py-md bg-primary-container text-on-primary-container border-l-4 border-on-tertiary-container hover:bg-primary-container/20 transition-colors opacity-90 transition-opacity duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="library_books">library_books</span>
+<span class="font-body-md text-body-md font-bold">Collections</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-lg py-md text-on-primary/70 hover:bg-primary-container/20 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="bar_chart">bar_chart</span>
+<span class="font-body-md text-body-md">Analytics</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-lg py-md text-on-primary/70 hover:bg-primary-container/20 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span class="font-body-md text-body-md">Archives</span>
+</a>
+</li>
+<li class="mt-auto">
+<a class="flex items-center gap-md px-lg py-md text-on-primary/70 hover:bg-primary-container/20 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-body-md text-body-md">Settings</span>
+</a>
+</li>
+</ul>
+</nav>
+<!-- Main Content Wrapper -->
+<div class="flex-1 flex flex-col ml-0 md:ml-64 w-full md:w-[calc(100%-16rem)]">
+<!-- TopNavBar -->
+<header class="flex justify-between items-center w-full h-16 px-lg sticky top-0 z-50 bg-surface border-b border-outline-variant">
+<div class="flex items-center gap-md">
+<!-- Mobile Menu Button (hidden on md) -->
+<button class="md:hidden p-sm text-primary">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+<span class="font-title-sm text-title-sm font-bold text-primary">Repository Management</span>
+</div>
+<div class="flex items-center gap-lg">
+<div class="relative hidden sm:block">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-on-surface-variant" data-icon="search">search</span>
+<input class="pl-[36px] pr-sm py-[6px] border border-[#E2E8F0] rounded text-body-sm font-body-sm focus:outline-none focus:border-[#0C6668] focus:ring-2 focus:ring-[#E8F3F2] w-64 bg-surface-container-lowest" placeholder="Search categories..." type="text"/>
+</div>
+<div class="flex gap-sm text-on-surface-variant">
+<button class="p-sm hover:text-secondary transition-colors"><span class="material-symbols-outlined" data-icon="notifications">notifications</span></button>
+<button class="p-sm hover:text-secondary transition-colors"><span class="material-symbols-outlined" data-icon="help_outline">help_outline</span></button>
+<button class="p-sm hover:text-secondary transition-colors"><span class="material-symbols-outlined" data-icon="account_circle">account_circle</span></button>
+</div>
+</div>
+</header>
+<!-- Page Canvas -->
+<main class="flex-1 overflow-hidden flex bg-surface p-lg gap-gutter">
+<!-- Left Panel: Tree Control -->
+<section class="w-1/3 flex flex-col bg-surface-container-lowest border border-[#E2E8F0] rounded flex-shrink-0">
+<div class="p-md border-b border-[#E2E8F0] flex flex-col gap-md">
+<div class="flex justify-between items-center">
+<h2 class="font-title-sm text-title-sm text-primary">Category Hierarchy</h2>
+<button class="text-[#0C6668] hover:text-[#138A8A] font-label-caps text-label-caps flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]" data-icon="add">add</span> Add Parent
+                        </button>
+</div>
+<div class="flex gap-sm">
+<button class="text-body-sm text-on-surface-variant hover:text-primary underline">Expand All</button>
+<span class="text-on-surface-variant">|</span>
+<button class="text-body-sm text-on-surface-variant hover:text-primary">Collapse All</button>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto p-md">
+<!-- Tree Root 1 -->
+<div class="relative tree-line mb-sm">
+<div class="group flex items-center justify-between p-sm hover:bg-[#F7F9F8] rounded cursor-pointer">
+<div class="flex items-center gap-sm">
+<button class="text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined text-[20px]" data-icon="expand_more">expand_more</span></button>
+<span class="material-symbols-outlined text-[#0C6668] text-[20px]" data-icon="folder_open">folder_open</span>
+<span class="font-body-md text-body-md text-primary font-semibold">Institutional Policies</span>
+</div>
+<div class="hidden group-hover:flex items-center gap-xs">
+<button class="text-on-surface-variant hover:text-[#0C6668]" title="Add Child"><span class="material-symbols-outlined text-[18px]" data-icon="add_circle">add_circle</span></button>
+<button class="text-on-surface-variant hover:text-[#0C6668]" title="Move"><span class="material-symbols-outlined text-[18px]" data-icon="drag_indicator">drag_indicator</span></button>
+</div>
+</div>
+<!-- Children of Root 1 -->
+<div class="pl-xl mt-xs relative tree-line">
+<!-- Child 1.1 -->
+<div class="relative tree-line mb-xs">
+<div class="group flex items-center justify-between p-sm bg-[#E8F3F2] rounded border border-[#a2edee] cursor-pointer">
+<div class="flex items-center gap-sm">
+<button class="text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined text-[20px]" data-icon="expand_more">expand_more</span></button>
+<span class="material-symbols-outlined text-[#0C6668] text-[20px]" data-icon="folder_open">folder_open</span>
+<span class="font-body-md text-body-md text-primary">Financial Directives</span>
+</div>
+<div class="hidden group-hover:flex items-center gap-xs">
+<button class="text-on-surface-variant hover:text-[#0C6668]"><span class="material-symbols-outlined text-[18px]" data-icon="add_circle">add_circle</span></button>
+<button class="text-on-surface-variant hover:text-[#0C6668]"><span class="material-symbols-outlined text-[18px]" data-icon="drag_indicator">drag_indicator</span></button>
+</div>
+</div>
+<!-- Grandchildren of 1.1 -->
+<div class="pl-xl mt-xs">
+<div class="group flex items-center justify-between p-sm hover:bg-[#F7F9F8] rounded cursor-pointer bg-primary-container text-on-primary-container">
+<div class="flex items-center gap-sm">
+<span class="w-[20px]"></span> <!-- Spacer for alignment -->
+<span class="material-symbols-outlined text-on-primary-container text-[20px]" data-icon="description">description</span>
+<span class="font-body-md text-body-md font-semibold">Fiscal Policy (14)</span>
+</div>
+</div>
+<div class="group flex items-center justify-between p-sm hover:bg-[#F7F9F8] rounded cursor-pointer">
+<div class="flex items-center gap-sm">
+<span class="w-[20px]"></span>
+<span class="material-symbols-outlined text-outline text-[20px]" data-icon="description">description</span>
+<span class="font-body-md text-body-md text-on-surface-variant">Procurement (8)</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Child 1.2 -->
+<div class="relative tree-item-last">
+<div class="group flex items-center justify-between p-sm hover:bg-[#F7F9F8] rounded cursor-pointer">
+<div class="flex items-center gap-sm">
+<button class="text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined text-[20px]" data-icon="chevron_right">chevron_right</span></button>
+<span class="material-symbols-outlined text-[#0C6668] text-[20px]" data-icon="folder">folder</span>
+<span class="font-body-md text-body-md text-primary">Human Resources</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Tree Root 2 -->
+<div class="relative tree-line mb-sm">
+<div class="group flex items-center justify-between p-sm hover:bg-[#F7F9F8] rounded cursor-pointer">
+<div class="flex items-center gap-sm">
+<button class="text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined text-[20px]" data-icon="chevron_right">chevron_right</span></button>
+<span class="material-symbols-outlined text-[#0C6668] text-[20px]" data-icon="folder">folder</span>
+<span class="font-body-md text-body-md text-primary font-semibold">Research Outputs</span>
+</div>
+</div>
+</div>
+<!-- Tree Root 3 -->
+<div class="relative tree-item-last">
+<div class="group flex items-center justify-between p-sm hover:bg-[#F7F9F8] rounded cursor-pointer">
+<div class="flex items-center gap-sm">
+<button class="text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined text-[20px]" data-icon="chevron_right">chevron_right</span></button>
+<span class="material-symbols-outlined text-[#0C6668] text-[20px]" data-icon="folder">folder</span>
+<span class="font-body-md text-body-md text-primary font-semibold">External Communications</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Right Panel: Category Details -->
+<section class="flex-1 flex flex-col bg-surface-container-lowest border border-[#E2E8F0] rounded overflow-hidden">
+<!-- Detail Header -->
+<div class="p-lg border-b border-[#E2E8F0] flex justify-between items-start bg-[#F7F9F8]">
+<div>
+<div class="flex items-center gap-sm mb-xs">
+<span class="bg-[#E8F3F2] text-[#103C35] px-sm py-[2px] rounded font-label-caps text-label-caps border border-[#103C35]/20">Active</span>
+<span class="text-on-surface-variant text-body-sm font-body-sm">Path: Institutional Policies / Financial Directives /</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-primary flex items-center gap-sm">
+<span class="material-symbols-outlined text-[#0C6668]" data-icon="description">description</span>
+                            Fiscal Policy
+                        </h2>
+</div>
+<div class="flex gap-sm">
+<button class="px-md py-sm border border-[#0C6668] text-[#0C6668] rounded font-title-sm text-title-sm hover:bg-[#E8F3F2] transition-colors flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px]" data-icon="edit">edit</span> Edit
+                        </button>
+<button class="px-md py-sm border border-error text-error rounded font-title-sm text-title-sm hover:bg-error-container transition-colors flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px]" data-icon="delete">delete</span> Delete
+                        </button>
+</div>
+</div>
+<!-- Detail Content -->
+<div class="flex-1 overflow-y-auto p-lg flex flex-col gap-xl">
+<!-- Metadata Grid -->
+<div class="grid grid-cols-2 gap-lg">
+<div>
+<label class="font-label-caps text-label-caps text-on-surface-variant block mb-xs">Category Name</label>
+<p class="font-body-md text-body-md text-on-surface">Fiscal Policy</p>
+</div>
+<div>
+<label class="font-label-caps text-label-caps text-on-surface-variant block mb-xs">URL Slug</label>
+<p class="font-body-md text-body-md text-on-surface font-mono text-sm bg-surface-dim px-sm py-[2px] rounded inline-block">fiscal-policy</p>
+</div>
+<div class="col-span-2">
+<label class="font-label-caps text-label-caps text-on-surface-variant block mb-xs">Description</label>
+<p class="font-body-md text-body-md text-on-surface leading-relaxed max-w-3xl">
+                                Encompasses all official institutional guidelines, constraints, and standard operating procedures regarding the allocation, tracking, and auditing of internal fiscal resources. This category includes historical budgets and compliance mandates.
+                            </p>
+</div>
+<div>
+<label class="font-label-caps text-label-caps text-on-surface-variant block mb-xs">Parent Category</label>
+<a class="font-body-md text-body-md text-[#0C6668] hover:underline flex items-center gap-xs" href="#">
+<span class="material-symbols-outlined text-[16px]" data-icon="folder_open">folder_open</span> Financial Directives
+                            </a>
+</div>
+</div>
+<hr class="border-[#E2E8F0]"/>
+<!-- Assigned Documents Table -->
+<div>
+<div class="flex justify-between items-end mb-md">
+<div>
+<h3 class="font-title-sm text-title-sm text-primary">Assigned Documents</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">14 documents directly assigned to this node.</p>
+</div>
+<button class="text-[#0C6668] hover:text-[#138A8A] font-title-sm text-title-sm flex items-center gap-xs">
+                                View All <span class="material-symbols-outlined text-[18px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+<div class="border border-[#E2E8F0] rounded overflow-hidden">
+<table class="w-full text-left border-collapse">
+<thead class="bg-[#F7F9F8] border-b border-[#E2E8F0]">
+<tr>
+<th class="p-md font-label-caps text-label-caps text-on-surface-variant">Document Title</th>
+<th class="p-md font-label-caps text-label-caps text-on-surface-variant">Author / Dept</th>
+<th class="p-md font-label-caps text-label-caps text-on-surface-variant">Status</th>
+</tr>
+</thead>
+<tbody>
+<tr class="border-b border-[#E2E8F0] hover:bg-[#F7F9F8] transition-colors cursor-pointer">
+<td class="p-md font-body-md text-body-md text-primary font-medium flex items-center gap-sm">
+<span class="material-symbols-outlined text-outline text-[20px]" data-icon="picture_as_pdf">picture_as_pdf</span>
+                                            FY2023 Audited Financial Statements
+                                        </td>
+<td class="p-md font-body-sm text-body-sm text-on-surface-variant">Office of the CFO</td>
+<td class="p-md">
+<span class="bg-[#dcfce7] text-[#166534] px-sm py-[2px] rounded font-label-caps text-[10px] border border-[#166534]/20">Archived</span>
+</td>
+</tr>
+<tr class="border-b border-[#E2E8F0] hover:bg-[#F7F9F8] transition-colors cursor-pointer">
+<td class="p-md font-body-md text-body-md text-primary font-medium flex items-center gap-sm">
+<span class="material-symbols-outlined text-outline text-[20px]" data-icon="article">article</span>
+                                            Travel &amp; Expense Reimbursement Policy v3
+                                        </td>
+<td class="p-md font-body-sm text-body-sm text-on-surface-variant">J. Smith, HR</td>
+<td class="p-md">
+<span class="bg-[#e0f2fe] text-[#0369a1] px-sm py-[2px] rounded font-label-caps text-[10px] border border-[#0369a1]/20">Active</span>
+</td>
+</tr>
+<tr class="hover:bg-[#F7F9F8] transition-colors cursor-pointer">
+<td class="p-md font-body-md text-body-md text-primary font-medium flex items-center gap-sm">
+<span class="material-symbols-outlined text-outline text-[20px]" data-icon="article">article</span>
+                                            Departmental Budget Allocation Guidelines 2024
+                                        </td>
+<td class="p-md font-body-sm text-body-sm text-on-surface-variant">Finance Committee</td>
+<td class="p-md">
+<span class="bg-[#fef9c3] text-[#854d0e] px-sm py-[2px] rounded font-label-caps text-[10px] border border-[#854d0e]/20">In Review</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+</main>
+</div>
+</body></html>

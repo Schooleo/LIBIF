@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LIBIF Reader - Continue Reading</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "tertiary-container": "#003c3c",
+                        "primary-container": "#103c35",
+                        "inverse-on-surface": "#ebf1ff",
+                        "on-surface": "#151c27",
+                        "primary-fixed": "#bfece1",
+                        "on-secondary-fixed-variant": "#004f51",
+                        "on-primary-fixed-variant": "#244e46",
+                        "on-background": "#151c27",
+                        "inverse-primary": "#a4cfc5",
+                        "surface-container-highest": "#dce2f3",
+                        "on-secondary-fixed": "#002021",
+                        "on-secondary-container": "#1a6d6f",
+                        "on-primary": "#ffffff",
+                        "surface-container-high": "#e2e8f8",
+                        "on-tertiary-fixed-variant": "#004f50",
+                        "tertiary": "#002525",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-fixed-dim": "#a4cfc5",
+                        "outline-variant": "#c0c8c5",
+                        "error": "#ba1a1a",
+                        "surface-bright": "#f9f9ff",
+                        "on-tertiary-container": "#47adac",
+                        "secondary-fixed-dim": "#89d3d5",
+                        "on-surface-variant": "#414846",
+                        "surface-variant": "#dce2f3",
+                        "on-primary-container": "#7ca79d",
+                        "background": "#f9f9ff",
+                        "tertiary-fixed-dim": "#74d6d6",
+                        "secondary-container": "#a2edee",
+                        "surface-container": "#e7eefe",
+                        "on-error-container": "#93000a",
+                        "primary": "#002520",
+                        "outline": "#717976",
+                        "surface-dim": "#d3daea",
+                        "surface-container-low": "#f0f3ff",
+                        "surface": "#f9f9ff",
+                        "on-tertiary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "secondary": "#12696b",
+                        "secondary-fixed": "#a5eff1",
+                        "surface-tint": "#3d665e",
+                        "on-primary-fixed": "#00201b",
+                        "on-error": "#ffffff",
+                        "inverse-surface": "#2a313d",
+                        "tertiary-fixed": "#91f3f2",
+                        "on-tertiary-fixed": "#002020",
+                        "on-secondary": "#ffffff"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    spacing: {
+                        "unit": "8px",
+                        "container-max": "1440px",
+                        "md": "16px",
+                        "lg": "24px",
+                        "gutter": "16px",
+                        "xs": "4px",
+                        "xl": "32px",
+                        "sm": "8px"
+                    },
+                    fontFamily: {
+                        "title-sm": ["Be Vietnam Pro"],
+                        "label-caps": ["Be Vietnam Pro"],
+                        "display-lg-mobile": ["Be Vietnam Pro"],
+                        "headline-md": ["Be Vietnam Pro"],
+                        "body-sm": ["Be Vietnam Pro"],
+                        "display-lg": ["Be Vietnam Pro"],
+                        "body-md": ["Be Vietnam Pro"]
+                    },
+                    fontSize: {
+                        "title-sm": ["18px", { lineHeight: "24px", fontWeight: "600" }],
+                        "label-caps": ["12px", { lineHeight: "16px", letterSpacing: "0.05em", fontWeight: "700" }],
+                        "display-lg-mobile": ["28px", { lineHeight: "34px", letterSpacing: "-0.01em", fontWeight: "700" }],
+                        "headline-md": ["24px", { lineHeight: "32px", fontWeight: "600" }],
+                        "body-sm": ["14px", { lineHeight: "20px", fontWeight: "400" }],
+                        "display-lg": ["36px", { lineHeight: "44px", letterSpacing: "-0.02em", fontWeight: "700" }],
+                        "body-md": ["16px", { lineHeight: "24px", fontWeight: "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body { font-family: 'Be Vietnam Pro', sans-serif; background-color: #F7F9F8; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .material-symbols-outlined.filled { font-variation-settings: 'FILL' 1; }
+        
+        /* 10px card radius based on prompt requirement */
+        .rounded-libif { border-radius: 10px; }
+        
+        /* Soft Depth shadow */
+        .shadow-soft { box-shadow: 0px 4px 12px rgba(16, 60, 53, 0.08); }
+    </style>
+</head>
+<body class="bg-background text-on-surface h-screen flex overflow-hidden">
+<!-- SideNavBar (Desktop/Tablet) -->
+<nav class="hidden md:flex fixed left-0 top-0 h-full flex-col py-lg bg-primary text-on-primary w-64 shadow-sm z-40">
+<div class="px-lg mb-xl flex items-center gap-md">
+<span class="material-symbols-outlined text-4xl">local_library</span>
+<div>
+<h1 class="font-headline-md text-headline-md font-extrabold text-on-primary tracking-tight">LIBIF Reader</h1>
+<p class="font-body-sm text-body-sm opacity-80">Knowledge Archive</p>
+</div>
+</div>
+<div class="px-lg mb-lg">
+<button class="w-full bg-secondary text-on-secondary font-title-sm text-title-sm py-md rounded-lg flex items-center justify-center gap-sm hover:bg-opacity-90 transition-colors">
+<span class="material-symbols-outlined">upload_file</span>
+                Upload Document
+            </button>
+</div>
+<ul class="flex flex-col gap-sm flex-grow mt-md">
+<li>
+<a class="text-on-primary/70 p-md flex items-center gap-md hover:bg-primary-fixed-dim/10 transition-all duration-150 mx-sm rounded-lg font-label-caps text-label-caps" href="#">
+<span class="material-symbols-outlined">home</span>
+                    Home
+                </a>
+</li>
+<li>
+<a class="bg-primary-container text-on-primary-container border-l-4 border-secondary p-md flex items-center gap-md mx-sm rounded-r-lg font-label-caps text-label-caps" href="#">
+<span class="material-symbols-outlined filled">library_books</span>
+                    Library
+                </a>
+</li>
+<li>
+<a class="text-on-primary/70 p-md flex items-center gap-md hover:bg-primary-fixed-dim/10 transition-all duration-150 mx-sm rounded-lg font-label-caps text-label-caps" href="#">
+<span class="material-symbols-outlined">bookmark</span>
+                    Bookmarks
+                </a>
+</li>
+<li>
+<a class="text-on-primary/70 p-md flex items-center gap-md hover:bg-primary-fixed-dim/10 transition-all duration-150 mx-sm rounded-lg font-label-caps text-label-caps" href="#">
+<span class="material-symbols-outlined">history</span>
+                    History
+                </a>
+</li>
+</ul>
+<div class="mt-auto px-sm flex flex-col gap-sm">
+<a class="text-on-primary/70 p-md flex items-center gap-md hover:bg-primary-fixed-dim/10 transition-all duration-150 rounded-lg font-label-caps text-label-caps" href="#">
+<span class="material-symbols-outlined">help_outline</span>
+                Help
+            </a>
+<a class="text-on-primary/70 p-md flex items-center gap-md hover:bg-primary-fixed-dim/10 transition-all duration-150 rounded-lg font-label-caps text-label-caps" href="#">
+<span class="material-symbols-outlined">logout</span>
+                Sign Out
+            </a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 ml-0 md:ml-64 flex flex-col h-full overflow-hidden bg-background relative z-10">
+<!-- TopNavBar -->
+<header class="bg-surface flex justify-between items-center w-full px-lg h-16 max-w-container-max mx-auto border-b border-outline-variant shrink-0 relative z-20">
+<div class="flex items-center gap-lg hidden md:flex h-full">
+<a class="h-full flex items-center text-secondary border-b-2 border-secondary font-label-caps text-label-caps px-sm" href="#">My Library</a>
+<a class="h-full flex items-center text-on-surface-variant hover:text-secondary transition-colors font-label-caps text-label-caps px-sm" href="#">Bookmarks</a>
+<a class="h-full flex items-center text-on-surface-variant hover:text-secondary transition-colors font-label-caps text-label-caps px-sm" href="#">History</a>
+</div>
+<div class="md:hidden flex items-center">
+<h2 class="font-title-sm text-title-sm font-bold text-primary">LIBIF Portal</h2>
+</div>
+<div class="flex items-center gap-md ml-auto">
+<div class="relative hidden sm:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="pl-10 pr-4 py-2 border border-outline-variant rounded-full bg-surface-container-low text-body-sm focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary/50 w-64" placeholder="Search..." type="text"/>
+</div>
+<button class="text-primary hover:text-secondary transition-colors p-sm">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-primary hover:text-secondary transition-colors p-sm">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-surface-variant border border-outline-variant overflow-hidden ml-sm">
+<img alt="User profile photo" class="w-full h-full object-cover" data-alt="Professional headshot of a person looking forward against a neutral background. Cool lighting, sharp focus, corporate tone." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCs5Hq62aYv3s1PEtBK2jj5tRuKbrHCmt50OSbHcmk1tvqfZtuw9HqXtR_lLPyHX_YpukgAs5OJQAqJN5Hv5tQ9512SGChLLtur_WFO6OkFe3IS1dgHPP99aRSAqulWkGVb9qiSM_NGEjER9tzB7HX6iTVCVC-pUj4lUWwDeeImrSESMDS8C9LFKPe503kNJ9owZWvWCt4p5A7caF8AentYYDtwFr3mbtm-TTP-Wl220w_PXd68Wo7kgttnNkYl231tXtO4veNxT0M"/>
+</div>
+</div>
+</header>
+<!-- Scrollable Content -->
+<div class="flex-1 overflow-y-auto p-md lg:p-lg">
+<div class="max-w-container-max mx-auto">
+<div class="mb-lg flex justify-between items-end border-b border-outline-variant pb-sm">
+<div>
+<h2 class="font-display-lg text-display-lg text-primary mb-xs">Continue Reading</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Pick up where you left off in your active documents.</p>
+</div>
+<div class="flex gap-sm">
+<button class="p-xs text-secondary bg-secondary-container/20 rounded hover:bg-secondary-container/40 transition-colors">
+<span class="material-symbols-outlined">grid_view</span>
+</button>
+<button class="p-xs text-on-surface-variant hover:bg-surface-variant rounded transition-colors">
+<span class="material-symbols-outlined">view_list</span>
+</button>
+</div>
+</div>
+<!-- Grid Layout (Bento-style approach for active documents) -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-lg">
+<!-- Document Card 1 -->
+<article class="bg-surface rounded-libif border border-outline-variant shadow-soft overflow-hidden flex flex-col group hover:border-secondary/50 transition-all duration-300">
+<div class="flex p-md gap-md flex-grow">
+<div class="w-24 h-32 shrink-0 bg-surface-variant rounded border border-outline-variant overflow-hidden relative shadow-sm">
+<img alt="Cover: The Architecture of Information" class="w-full h-full object-cover" data-alt="Cover of an academic book titled 'The Architecture of Information'. Minimalist geometric design with deep teal and pale gray elements. Crisp typography, highly professional, institutional feel." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCVsDeT1gW7ybNYbdjQvdwiyL4KC2IQloxYIbcWJqrN3YyN9cMW0nhd6edc0-79Cy6NnqtvzXfM-6Dx8ck9eOFLDEU5uhqcTxvKfDlqKKkGzFMNwehNsvBzD7kApI3U2T2cvtYfBYlwXnIFfatn7_BxwAUw68_kZgrpU1O9WfmAzNC5W00l00E9RtrR4Nc-5GwUfNjF1jR-gFmpggkF9MVIGxDSowpEDJpEsCYMQnZoaVCbJauYed4_jljiEnprNciQ5EY9SQfTW0Y"/>
+</div>
+<div class="flex flex-col flex-grow justify-between py-xs">
+<div>
+<h3 class="font-title-sm text-title-sm text-primary mb-xs line-clamp-2 leading-tight">The Architecture of Information: Navigating Complexity</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-sm line-clamp-1">Dr. Aris Thorne</p>
+<div class="flex items-center gap-xs text-outline mb-sm">
+<span class="material-symbols-outlined text-[16px]">schedule</span>
+<span class="font-label-caps text-[10px] uppercase">Last opened 2 hours ago</span>
+</div>
+</div>
+<div class="w-full mt-auto">
+<div class="flex justify-between items-center mb-xs">
+<span class="font-label-caps text-label-caps text-primary">Progress</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">142 / 320</span>
+</div>
+<div class="w-full h-1.5 bg-surface-variant rounded-full overflow-hidden">
+<div class="h-full bg-secondary w-[44%] rounded-full"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-lowest border-t border-outline-variant p-sm flex gap-sm">
+<button class="flex-1 bg-primary text-on-primary font-title-sm text-title-sm py-2 px-4 rounded hover:bg-opacity-90 transition-colors flex items-center justify-center gap-xs">
+<span class="material-symbols-outlined text-[18px]">play_arrow</span>
+                                Resume
+                            </button>
+<button class="w-10 h-10 border border-outline-variant text-on-surface-variant rounded flex items-center justify-center hover:bg-error-container hover:text-error hover:border-error transition-colors" title="Remove from list">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+</article>
+<!-- Document Card 2 -->
+<article class="bg-surface rounded-libif border border-outline-variant shadow-soft overflow-hidden flex flex-col group hover:border-secondary/50 transition-all duration-300">
+<div class="flex p-md gap-md flex-grow">
+<div class="w-24 h-32 shrink-0 bg-surface-variant rounded border border-outline-variant overflow-hidden relative shadow-sm">
+<img alt="Cover: Medieval Manuscripts" class="w-full h-full object-cover" data-alt="High-resolution scan of a medieval illuminated manuscript page. Intricate gold leaf details, dense gothic text, aged parchment background. Scholarly context, clean lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBVE6azocPgrCjxAFRnqq3_LmEQyc3DD0QmdwrfnzxPhJ0lhKVYiI7fOAXA8q8KWo2EterC5kgimmg87uYlLmItjDZIKykdg1w_WXO49uFX6W1FqP9vQuDYbiClLecEbXLy-9gN6tT7awSgfbAQrqQTTqXrkw5ox8qiRde13SDKCr-Ll-PMFywDApc5vl78sJn5u-vTTMBRIf7ECbIl_44D2Pbz0W0NdDPmb5OMGD-zWsJQ02uZEYWtETz45jOKfU7CbNWTSncWS7k"/>
+</div>
+<div class="flex flex-col flex-grow justify-between py-xs">
+<div>
+<h3 class="font-title-sm text-title-sm text-primary mb-xs line-clamp-2 leading-tight">Medieval Manuscripts &amp; Archival Sciences Vol II.</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-sm line-clamp-1">Eleanor Vane, Ph.D.</p>
+<div class="flex items-center gap-xs text-outline mb-sm">
+<span class="material-symbols-outlined text-[16px]">schedule</span>
+<span class="font-label-caps text-[10px] uppercase">Last opened yesterday</span>
+</div>
+</div>
+<div class="w-full mt-auto">
+<div class="flex justify-between items-center mb-xs">
+<span class="font-label-caps text-label-caps text-primary">Progress</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">89 / 450</span>
+</div>
+<div class="w-full h-1.5 bg-surface-variant rounded-full overflow-hidden">
+<div class="h-full bg-secondary w-[19%] rounded-full"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-lowest border-t border-outline-variant p-sm flex gap-sm">
+<button class="flex-1 bg-primary text-on-primary font-title-sm text-title-sm py-2 px-4 rounded hover:bg-opacity-90 transition-colors flex items-center justify-center gap-xs">
+<span class="material-symbols-outlined text-[18px]">play_arrow</span>
+                                Resume
+                            </button>
+<button class="w-10 h-10 border border-outline-variant text-on-surface-variant rounded flex items-center justify-center hover:bg-error-container hover:text-error hover:border-error transition-colors" title="Remove from list">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+</article>
+<!-- Document Card 3 -->
+<article class="bg-surface rounded-libif border border-outline-variant shadow-soft overflow-hidden flex flex-col group hover:border-secondary/50 transition-all duration-300">
+<div class="flex p-md gap-md flex-grow">
+<div class="w-24 h-32 shrink-0 bg-surface-variant rounded border border-outline-variant overflow-hidden relative shadow-sm flex items-center justify-center bg-[#f0f3ff]">
+<span class="material-symbols-outlined text-4xl text-outline-variant">description</span>
+</div>
+<div class="flex flex-col flex-grow justify-between py-xs">
+<div>
+<h3 class="font-title-sm text-title-sm text-primary mb-xs line-clamp-2 leading-tight">Draft Proposal: Institutional Data Governance 2024</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-sm line-clamp-1">Internal Committee</p>
+<div class="flex items-center gap-xs text-outline mb-sm">
+<span class="material-symbols-outlined text-[16px]">schedule</span>
+<span class="font-label-caps text-[10px] uppercase">Last opened 3 days ago</span>
+</div>
+</div>
+<div class="w-full mt-auto">
+<div class="flex justify-between items-center mb-xs">
+<span class="font-label-caps text-label-caps text-primary">Progress</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">12 / 14</span>
+</div>
+<div class="w-full h-1.5 bg-surface-variant rounded-full overflow-hidden">
+<div class="h-full bg-secondary w-[85%] rounded-full"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-lowest border-t border-outline-variant p-sm flex gap-sm">
+<button class="flex-1 bg-primary text-on-primary font-title-sm text-title-sm py-2 px-4 rounded hover:bg-opacity-90 transition-colors flex items-center justify-center gap-xs">
+<span class="material-symbols-outlined text-[18px]">play_arrow</span>
+                                Resume
+                            </button>
+<button class="w-10 h-10 border border-outline-variant text-on-surface-variant rounded flex items-center justify-center hover:bg-error-container hover:text-error hover:border-error transition-colors" title="Remove from list">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+</article>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-md py-sm bg-surface border-t border-outline-variant rounded-t-xl shadow-md">
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-caps text-label-caps-mobile mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-secondary bg-secondary-container/20 rounded-xl px-4 py-1" href="#">
+<span class="material-symbols-outlined filled">menu_book</span>
+<span class="font-label-caps text-label-caps-mobile mt-1">Library</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-label-caps text-label-caps-mobile mt-1">History</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1" href="#">
+<span class="material-symbols-outlined">search</span>
+<span class="font-label-caps text-label-caps-mobile mt-1">Search</span>
+</a>
+</nav>
+</body></html>

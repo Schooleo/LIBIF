@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LIBIF - Duplicate Tag Review</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-fixed": "#bfece1",
+                        "on-primary": "#ffffff",
+                        "surface-variant": "#dce2f3",
+                        "outline-variant": "#c0c8c5",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-fixed": "#002020",
+                        "tertiary-container": "#003c3c",
+                        "primary-fixed-dim": "#a4cfc5",
+                        "primary-container": "#103c35",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-container": "#47adac",
+                        "surface-container-high": "#e2e8f8",
+                        "tertiary-fixed-dim": "#74d6d6",
+                        "secondary-container": "#a2edee",
+                        "on-secondary-container": "#1a6d6f",
+                        "on-secondary-fixed-variant": "#004f51",
+                        "inverse-primary": "#a4cfc5",
+                        "secondary-fixed-dim": "#89d3d5",
+                        "surface-container-low": "#f0f3ff",
+                        "on-primary-container": "#7ca79d",
+                        "inverse-surface": "#2a313d",
+                        "surface-tint": "#3d665e",
+                        "secondary": "#12696b",
+                        "tertiary": "#002525",
+                        "surface-bright": "#f9f9ff",
+                        "on-secondary-fixed": "#002021",
+                        "tertiary-fixed": "#91f3f2",
+                        "primary": "#002520",
+                        "error": "#ba1a1a",
+                        "background": "#f9f9ff",
+                        "surface-container-highest": "#dce2f3",
+                        "secondary-fixed": "#a5eff1",
+                        "on-error": "#ffffff",
+                        "surface-container": "#e7eefe",
+                        "surface": "#f9f9ff",
+                        "on-primary-fixed-variant": "#244e46",
+                        "on-background": "#151c27",
+                        "on-error-container": "#93000a",
+                        "on-tertiary": "#ffffff",
+                        "on-surface-variant": "#414846",
+                        "on-surface": "#151c27",
+                        "on-tertiary-fixed-variant": "#004f50",
+                        "on-primary-fixed": "#00201b",
+                        "error-container": "#ffdad6",
+                        "surface-dim": "#d3daea",
+                        "inverse-on-surface": "#ebf1ff",
+                        "outline": "#717976"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "lg": "24px",
+                        "gutter": "16px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "xl": "32px",
+                        "container-max": "1440px",
+                        "xs": "4px",
+                        "unit": "8px"
+                    },
+                    "fontFamily": {
+                        "title-sm": ["Be Vietnam Pro"],
+                        "display-lg": ["Be Vietnam Pro"],
+                        "display-lg-mobile": ["Be Vietnam Pro"],
+                        "body-sm": ["Be Vietnam Pro"],
+                        "label-caps": ["Be Vietnam Pro"],
+                        "body-md": ["Be Vietnam Pro"],
+                        "headline-md": ["Be Vietnam Pro"]
+                    },
+                    "fontSize": {
+                        "title-sm": ["18px", { "lineHeight": "24px", "fontWeight": "600" }],
+                        "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "display-lg-mobile": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            border: 1px solid #E2E8F0;
+            box-shadow: 0px 4px 12px rgba(16, 60, 53, 0.08);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md h-screen w-screen overflow-hidden flex">
+<!-- SideNavBar -->
+<nav class="bg-[#0B2F2D] dark:bg-primary h-screen w-64 fixed left-0 top-0 border-r border-outline-variant flex flex-col h-full py-lg z-50">
+<div class="px-md mb-xl flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center overflow-hidden">
+<img alt="Institution Logo" class="w-full h-full object-cover" data-alt="A minimalist and clean institutional logo for a library management system. The design is geometric and uses dark teal and white, conveying a sense of academic permanence and trust. The logo is displayed within a circular badge." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCvS1p1R3IHrHDjseJVAZz5Q6cxVDo6GUIDpw0bFgzu48ySF6b_Yewswt-2QOGMC9_hrMx9yMU55R7aHG9OmUSjXmB2kWQgOivsoiRN8Y23Sox5ucvfMN_3ekpq5SHcU-A0Xtbk-sTPifvRwsoPQIDXddBnpnt1u6HTi_CuhQqcGxB78-tD2PIr6UhVgha0Tet_xhSE2QGqN67VngAI3BiJ-fCgjz8ejl2sweg_9vebl_gw-aUVCjsNdgMP6M990lUxNdnV19KSQJQ"/>
+</div>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-on-primary">LIBIF</h1>
+<p class="font-body-sm text-body-sm text-on-primary-fixed-variant opacity-80">Enterprise Management</p>
+</div>
+</div>
+<div class="px-md mb-lg">
+<button class="w-full bg-secondary-container hover:bg-secondary-fixed text-on-secondary-container font-title-sm text-title-sm py-sm px-md rounded transition-colors flex items-center justify-center gap-sm shadow-sm">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">add</span>
+                New Document
+            </button>
+</div>
+<ul class="flex-1 flex flex-col gap-xs overflow-y-auto px-sm">
+<li>
+<a class="text-on-primary-fixed-variant opacity-80 hover:bg-primary-container/50 transition-colors duration-200 ease-in-out font-title-sm text-title-sm flex items-center gap-md px-md py-sm rounded" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+                    Workspace
+                </a>
+</li>
+<li>
+<a class="text-on-primary-fixed-variant opacity-80 hover:bg-primary-container/50 transition-colors duration-200 ease-in-out font-title-sm text-title-sm flex items-center gap-md px-md py-sm rounded" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+                    Collections
+                </a>
+</li>
+<li>
+<a class="text-on-primary-fixed-variant opacity-80 hover:bg-primary-container/50 transition-colors duration-200 ease-in-out font-title-sm text-title-sm flex items-center gap-md px-md py-sm rounded" href="#">
+<span class="material-symbols-outlined">history_edu</span>
+                    Archives
+                </a>
+</li>
+<li>
+<!-- Active State: Administration -->
+<a class="border-l-4 border-secondary bg-primary-container text-on-primary font-semibold hover:bg-primary-container/50 transition-colors duration-200 ease-in-out font-title-sm text-title-sm flex items-center gap-md px-md py-sm rounded" href="#">
+<span class="material-symbols-outlined">admin_panel_settings</span>
+                    Administration
+                </a>
+</li>
+<li>
+<a class="text-on-primary-fixed-variant opacity-80 hover:bg-primary-container/50 transition-colors duration-200 ease-in-out font-title-sm text-title-sm flex items-center gap-md px-md py-sm rounded" href="#">
+<span class="material-symbols-outlined">group</span>
+                    Users
+                </a>
+</li>
+<li>
+<a class="text-on-primary-fixed-variant opacity-80 hover:bg-primary-container/50 transition-colors duration-200 ease-in-out font-title-sm text-title-sm flex items-center gap-md px-md py-sm rounded" href="#">
+<span class="material-symbols-outlined">settings</span>
+                    Settings
+                </a>
+</li>
+</ul>
+<div class="mt-auto px-sm flex flex-col gap-xs pt-md border-t border-outline-variant/20">
+<a class="text-on-primary-fixed-variant opacity-80 hover:bg-primary-container/50 transition-colors duration-200 ease-in-out font-title-sm text-title-sm flex items-center gap-md px-md py-sm rounded" href="#">
+<span class="material-symbols-outlined">check_circle</span>
+                System Status
+            </a>
+<a class="text-on-primary-fixed-variant opacity-80 hover:bg-primary-container/50 transition-colors duration-200 ease-in-out font-title-sm text-title-sm flex items-center gap-md px-md py-sm rounded" href="#">
+<span class="material-symbols-outlined">help</span>
+                Support
+            </a>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="ml-64 flex-1 flex flex-col h-screen overflow-hidden bg-[#F7F9F8]">
+<!-- Header -->
+<header class="bg-surface-container-lowest border-b border-outline-variant px-xl py-lg flex justify-between items-center z-10 sticky top-0 shadow-sm">
+<div>
+<h2 class="font-headline-md text-headline-md font-bold text-on-surface flex items-center gap-sm">
+<span class="material-symbols-outlined text-warning">warning</span>
+                    Tag Similarity Warning
+                </h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Review potentially duplicate tags to maintain catalog integrity.</p>
+</div>
+<div class="flex items-center gap-md">
+<button class="text-on-surface-variant hover:text-primary transition-colors flex items-center gap-xs font-body-sm text-body-sm">
+<span class="material-symbols-outlined">history</span>
+                    Review History
+                </button>
+<div class="h-6 w-px bg-outline-variant"></div>
+<button class="bg-surface-container-lowest border border-outline-variant text-on-surface font-title-sm text-title-sm py-xs px-md rounded hover:bg-surface-variant transition-colors">
+                    Cancel Review
+                </button>
+</div>
+</header>
+<!-- Content Scroll Area -->
+<div class="flex-1 overflow-y-auto p-xl">
+<div class="max-w-6xl mx-auto space-y-xl">
+<!-- Target Tag Overview -->
+<section class="glass-panel rounded-lg p-lg flex flex-col gap-md">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider border-b border-outline-variant pb-xs mb-xs">Target Tag Being Created</h3>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-md">
+<div class="bg-surface-container-high rounded p-md flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary text-3xl">label</span>
+</div>
+<div>
+<div class="font-headline-md text-headline-md font-bold text-on-surface">Quantum Physics</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant mt-xs">Requested by: System Import Batch #4092</div>
+</div>
+</div>
+<div class="bg-surface-container-low px-md py-sm rounded-md border border-outline-variant text-right">
+<div class="font-label-caps text-label-caps text-on-surface-variant">Pending Books</div>
+<div class="font-title-sm text-title-sm text-on-surface">14 Items</div>
+</div>
+</div>
+</section>
+<!-- Comparison Grid -->
+<section>
+<div class="flex items-center justify-between mb-md">
+<h3 class="font-title-sm text-title-sm font-bold text-on-surface">Review Similar Existing Tags</h3>
+<span class="bg-error-container text-on-error-container px-sm py-xs rounded font-label-caps text-label-caps">3 Potential Duplicates Found</span>
+</div>
+<div class="grid grid-cols-1 gap-md">
+<!-- Similar Tag 1 -->
+<div class="glass-panel rounded-lg p-md flex flex-row items-center gap-xl border-l-4 border-l-[#103C35]">
+<div class="flex-1">
+<div class="flex items-center gap-sm mb-xs">
+<h4 class="font-headline-md text-headline-md font-semibold text-on-surface">Quantum-Physics</h4>
+<span class="bg-[#E8F3F2] text-[#0C6668] px-xs py-[2px] rounded text-[10px] font-bold uppercase tracking-wider">Hyphen Variation</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Created on 10/12/2022 • Last used 2 weeks ago</p>
+</div>
+<div class="w-32 text-center bg-surface-container-low py-sm rounded border border-outline-variant">
+<div class="font-display-lg text-display-lg text-primary">142</div>
+<div class="font-label-caps text-label-caps text-on-surface-variant">Affected Books</div>
+</div>
+<div class="flex flex-col gap-sm w-48">
+<button class="w-full bg-[#103C35] hover:bg-[#138A8A] text-white font-body-sm text-body-sm py-sm rounded transition-colors text-center border border-transparent shadow-sm">
+                                    Merge into Existing
+                                </button>
+<button class="w-full bg-surface-container-lowest border border-[#0C6668] text-[#0C6668] hover:bg-[#E8F3F2] font-body-sm text-body-sm py-sm rounded transition-colors text-center">
+                                    Keep Separate
+                                </button>
+</div>
+</div>
+<!-- Similar Tag 2 -->
+<div class="glass-panel rounded-lg p-md flex flex-row items-center gap-xl border-l-4 border-l-[#103C35]">
+<div class="flex-1">
+<div class="flex items-center gap-sm mb-xs">
+<h4 class="font-headline-md text-headline-md font-semibold text-on-surface">Quatum Physics</h4>
+<span class="bg-error-container text-on-error-container px-xs py-[2px] rounded text-[10px] font-bold uppercase tracking-wider">Possible Typo</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Created on 05/04/2023 • Last used 1 month ago</p>
+</div>
+<div class="w-32 text-center bg-surface-container-low py-sm rounded border border-outline-variant">
+<div class="font-display-lg text-display-lg text-primary">3</div>
+<div class="font-label-caps text-label-caps text-on-surface-variant">Affected Books</div>
+</div>
+<div class="flex flex-col gap-sm w-48">
+<button class="w-full bg-[#103C35] hover:bg-[#138A8A] text-white font-body-sm text-body-sm py-sm rounded transition-colors text-center border border-transparent shadow-sm">
+                                    Rename to Target
+                                </button>
+<button class="w-full bg-surface-container-lowest border border-[#0C6668] text-[#0C6668] hover:bg-[#E8F3F2] font-body-sm text-body-sm py-sm rounded transition-colors text-center">
+                                    Merge into Target
+                                </button>
+</div>
+</div>
+<!-- Similar Tag 3 -->
+<div class="glass-panel rounded-lg p-md flex flex-row items-center gap-xl border-l-4 border-l-outline-variant opacity-80 hover:opacity-100 transition-opacity">
+<div class="flex-1">
+<div class="flex items-center gap-sm mb-xs">
+<h4 class="font-headline-md text-headline-md font-semibold text-on-surface">Quantum Mechanics</h4>
+<span class="bg-surface-variant text-on-surface-variant px-xs py-[2px] rounded text-[10px] font-bold uppercase tracking-wider">Semantic Overlap</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Created on 01/15/2021 • Last used today</p>
+</div>
+<div class="w-32 text-center bg-surface-container-low py-sm rounded border border-outline-variant">
+<div class="font-display-lg text-display-lg text-primary">895</div>
+<div class="font-label-caps text-label-caps text-on-surface-variant">Affected Books</div>
+</div>
+<div class="flex flex-col gap-sm w-48">
+<button class="w-full bg-surface-container-lowest border border-[#0C6668] text-[#0C6668] hover:bg-[#E8F3F2] font-body-sm text-body-sm py-sm rounded transition-colors text-center">
+                                    Keep Separate
+                                </button>
+<button class="w-full text-on-surface-variant hover:text-error text-center font-body-sm text-body-sm py-xs transition-colors underline">
+                                    Review Manually
+                                </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Global Action Bar -->
+<div class="flex justify-end gap-md pt-lg border-t border-outline-variant">
+<button class="bg-surface-container-lowest border border-outline-variant text-on-surface font-title-sm text-title-sm py-sm px-xl rounded hover:bg-surface-variant transition-colors">
+                        Skip Review for Now
+                    </button>
+<button class="bg-primary-container hover:bg-[#138A8A] text-white font-title-sm text-title-sm py-sm px-xl rounded transition-colors shadow-sm flex items-center gap-sm">
+<span class="material-symbols-outlined">done_all</span>
+                        Confirm All Actions
+                    </button>
+</div>
+</div>
+</div>
+</main>
+</body></html>

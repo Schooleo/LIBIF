@@ -1,0 +1,574 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>LIBIF - Access Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "inverse-surface": "#2a313d",
+                      "surface-container-high": "#e2e8f8",
+                      "secondary": "#12696b",
+                      "inverse-on-surface": "#ebf1ff",
+                      "on-tertiary-fixed-variant": "#004f50",
+                      "surface-dim": "#d3daea",
+                      "surface-bright": "#f9f9ff",
+                      "primary-fixed-dim": "#a4cfc5",
+                      "on-surface": "#151c27",
+                      "primary-container": "#103c35",
+                      "error-container": "#ffdad6",
+                      "surface-container-low": "#f0f3ff",
+                      "surface-container": "#e7eefe",
+                      "on-primary-fixed-variant": "#244e46",
+                      "on-secondary-fixed": "#002021",
+                      "primary-fixed": "#bfece1",
+                      "on-secondary": "#ffffff",
+                      "inverse-primary": "#a4cfc5",
+                      "on-secondary-fixed-variant": "#004f51",
+                      "surface-variant": "#dce2f3",
+                      "on-primary-container": "#7ca79d",
+                      "secondary-fixed-dim": "#89d3d5",
+                      "on-primary-fixed": "#00201b",
+                      "on-background": "#151c27",
+                      "secondary-container": "#a2edee",
+                      "outline": "#717976",
+                      "on-tertiary-fixed": "#002020",
+                      "on-primary": "#ffffff",
+                      "background": "#f9f9ff",
+                      "outline-variant": "#c0c8c5",
+                      "on-surface-variant": "#414846",
+                      "tertiary-container": "#003c3c",
+                      "on-error": "#ffffff",
+                      "surface-container-highest": "#dce2f3",
+                      "on-tertiary-container": "#47adac",
+                      "surface-container-lowest": "#ffffff",
+                      "secondary-fixed": "#a5eff1",
+                      "on-secondary-container": "#1a6d6f",
+                      "tertiary": "#002525",
+                      "on-tertiary": "#ffffff",
+                      "on-error-container": "#93000a",
+                      "tertiary-fixed": "#91f3f2",
+                      "primary": "#002520",
+                      "error": "#ba1a1a",
+                      "surface-tint": "#3d665e",
+                      "tertiary-fixed-dim": "#74d6d6",
+                      "surface": "#f9f9ff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "gutter": "16px",
+                      "unit": "8px",
+                      "sm": "8px",
+                      "container-max": "1440px",
+                      "xs": "4px",
+                      "xl": "32px",
+                      "lg": "24px",
+                      "md": "16px"
+              },
+              "fontFamily": {
+                      "display-lg-mobile": [
+                              "Be Vietnam Pro"
+                      ],
+                      "headline-md": [
+                              "Be Vietnam Pro"
+                      ],
+                      "label-caps": [
+                              "Be Vietnam Pro"
+                      ],
+                      "display-lg": [
+                              "Be Vietnam Pro"
+                      ],
+                      "title-sm": [
+                              "Be Vietnam Pro"
+                      ],
+                      "body-sm": [
+                              "Be Vietnam Pro"
+                      ],
+                      "body-md": [
+                              "Be Vietnam Pro"
+                      ]
+              },
+              "fontSize": {
+                      "display-lg-mobile": [
+                              "28px",
+                              {
+                                      "lineHeight": "34px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "label-caps": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "display-lg": [
+                              "36px",
+                              {
+                                      "lineHeight": "44px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "title-sm": [
+                              "18px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        body {
+            background-color: #F7F9F8;
+            color: #151c27;
+        }
+        /* Custom scrollbar for tables */
+        .custom-scrollbar::-webkit-scrollbar {
+            height: 8px;
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #F7F9F8;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #c0c8c5;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #717976;
+        }
+    </style>
+</head>
+<body class="font-body-md text-body-md antialiased min-h-screen flex w-full overflow-x-hidden">
+<!-- SideNavBar -->
+<nav class="bg-primary dark:bg-primary w-64 h-screen fixed left-0 top-0 border-r border-outline-variant flat no shadows flex flex-col h-full py-lg z-40 hidden md:flex">
+<div class="px-lg mb-8 flex flex-col gap-1"><h1 class="font-display-lg text-display-lg font-bold text-on-primary">LIBIF Admin</h1><p class="font-body-sm text-body-sm text-secondary-fixed opacity-80">University Institutional Repository</p></div>
+<div class="px-md mb-6">
+<button class="w-full bg-secondary-fixed text-on-secondary-fixed font-title-sm text-title-sm py-2 px-4 rounded-lg flex items-center justify-center gap-2 hover:bg-secondary-fixed-dim transition-colors duration-200 active:scale-95 transition-transform shadow-[0px_4px_12px_rgba(16,60,53,0.08)]">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">upload</span>
+                Upload Document
+            </button>
+</div>
+<ul class="flex flex-col flex-grow w-full">
+<li class="w-full">
+<a class="flex items-center gap-4 px-lg py-3 text-on-primary-fixed-variant opacity-80 hover:opacity-100 hover:bg-primary-container transition-colors duration-200 active:scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-title-sm text-title-sm">Dashboard</span>
+</a>
+</li>
+<li class="w-full">
+<a class="flex items-center gap-4 px-lg py-3 text-on-primary-fixed-variant opacity-80 hover:opacity-100 hover:bg-primary-container transition-colors duration-200 active:scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined">account_balance</span>
+<span class="font-title-sm text-title-sm">Library Catalog</span>
+</a>
+</li>
+<li class="w-full">
+<a class="flex items-center gap-4 px-lg py-3 text-on-primary-fixed-variant opacity-80 hover:opacity-100 hover:bg-primary-container transition-colors duration-200 active:scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="font-title-sm text-title-sm">Archives</span>
+</a>
+</li>
+<li class="w-full">
+<a class="flex items-center gap-4 px-lg py-3 border-l-4 border-secondary-fixed bg-primary-container text-on-primary-fixed font-bold hover:bg-primary-container transition-colors duration-200 active:scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined">lock_person</span>
+<span class="font-title-sm text-title-sm">Access Management</span>
+</a>
+</li>
+<li class="w-full">
+<a class="flex items-center gap-4 px-lg py-3 text-on-primary-fixed-variant opacity-80 hover:opacity-100 hover:bg-primary-container transition-colors duration-200 active:scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined">terminal</span>
+<span class="font-title-sm text-title-sm">System Logs</span>
+</a>
+</li>
+</ul>
+<div class="mt-auto w-full border-t border-outline-variant pt-4">
+<ul class="flex flex-col w-full">
+<li class="w-full">
+<a class="flex items-center gap-4 px-lg py-3 text-on-primary-fixed-variant opacity-80 hover:opacity-100 hover:bg-primary-container transition-colors duration-200 active:scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-title-sm text-title-sm">Settings</span>
+</a>
+</li>
+<li class="w-full">
+<a class="flex items-center gap-4 px-lg py-3 text-on-primary-fixed-variant opacity-80 hover:opacity-100 hover:bg-primary-container transition-colors duration-200 active:scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined">help_outline</span>
+<span class="font-title-sm text-title-sm">Support</span>
+</a>
+</li>
+</ul>
+</div>
+</nav>
+<!-- Main Content Wrapper -->
+<div class="flex flex-col flex-1 w-full md:ml-64 min-h-screen">
+<!-- TopNavBar -->
+<header class="bg-surface dark:bg-surface text-primary dark:text-primary-fixed docked full-width top-0 border-b border-outline-variant flat no shadows flex justify-between items-center px-lg w-full sticky z-30" style="height: 72px;">
+<!-- Mobile Menu Button (Hidden on Desktop) -->
+<button class="md:hidden p-2 text-on-surface-variant hover:text-primary transition-colors cursor-pointer">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<!-- Search Bar (on_left) -->
+<div class="flex-1 max-w-md hidden md:flex">
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full pl-10 pr-4 py-2 border border-[#E2E8F0] rounded-lg bg-surface-lowest text-on-surface focus:outline-none focus:border-[#0C6668] focus:ring-2 focus:ring-[#E8F3F2] transition-all font-body-sm text-body-sm h-10" placeholder="Search accounts, roles..." type="text">
+</div>
+</div>
+<!-- Brand (Mobile Centered) -->
+
+<!-- Trailing Actions -->
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:text-primary transition-colors cursor-pointer p-2 rounded-full hover:bg-surface-variant relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-1 right-1 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors cursor-pointer p-2 rounded-full hover:bg-surface-variant">
+<span class="material-symbols-outlined">history</span>
+</button>
+
+</div>
+</header>
+<!-- Page Content -->
+<main class="flex-1 p-md md:p-lg">
+<!-- Header Section -->
+<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface mb-1">Access Management</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Manage user accounts, roles, and institutional access levels.</p>
+</div>
+<div class="flex items-center gap-3 w-full sm:w-auto">
+<button class="flex items-center gap-2 px-4 py-2 border border-[#E2E8F0] rounded-lg bg-surface-container-lowest text-primary-container font-title-sm text-title-sm hover:bg-surface-container-low transition-colors shadow-[0px_4px_12px_rgba(16,60,53,0.08)] w-full sm:w-auto justify-center">
+<span class="material-symbols-outlined text-[20px]">filter_list</span>
+                        Filters
+                    </button>
+<button class="flex items-center gap-2 px-4 py-2 bg-[#103C35] text-white rounded-lg font-title-sm text-title-sm hover:bg-[#138A8A] transition-colors shadow-[0px_4px_12px_rgba(16,60,53,0.08)] w-full sm:w-auto justify-center">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">person_add</span>
+                        New Account
+                    </button>
+</div>
+</div>
+<!-- Toolbar / Filters -->
+<div class="bg-surface-container-lowest border border-[#E2E8F0] rounded-lg p-md mb-6 flex flex-col md:flex-row gap-4 items-center">
+<!-- Mobile Search (if needed) -->
+<div class="relative w-full md:hidden">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full pl-10 pr-4 py-2 border border-[#E2E8F0] rounded-lg bg-surface-lowest text-on-surface focus:outline-none focus:border-[#0C6668] focus:ring-2 focus:ring-[#E8F3F2] transition-all font-body-sm text-body-sm" placeholder="Search accounts..." type="text">
+</div>
+<div class="flex items-center gap-3 w-full md:w-auto">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Role:</span>
+<select class="flex-1 md:w-40 px-3 py-2 border border-[#E2E8F0] rounded-lg bg-surface-container-lowest text-on-surface font-body-sm text-body-sm focus:outline-none focus:border-[#0C6668] focus:ring-2 focus:ring-[#E8F3F2] appearance-none">
+<option>All Roles</option>
+<option>Administrator</option>
+<option>Librarian</option>
+<option>Reader</option>
+</select>
+</div>
+<div class="flex items-center gap-3 w-full md:w-auto">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Status:</span>
+<select class="flex-1 md:w-40 px-3 py-2 border border-[#E2E8F0] rounded-lg bg-surface-container-lowest text-on-surface font-body-sm text-body-sm focus:outline-none focus:border-[#0C6668] focus:ring-2 focus:ring-[#E8F3F2] appearance-none">
+<option>All Statuses</option>
+<option>Active</option>
+<option>Inactive</option>
+<option>Blocked</option>
+</select>
+</div>
+<div class="flex-1"></div> <!-- Spacer -->
+<div class="text-on-surface-variant font-body-sm text-body-sm">
+                    Showing <span class="font-title-sm text-title-sm text-on-surface">1-10</span> of <span class="font-title-sm text-title-sm text-on-surface">248</span> accounts
+                </div>
+</div>
+<!-- Data Table Card -->
+<div class="bg-surface-container-lowest border border-[#E2E8F0] rounded-lg overflow-hidden flex flex-col">
+<div class="overflow-x-auto custom-scrollbar">
+<table class="w-full text-left border-collapse min-w-[800px]">
+<thead>
+<tr class="border-b border-[#E2E8F0] bg-surface-container-low text-on-surface-variant font-label-caps text-label-caps uppercase">
+<th class="p-4 cursor-pointer hover:bg-surface-container-highest transition-colors group">
+<div class="flex items-center gap-1">
+                                        User / Email <span class="material-symbols-outlined text-[16px] opacity-0 group-hover:opacity-100 transition-opacity">arrow_drop_down</span>
+</div>
+</th>
+<th class="p-4 cursor-pointer hover:bg-surface-container-highest transition-colors group">
+<div class="flex items-center gap-1">
+                                        Role <span class="material-symbols-outlined text-[16px] opacity-0 group-hover:opacity-100 transition-opacity">arrow_drop_down</span>
+</div>
+</th>
+<th class="p-4 cursor-pointer hover:bg-surface-container-highest transition-colors group">
+<div class="flex items-center gap-1">
+                                        Status <span class="material-symbols-outlined text-[16px] opacity-0 group-hover:opacity-100 transition-opacity">arrow_drop_down</span>
+</div>
+</th>
+<th class="p-4 cursor-pointer hover:bg-surface-container-highest transition-colors group">
+<div class="flex items-center gap-1">
+                                        Registered <span class="material-symbols-outlined text-[16px] opacity-0 group-hover:opacity-100 transition-opacity">arrow_drop_down</span>
+</div>
+</th>
+<th class="p-4 cursor-pointer hover:bg-surface-container-highest transition-colors group">
+<div class="flex items-center gap-1">
+                                        Last Active <span class="material-symbols-outlined text-[16px] opacity-100">arrow_downward</span>
+</div>
+</th>
+<th class="p-4 text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="font-body-sm text-body-sm text-on-surface divide-y divide-[#E2E8F0]">
+<!-- Row 1 -->
+<tr class="hover:bg-[#F7F9F8] transition-colors group">
+<td class="p-4">
+<div class="flex items-center gap-3">
+<img class="w-10 h-10 rounded-full object-cover border border-outline-variant" data-alt="A small, professional circular avatar portrait of Dr. Rebecca Thorne, a middle-aged academic woman in a smart blazer, plain grey background, well-lit, suitable for a dashboard." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDYzVrzypH9z3HNpzcEsvTPKl9FD6ym6J-Brh_mOGK26Ssipu74FlZRoPIMzkfo80TQCxXoOXI-HP7bnz9uhU6hRAOwpt969UZ410hlr6SfqVxwFwAlTzbtVPODEAGfvl3QZBRAWNnEw-H8q2YCBp8sGb4yVKyW10TI9652ewfFcfb77ze44QMXuuq-gnvPwDyIu8vEKz3FPzR_gkrIb0Kh6I9nOm8zGjPkFqqztjGL40DQvUkn7YixnJmyKAYoDVIsnm8i-bpbGls">
+<div>
+<div class="font-title-sm text-title-sm text-on-surface">Dr. Rebecca Thorne</div>
+<div class="text-on-surface-variant text-xs">r.thorne@university.edu</div>
+</div>
+</div>
+</td>
+<td class="p-4">
+<span class="inline-flex items-center px-2 py-1 rounded-md bg-tertiary-container text-on-tertiary-container font-label-caps text-[10px] uppercase border border-outline-variant">Administrator</span>
+</td>
+<td class="p-4">
+<span class="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-[#e6f4ea] text-[#137333] font-label-caps text-[10px] uppercase border border-[#ceead6]">
+<span class="w-1.5 h-1.5 rounded-full bg-[#137333]"></span>
+                                        Active
+                                    </span>
+</td>
+<td class="p-4 text-on-surface-variant">Oct 12, 2021</td>
+<td class="p-4 text-on-surface-variant">Just now</td>
+<td class="p-4">
+<div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1 text-on-surface-variant hover:text-primary hover:bg-surface-variant rounded transition-colors" title="View Details">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+<button class="p-1 text-on-surface-variant hover:text-primary hover:bg-surface-variant rounded transition-colors" title="Edit User">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="p-1 text-on-surface-variant hover:text-error hover:bg-error-container rounded transition-colors" title="More Options">
+<span class="material-symbols-outlined text-[20px]">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-[#F7F9F8] transition-colors group">
+<td class="p-4">
+<div class="flex items-center gap-3">
+<img class="w-10 h-10 rounded-full object-cover border border-outline-variant" data-alt="A small, professional circular avatar portrait of Archivist Miller, an older gentleman with a beard and glasses in a cardigan, soft natural light, library setting background blurred, dashboard ready." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCHZXZoTbqA4CnNzOZzrzAjxA29vhMkEQ2L3wFvBp_yTuboqnK5RHKyh502w-8M_97ZwX0bmwaqgyud3aJUEDDJ3yBzh_1msBin4evSgAEEyevBoum_eMPZyy0Y7UMRXJRCD0hP7XWIOTeUJQLiBZAZ8jfsp6wnmKQbPEaAdJ5vp64gYwy_VtU9nb4mol5HY3m86fVKOv8kXNMy54klS1Dhyk9ssmI8kaIeRshow-Or3uBx4S6eOUbq9XmegpkD3-713k2Iy-qWCqo">
+<div>
+<div class="font-title-sm text-title-sm text-on-surface">Archivist Miller</div>
+<div class="text-on-surface-variant text-xs">a.miller@university.edu</div>
+</div>
+</div>
+</td>
+<td class="p-4">
+<span class="inline-flex items-center px-2 py-1 rounded-md bg-secondary-container text-on-secondary-container font-label-caps text-[10px] uppercase border border-outline-variant">Librarian</span>
+</td>
+<td class="p-4">
+<span class="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-[#e6f4ea] text-[#137333] font-label-caps text-[10px] uppercase border border-[#ceead6]">
+<span class="w-1.5 h-1.5 rounded-full bg-[#137333]"></span>
+                                        Active
+                                    </span>
+</td>
+<td class="p-4 text-on-surface-variant">Jan 05, 2022</td>
+<td class="p-4 text-on-surface-variant">2 hours ago</td>
+<td class="p-4">
+<div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1 text-on-surface-variant hover:text-primary hover:bg-surface-variant rounded transition-colors" title="View Details">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+<button class="p-1 text-on-surface-variant hover:text-primary hover:bg-surface-variant rounded transition-colors" title="Edit User">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="p-1 text-on-surface-variant hover:text-error hover:bg-error-container rounded transition-colors" title="More Options">
+<span class="material-symbols-outlined text-[20px]">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-[#F7F9F8] transition-colors group">
+<td class="p-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest border border-outline-variant flex items-center justify-center text-on-surface font-title-sm">
+                                            JS
+                                        </div>
+<div>
+<div class="font-title-sm text-title-sm text-on-surface">J. Sterling</div>
+<div class="text-on-surface-variant text-xs">j.sterling@university.edu</div>
+</div>
+</div>
+</td>
+<td class="p-4">
+<span class="inline-flex items-center px-2 py-1 rounded-md bg-secondary-container text-on-secondary-container font-label-caps text-[10px] uppercase border border-outline-variant">Librarian</span>
+</td>
+<td class="p-4">
+<span class="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-surface-variant text-on-surface-variant font-label-caps text-[10px] uppercase border border-outline-variant">
+<span class="w-1.5 h-1.5 rounded-full bg-outline"></span>
+                                        Inactive
+                                    </span>
+</td>
+<td class="p-4 text-on-surface-variant">Mar 15, 2023</td>
+<td class="p-4 text-on-surface-variant">3 months ago</td>
+<td class="p-4">
+<div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1 text-on-surface-variant hover:text-primary hover:bg-surface-variant rounded transition-colors" title="View Details">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+<button class="p-1 text-on-surface-variant hover:text-primary hover:bg-surface-variant rounded transition-colors" title="Edit User">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="p-1 text-on-surface-variant hover:text-error hover:bg-error-container rounded transition-colors" title="More Options">
+<span class="material-symbols-outlined text-[20px]">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-[#F7F9F8] transition-colors group">
+<td class="p-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest border border-outline-variant flex items-center justify-center text-on-surface font-title-sm">
+                                            AS
+                                        </div>
+<div>
+<div class="font-title-sm text-title-sm text-on-surface">Alice Smith</div>
+<div class="text-on-surface-variant text-xs">a.smith.stu@university.edu</div>
+</div>
+</div>
+</td>
+<td class="p-4">
+<span class="inline-flex items-center px-2 py-1 rounded-md bg-surface-container text-on-surface font-label-caps text-[10px] uppercase border border-outline-variant">Reader</span>
+</td>
+<td class="p-4">
+<span class="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-[#e6f4ea] text-[#137333] font-label-caps text-[10px] uppercase border border-[#ceead6]">
+<span class="w-1.5 h-1.5 rounded-full bg-[#137333]"></span>
+                                        Active
+                                    </span>
+</td>
+<td class="p-4 text-on-surface-variant">Sep 01, 2023</td>
+<td class="p-4 text-on-surface-variant">1 day ago</td>
+<td class="p-4">
+<div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1 text-on-surface-variant hover:text-primary hover:bg-surface-variant rounded transition-colors" title="View Details">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+<button class="p-1 text-on-surface-variant hover:text-primary hover:bg-surface-variant rounded transition-colors" title="Edit User">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="p-1 text-on-surface-variant hover:text-error hover:bg-error-container rounded transition-colors" title="More Options">
+<span class="material-symbols-outlined text-[20px]">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 5 -->
+<tr class="hover:bg-[#F7F9F8] transition-colors group">
+<td class="p-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-error-container border border-error flex items-center justify-center text-on-error-container font-title-sm">
+                                            HR
+                                        </div>
+<div>
+<div class="font-title-sm text-title-sm text-on-surface">HR Department</div>
+<div class="text-on-surface-variant text-xs">hr.access@university.edu</div>
+</div>
+</div>
+</td>
+<td class="p-4">
+<span class="inline-flex items-center px-2 py-1 rounded-md bg-surface-container text-on-surface font-label-caps text-[10px] uppercase border border-outline-variant">Reader</span>
+</td>
+<td class="p-4">
+<span class="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-error-container text-on-error-container font-label-caps text-[10px] uppercase border border-error">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+                                        Blocked
+                                    </span>
+</td>
+<td class="p-4 text-on-surface-variant">Nov 10, 2021</td>
+<td class="p-4 text-on-surface-variant">1 year ago</td>
+<td class="p-4">
+<div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1 text-on-surface-variant hover:text-primary hover:bg-surface-variant rounded transition-colors" title="View Details">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+<button class="p-1 text-on-surface-variant hover:text-primary hover:bg-surface-variant rounded transition-colors" title="Edit User">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="p-1 text-on-surface-variant hover:text-error hover:bg-error-container rounded transition-colors" title="More Options">
+<span class="material-symbols-outlined text-[20px]">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="border-t border-[#E2E8F0] bg-surface-container-lowest p-4 flex items-center justify-between">
+<div class="text-on-surface-variant font-body-sm text-body-sm">
+                        Rows per page: 
+                        <select class="ml-2 border-none bg-transparent text-on-surface font-title-sm text-title-sm focus:outline-none cursor-pointer">
+<option>10</option>
+<option>25</option>
+<option>50</option>
+</select>
+</div>
+<div class="flex items-center gap-4">
+<span class="text-on-surface-variant font-body-sm text-body-sm">1-10 of 248</span>
+<div class="flex gap-1">
+<button class="p-1 rounded hover:bg-surface-container-highest text-on-surface-variant disabled:opacity-50 disabled:cursor-not-allowed" disabled="">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="p-1 rounded hover:bg-surface-container-highest text-on-surface-variant">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+
+
+
+
+
+
+</body></html>

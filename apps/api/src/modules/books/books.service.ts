@@ -1,16 +1,17 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { BookStatus, Prisma, UserRole } from '../../generated/prisma/client';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { BookStatus, Prisma, ProcessingJobStatus, UserRole } from '../../generated/prisma/client';
 import slugify from 'slugify';
 import { PrismaService } from '../database/prisma.service';
 import { ProcessingQueue } from '../processing/processing.queue';
 import { validatePdfUpload } from '../storage/pdf-validation';
 import { StorageService, StoredPdf } from '../storage/storage.service';
 import { CreateBookIntakeDto } from './dto/create-book-intake.dto';
+import { mapAdminBook } from '../catalog/catalog.mapper';
 
 type IntakeResult = {
   book: { id: string; title: string; status: BookStatus };
   file: { id: string; originalFilename: string; sizeBytes: string };
-  processingJob: { id: string; status: 'QUEUED' | 'RUNNING' | 'SUCCEEDED' | 'FAILED' };
+  processingJob: { id: string; status: ProcessingJobStatus };
 };
 
 function normalizeName(value: string): string {
@@ -48,9 +49,9 @@ function normalizeIsbn(isbn?: string): string | undefined {
 @Injectable()
 export class BooksService {
   constructor(
-    private readonly prisma: PrismaService,
-    private readonly storage: StorageService,
-    private readonly queue: ProcessingQueue
+    @Inject(PrismaService) private readonly prisma: PrismaService,
+    @Inject(StorageService) private readonly storage: StorageService,
+    @Inject(ProcessingQueue) private readonly queue: ProcessingQueue
   ) {}
 
   async createIntake(dto: CreateBookIntakeDto, file: Express.Multer.File, librarianEmail = 'librarian@libif.local'): Promise<IntakeResult> {
@@ -72,7 +73,6 @@ export class BooksService {
       await this.queue.enqueueBookUploaded({
         bookId: result.book.id,
         fileId: result.file.id,
-        objectKey: storedPdf.objectKey,
         processingJobId: result.processingJob.id
       });
       return result;
@@ -138,7 +138,7 @@ export class BooksService {
       }
     });
 
-    const processingJob = await tx.processingJob.create({ data: { bookId: book.id } });
+    const processingJob = await tx.processingJob.create({ data: { bookId: book.id, bookFileId: bookFile.id } });
     return {
       book: { id: book.id, title: book.title, status: book.status },
       file: { id: bookFile.id, originalFilename: bookFile.originalFilename, sizeBytes: bookFile.sizeBytes.toString() },
@@ -156,18 +156,6 @@ export class BooksService {
         authors: { include: { author: true } }
       }
     });
-    return books.map((book) => ({
-      id: book.id,
-      title: book.title,
-      isbn: book.isbn,
-      status: book.status,
-      category: book.category,
-      tags: book.tags.map(({ tag }) => tag),
-      authors: book.authors.map(({ author }) => author),
-      file: book.files[0]
-        ? { id: book.files[0].id, originalFilename: book.files[0].originalFilename, sizeBytes: book.files[0].sizeBytes.toString() }
-        : null,
-      createdAt: book.createdAt.toISOString()
-    }));
+    return books.map((book) => mapAdminBook(book));
   }
 }

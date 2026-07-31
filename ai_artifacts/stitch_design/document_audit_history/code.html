@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>KnowledgeCenter - Document Audit History</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error-container": "#ffdad6",
+                        "tertiary": "#002525",
+                        "inverse-on-surface": "#ebf1ff",
+                        "on-surface": "#151c27",
+                        "secondary-fixed-dim": "#89d3d5",
+                        "on-tertiary-container": "#47adac",
+                        "on-background": "#151c27",
+                        "surface-container-highest": "#dce2f3",
+                        "on-tertiary-fixed": "#002020",
+                        "primary-fixed": "#bfece1",
+                        "on-primary": "#ffffff",
+                        "primary-container": "#103c35",
+                        "surface-bright": "#f9f9ff",
+                        "on-primary-fixed-variant": "#244e46",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed": "#91f3f2",
+                        "surface": "#f9f9ff",
+                        "on-secondary-fixed-variant": "#004f51",
+                        "inverse-surface": "#2a313d",
+                        "surface-variant": "#dce2f3",
+                        "secondary-fixed": "#a5eff1",
+                        "on-tertiary-fixed-variant": "#004f50",
+                        "surface-container-high": "#e2e8f8",
+                        "on-primary-container": "#7ca79d",
+                        "background": "#f9f9ff",
+                        "surface-container": "#e7eefe",
+                        "primary-fixed-dim": "#a4cfc5",
+                        "primary": "#002520",
+                        "surface-tint": "#3d665e",
+                        "on-tertiary": "#ffffff",
+                        "secondary": "#12696b",
+                        "on-primary-fixed": "#00201b",
+                        "secondary-container": "#a2edee",
+                        "outline": "#717976",
+                        "surface-dim": "#d3daea",
+                        "on-secondary-fixed": "#002021",
+                        "surface-container-low": "#f0f3ff",
+                        "tertiary-container": "#003c3c",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface-variant": "#414846",
+                        "tertiary-fixed-dim": "#74d6d6",
+                        "on-secondary-container": "#1a6d6f",
+                        "inverse-primary": "#a4cfc5",
+                        "on-error-container": "#93000a",
+                        "on-error": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "outline-variant": "#c0c8c5"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xl": "32px",
+                        "xs": "4px",
+                        "gutter": "16px",
+                        "sm": "8px",
+                        "container-max": "1440px",
+                        "lg": "24px",
+                        "unit": "8px",
+                        "md": "16px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["Be Vietnam Pro"],
+                        "headline-md": ["Be Vietnam Pro"],
+                        "display-lg": ["Be Vietnam Pro"],
+                        "body-sm": ["Be Vietnam Pro"],
+                        "title-sm": ["Be Vietnam Pro"],
+                        "display-lg-mobile": ["Be Vietnam Pro"],
+                        "body-md": ["Be Vietnam Pro"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "title-sm": ["18px", { "lineHeight": "24px", "fontWeight": "600" }],
+                        "display-lg-mobile": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex">
+<!-- SideNavBar (Suppressed for Sub-page context, but keeping code structure available if needed for overall layout. Since this is a sub-page 'document details tabbed view', we will focus on the main content area, assuming the nav shell might be handled by the parent layout, but standard design implies full page view for the frame. We will render a simplified contextual header instead of the global top app bar to denote it's a detail view, or just the content area as requested by 'Frame LIB-24: Document Audit History'.) -->
+<!-- Main Content Canvas (Tabbed Details View) -->
+<main class="flex-1 w-full max-w-container-max mx-auto px-lg py-xl">
+<!-- Breadcrumb / Context Header -->
+<header class="mb-lg">
+<div class="flex items-center space-x-sm text-on-surface-variant mb-xs">
+<span class="material-symbols-outlined text-sm">inventory_2</span>
+<span class="font-body-sm text-body-sm">Archives</span>
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+<span class="font-body-sm text-body-sm truncate max-w-[200px]">INC-1984-Vol3-Redacted.pdf</span>
+</div>
+<div class="flex justify-between items-end">
+<div>
+<h1 class="font-headline-md text-headline-md text-primary">Document Details</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Reviewing metadata, access logs, and structural integrity.</p>
+</div>
+<div class="flex space-x-sm">
+<button class="px-md py-sm border border-outline-variant text-secondary rounded font-label-caps text-label-caps hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined align-middle mr-1 text-sm">download</span>Export PDF
+                    </button>
+</div>
+</div>
+</header>
+<!-- Tab Navigation -->
+<nav class="border-b border-outline-variant mb-lg flex space-x-xl">
+<a class="pb-sm font-title-sm text-title-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Overview</a>
+<a class="pb-sm font-title-sm text-title-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Metadata</a>
+<a class="pb-sm font-title-sm text-title-sm text-secondary font-bold border-b-2 border-secondary relative top-[1px]" href="#">Audit History</a>
+<a class="pb-sm font-title-sm text-title-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Access Control</a>
+</nav>
+<!-- Audit History Content Area -->
+<section class="bg-surface-container-lowest border border-[#D9E1DE] rounded-lg">
+<!-- Filters Toolbar -->
+<div class="p-md border-b border-[#D9E1DE] flex justify-between items-center bg-[#F7F9F8] rounded-t-lg">
+<div class="flex items-center space-x-md">
+<!-- Action Type Filter -->
+<div class="relative">
+<select class="appearance-none bg-surface-container-lowest border border-outline-variant text-on-surface-variant font-body-sm text-body-sm py-sm pl-md pr-xl rounded focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary cursor-pointer">
+<option>All Action Types</option>
+<option>Upload</option>
+<option>Metadata Edit</option>
+<option>Processing</option>
+<option>Rejection</option>
+<option>Correction</option>
+</select>
+<span class="material-symbols-outlined absolute right-sm top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none text-sm">arrow_drop_down</span>
+</div>
+<!-- Date Range Filter -->
+<div class="relative flex items-center bg-surface-container-lowest border border-outline-variant rounded px-md py-sm focus-within:border-secondary focus-within:ring-1 focus-within:ring-secondary">
+<span class="material-symbols-outlined text-on-surface-variant mr-sm text-sm">calendar_month</span>
+<input class="bg-transparent border-none p-0 text-on-surface-variant font-body-sm text-body-sm focus:ring-0 w-48 placeholder-outline-variant" placeholder="Start Date - End Date" type="text" value="Oct 01, 2023 - Oct 15, 2023"/>
+</div>
+</div>
+<!-- Search -->
+<div class="relative">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-on-surface-variant text-sm">search</span>
+<input class="bg-surface-container-lowest border border-outline-variant text-on-surface-variant font-body-sm text-body-sm py-sm pl-xl pr-md rounded focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary w-64" placeholder="Search logs..." type="text"/>
+</div>
+</div>
+<!-- Data Table -->
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-[#D9E1DE] bg-surface-container-lowest">
+<th class="p-md font-label-caps text-label-caps text-on-surface-variant font-medium w-12"></th> <!-- Expand Icon -->
+<th class="p-md font-label-caps text-label-caps text-on-surface-variant font-medium">Timestamp</th>
+<th class="p-md font-label-caps text-label-caps text-on-surface-variant font-medium">Action</th>
+<th class="p-md font-label-caps text-label-caps text-on-surface-variant font-medium">User / Role</th>
+<th class="p-md font-label-caps text-label-caps text-on-surface-variant font-medium">Comments</th>
+</tr>
+</thead>
+<tbody class="font-body-sm text-body-sm text-on-surface">
+<!-- Row 1 (Expandable) -->
+<tr class="border-b border-surface-variant hover:bg-[#F7F9F8] transition-colors cursor-pointer group">
+<td class="p-md text-center"><span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors text-sm">expand_more</span></td>
+<td class="p-md text-on-surface-variant whitespace-nowrap">2023-10-15 14:32:01</td>
+<td class="p-md">
+<span class="inline-flex items-center px-2 py-1 rounded bg-[#E8F3F2] text-[#0C6668] font-medium text-xs">Metadata Edit</span>
+</td>
+<td class="p-md">
+<div class="flex items-center space-x-2">
+<div class="w-6 h-6 rounded-full bg-primary-container text-on-primary flex items-center justify-center text-xs font-bold">AP</div>
+<div>
+<div class="font-medium text-on-background">A. Patel</div>
+<div class="text-xs text-on-surface-variant">Senior Curator</div>
+</div>
+</div>
+</td>
+<td class="p-md text-on-surface-variant truncate max-w-xs">Updated Dublin Core subject tags and temporal coverage to match physical archive index.</td>
+</tr>
+<!-- Row 2 -->
+<tr class="border-b border-surface-variant hover:bg-[#F7F9F8] transition-colors">
+<td class="p-md text-center"><span class="material-symbols-outlined text-outline-variant text-sm">chevron_right</span></td>
+<td class="p-md text-on-surface-variant whitespace-nowrap">2023-10-14 09:15:22</td>
+<td class="p-md">
+<span class="inline-flex items-center px-2 py-1 rounded bg-[#F0F3FF] text-[#1A6D6F] font-medium text-xs">Processing</span>
+</td>
+<td class="p-md">
+<div class="flex items-center space-x-2">
+<span class="material-symbols-outlined text-secondary text-sm">smart_toy</span>
+<span class="font-medium text-on-background">System</span>
+</div>
+</td>
+<td class="p-md text-on-surface-variant truncate max-w-xs">OCR completion and text-layer generation successful.</td>
+</tr>
+<!-- Row 3 -->
+<tr class="border-b border-surface-variant hover:bg-[#F7F9F8] transition-colors">
+<td class="p-md text-center"><span class="material-symbols-outlined text-outline-variant text-sm">chevron_right</span></td>
+<td class="p-md text-on-surface-variant whitespace-nowrap">2023-10-12 16:45:00</td>
+<td class="p-md">
+<span class="inline-flex items-center px-2 py-1 rounded bg-[#F9F9FF] text-on-surface font-medium text-xs border border-outline-variant">Upload</span>
+</td>
+<td class="p-md">
+<div class="flex items-center space-x-2">
+<div class="w-6 h-6 rounded-full bg-surface-container-high text-on-surface flex items-center justify-center text-xs font-bold">JD</div>
+<div>
+<div class="font-medium text-on-background">J. Doe</div>
+<div class="text-xs text-on-surface-variant">Archivist II</div>
+</div>
+</div>
+</td>
+<td class="p-md text-on-surface-variant truncate max-w-xs">Initial ingestion from external vendor drive.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination (Simplified) -->
+<div class="p-md border-t border-[#D9E1DE] flex justify-between items-center text-body-sm text-on-surface-variant">
+<span>Showing 1 to 3 of 12 entries</span>
+<div class="flex space-x-sm">
+<button class="px-sm py-xs border border-outline-variant rounded hover:bg-surface-container-low disabled:opacity-50" disabled="">Prev</button>
+<button class="px-sm py-xs border border-outline-variant rounded hover:bg-surface-container-low">Next</button>
+</div>
+</div>
+</section>
+</main>
+</body></html>

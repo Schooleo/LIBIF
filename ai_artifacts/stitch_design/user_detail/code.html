@@ -1,0 +1,351 @@
+<!DOCTYPE html><html class="h-full bg-background dark:bg-background" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>User Detail - LIBIF Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-surface": "#2a313d",
+                        "surface-container-high": "#e2e8f8",
+                        "secondary": "#12696b",
+                        "inverse-on-surface": "#ebf1ff",
+                        "on-tertiary-fixed-variant": "#004f50",
+                        "surface-dim": "#d3daea",
+                        "surface-bright": "#f9f9ff",
+                        "primary-fixed-dim": "#a4cfc5",
+                        "on-surface": "#151c27",
+                        "primary-container": "#103c35",
+                        "error-container": "#ffdad6",
+                        "surface-container-low": "#f0f3ff",
+                        "surface-container": "#e7eefe",
+                        "on-primary-fixed-variant": "#244e46",
+                        "on-secondary-fixed": "#002021",
+                        "primary-fixed": "#bfece1",
+                        "on-secondary": "#ffffff",
+                        "inverse-primary": "#a4cfc5",
+                        "on-secondary-fixed-variant": "#004f51",
+                        "surface-variant": "#dce2f3",
+                        "on-primary-container": "#7ca79d",
+                        "secondary-fixed-dim": "#89d3d5",
+                        "on-primary-fixed": "#00201b",
+                        "on-background": "#151c27",
+                        "secondary-container": "#a2edee",
+                        "outline": "#717976",
+                        "on-tertiary-fixed": "#002020",
+                        "on-primary": "#ffffff",
+                        "background": "#f9f9ff",
+                        "outline-variant": "#c0c8c5",
+                        "on-surface-variant": "#414846",
+                        "tertiary-container": "#003c3c",
+                        "on-error": "#ffffff",
+                        "surface-container-highest": "#dce2f3",
+                        "on-tertiary-container": "#47adac",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-fixed": "#a5eff1",
+                        "on-secondary-container": "#1a6d6f",
+                        "tertiary": "#002525",
+                        "on-tertiary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed": "#91f3f2",
+                        "primary": "#002520",
+                        "error": "#ba1a1a",
+                        "surface-tint": "#3d665e",
+                        "tertiary-fixed-dim": "#74d6d6",
+                        "surface": "#f9f9ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "16px",
+                        "unit": "8px",
+                        "sm": "8px",
+                        "container-max": "1440px",
+                        "xs": "4px",
+                        "xl": "32px",
+                        "lg": "24px",
+                        "md": "16px"
+                    },
+                    "fontFamily": {
+                        "display-lg-mobile": ["Be Vietnam Pro"],
+                        "headline-md": ["Be Vietnam Pro"],
+                        "label-caps": ["Be Vietnam Pro"],
+                        "display-lg": ["Be Vietnam Pro"],
+                        "title-sm": ["Be Vietnam Pro"],
+                        "body-sm": ["Be Vietnam Pro"],
+                        "body-md": ["Be Vietnam Pro"]
+                    },
+                    "fontSize": {
+                        "display-lg-mobile": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "title-sm": ["18px", { "lineHeight": "24px", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="h-full flex flex-col md:flex-row font-body-md text-on-surface antialiased bg-[#F7F9F8]">
+<!-- SideNavBar (Hidden on Mobile) -->
+<nav class="hidden md:flex w-64 h-screen fixed left-0 top-0 bg-primary dark:bg-primary border-r border-outline-variant flex-col py-lg z-50">
+<div class="px-md mb-xl">
+<h1 class="font-display-lg text-display-lg font-bold text-on-primary dark:text-on-primary">LIBIF Admin</h1>
+<p class="font-body-sm text-on-primary opacity-80 mt-xs">University Institutional Repository</p>
+</div>
+<div class="px-md mb-lg">
+<button class="w-full bg-secondary text-on-secondary font-title-sm text-title-sm py-unit px-md rounded-DEFAULT hover:bg-secondary-container hover:text-on-secondary-container transition-colors duration-200 shadow-[0px_4px_12px_rgba(16,60,53,0.08)]">
+                Upload Document
+            </button>
+</div>
+<div class="flex-1 overflow-y-auto">
+<ul class="space-y-sm px-sm">
+<li class="">
+<a class="flex items-center px-md py-sm rounded-DEFAULT text-on-primary-fixed-variant opacity-80 hover:opacity-100 hover:bg-primary-container transition-colors duration-200 active:scale-95 transition-transform font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined mr-md">dashboard</span>
+                        Dashboard
+                    </a>
+</li>
+<li class="">
+<a class="flex items-center px-md py-sm rounded-DEFAULT text-on-primary-fixed-variant opacity-80 hover:opacity-100 hover:bg-primary-container transition-colors duration-200 active:scale-95 transition-transform font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined mr-md">account_balance</span>
+                        Library Catalog
+                    </a>
+</li>
+<li class="">
+<a class="flex items-center px-md py-sm rounded-DEFAULT text-on-primary-fixed-variant opacity-80 hover:opacity-100 hover:bg-primary-container transition-colors duration-200 active:scale-95 transition-transform font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined mr-md">inventory_2</span>
+                        Archives
+                    </a>
+</li>
+<li class="">
+<a class="flex items-center px-md py-sm rounded-DEFAULT border-l-4 border-secondary-fixed bg-primary-container text-on-primary-fixed font-bold hover:bg-primary-container transition-colors duration-200 active:scale-95 transition-transform font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined mr-md" style="font-variation-settings: 'FILL' 1;">lock_person</span>
+                        Access Management
+                    </a>
+</li>
+<li class="">
+<a class="flex items-center px-md py-sm rounded-DEFAULT text-on-primary-fixed-variant opacity-80 hover:opacity-100 hover:bg-primary-container transition-colors duration-200 active:scale-95 transition-transform font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined mr-md">terminal</span>
+                        System Logs
+                    </a>
+</li>
+</ul>
+</div>
+<div class="mt-auto pt-lg border-t border-outline-variant px-sm space-y-sm">
+<a class="flex items-center px-md py-sm rounded-DEFAULT text-on-primary-fixed-variant opacity-80 hover:opacity-100 hover:bg-primary-container transition-colors duration-200 active:scale-95 transition-transform font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined mr-md">settings</span>
+                Settings
+            </a>
+<a class="flex items-center px-md py-sm rounded-DEFAULT text-on-primary-fixed-variant opacity-80 hover:opacity-100 hover:bg-primary-container transition-colors duration-200 active:scale-95 transition-transform font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined mr-md">help_outline</span>
+                Support
+            </a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col md:pl-64 min-w-0 bg-[#F7F9F8]">
+<!-- TopNavBar (Web) -->
+<header class="hidden md:flex justify-between items-center h-16 px-lg w-full sticky top-0 z-40 bg-surface dark:bg-surface border-b border-outline-variant">
+<div class="flex items-center space-x-md">
+<button class="text-on-surface-variant hover:text-primary transition-colors cursor-pointer">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<div class="relative w-64">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full pl-xl pr-sm py-xs border border-outline-variant rounded-DEFAULT bg-surface-container-lowest focus:border-secondary focus:ring-2 focus:ring-[#E8F3F2] outline-none font-body-sm text-body-sm transition-all text-on-surface" placeholder="Search users..." type="text">
+</div>
+</div>
+<div class="flex items-center space-x-md">
+<button class="text-on-surface-variant hover:text-primary transition-colors cursor-pointer relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors cursor-pointer">
+<span class="material-symbols-outlined">history</span>
+</button>
+
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-1 overflow-y-auto p-gutter md:p-lg @container">
+<!-- Breadcrumbs & Header Actions -->
+<div class="flex items-center justify-between mb-lg">
+<nav aria-label="Breadcrumb" class="flex text-on-surface-variant font-body-sm text-body-sm">
+<ol class="inline-flex items-center space-x-1 md:space-x-3">
+<li class="inline-flex items-center">
+<a class="hover:text-primary transition-colors" href="#">Access Management</a>
+</li>
+<li class="">
+<div class="flex items-center">
+<span class="material-symbols-outlined text-sm mx-1">chevron_right</span>
+<span class="text-on-surface ml-1 md:ml-2 font-title-sm text-title-sm">Archivist Miller</span>
+</div>
+</li>
+</ol>
+</nav>
+<div class="flex space-x-sm">
+<button class="px-md py-sm border border-outline-variant text-[#0C6668] rounded-DEFAULT font-title-sm text-title-sm hover:bg-[#E8F3F2] transition-colors">
+                        Change Role
+                    </button>
+<button class="px-md py-sm bg-error text-on-error rounded-DEFAULT font-title-sm text-title-sm hover:bg-on-error-container transition-colors shadow-[0px_4px_12px_rgba(16,60,53,0.08)]">
+                        Deactivate Account
+                    </button>
+</div>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- Profile Header Card (Col Span 12 or 8) -->
+<div class="md:col-span-8 bg-surface-container-lowest border border-outline-variant rounded-lg p-lg shadow-[0px_4px_12px_rgba(16,60,53,0.08)]">
+<div class="flex items-start justify-between border-b border-outline-variant pb-md mb-md">
+<div class="flex items-center space-x-md">
+
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Evelyn Miller</h2>
+<div class="flex items-center space-x-sm mt-xs">
+<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-[#E8F3F2] text-[#0C6668]">
+                                        Senior Archivist
+                                    </span>
+<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-primary-fixed text-on-primary-fixed-variant">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container mr-1"></span> Active
+                                    </span>
+</div>
+</div>
+</div>
+
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-md">
+<div>
+<p class="font-label-caps text-label-caps text-outline uppercase tracking-wider mb-xs">Email Address</p>
+<p class="font-body-md text-body-md text-on-surface">e.miller@university.edu</p>
+</div>
+<div>
+<p class="font-label-caps text-label-caps text-outline uppercase tracking-wider mb-xs">Department</p>
+<p class="font-body-md text-body-md text-on-surface">Special Collections &amp; Archives</p>
+</div>
+<div>
+<p class="font-label-caps text-label-caps text-outline uppercase tracking-wider mb-xs">Registration Date</p>
+<p class="font-body-md text-body-md text-on-surface">October 12, 2021</p>
+</div>
+<div>
+<p class="font-label-caps text-label-caps text-outline uppercase tracking-wider mb-xs">Last Login</p>
+<p class="font-body-md text-body-md text-on-surface">Today, 09:42 AM</p>
+</div>
+</div>
+</div>
+<!-- Quick Stats / Secondary Info (Col Span 4) -->
+<div class="md:col-span-4 bg-[#E8F3F2] border border-outline-variant rounded-lg p-lg shadow-[0px_4px_12px_rgba(16,60,53,0.08)] flex flex-col justify-between">
+<div>
+<h3 class="font-title-sm text-title-sm text-[#0C6668] mb-md flex items-center">
+<span class="material-symbols-outlined mr-sm text-[20px]">analytics</span>
+                            Activity Summary
+                        </h3>
+<div class="space-y-sm">
+<div class="flex justify-between items-center bg-surface-container-lowest p-sm rounded-DEFAULT border border-outline-variant">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Documents Uploaded</span>
+<span class="font-title-sm text-title-sm text-primary font-bold">1,248</span>
+</div>
+<div class="flex justify-between items-center bg-surface-container-lowest p-sm rounded-DEFAULT border border-outline-variant">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Metadata Approvals</span>
+<span class="font-title-sm text-title-sm text-primary font-bold">3,592</span>
+</div>
+</div>
+</div>
+<div class="mt-md text-right">
+<a class="font-body-sm text-body-sm text-secondary hover:underline flex items-center justify-end" href="#">View Full Analytics <span class="material-symbols-outlined text-[16px] ml-xs">arrow_forward</span></a>
+</div>
+</div>
+<!-- Permissions Summary -->
+<div class="md:col-span-6 bg-surface-container-lowest border border-outline-variant rounded-lg p-lg shadow-[0px_4px_12px_rgba(16,60,53,0.08)]">
+<h3 class="font-title-sm text-title-sm text-on-surface border-b border-outline-variant pb-xs mb-md flex items-center">
+<span class="material-symbols-outlined mr-sm text-outline">key</span>
+                        Role Capabilities
+                    </h3>
+<ul class="space-y-unit">
+<li class="flex items-start">
+<span class="material-symbols-outlined text-secondary mr-sm text-[20px] mt-0.5" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<div>
+<p class="font-body-md text-body-md text-on-surface font-medium">Upload Documents</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Can ingest single or batch files to the main repository.</p>
+</div>
+</li>
+<li class="flex items-start">
+<span class="material-symbols-outlined text-secondary mr-sm text-[20px] mt-0.5" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<div>
+<p class="font-body-md text-body-md text-on-surface font-medium">Approve Metadata</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Can review and finalize Dublin Core metadata records.</p>
+</div>
+</li>
+<li class="flex items-start">
+<span class="material-symbols-outlined text-secondary mr-sm text-[20px] mt-0.5" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<div>
+<p class="font-body-md text-body-md text-on-surface font-medium">Manage Categories</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Create and organize taxonomy and collection hierarchies.</p>
+</div>
+</li>
+<li class="flex items-start opacity-50">
+<span class="material-symbols-outlined text-outline-variant mr-sm text-[20px] mt-0.5">cancel</span>
+<div>
+<p class="font-body-md text-body-md text-on-surface font-medium line-through">System Configuration</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Restricted from altering core system settings.</p>
+</div>
+</li>
+</ul>
+</div>
+<!-- Audit History Timeline -->
+<div class="md:col-span-6 bg-surface-container-lowest border border-outline-variant rounded-lg p-lg shadow-[0px_4px_12px_rgba(16,60,53,0.08)]">
+<h3 class="font-title-sm text-title-sm text-on-surface border-b border-outline-variant pb-xs mb-md flex items-center">
+<span class="material-symbols-outlined mr-sm text-outline">manage_search</span>
+                        Audit History
+                    </h3>
+<div class="relative border-l border-outline-variant ml-sm space-y-md">
+<div class="relative pl-md">
+<span class="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-surface-container-lowest border-2 border-secondary"></span>
+<div class="mb-xs flex items-center justify-between">
+<p class="font-body-md text-body-md text-on-surface font-medium">Role Updated</p>
+<span class="font-body-sm text-body-sm text-outline">Oct 24, 2023</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Promoted from 'Junior Archivist' to 'Senior Archivist' by SystemAdmin.</p>
+</div>
+<div class="relative pl-md">
+<span class="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-surface-container-lowest border-2 border-outline-variant"></span>
+<div class="mb-xs flex items-center justify-between">
+<p class="font-body-md text-body-md text-on-surface font-medium">Password Reset Request</p>
+<span class="font-body-sm text-body-sm text-outline">Jun 15, 2023</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Initiated via self-service portal. Completed successfully.</p>
+</div>
+<div class="relative pl-md">
+<span class="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-surface-container-lowest border-2 border-outline-variant"></span>
+<div class="mb-xs flex items-center justify-between">
+<p class="font-body-md text-body-md text-on-surface font-medium">Account Created</p>
+<span class="font-body-sm text-body-sm text-outline">Oct 12, 2021</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Provisioned by automated HR sync integration.</p>
+</div>
+</div>
+<div class="mt-md text-center">
+<button class="text-secondary font-body-sm text-body-sm hover:underline border border-outline-variant px-sm py-xs rounded-DEFAULT hover:bg-surface-container-high transition-colors">Load More Logs</button>
+</div>
+</div>
+</div>
+</main>
+</div>
+
+
+
+
+</body></html>

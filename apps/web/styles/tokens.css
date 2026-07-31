@@ -1,0 +1,80 @@
+:root {
+  color-scheme: light;
+
+  --color-navigation: #0B2F2D;
+  --color-action-primary: #103C35;
+  --color-secondary: #0C6668;
+  --color-interactive-hover: #138A8A;
+  --color-page-background: #F7F9F8;
+  --color-surface: #FFFFFF;
+  --color-border: #D9E1DE;
+  --color-text-primary: #151C27;
+  --color-text-secondary: #414846;
+  --color-error: #BA1A1A;
+  --color-success: #146C2E;
+  --color-warning: #8A4B00;
+  --color-info: #2457A6;
+  --color-success-surface: #EAF7EE;
+  --color-warning-surface: #FFF4DB;
+  --color-info-surface: #EAF1FF;
+  --color-error-surface: #FFEDEA;
+  --color-muted-surface: #EEF3F1;
+
+  --font-sans: var(--font-be-vietnam-pro, 'Be Vietnam Pro'), Arial, Helvetica, sans-serif;
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.5rem;
+  --font-size-2xl: 2rem;
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.5;
+
+  --space-0: 0;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-8: 3rem;
+
+  --radius-tag: 0.25rem;
+  --radius-control: 0.5rem;
+  --radius-panel: 0.75rem;
+  --radius-pill: 999px;
+
+  --border-thin: 1px solid var(--color-border);
+  --elevation-overlay: 0 1.5rem 3rem rgb(21 28 39 / 18%);
+
+  --breakpoint-mobile: 23.4375rem;
+  --breakpoint-tablet: 48rem;
+  --breakpoint-desktop: 64rem;
+  --breakpoint-wide: 90rem;
+
+  --motion-fast: 120ms ease;
+  --motion-standard: 180ms ease;
+
+  --z-base: 0;
+  --z-dropdown: 20;
+  --z-drawer: 40;
+  --z-dialog: 50;
+  --z-toast: 60;
+
+  --focus-ring: 0 0 0 3px color-mix(in srgb, var(--color-secondary) 28%, transparent);
+}
+
+@theme inline {
+  --color-libif-navigation: var(--color-navigation);
+  --color-libif-primary: var(--color-action-primary);
+  --color-libif-secondary: var(--color-secondary);
+  --color-libif-hover: var(--color-interactive-hover);
+  --color-libif-background: var(--color-page-background);
+  --color-libif-surface: var(--color-surface);
+  --color-libif-border: var(--color-border);
+  --color-libif-text: var(--color-text-primary);
+  --color-libif-muted: var(--color-text-secondary);
+  --font-sans: var(--font-sans);
+  --radius-libif-control: var(--radius-control);
+  --radius-libif-panel: var(--radius-panel);
+}
