@@ -61,7 +61,7 @@ Tài liệu này ước tính thời gian, công sức và chi phí cho **đồ 
 
 ### 2.3 Sản phẩm bàn giao học phần
 
-1. Bộ tài liệu quản lý dự án: Charter, Proposal, Vision & Scope, Product Backlog, Architecture, PoC và Project Estimation.
+1. Bộ tài liệu quản lý dự án: Charter, Proposal, Vision & Scope, Product Backlog, Architecture, PoC, Project Estimation, Project Planning, Statement of Work và Project Monitoring.
 2. Product Backlog và bằng chứng vận hành Scrum: Sprint Backlog, biên bản Review/Retrospective, biểu đồ tiến độ hoặc báo cáo velocity.
 3. Mã nguồn có quản lý phiên bản và hướng dẫn cài đặt.
 4. Bản triển khai staging hoặc gói Docker chạy được trên máy giảng viên.
