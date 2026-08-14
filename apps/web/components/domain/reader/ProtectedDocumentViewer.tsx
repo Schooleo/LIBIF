@@ -6,6 +6,7 @@ import { Badge, Button, Card, InlineAlert, Spinner } from '../../ui';
 import { fetchDocumentManifest, fetchProtectedPageUrl, updateReadingProgress, type ReadingProgressStateDto } from '../../../lib/api-browser';
 import { BookmarkButton } from './BookmarkButton';
 import { ReadingProgressTracker } from './ReadingProgressTracker';
+import { DocumentPageSearch } from './DocumentPageSearch';
 
 export type ProtectedDocumentViewerMode = 'reader' | 'review';
 
@@ -16,6 +17,8 @@ export interface ProtectedDocumentViewerProps {
   totalPages?: number;
   bookmarked?: boolean;
   mode?: ProtectedDocumentViewerMode;
+  requestedPage?: number;
+  showSearch?: boolean;
 }
 
 const clampPage = (page: number, totalPages: number) => Math.min(Math.max(page, 1), Math.max(totalPages, 1));
@@ -27,6 +30,8 @@ export function ProtectedDocumentViewer({
   totalPages: propTotalPages,
   bookmarked = false,
   mode = 'reader',
+  requestedPage,
+  showSearch = mode === 'reader',
 }: ProtectedDocumentViewerProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [manifest, setManifest] = useState<ProtectedDocumentManifestDto | null>(null);
@@ -230,6 +235,11 @@ export function ProtectedDocumentViewer({
   }, []);
 
   useEffect(() => {
+    if (!manifest || requestedPage === undefined) return;
+    handlePageChange(requestedPage);
+  }, [handlePageChange, manifest, requestedPage]);
+
+  useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
         return;
@@ -320,6 +330,15 @@ export function ProtectedDocumentViewer({
           </div>
         ) : null}
       </div>
+
+      {showSearch ? (
+        <Card>
+          <div className="ui-stack gap-3">
+            <h2 className="text-lg font-semibold">Search This Document</h2>
+            <DocumentPageSearch documentId={documentId} onPageSelect={handlePageChange} />
+          </div>
+        </Card>
+      ) : null}
 
       <ReadingProgressTracker
         currentPage={currentPage}

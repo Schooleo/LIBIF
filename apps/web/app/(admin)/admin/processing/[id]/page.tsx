@@ -8,6 +8,7 @@ import { ProcessingStatusBadge } from '../../../../../components/domain/processi
 import { ProcessingStageStepper } from '../../../../../components/domain/processing/processing';
 import { ProcessingActions } from '../../../../../components/domain/processing/ProcessingActions';
 import { JobRetryHistory } from '../../../../../components/domain/processing/JobRetryHistory';
+import { DocumentStatusBadge } from '../../../../../components/domain/processing/DocumentStatusBadge';
 import { getApiBaseUrl } from '../../../../../lib/api-client';
 import { getDevAuthHeaders } from '../../../../../lib/auth/session';
 import type { ProcessingJob } from '../../../../../components/domain/processing/ProcessingQueue';
@@ -117,7 +118,7 @@ export default async function AdminProcessingJobDetailPage({ params }: PageProps
                       </Link>
                     </div>
                   </div>
-                ) : (
+                ) : job.bookStatus === 'PENDING_APPROVAL' ? (
                   <div>
                     Document pipeline executed successfully. Succeeded and transformed to <strong>Awaiting Approval</strong> status.
                     <div className="mt-2">
@@ -125,6 +126,11 @@ export default async function AdminProcessingJobDetailPage({ params }: PageProps
                         View in Approvals Queue &rarr;
                       </Link>
                     </div>
+                  </div>
+                ) : (
+                  <div>
+                    Document pipeline executed successfully. The document is no longer awaiting approval; its current status is{' '}
+                    <strong>{job.bookStatus?.replace(/_/g, ' ') || 'Completed'}</strong>.
                   </div>
                 )}
               </InlineAlert>
@@ -171,8 +177,12 @@ export default async function AdminProcessingJobDetailPage({ params }: PageProps
               <h2 className="text-lg font-semibold mb-4">Status & Control</h2>
               <div className="ui-stack gap-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-neutral-500">Current Status:</span>
+                  <span className="text-neutral-500">Processing Status:</span>
                   <ProcessingStatusBadge status={job.status} />
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-neutral-500">Document Status:</span>
+                  <DocumentStatusBadge status={job.bookStatus} />
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-neutral-500">Total Attempts:</span>

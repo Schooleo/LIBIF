@@ -9,10 +9,11 @@ x-api-environment: &api-environment
   S3_BUCKET: libif-pdfs
   S3_ACCESS_KEY_ID: minioadmin
   S3_SECRET_ACCESS_KEY: minioadmin
-  LIBIF_WEB_BASE_URL: http://libif.local.com
+  LIBIF_WEB_BASE_URL: https://libif.local.com
   LIBIF_ENABLE_DEV_AUTH: "false"
   LIBIF_ALLOW_IN_MEMORY_READER_LIMITS: "false"
   LIBIF_TRUST_PROXY: "true"
+  LIBIF_SESSION_COOKIE_SECURE: "true"
   LIBIF_SOURCE_ACCESS_TOKEN_SECRET: local-compose-source-access-token
   SMTP_HOST: ${SMTP_HOST:-}
   SMTP_PORT: ${SMTP_PORT:-587}
@@ -125,10 +126,10 @@ services:
       context: .
       dockerfile: docker/web.Dockerfile
       args:
-        NEXT_PUBLIC_API_BASE_URL: http://libif.local.com
+        NEXT_PUBLIC_API_BASE_URL: https://libif.local.com
     environment:
       NODE_ENV: production
-      NEXT_PUBLIC_API_BASE_URL: http://libif.local.com
+      NEXT_PUBLIC_API_BASE_URL: https://libif.local.com
       INTERNAL_API_BASE_URL: http://api:3001
     depends_on:
       api:
@@ -158,10 +159,16 @@ services:
     restart: unless-stopped
 
   nginx:
-    image: nginx:1.29.1-alpine
+    build:
+      context: .
+      dockerfile: docker/nginx.Dockerfile
     network_mode: service:tailscale
+    environment:
+      LIBIF_TLS_HOSTNAME: libif.local.com
+      LIBIF_TLS_CERT_DAYS: ${LIBIF_TLS_CERT_DAYS:-825}
     volumes:
       - ./docker/nginx/local.conf:/etc/nginx/nginx.conf:ro
+      - local_nginx_certs:/etc/nginx/certs
     depends_on:
       tailscale:
         condition: service_started
@@ -174,6 +181,7 @@ services:
 volumes:
   local_postgres_data:
   local_minio_data:
+  local_nginx_certs:
 
 networks:
   default:

@@ -8,7 +8,7 @@ COMPOSE_LOCAL := COMPOSE_PROJECT_NAME=libif-local docker compose -f docker-compo
 
 .PHONY: help install dev build lint test test-e2e test-worker verify \
 	infra-up infra-down infra-restart infra-logs infra-ps \
-	local-up local-seed local-reindex-search local-down local-logs local-ps \
+	local-up local-export-cert local-seed local-reindex-search local-backfill-page-search local-down local-logs local-ps \
 	debug-up debug-down debug-logs pgadmin db-migrate db-seed db-reset prisma-generate api web worker clean
 
 help: ## Show available commands
@@ -32,15 +32,22 @@ infra-logs: ## Follow core service logs
 infra-ps: ## Show Docker service status
 	$(COMPOSE) ps
 
-local-up: ## Build and start the self-contained local stack at http://libif.local.com
+local-up: ## Build and start the self-contained HTTPS stack at https://libif.local.com
 	$(COMPOSE_LOCAL) up --build -d
-	@echo "Open http://libif.local.com after mapping 127.0.0.1 libif.local.com in your hosts file."
+	@echo "Open https://libif.local.com after mapping the Tailscale IP to libif.local.com."
+	@echo "Run 'make local-export-cert' to export the local TLS certificate for client trust stores."
+
+local-export-cert: ## Export the generated local TLS certificate for browser/OS trust
+	@mkdir -p .local-certs
+	$(COMPOSE_LOCAL) cp nginx:/etc/nginx/certs/libif-local-ca.crt .local-certs/libif-local-ca.crt
+	@echo "Local CA exported to .local-certs/libif-local-ca.crt (all private keys remain in Docker)."
 
 local-seed: ## Apply local migrations, seed development data, and index processed text
-	$(COMPOSE_LOCAL) build migrate seed
+	$(COMPOSE_LOCAL) build migrate seed worker
 	$(COMPOSE_LOCAL) up -d --wait postgres minio
 	$(COMPOSE_LOCAL) run --rm --no-deps migrate
 	$(COMPOSE_LOCAL) run --rm --no-deps seed
+	$(COMPOSE_LOCAL) run --rm --no-deps worker node apps/api/dist/src/scripts/backfill-page-text.js
 	$(COMPOSE_LOCAL) run --rm --no-deps seed npx tsx scripts/backfill-search-index.ts
 
 local-reindex-search: ## Index current extracted/OCR artifacts for public catalogue search
@@ -48,6 +55,12 @@ local-reindex-search: ## Index current extracted/OCR artifacts for public catalo
 	$(COMPOSE_LOCAL) up -d --wait postgres minio
 	$(COMPOSE_LOCAL) run --rm --no-deps migrate
 	$(COMPOSE_LOCAL) run --rm --no-deps seed npx tsx scripts/backfill-search-index.ts
+
+local-backfill-page-search: ## Build page-level search data for previously processed documents
+	$(COMPOSE_LOCAL) build migrate worker
+	$(COMPOSE_LOCAL) up -d --wait postgres minio
+	$(COMPOSE_LOCAL) run --rm --no-deps migrate
+	$(COMPOSE_LOCAL) run --rm --no-deps worker node apps/api/dist/src/scripts/backfill-page-text.js
 
 local-down: ## Stop the self-contained local stack
 	$(COMPOSE_LOCAL) down

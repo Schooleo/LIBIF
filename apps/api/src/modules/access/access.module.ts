@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { AuthModule } from '../auth/auth.module';
 import { DatabaseModule } from '../database/database.module';
 import { NotificationsModule } from '../notifications/notifications.module';
+import { ProcessingModule } from '../processing/processing.module';
 import { RiskAlertService } from '../notifications/risk-alert.service';
 import { RenderingModule } from '../rendering/rendering.module';
 import { StorageModule } from '../storage/storage.module';
@@ -12,7 +13,7 @@ import { ReaderAccessAuditService } from './reader-access-audit.service';
 import { ReaderRateLimitService } from './reader-rate-limit.service';
 
 @Module({
-  imports: [DatabaseModule, AuthModule, StorageModule, RenderingModule, NotificationsModule],
+  imports: [DatabaseModule, AuthModule, StorageModule, RenderingModule, NotificationsModule, ProcessingModule],
   controllers: [AccessController],
   providers: [
     AccessService,

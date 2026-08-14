@@ -73,15 +73,15 @@ export class PdftotextOcrEngineAdapter implements OcrEngine, OnModuleInit {
         throw new OcrExtractionError(`PDF exceeds the ${this.maxPages}-page processing limit.`);
       }
 
-      const embeddedText = await this.extractEmbeddedText(pdfPath, txtPath);
-      if (embeddedText) {
+      const embeddedPages = await this.extractEmbeddedPages(pdfPath, txtPath, pageCount);
+      if (embeddedPages.some((pageText) => pageText.length > 0)) {
         this.logger.log('Extracted an embedded text layer from a private source document.');
-        return resultFor(embeddedText, 'EMBEDDED_TEXT', pageCount, 'vi');
+        return resultFor(embeddedPages, 'EMBEDDED_TEXT', pageCount, 'vi');
       }
 
-      const ocrText = await this.extractScannedText(pdfPath, tmpDir, pageCount);
+      const ocrPages = await this.extractScannedText(pdfPath, tmpDir, pageCount);
       this.logger.log('Completed OCR for a private source document.');
-      return resultFor(ocrText, 'OCR', pageCount, 'vi');
+      return resultFor(ocrPages, 'OCR', pageCount, 'vi');
     } finally {
       await fs.rm(tmpDir, { recursive: true, force: true }).catch((error: unknown) => {
         this.logger.warn(`Could not remove OCR temporary directory: ${errorMessage(error)}`);
@@ -112,18 +112,18 @@ export class PdftotextOcrEngineAdapter implements OcrEngine, OnModuleInit {
     }
   }
 
-  private async extractEmbeddedText(pdfPath: string, txtPath: string): Promise<string> {
+  private async extractEmbeddedPages(pdfPath: string, txtPath: string, pageCount: number): Promise<string[]> {
     try {
       await execFileAsync('pdftotext', [pdfPath, txtPath], this.commandOptions());
       await makeFilesPrivate([txtPath]);
-      return (await fs.readFile(txtPath, 'utf8')).trim();
+      return splitPdftotextPages(await fs.readFile(txtPath, 'utf8'), pageCount);
     } catch (error) {
       this.logger.warn('Private PDF embedded text extraction failed.');
       throw new OcrExtractionError('PDF text extraction failed.', { cause: error });
     }
   }
 
-  private async extractScannedText(pdfPath: string, tmpDir: string, pageCount: number): Promise<string> {
+  private async extractScannedText(pdfPath: string, tmpDir: string, pageCount: number): Promise<string[]> {
     const pagePrefix = path.join(tmpDir, 'page');
     try {
       await execFileAsync(
@@ -173,7 +173,7 @@ export class PdftotextOcrEngineAdapter implements OcrEngine, OnModuleInit {
       if (!text) {
         throw new OcrExtractionError('OCR completed but found no readable text.');
       }
-      return text;
+      return pageTexts;
     } catch (error) {
       if (error instanceof OcrExtractionError) throw error;
       this.logger.warn('Private document OCR recognition failed.');
@@ -206,20 +206,34 @@ export class PdftotextOcrEngineAdapter implements OcrEngine, OnModuleInit {
 }
 
 function resultFor(
-  text: string,
+  pageTexts: string[],
   method: OcrResult['method'],
   pageCount: number,
   language: string
 ): OcrResult {
+  const pages = Array.from({ length: pageCount }, (_, index) => ({
+    pageNumber: index + 1,
+    text: pageTexts[index]?.trim() ?? ''
+  }));
+  const text = pages.map((page) => page.text).filter(Boolean).join('\n\n');
   const normalizedText = text.trim();
   return {
     text: normalizedText,
+    pages,
     method,
     sizeBytes: BigInt(Buffer.byteLength(normalizedText)),
     checksumSha256: crypto.createHash('sha256').update(normalizedText).digest('hex'),
     language,
     pageCount
   };
+}
+
+export function splitPdftotextPages(text: string, pageCount: number): string[] {
+  const pages = text.split('\f');
+  if (pages.length > pageCount && pages.at(-1)?.trim() === '') {
+    pages.pop();
+  }
+  return Array.from({ length: pageCount }, (_, index) => pages[index]?.trim() ?? '');
 }
 
 function parseLanguages(value: string): SupportedOcrLanguage[] {

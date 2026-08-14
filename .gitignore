@@ -63,6 +63,7 @@ playwright-report/
 .docker/
 docker-compose.override.yml
 tailscale-data/
+.local-certs/
 postgres-data/
 postgres_data/
 minio-data/

@@ -83,6 +83,11 @@ describe('Admin dashboard reporting (e2e)', () => {
     });
     await prisma.processingJob.create({ data: { bookId: published.id, bookFileId: publishedFile.id } });
 
+    const activityReferenceTime = Date.now();
+    const processingStartedAt = new Date(activityReferenceTime - 2 * 60 * 1000);
+    const publishedAt = new Date(activityReferenceTime - 60 * 1000);
+    const correctionRequestedAt = new Date(activityReferenceTime);
+
     await prisma.bookAuditEvent.createMany({
       data: [
         {
@@ -90,7 +95,7 @@ describe('Admin dashboard reporting (e2e)', () => {
           bookId: processing.id,
           action: BookAuditAction.PROCESSING_STARTED,
           message: 'PDF processing pipeline started',
-          createdAt: new Date('2026-07-21T10:00:00.000Z')
+          createdAt: processingStartedAt
         },
         {
           id: 'audit-published',
@@ -98,7 +103,7 @@ describe('Admin dashboard reporting (e2e)', () => {
           actorId: librarian.id,
           action: BookAuditAction.PUBLISHED,
           message: 'Document approved and published',
-          createdAt: new Date('2026-07-21T11:00:00.000Z')
+          createdAt: publishedAt
         },
         {
           id: 'audit-correction-requested',
@@ -106,7 +111,7 @@ describe('Admin dashboard reporting (e2e)', () => {
           actorId: admin.id,
           action: BookAuditAction.CORRECTION_REQUESTED,
           message: 'Correction requested: add publisher',
-          createdAt: new Date('2026-07-21T12:00:00.000Z')
+          createdAt: correctionRequestedAt
         }
       ]
     });
@@ -127,7 +132,7 @@ describe('Admin dashboard reporting (e2e)', () => {
             action: 'CORRECTION_REQUESTED',
             message: 'Correction requested: add publisher',
             actorEmail: 'admin@libif.local',
-            createdAt: '2026-07-21T12:00:00.000Z'
+            createdAt: correctionRequestedAt.toISOString()
           },
           {
             id: 'audit-published',
@@ -135,7 +140,7 @@ describe('Admin dashboard reporting (e2e)', () => {
             documentTitle: 'Published Book',
             action: 'PUBLISHED',
             actorEmail: 'librarian@libif.local',
-            createdAt: '2026-07-21T11:00:00.000Z'
+            createdAt: publishedAt.toISOString()
           },
           {
             id: 'audit-processing-started',
@@ -144,7 +149,7 @@ describe('Admin dashboard reporting (e2e)', () => {
             action: 'PROCESSING_STARTED',
             message: 'PDF processing pipeline started',
             actorEmail: null,
-            createdAt: '2026-07-21T10:00:00.000Z'
+            createdAt: processingStartedAt.toISOString()
           }
         ]
       }

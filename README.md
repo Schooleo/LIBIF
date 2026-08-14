@@ -52,7 +52,7 @@ API runs on `http://localhost:3001` and web runs on the Next.js dev port, usuall
 
 ### Self-contained local Docker stack
 
-`docker-compose.local.yml` starts PostgreSQL, Redis, MinIO, the migration job, API, worker, web app, Nginx, and a shared Tailscale demonstration machine. Seeding is intentionally separate so routine restarts do not mutate local workflow data or reset development-account passwords. Tailscale persists its identity in the ignored `./tailscale-data` directory. Nginx shares the Tailscale network namespace and accepts requests exclusively for `libif.local.com`; no LIBIF service publishes a host port.
+`docker-compose.local.yml` starts PostgreSQL, Redis, MinIO, the migration job, API, worker, web app, Nginx, and a shared Tailscale demonstration machine. Seeding is intentionally separate so routine restarts do not mutate local workflow data or reset development-account passwords. Tailscale persists its identity in the ignored `./tailscale-data` directory. Nginx shares the Tailscale network namespace, terminates TLS for `libif.local.com`, and redirects valid HTTP requests to HTTPS; no LIBIF service publishes a host port.
 
 Set `TAILSCALE_AUTHKEY` in `.env` to a reusable, non-ephemeral auth key and ask teammates to map the Tailscale machine's `tailscale ip -4` address to `libif.local.com` (or publish the same mapping through your shared DNS):
 
@@ -72,13 +72,21 @@ make local-seed
 
 # Rebuild search text from existing extracted/OCR artifacts without reseeding.
 make local-reindex-search
+
+# Build page-level Reader/Approval search data for previously processed PDFs.
+make local-backfill-page-search
+
+# Export the generated certificate without exposing its private key.
+make local-export-cert
 ```
 
-Teammates then access `http://libif.local.com` through the tailnet: **teammate → shared Tailscale machine → Nginx → LIBIF services**. The API is available only through the same origin at `/api`; PostgreSQL, Redis, MinIO, the API, and worker do not publish host ports. Configure `SMTP_*` in `.env` for Gmail password-reset delivery (Gmail App Password, port `587`, `SMTP_SECURE=starttls`). Stop it with `make local-down`. This stack intentionally uses HTTP and development cookie settings for demonstration, so do not use it as a production deployment.
+The first startup generates a private local certificate authority (CA) and a CA-signed `libif.local.com` server certificate in the `local_nginx_certs` Docker volume. Export only the public CA certificate with `make local-export-cert`, securely distribute `.local-certs/libif-local-ca.crt` to teammates, and import it into each browser or operating-system trust store. Browsers will warn until the CA is trusted. To rotate the CA and server certificate, remove only the `local_nginx_certs` volume and recreate Nginx. For an internet-facing deployment, replace this development CA with certificates issued by an ACME/public CA.
+
+Teammates then access `https://libif.local.com` through the tailnet: **teammate → shared Tailscale machine → Nginx TLS termination → LIBIF services**. Requests to `http://libif.local.com` receive a permanent `308` redirect while unexpected Host headers are rejected. The API trusts exactly one proxy hop, receives the original HTTPS scheme, and issues `Secure`, HTTP-only session cookies. The API is available only through the same HTTPS origin at `/api`; PostgreSQL, Redis, MinIO, the API, and worker do not publish host ports. Configure `SMTP_*` in `.env` for Gmail password-reset delivery (Gmail App Password, port `587`, `SMTP_SECURE=starttls`). Stop it with `make local-down`. The generated certificate is for private development only, not production.
 
 ## Seeded development accounts
 
-`make local-seed` populates the self-contained Docker stack with one usable email/password account for each role, documentation PDFs, and a search projection of existing extracted/OCR artifacts. `make local-reindex-search` rebuilds that projection without reseeding. `make db-seed` / `npm run db:seed` remains available for the non-Docker development database. These credentials are for local development only.
+`make local-seed` populates the self-contained Docker stack with one usable email/password account for each role, documentation PDFs, catalogue search text, and page-level Reader/Approval search data. New processing jobs create page-level data automatically. Run `make local-backfill-page-search` once for PDFs processed before that capability was added; it may take time because scanned PDFs must be OCRed again. `make local-reindex-search` only rebuilds the public catalogue projection without reseeding. `make db-seed` / `npm run db:seed` remains available for the non-Docker development database. These credentials are for local development only.
 
 | Role | Email | Password |
 |---|---|---|
@@ -111,7 +119,9 @@ The repository includes a `Makefile` for common local workflows:
 | `make db-migrate` | Apply Prisma migrations. |
 | `make db-seed` | Seed development users and starter categories. |
 | `make local-seed` | Explicitly migrate, seed, and index processed text in the self-contained Docker stack without restarting application services. |
+| `make local-export-cert` | Export the generated public TLS certificate for installation in client trust stores. |
 | `make local-reindex-search` | Rebuild public catalogue search text from existing extracted/OCR artifacts. |
+| `make local-backfill-page-search` | Build private page-level Reader/Approval search data for previously processed PDFs. |
 | `make prisma-generate` | Generate Prisma client. |
 | `make db-reset` | Reset local DB, run migrations, and seed data. |
 | `make dev` | Start the web app, HTTP API, and background OCR worker together. |

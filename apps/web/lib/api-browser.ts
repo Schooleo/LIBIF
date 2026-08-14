@@ -283,6 +283,37 @@ export async function fetchProtectedPageUrl(documentId: string, pageNumber: numb
   return URL.createObjectURL(blob);
 }
 
+export interface DocumentPageSearchResult {
+  pageNumber: number;
+  matchCount: number;
+  snippet?: string;
+}
+
+export interface DocumentPageSearchResponse {
+  available: boolean;
+  query: string;
+  results: DocumentPageSearchResult[];
+  totalMatches: number;
+  totalPagesWithMatches: number;
+  truncated: boolean;
+}
+
+export async function searchDocumentPages(documentId: string, query: string): Promise<DocumentPageSearchResponse> {
+  const params = new URLSearchParams({ q: query });
+  const response = await fetch(
+    `${API_BASE_URL}/api/access/documents/${encodeURIComponent(documentId)}/search?${params.toString()}`,
+    {
+      headers: getDevAuthHeaders(),
+      credentials: 'include'
+    }
+  );
+  if (!response.ok) {
+    const errPayload = await response.json().catch(() => ({}));
+    throw new Error(apiErrorMessage(errPayload, 'Failed to search document text'));
+  }
+  return response.json() as Promise<DocumentPageSearchResponse>;
+}
+
 export async function fetchReaderDocumentState(documentId: string): Promise<ReaderDocumentStateDto> {
   const response = await fetch(`${API_BASE_URL}/api/reader/documents/${encodeURIComponent(documentId)}/state`, {
     headers: getDevAuthHeaders(),

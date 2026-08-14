@@ -30,6 +30,10 @@ import { AccessService } from './access.service';
 import { AccessDecisionDto } from './dto/access-decision.dto';
 import { ProtectedDocumentManifestDto } from './dto/protected-document-manifest.dto';
 import { ProtectedDocumentUrlDto } from './dto/protected-document-url.dto';
+import {
+  DocumentPageSearchQueryDto,
+  DocumentPageSearchResponseDto
+} from '../processing/dto/document-page-search.dto';
 
 function formatContentDisposition(type: 'inline' | 'attachment', filename: string): string {
   const asciiFilename = filename.replace(/[^\x20-\x7E]/g, '_');
@@ -66,6 +70,17 @@ export class AccessController {
     @Param('documentId') documentId: string,
   ): Promise<ProtectedDocumentManifestDto> {
     return this.accessService.getDocumentManifest(user.id, user.role, documentId);
+  }
+
+  @Get('documents/:documentId/search')
+  @ApiOperation({ summary: 'Search authorized document text and return up to five matching pages.' })
+  @ApiOkResponse({ type: DocumentPageSearchResponseDto })
+  searchDocumentText(
+    @CurrentUser() user: SessionUserDto,
+    @Param('documentId') documentId: string,
+    @Query() query: DocumentPageSearchQueryDto
+  ): Promise<DocumentPageSearchResponseDto> {
+    return this.accessService.searchDocumentText(user.id, user.role, documentId, query.q);
   }
 
   @Get('documents/:documentId/pages/:pageNumber')
