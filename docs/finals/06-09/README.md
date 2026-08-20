@@ -1,0 +1,15 @@
+6. Trình bày quá trình hình thành và phương pháp đánh giá sản phẩm Chứng minh ý tưởng (Proof of Concept) của nhóm. (Sinh viên nộp kèm bản in giao diện thể hiện đầu vào và đầu ra khi chạy mã nguồn Chứng minh ý tưởng của nhóm.) 
+
+   - _Các câu hỏi thường gặp_ : Sản phẩm Chứng minh ý tưởng (Proof of Concept) là gì? Giải thích các phương pháp có thể dùng để chứng minh khả năng hoàn thành dự án về mặt kỹ thuật. Nhóm chọn sản phẩm gì để Chứng minh ý tưởng? Các đầu vào cần thiết và các bước nhóm đã thực hiện để tạo sản phẩm Chứng minh ý tưởng là gì? Tại sao cần tạo sản phẩm Chứng minh ý tưởng? Sản phẩm Chứng minh ý tưởng của nhóm đã được sử dụng trong quá trình thực hiện dự án như thế nào? 
+
+7. Trình bày quá trình hình thành và phương pháp đánh giá sản phẩm Bản mẫu (Prototype) của nhóm. (Sinh viên nộp kèm bản in phác thảo giao diện ban đầu cho hệ thống của nhóm.) 
+
+    - _Các câu hỏi thường gặp_ : Sản phẩm Bản mẫu là gì? Giải thích sự khác nhau giữa bản mẫu hệ thống và tập hợp các màn hình giao diện hệ thống. Các đầu vào cần thiết và các bước nhóm đã thực hiện để tạo sản phẩm Bản mẫu là gì? Sản phẩm Bản mẫu của nhóm đã được đánh giá thế nào? Tại sao cần tạo sản phẩm Bản mẫu? Sản phẩm Bản mẫu của nhóm đã được sử dụng trong quá trình thực hiện dự án như thế nào? 
+
+8. Trình bày quá trình hình thành và phương pháp đánh giá tài liệu Báo cáo tính khả thi (Feasibility Study Report) của nhóm. (Sinh viên nộp kèm bản in tài liệu Báo cáo tính khả thi của nhóm.) 
+
+   - _Các câu hỏi thường gặp_ : Các câu hỏi chính cần trả lời trong tài liệu Báo cáo tính khả thi là gì? Các đầu vào cần thiết và các bước nhóm đã thực hiện để tạo tài liệu Báo cáo tính khả thi là gì? Tài liệu Báo cáo tính khả thi của nhóm đã được đánh giá thế nào? Tại sao cần tạo tài liệu Báo cáo tính khả thi? Tài liệu Báo cáo tính khả thi của nhóm đã được sử dụng trong quá trình thực hiện dự án như thế nào? 
+
+9. Trình bày quá trình hình thành và phương pháp đánh giá tài liệu Định nghĩa quy trình phát triển phần mềm (Software Process Definition) của nhóm. (Sinh viên nộp kèm bản in tài liệu Định nghĩa quy trình phát triển phần mềm của nhóm.) 
+
+   - _Các câu hỏi thường gặp_ : Các câu hỏi chính cần trả lời trong tài liệu Định nghĩa quy trình phát triển phần mềm là gì? Mô hình cơ sở được lựa chọn để hiệu chỉnh là gì? Thời gian dự kiến của từng giai đoạn là bao lâu? Các vai trò nào từng thành viên trong nhóm sẽ đảm nhiệm? Các sản phẩm nào dự kiến sẽ khởi tạo? Quy trình để đưa ra một bản phân phối hoạt động là gì? Ưu và khuyết điểm của mô hình nhóm lựa chọn là gì? Tài liệu Định nghĩa quy trình phát triển phần mềm của nhóm đã được đánh giá thế nào? Tại sao cần tạo tài liệu Định nghĩa quy trình phát triển phần mềm? Tài liệu Định nghĩa quy trình phát triển phần mềm của nhóm đã được sử dụng và cập nhập trong quá trình thực hiện dự án như thế nào? 
