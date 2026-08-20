@@ -1,0 +1,45 @@
+services:
+  # Azure hosts the backend only. The frontend remains on Vercel.
+  web:
+    profiles: [full-stack-vps]
+
+  caddy:
+    profiles: [full-stack-vps]
+
+  api:
+    environment:
+      LIBIF_WEB_BASE_URL: ${LIBIF_WEB_BASE_URL:?Set LIBIF_WEB_BASE_URL to the Vercel production origin}
+      LIBIF_CORS_ORIGINS: ${LIBIF_CORS_ORIGINS:-}
+
+  worker:
+    environment:
+      LIBIF_WEB_BASE_URL: ${LIBIF_WEB_BASE_URL:?Set LIBIF_WEB_BASE_URL to the Vercel production origin}
+      LIBIF_CORS_ORIGINS: ${LIBIF_CORS_ORIGINS:-}
+
+  azure-edge:
+    image: caddy:2.11.4-alpine
+    environment:
+      LIBIF_API_HOSTNAME: ${LIBIF_API_HOSTNAME:?Set LIBIF_API_HOSTNAME in the Azure production environment}
+      LIBIF_ACME_EMAIL: ${LIBIF_ACME_EMAIL:?Set LIBIF_ACME_EMAIL in the Azure production environment}
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./docker/caddy/azure.Caddyfile:/etc/caddy/Caddyfile:ro
+      - production_caddy_data:/data
+      - production_caddy_config:/config
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+    stop_grace_period: 30s
+    security_opt:
+      - no-new-privileges:true
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"
+    networks:
+      - edge

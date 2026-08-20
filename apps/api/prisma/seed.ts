@@ -16,10 +16,26 @@ const prisma = new PrismaClient({ adapter });
 const passwordHasher = new PasswordHasher();
 
 const devUsers = [
-  { email: 'admin@libif.local', password: 'admin libif dev passphrase', role: UserRole.ADMIN },
-  { email: 'librarian@libif.local', password: 'librarian libif dev passphrase', role: UserRole.LIBRARIAN },
-  { email: 'reader@libif.local', password: 'reader libif dev passphrase', role: UserRole.READER },
-  { email: 'reader2@libif.local', password: 'reader two libif dev passphrase', role: UserRole.READER }
+  {
+    email: 'admin@libif.local',
+    password: process.env.LIBIF_SEED_ADMIN_PASSWORD ?? 'admin libif dev passphrase',
+    role: UserRole.ADMIN
+  },
+  {
+    email: 'librarian@libif.local',
+    password: process.env.LIBIF_SEED_LIBRARIAN_PASSWORD ?? 'librarian libif dev passphrase',
+    role: UserRole.LIBRARIAN
+  },
+  {
+    email: 'reader@libif.local',
+    password: process.env.LIBIF_SEED_READER_PASSWORD ?? 'reader libif dev passphrase',
+    role: UserRole.READER
+  },
+  {
+    email: 'reader2@libif.local',
+    password: process.env.LIBIF_SEED_READER2_PASSWORD ?? 'reader two libif dev passphrase',
+    role: UserRole.READER
+  }
 ];
 
 const phase7ReaderBookIsbn = 'phase7-wave4-reader-access-sample';

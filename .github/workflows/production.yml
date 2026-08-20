@@ -1,0 +1,281 @@
+name: Production
+
+on:
+  push:
+    tags: ['v*.*.*']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  validate-release:
+    name: Validate production release tag
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout release tag
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Verify semantic tag and main ancestry
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ ! "${GITHUB_REF_NAME}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::Production tags must use vMAJOR.MINOR.PATCH, for example v1.2.3."
+            exit 1
+          fi
+
+          git fetch origin main --depth=0
+          [[ "$(git rev-parse "${GITHUB_REF_NAME}^{commit}")" == "${GITHUB_SHA}" ]]
+          git merge-base --is-ancestor "${GITHUB_SHA}" origin/main
+
+  api-ci:
+    name: API quality gate
+    needs: [validate-release]
+    uses: ./.github/workflows/api-ci.yml
+
+  web-ci:
+    name: Web quality gate
+    needs: [validate-release]
+    uses: ./.github/workflows/web-ci.yml
+
+  deploy-web:
+    name: Deploy web to Vercel
+    needs: [api-ci, web-ci]
+    if: ${{ needs.api-ci.result == 'success' && needs.web-ci.result == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: production
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_WEB_PROJECT_ID }}
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+
+    steps:
+      - name: Checkout validated revision
+        uses: actions/checkout@v7
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Verify Vercel credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          for name in VERCEL_ORG_ID VERCEL_PROJECT_ID VERCEL_TOKEN; do
+            if [[ -z "${!name:-}" ]]; then
+              echo "::error::Missing required GitHub secret for ${name}."
+              exit 1
+            fi
+          done
+
+      - name: Install dependencies
+        run: .github/scripts/npm-ci-with-retry.sh
+
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+
+      - name: Pull production project settings
+        run: vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
+
+      - name: Build Vercel artifacts
+        run: vercel build --prod --token="$VERCEL_TOKEN"
+
+      - name: Deploy validated artifacts to production
+        id: deploy
+        shell: bash
+        run: |
+          set -euo pipefail
+          deployment_url="$(vercel deploy \
+            --prebuilt \
+            --prod \
+            --archive=tgz \
+            --meta releaseTag="${GITHUB_REF_NAME}" \
+            --meta gitCommitSha="${GITHUB_SHA}" \
+            --token="$VERCEL_TOKEN")"
+          echo "url=${deployment_url}" >> "$GITHUB_OUTPUT"
+          echo "### Vercel production deployment" >> "$GITHUB_STEP_SUMMARY"
+          echo "Release \`${GITHUB_REF_NAME}\` (\`${GITHUB_SHA}\`) deployed to ${deployment_url}." >> "$GITHUB_STEP_SUMMARY"
+
+  publish-images:
+    name: Publish production release images
+    needs: [api-ci, web-ci]
+    if: ${{ needs.api-ci.result == 'success' && needs.web-ci.result == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout validated revision
+        uses: actions/checkout@v7
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate API image metadata
+        id: api-metadata
+        uses: docker/metadata-action@v6
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/libif-api
+          flavor: latest=false
+          tags: |
+            type=raw,value=${{ github.ref_name }}
+
+      - name: Build and publish API and worker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/api.Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: ${{ steps.api-metadata.outputs.tags }}
+          labels: ${{ steps.api-metadata.outputs.labels }}
+          cache-from: type=gha,scope=production-api
+          cache-to: type=gha,mode=max,scope=production-api
+
+      - name: Generate migration image metadata
+        id: migrate-metadata
+        uses: docker/metadata-action@v6
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/libif-migrate
+          flavor: latest=false
+          tags: |
+            type=raw,value=${{ github.ref_name }}
+
+      - name: Build and publish migration image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/api.Dockerfile
+          target: build
+          platforms: linux/amd64
+          push: true
+          tags: ${{ steps.migrate-metadata.outputs.tags }}
+          labels: ${{ steps.migrate-metadata.outputs.labels }}
+          cache-from: type=gha,scope=production-api
+          cache-to: type=gha,mode=max,scope=production-api
+
+      - name: Generate web image metadata
+        id: web-metadata
+        uses: docker/metadata-action@v6
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/libif-web
+          flavor: latest=false
+          tags: |
+            type=raw,value=${{ github.ref_name }}
+
+      - name: Build and publish web release image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/web.Dockerfile
+          build-args: NEXT_PUBLIC_API_BASE_URL=
+          platforms: linux/amd64
+          push: true
+          tags: ${{ steps.web-metadata.outputs.tags }}
+          labels: ${{ steps.web-metadata.outputs.labels }}
+          cache-from: type=gha,scope=production-web
+          cache-to: type=gha,mode=max,scope=production-web
+
+  deploy-backend:
+    name: Deploy backend to Azure VM
+    needs: [publish-images]
+    if: ${{ vars.AZURE_DEPLOY_ENABLED == 'true' && needs.publish-images.result == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: production
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      AZURE_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      AZURE_RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
+      AZURE_VM_NAME: ${{ vars.AZURE_VM_NAME }}
+      LIBIF_API_HOSTNAME: ${{ vars.LIBIF_API_HOSTNAME }}
+
+    steps:
+      - name: Checkout validated revision
+        uses: actions/checkout@v7
+
+      - name: Verify Azure deployment configuration
+        shell: bash
+        run: |
+          set -euo pipefail
+          for name in \
+            AZURE_CLIENT_ID \
+            AZURE_TENANT_ID \
+            AZURE_SUBSCRIPTION_ID \
+            AZURE_RESOURCE_GROUP \
+            AZURE_VM_NAME \
+            LIBIF_API_HOSTNAME; do
+            if [[ -z "${!name:-}" ]]; then
+              echo "::error::Missing required GitHub production environment variable ${name}."
+              exit 1
+            fi
+          done
+
+      - name: Authenticate to Azure with GitHub OIDC
+        uses: azure/login@v2
+        with:
+          client-id: ${{ env.AZURE_CLIENT_ID }}
+          tenant-id: ${{ env.AZURE_TENANT_ID }}
+          subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Deploy immutable backend release
+        shell: bash
+        run: |
+          set -euo pipefail
+          deploy_script="${RUNNER_TEMP}/libif-azure-deploy.sh"
+          {
+            printf 'export LIBIF_RELEASE_TAG=%q\n' "${GITHUB_REF_NAME}"
+            printf 'export LIBIF_RELEASE_SHA=%q\n' "${GITHUB_SHA}"
+            printf 'export LIBIF_REPOSITORY=%q\n' "${GITHUB_REPOSITORY}"
+            cat scripts/azure/deploy.sh
+          } > "${deploy_script}"
+
+          az vm run-command invoke \
+            --resource-group "${AZURE_RESOURCE_GROUP}" \
+            --name "${AZURE_VM_NAME}" \
+            --command-id RunShellScript \
+            --scripts @"${deploy_script}" \
+            --only-show-errors \
+            --output json > "${RUNNER_TEMP}/azure-deploy-result.json"
+
+          jq -r '.value[]?.message // empty' "${RUNNER_TEMP}/azure-deploy-result.json"
+
+      - name: Verify public API health
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl \
+            --fail \
+            --show-error \
+            --silent \
+            --retry 6 \
+            --retry-all-errors \
+            --retry-delay 5 \
+            "https://${LIBIF_API_HOSTNAME}/api/health"
+          echo
+          echo "### Azure backend deployment" >> "$GITHUB_STEP_SUMMARY"
+          echo "Release \`${GITHUB_REF_NAME}\` (\`${GITHUB_SHA}\`) is healthy at https://${LIBIF_API_HOSTNAME}." >> "$GITHUB_STEP_SUMMARY"

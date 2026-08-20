@@ -1,6 +1,7 @@
 name: Web CI
 
 on:
+  workflow_call:
   pull_request:
     branches: [main, dev]
     paths:
@@ -9,22 +10,40 @@ on:
       - 'docker/web.Dockerfile'
       - '.dockerignore'
       - '.env.example'
+      - '.env.staging.example'
+      - 'docker-compose.staging.yml'
+      - 'docker/nginx/**'
+      - 'docker/tailscale/**'
+      - 'scripts/staging/**'
+      - 'Makefile'
       - 'package.json'
       - 'package-lock.json'
       - '.github/scripts/npm-ci-with-retry.sh'
       - '.github/workflows/web-ci.yml'
+      - '.github/workflows/staging.yml'
+      - '.github/workflows/production.yml'
+      - 'apps/web/vercel.json'
   push:
-    branches: [main, dev]
+    branches: [dev]
     paths:
       - 'apps/web/**'
       - 'packages/shared/**'
       - 'docker/web.Dockerfile'
       - '.dockerignore'
       - '.env.example'
+      - '.env.staging.example'
+      - 'docker-compose.staging.yml'
+      - 'docker/nginx/**'
+      - 'docker/tailscale/**'
+      - 'scripts/staging/**'
+      - 'Makefile'
       - 'package.json'
       - 'package-lock.json'
       - '.github/scripts/npm-ci-with-retry.sh'
       - '.github/workflows/web-ci.yml'
+      - '.github/workflows/staging.yml'
+      - '.github/workflows/production.yml'
+      - 'apps/web/vercel.json'
 
 permissions:
   contents: read
@@ -34,6 +53,27 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  lint:
+    name: Lint web
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: .github/scripts/npm-ci-with-retry.sh
+
+      - name: Lint web
+        run: npm run lint -w apps/web
+
   build:
     name: Build web
     runs-on: ubuntu-latest
@@ -78,7 +118,7 @@ jobs:
 
   publish-dev:
     name: Publish web integration image
-    needs: [build, test]
+    needs: [lint, build, test]
     if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -109,7 +149,6 @@ jobs:
             latest=false
           tags: |
             type=raw,value=latest
-            type=raw,value=${{ github.sha }}
 
       - name: Build and publish image
         uses: docker/build-push-action@v6
