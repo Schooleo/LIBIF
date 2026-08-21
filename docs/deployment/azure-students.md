@@ -135,9 +135,10 @@ Create or reuse the protected GitHub environment named `production`. Configure i
 Keep the existing Vercel production secrets in the same environment. The OIDC subject created by Bicep is restricted to `repo:Schooleo/LIBIF:environment:production`; changing the repository or environment name requires redeploying the Bicep template with matching parameters.
 
 The separate `CD Email Notification` workflow reports both successful and
-failed production releases and always includes `PRODUCTION_ACCESS_URL`. Set the
-optional `CD_NOTIFICATION_EMAIL` repository secret to choose the recipient; it
-otherwise falls back to `CI_RESULTS_FALLBACK_EMAIL`, `SMTP_USERNAME`, then
+failed production releases and always includes `PRODUCTION_ACCESS_URL`. It
+emails the author of the PR associated with the released commit. If no
+deliverable author address is available, it falls back to
+`CD_NOTIFICATION_EMAIL`, `CI_RESULTS_FALLBACK_EMAIL`, `SMTP_USERNAME`, then
 `SMTP_FROM`. The notifier uses the repository's existing `SMTP_*` secrets and
 runs independently so an early production failure can still be reported.
 
