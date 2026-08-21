@@ -1,161 +1,209 @@
-# TÀI LIỆU TẦM NHÌN & PHẠM VI DỰ ÁN (PROJECT VISION & SCOPE)
+# TẦM NHÌN VÀ PHẠM VI DỰ ÁN LIBIF
 
-**Tên dự án:** Hệ thống Thư viện Số Thương mại & Quản lý Bản quyền Số (Commercial Digital Library System)  
-**Tên tài liệu:** `docs/markdowns-vi-v2/LIBIF-Project-Vision-Scope.md`  
-**Phân loại:** Tài liệu Yêu cầu & Phạm vi Dự án (Requirements & Scope Document)  
-**Ngôn ngữ tài liệu:** Tiếng Việt  
-**Tình trạng:** Bản hoàn thiện phê duyệt (Decision Support Document)  
+| Thuộc tính | Nội dung |
+| :--- | :--- |
+| Bối cảnh | Đồ án nhóm trong học phần Quản lý Dự án Phần mềm |
+| Sản phẩm | Bản mẫu hệ thống thư viện số LIBIF |
+| Thời gian | 10 tuần, gồm 05 Sprint |
+| Nhóm thực hiện | 06 sinh viên |
+| Phiên bản | 2.0 |
+| Ngày cập nhật | 21/08/2026 |
 
----
+## 1. Mục đích tài liệu
 
-## 1. Tuyên bố Tầm nhìn (Vision Statement)
+Tài liệu mô tả hiện trạng, quy trình của thủ thư và sinh viên, trạng thái tương lai, tính năng cần có và ranh giới của bản mẫu LIBIF. Yêu cầu chi tiết được quản lý trong [Danh sách yêu cầu sản phẩm](./LIBIF-Product-Backlog.md).
 
-Dành cho **các Thư viện Đại học, Thư viện Chuyên ngành và Thư viện Công cộng** có nhu cầu số hóa và khai thác tài sản tri thức.  
-Hệ thống **Thư viện Số Thương mại (CDLS)** là giải pháp phần mềm quản lý kho tri thức số đóng gói, cung cấp quy trình khép kín từ **Số hóa $\rightarrow$ Trích xuất Tesseract OCR ngầm $\rightarrow$ Kiểm duyệt đối soát thủ công của Thủ thư $\rightarrow$ Xuất bản số $\rightarrow$ Đọc trực tuyến an toàn**.  
-Không giống như **các giải pháp mã nguồn mở thiếu bảo mật DRM (DSpace)** hoặc **các tập hợp công cụ ghép nối rời rạc gây rò rỉ bản quyền**, sản phẩm này giải quyết triệt để bài toán chất lượng dữ liệu OCR và bảo vệ bản quyền số đa lớp (Watermark động, chống tải file gốc, chống chụp màn hình, mã hóa DRM).  
-Mục tiêu dài hạn của giải pháp là trở thành **nền tảng phần mềm thư viện số thương mại chuẩn hóa**, giúp các thư viện chuyển đổi số an toàn, tối ưu chi phí vận hành và mở rộng hợp tác bản quyền với các Nhà xuất bản.
+## 2. Trạng thái và quy trình hiện tại
 
----
+Hiện trạng dưới đây đại diện cho thư viện còn xử lý tài liệu quét bằng công cụ rời. Nhóm cần xác minh lại bằng phỏng vấn thủ thư trước khi thí điểm thực tế.
 
-## 2. Trạng thái Hiện tại (Current State)
+### 2.1 Thủ thư
 
-### 2.1 Bối cảnh Quy trình Nghiệp vụ Hiện tại
+- Tiếp nhận sách giấy hoặc bản quét, lưu ảnh và PDF theo thư mục.
+- Chạy nhận dạng chữ bằng công cụ riêng rồi sửa văn bản thủ công.
+- Biên mục, phê duyệt và chia sẻ tài liệu trên các hệ thống tách rời.
+- Khó quản lý phiên bản, quyền đọc và nhật ký truy cập tại một nơi.
 
-| Khía cạnh | Thực trạng Vận hành | Hạn chế & Tác động | Loại Thông tin |
-| :--- | :--- | :--- | :--- |
-| **Bảo quản & Khai thác** | Thư viện lưu trữ sách giấy truyền thống. Độc giả phải đến kho vật lý để mượn/đọc. | Giới hạn không gian lưu trữ; sách bị hư hỏng theo thời gian; 1 cuốn sách chỉ phục vụ 1 người tại 1 thời điểm. | **FACT** |
-| **Quy trình Số hóa** | Thủ thư dùng máy quét (scanner) lưu thành file ảnh hoặc file PDF thô. | File dạng scan không có dữ liệu văn bản, độc giả không thể tìm kiếm từ khóa (Full-text search). | **INDUSTRY PRACTICE** |
-| **Xử lý OCR & Kiểm duyệt** | Sử dụng các công cụ OCR độc lập (ABBYY, Tesseract rời) chạy ra file text/word rồi thủ thư sửa thủ công ngoài. | Quy trình bị đứt gãy qua nhiều phần mềm; không có giao diện đối soát tập trung song song; tốn nhân công. | **INDUSTRY PRACTICE** |
-| **Chia sẻ & Bản quyền** | Phát hành file PDF/Image qua Google Drive, Zalo hoặc cổng thông tin không mã hóa. | **Rủi ro vi phạm bản quyền cao:** Độc giả dễ dàng tải file gốc, nhân bản và chia sẻ trái phép lên Internet. | **FACT** |
+### 2.2 Sinh viên
 
-### 2.2 Sơ đồ Quy trình Vận hành Hiện tại (Current Workflow)
+- Tra cứu chủ yếu theo nhan đề, tác giả hoặc thông tin biên mục.
+- Đến thư viện, gửi yêu cầu hoặc nhận đường dẫn PDF nếu được phép.
+- Đọc tuần tự từng trang khi bản quét không có lớp văn bản.
+- Khó tìm đúng đoạn cần dùng; tệp đã tải xuống khó được thư viện truy vết.
 
-```mermaid
-flowchart TD
-    A["Sách giấy vật lý"] --> B["Quét thủ công thành file PDF thô"]
-    B --> C{"Lựa chọn xử lý"}
-    
-    C -->|"Quy trình Thủ công"| D["Lưu kho file PDF thô"]
-    C -->|"Ghép nối công cụ"| E["Chạy OCR riêng bằng phần mềm ngoài"]
-    
-    E --> F["Sửa file Text hoặc Word thủ công rời rạc"]
-    F --> G["Ghép lại thành PDF có văn bản"]
-    
-    D --> H["Gửi file hoặc Đăng Google Drive không mã hóa"]
-    G --> H
-    
-    H --> I["Độc giả tải file gốc về máy"]
-    I --> J["Nguy cơ phát tán lậu và Vi phạm bản quyền"]
-```
-
-### 2.3 Phân tích Quy trình của Các Phương án Hiện hữu & Đối thủ
-
-* **Quy trình Thủ công & Ghép nối Công cụ rời rạc:**
-  * Quét $\rightarrow$ Chạy OCR độc lập $\rightarrow$ Sửa thủ công bằng MS Word/Notepad $\rightarrow$ Nhúng Watermark tĩnh bằng Acrobat $\rightarrow$ Tải lên Google Drive $\rightarrow$ Gửi link.
-  * *Hạn chế:* Rủi ro mất an toàn thông tin cao; đứt gãy quy trình; Watermark tĩnh không định danh được độc giả phát tán.
-* **Quy trình Phần mềm Mã nguồn Mở (DSpace / Greenstone):**
-  * Quét $\rightarrow$ Upload file PDF lên DSpace $\rightarrow$ Trích xuất text qua plugin $\rightarrow$ Phân quyền xem/tải theo IP hoặc tài khoản.
-  * *Hạn chế:* Không có giao diện kiểm duyệt đối soát OCR dòng-theo-dòng cho thủ thư; độc giả vẫn tải được file PDF gốc khi được cấp quyền xem.
-* **Quy trình Hệ thống Thương mại Quốc tế (Ex Libris Alma / Primo):**
-  * Tích hợp quy trình quản trị toàn diện và mã hóa DRM quốc tế.
-  * *Hạn chế:* Chi phí bản quyền quá cao ($10.000 - $50.000+/năm); phức tạp trong triển khai và khó tùy biến giao diện duyệt OCR theo ngôn ngữ tiếng Việt.
-
----
-
-## 3. Trạng thái Tương lai (Future State)
-
-### 3.1 Quy trình Nghiệp vụ Tương lai Đề xuất
+### 2.3 Luồng hiện tại
 
 ```mermaid
 flowchart TD
-    A["Sách giấy vật lý"] --> B["Số hóa: Quét & Upload file ảnh/PDF thô"]
-    B --> C["Tesseract OCR Engine tự động nhận dạng ngầm"]
-    C --> D["Thủ thư kiểm duyệt trên Giao diện Side-by-side UI"]
-    D --> E{"Thủ thư duyệt?"}
-    E -->|"Chưa đạt"| D
-    E -->|"Đã duyệt"| F["Mã hóa tài liệu AES-256 & Lưu kho số"]
-    F --> G["Cấu hình phân quyền & Số lượt đọc đồng thời"]
-    G --> H["Độc giả tra cứu toàn văn & Đọc trên Canvas Reader"]
-    H --> I["Bảo vệ đa lớp: Dynamic Watermark, Screenshot Blur, Block Download"]
+    subgraph SV["Sinh viên"]
+        A[Tra cứu nhan đề hoặc tác giả] --> B[Đến thư viện hoặc gửi yêu cầu]
+        F[Nhận sách hoặc PDF] --> G[Đọc và tìm từng trang]
+    end
+
+    subgraph TT["Thủ thư"]
+        C[Tìm sách hoặc bản quét] --> D[Quét và chạy công cụ nhận dạng riêng]
+        D --> E[Sửa, lưu và cung cấp tài liệu]
+    end
+
+    B --> C
+    E --> F
+    G --> H[Khó tìm toàn văn và khó truy vết bản sao]
 ```
 
-### 3.2 Các Cải tiến Cốt lõi (Key Improvements)
+## 3. Tầm nhìn sản phẩm
 
-1. **Chuẩn hóa & Tự động hóa Quy trình OCR:** Tự động kích hoạt Tesseract OCR Engine ngay sau khi upload file scan, giảm $70\%$ thời gian xử lý thủ công ban đầu.
-2. **Giao diện Kiểm duyệt Đối soát Tập trung (Side-by-side Review UI):** Hiển thị màn hình kép (Ảnh scan gốc bên trái, Văn bản OCR bên phải), cho phép thủ thư chỉnh sửa trực tiếp và phê duyệt trước khi xuất bản.
-3. **Bảo vệ Bản quyền Đa lớp (Multi-layered Content Protection):**
-   * Không cấp link tải file gốc; dữ liệu mã hóa được render trực tiếp qua HTML5 Canvas Reader.
-   * Watermark động nhúng thông tin độc giả (User ID, IP, Thời gian đọc) đè lên nội dung sách.
-   * Chống chụp màn hình (Screenshot Deterrence): Tự động làm mờ (blur) trang sách khi ứng dụng mất focus hoặc có thao tác chụp ảnh.
-4. **Tìm kiếm Toàn văn Chính xác (Full-text Search):** Độc giả tìm kiếm từ khóa chính xác tới từng trang sách dựa trên dữ liệu OCR đã qua kiểm duyệt chuẩn $100\%$.
+> Dành cho thư viện cần khai thác tài liệu quét, LIBIF cung cấp một quy trình tập trung để nhận dạng chữ, đối soát, xuất bản, tìm kiếm và đọc trực tuyến có kiểm soát. Sản phẩm ưu tiên nghiệp vụ thủ thư và tài liệu tiếng Việt, đồng thời hỗ trợ giảm nguy cơ phát tán tệp gốc bằng phân quyền, watermark và audit log.
 
----
+Mục tiêu trước mắt là kiểm chứng bản mẫu trong học phần. Thí điểm thực tế và thương mại hóa chỉ được xem xét sau khi có kết quả nghiệm thu.
 
-## 4. Phân tích Khoảng trống (Gap Analysis)
+### 3.1 Trạng thái tương lai khi có LIBIF
 
-| Vấn đề Hiện tại (Current Problem) | Quy trình Tương lai (Future Workflow) | Tính năng Tương ứng (System Feature) | Loại Thông tin |
-| :--- | :--- | :--- | :--- |
-| **Văn bản dạng scan không thể tìm kiếm nội dung.** | Hệ thống tự động nhận dạng chữ viết và tạo chỉ mục tìm kiếm ngay sau khi số hóa. | **Module Tesseract OCR & Indexing Engine** | **INDUSTRY PRACTICE** |
-| **Sai sót OCR không được kiểm soát trước khi xuất bản.** | Thủ thư đối soát màn hình kép (Side-by-side) và bấm phê duyệt trước khi lưu kho xuất bản. | **Giao diện Kiểm duyệt OCR dành cho Thủ thư (Side-by-side Review UI)** | **EXPERT JUDGEMENT** |
-| **File PDF thô bị tải về và chia sẻ lậu tràn lan.** | Dữ liệu được mã hóa stream và hiển thị qua Canvas Reader; triệt tiêu link tải file gốc. | **HTML5 Canvas Reader Viewer & Block Download** | **FACT** |
-| **Ảnh chụp màn hình nội dung sách bị phát tán không rõ nguồn gốc.** | Nhúng Watermark chứa ID/IP/Thời gian của người đọc; làm mờ màn hình khi mất focus. | **Watermark động & Cơ chế Răn đe Chụp màn hình (Screenshot Deterrence)** | **INDUSTRY PRACTICE** |
-| **1 tài khoản bị chia sẻ cho nhiều người đọc cùng lúc.** | Hệ thống giới hạn số lượng thiết bị/phiên đọc đồng thời (Concurrent Limit). | **Module Quản lý Phân quyền & Giới hạn Đọc đồng thời** | **FACT** |
-| **Thiếu bằng chứng khi xảy ra tranh chấp rò rỉ dữ liệu.** | Tự động ghi lại toàn bộ lịch sử truy cập, đọc, lật trang và IP của người dùng. | **Module Nhật ký Hoạt động & Kiểm vết (Audit Trail & Activity Logging)** | **FACT** |
+- Thủ thư thực hiện nhận dạng, đối soát, phê duyệt và xuất bản trong một quy trình.
+- Sinh viên tìm kiếm trong nội dung, mở đúng trang và đọc theo quyền được cấp.
+- Hệ thống áp dụng mã hóa, giới hạn phiên, dấu nhận diện và nhật ký truy cập.
 
----
+### 3.2 Luồng tương lai
 
-## 5. Phạm vi Dự án (Project Scope)
+```mermaid
+flowchart TD
+    subgraph TT["Thủ thư"]
+        A[Tải bản quét] --> B[Tesseract nhận dạng nền]
+        B --> C[Đối soát ảnh và văn bản]
+        C --> D[Phê duyệt, biên mục và đặt quyền]
+    end
 
-### 5.1 Trong Phạm vi (In Scope)
+    D --> E[Mã hóa, xuất bản và tạo chỉ mục]
 
-* **Phân hệ Số hóa & OCR:**
-  * Upload file ảnh/PDF thô từ máy quét.
-  * Tích hợp Tesseract OCR Engine (Self-hosted) xử lý ngầm.
-  * Tiền xử lý ảnh (Denoise, Deskew) hỗ trợ tăng độ chính xác OCR.
-* **Phân hệ Kiểm duyệt dành cho Thủ thư:**
-  * Giao diện đối soát màn hình kép Side-by-side (Ảnh scan vs Văn bản OCR).
-  * Công cụ chỉnh sửa văn bản OCR, đánh dấu vị trí từ và bấm "Phê duyệt/Từ chối".
-  * Biên mục dữ liệu số theo chuẩn thư viện cơ bản.
-* **Phân hệ Quản lý Kho sách Số & Xuất bản:**
-  * Mã hóa tài liệu số (AES-256) trước khi lưu trữ.
-  * Cấu hình chính sách xuất bản: Phân quyền nhóm đọc, thời hạn mượn số, giới hạn số lượt đọc đồng thời.
-* **Phân hệ Khai thác & Đọc an toàn (Reader Viewer):**
-  * Bộ máy tìm kiếm toàn văn (Full-text Search Engine).
-  * HTML5 Canvas Reader hiển thị trực tuyến không cần plugin.
-  * Watermark động (Nhúng User ID, IP, Timestamp).
-  * Khóa tính năng tải file gốc (Block Download & Direct Link Protection).
-  * Răn đe chụp màn hình (Blur khi mất focus).
-* **Phân hệ Quản trị & Bảo mật:**
-  * Phân quyền người dùng theo vai trò (Thủ thư, Độc giả, Admin).
-  * Ghi nhật ký hoạt động (Audit Trail Log) chi tiết.
+    subgraph SV["Sinh viên"]
+        F[Tìm kiếm toàn văn] --> G[Chọn kết quả và đúng trang]
+        G --> H[Hệ thống kiểm tra quyền]
+        H --> I[Đọc bằng Canvas]
+    end
 
-### 5.2 Ngoài Phạm vi (Out of Scope)
+    E --> F
+    I --> J[Dấu nhận diện và nhật ký truy cập]
+```
 
-* **Sản xuất phần cứng:** Không sản xuất hoặc bán kèm máy quét tài liệu (Scanner hardware).
-* **Cung cấp bản quyền nội dung:** Không mua bán hoặc chịu trách nhiệm về bản quyền các cuốn sách do thư viện tự tải lên.
-* **In ấn tài liệu số:** Không phát triển tính năng hỗ trợ in sách từ bản số ra giấy.
-* **Dịch thuật tự động:** Không tích hợp tính năng dịch tự động ngôn ngữ sách trong phiên bản này.
+## 4. Mục tiêu và tiêu chí thành công
 
-### 5.3 Phạm vi Tương lai (Future Scope)
+- Chạy được luồng tải tài liệu → nhận dạng chữ → đối soát → phê duyệt → tìm kiếm → đọc trực tuyến.
+- Áp dụng được mã hóa, quyền truy cập, giới hạn phiên, dấu nhận diện và nhật ký trên dữ liệu thử.
+- Tìm đúng tài liệu và trang chứa từ khóa trong tập dữ liệu mẫu.
+- Cài đặt và chạy được theo hướng dẫn; không còn lỗi nghiêm trọng khi bàn giao.
+- Hoàn thành trong 10 tuần và không vượt trần chi phí 10.000.000 VNĐ.
 
-* **Tích hợp AI Nâng cao:** Tự động tóm tắt nội dung sách, trích xuất từ khóa chủ đề (Keyphrase extraction) bằng LLM.
-* **Mobile App Chuyên dụng:** Phát triển ứng dụng iOS/Android hỗ trợ đọc offline có mã hóa bảo mật dữ liệu trên thiết bị di động.
-* **Nhận dạng Chữ viết tay (HTR):** Mở rộng engine Tesseract để nhận dạng chữ viết tay cổ/Hán Nôm chuyên sâu.
+> Tiêu chí nghiệm thu đầy đủ xem tại [Phạm vi công việc](./LIBIF-Statement-Of-Work.md).
 
----
+## 5. Bên liên quan và người dùng
 
-## 6. Danh mục Tính năng Cấp cao (High-level Features)
+| Nhóm | Nhu cầu chính | Vai trò đối với sản phẩm |
+| :--- | :--- | :--- |
+| Thủ thư | Số hóa, sửa kết quả nhận dạng, biên mục và xuất bản | Người dùng chính |
+| Sinh viên hoặc độc giả | Tìm kiếm và đọc tài liệu được cấp quyền | Người dùng cuối |
+| Quản trị viên | Quản lý tài khoản, quyền, phiên đọc và nhật ký | Người vận hành |
+| Giảng viên | Đánh giá sản phẩm và bằng chứng quản lý dự án | Người nghiệm thu học phần |
+| Chủ sở hữu nội dung | Yêu cầu sử dụng tài liệu đúng quyền | Bên liên quan bên ngoài |
 
-| Feature ID | Tên Tính năng (Feature Name) | Vai trò Sử dụng | Mô tả Tóm tắt | Giá trị Kinh doanh | Độ Ưu tiên | Tiêu chí Chấp nhận (Acceptance Criteria) |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **FE-01** | Quản lý Số hóa & OCR Tesseract | Thủ thư | Upload file scan, tự động kích hoạt Tesseract OCR trích xuất văn bản ngầm. | Tự động hóa khâu trích xuất dữ liệu, giảm chi phí nhân công. | **High** | Given file PDF scan được upload $\rightarrow$ When Tesseract OCR hoàn tất $\rightarrow$ Then xuất ra dữ liệu văn bản và tọa độ từ ứng với từng trang. |
-| **FE-02** | Giao diện Đối soát Side-by-side | Thủ thư | Màn hình kép hiển thị ảnh gốc và văn bản OCR; cho phép sửa lỗi và phê duyệt xuất bản. | Đảm bảo chất lượng dữ liệu tri thức $100\%$ trước khi ra công chúng. | **High** | Given văn bản OCR cần duyệt $\rightarrow$ When thủ thư chỉnh sửa và bấm "Phê duyệt" $\rightarrow$ Then trạng thái tài liệu chuyển sang "Đã duyệt" và mã hóa lưu kho. |
-| **FE-03** | Tìm kiếm Toàn văn (Full-text Search) | Độc giả / Thủ thư | Tìm kiếm từ khóa chính xác trong nội dung sách đã OCR và duyệt. | Tăng $90\%$ tốc độ tra cứu tài liệu phục vụ học tập/nghiên cứu. | **High** | Given từ khóa tra cứu $\rightarrow$ When nhấn tìm kiếm $\rightarrow$ Then hệ thống trả về danh sách sách và trỏ chính xác tới trang chứa từ khóa. |
-| **FE-04** | HTML5 Canvas Reader An toàn | Độc giả | Trình đọc sách trực tuyến trên Web mã hóa stream, chặn hoàn toàn tính năng tải file. | Ngăn chặn việc đánh cắp và lưu trữ file gốc về máy cá nhân. | **High** | Given độc giả mở đọc sách $\rightarrow$ When kiểm tra F12/IDM $\rightarrow$ Then không tìm thấy URL file gốc và không tải được file PDF. |
-| **FE-05** | Watermarking Động (Dynamic Watermark) | Độc giả | Nhúng mờ thông tin cá nhân độc giả (User ID, IP, Time) đè lên nội dung khi đọc. | Răn đe và truy vết hành vi chụp ảnh màn hình phát tán lậu. | **High** | Given tài khoản độc giả X đang đọc sách $\rightarrow$ When trang sách render $\rightarrow$ Then thông tin "User X - IP - Time" hiển thị chéo mờ trên trang. |
-| **FE-06** | Răn đe Chụp màn hình (Screenshot Blur) | Độc giả | Tự động làm mờ nội dung sách khi trình duyệt mất focus hoặc bấm phím chụp màn hình. | Hạn chế thu thập dữ liệu bằng công cụ chụp ảnh màn hình tự động. | **Medium** | Given độc giả đang đọc sách $\rightarrow$ When chuyển tab hoặc bấm PrintScreen $\rightarrow$ Then nội dung trang sách lập tức bị làm mờ (blurred). |
-| **FE-07** | Phân quyền & Giới hạn Đọc đồng thời | Quản trị viên | Cấu hình quyền đọc theo nhóm người dùng và giới hạn số lượt truy cập đồng thời. | Tuân thủ chính sách hạn mức bản quyền của Nhà xuất bản. | **High** | Given cuốn sách X có hạn mức 5 lượt đọc đồng thời $\rightarrow$ When người thứ 6 vào đọc $\rightarrow$ Then hệ thống báo quá hạn mức và đưa vào hàng chờ. |
-| **FE-08** | Nhật ký Hoạt động & Audit Trail | Quản trị viên | Tự động ghi vết chi tiết lịch sử đọc, lật trang, thời gian và IP truy cập. | Cung cấp bằng chứng giải trình bản quyền và phát hiện hành vi bất thường. | **Medium** | Given mọi thao tác của người dùng $\rightarrow$ When thực hiện trên hệ thống $\rightarrow$ Then nhật ký hệ thống ghi lại chính xác thời gian, IP và hành vi. |
+## 6. Từ hiện trạng đến tính năng
 
----
-> **Xác nhận:** Tài liệu Tầm nhìn & Phạm vi Dự án (LIBIF-Project-Vision-Scope.md) được lập dựa trên các nguyên tắc phân tích nghiệp vụ thực tế, tập trung vào tính khả thi thương mại và hỗ trợ ra quyết định.
+| Khoảng trống hiện tại | Khả năng cần có | Tính năng LIBIF |
+| :--- | :--- | :--- |
+| Bản quét không tìm được nội dung | Tạo lớp văn bản và chỉ mục | Tesseract OCR và tìm kiếm toàn văn |
+| Nhận dạng và sửa lỗi bằng công cụ rời | Tập trung xử lý và kiểm tra | Hàng chờ nhận dạng và đối soát song song |
+| Thiếu bước kiểm soát trước khi công bố | Ghi nhận quyết định của thủ thư | Phê duyệt, từ chối và biên mục |
+| Chia sẻ trực tiếp tệp gốc | Cung cấp nội dung theo quyền | Mã hóa, bảo vệ đường dẫn và trình đọc Canvas |
+| Một tài khoản có thể mở nhiều phiên | Kiểm soát hạn mức sử dụng | Phân quyền và giới hạn phiên đồng thời |
+| Sinh viên phải tìm từng trang | Đưa người đọc tới đúng nội dung | Đoạn trích kết quả và mở đúng trang |
+| Bản sao khó truy nguồn | Răn đe và lưu bằng chứng | Dấu nhận diện động và nhật ký hoạt động |
+
+Những tính năng trên tạo thành phạm vi cấp cao; yêu cầu chỉ được thêm khi truy về một nhu cầu hoặc khoảng trống đã xác nhận.
+
+> Thiết kế kỹ thuật xem tại [Kiến trúc hệ thống](./LIBIF-Architecture.md).
+
+## 7. Phạm vi sản phẩm
+
+### 7.1 Trong phạm vi
+
+- Tải ảnh hoặc PDF và xử lý nhận dạng chữ trên máy chủ.
+- Theo dõi trạng thái nhận dạng, đối soát song song và phê duyệt.
+- Biên mục cơ bản, mã hóa lưu trữ và phân quyền theo nhóm.
+- Giới hạn phiên đọc đồng thời và ghi nhật ký hoạt động.
+- Tìm kiếm toàn văn, mở đúng trang và đọc bằng Canvas.
+- Không công khai đường dẫn PDF gốc trên giao diện.
+- Dấu nhận diện động và làm mờ khi trình duyệt mất tiêu điểm ở mức bản mẫu.
+
+### 7.2 Ngoài phạm vi
+
+- Vận hành thật với cam kết dịch vụ, dự phòng thảm họa hoặc giám sát liên tục.
+- Triển khai diện rộng, số hóa hàng loạt hoặc cung cấp máy quét.
+- Mua, phân phối hoặc tư vấn pháp lý về bản quyền nội dung.
+- Kiểm thử xâm nhập và chứng nhận an toàn chuyên nghiệp.
+- Cam kết ngăn chặn tuyệt đối mọi hình thức sao chép hoặc chụp màn hình.
+- Ứng dụng di động, đọc ngoại tuyến, dịch, tóm tắt và nhận dạng chữ viết tay.
+- Thanh toán, nhiều thư viện dùng chung và hỗ trợ thương mại sau triển khai.
+
+### 7.3 Hướng phát triển sau bản mẫu
+
+- Thử nghiệm với thủ thư và dữ liệu được phép sử dụng.
+- Gia cố an toàn, đo tải và hoàn thiện vận hành.
+- Đánh giá nhu cầu nhiều thư viện, ứng dụng di động và tính năng trí tuệ nhân tạo.
+
+## 8. Khả năng cấp cao và mức ưu tiên
+
+| Nhóm khả năng | Kết quả mong đợi | Ưu tiên |
+| :--- | :--- | :---: |
+| Số hóa và nhận dạng | Tải tài liệu, tiền xử lý và trích xuất văn bản | Bắt buộc |
+| Kiểm duyệt | Đối soát, chỉnh sửa, phê duyệt và biên mục | Bắt buộc |
+| Xuất bản có kiểm soát | Mã hóa, phân quyền và giới hạn phiên | Bắt buộc |
+| Tra cứu và đọc | Tìm kiếm toàn văn và đọc bằng Canvas | Bắt buộc |
+| Răn đe và truy vết | Bảo vệ đường dẫn, dấu nhận diện và nhật ký | Bắt buộc |
+| Theo dõi tiến độ, nhảy trang, làm mờ | Hoàn thiện trải nghiệm và hỗ trợ vận hành | Nên có |
+
+> Danh sách tính năng và tiêu chí chấp nhận xem tại [Danh sách yêu cầu sản phẩm](./LIBIF-Product-Backlog.md).
+
+## 9. Yêu cầu chất lượng cấp cao
+
+- **An toàn:** mã hóa tài liệu, kiểm soát quyền và không công khai PDF gốc trên giao diện.
+- **Khả dụng:** luồng chính hoạt động ổn định trên môi trường thử nghiệm.
+- **Dễ sử dụng:** thủ thư có thể đối soát ảnh và văn bản trên cùng giao diện.
+- **Hiệu năng:** nhận dạng chạy nền; thời gian tìm kiếm được đo trên dữ liệu mẫu.
+- **Bảo trì:** hệ thống được đóng gói, có kiểm thử và hướng dẫn cài đặt.
+
+Các biện pháp trên nhằm giảm rủi ro và hỗ trợ truy vết, không bảo đảm chống sao chép tuyệt đối.
+
+## 10. Giả định, ràng buộc và phụ thuộc
+
+### 10.1 Giả định
+
+- Có 10–20 tài liệu tiếng Việt hợp pháp, chất lượng khoảng 300 DPI để thử nghiệm.
+- Nền tảng kỹ thuật và bản chứng minh khả thi hiện có được tái sử dụng.
+- Product Owner đại diện nghiệp vụ; ưu tiên có thủ thư góp ý.
+
+### 10.2 Ràng buộc
+
+- 06 sinh viên tham gia khoảng 15 giờ/người/tuần trong 10 tuần.
+- Ngân sách cơ sở 8.800.000 VNĐ; trần kiểm soát 10.000.000 VNĐ.
+- Phạm vi ưu tiên thấp được hoãn trước khi xem xét kéo dài thời hạn.
+
+### 10.3 Phụ thuộc
+
+- Tesseract, PostgreSQL, Redis, MinIO, trình duyệt và môi trường triển khai thử nghiệm.
+- Quyền sử dụng dữ liệu mẫu và khả năng tham gia của các thành viên.
+
+## 11. Rủi ro và vấn đề mở
+
+- Chất lượng ảnh hoặc phông chữ làm tăng sai số nhận dạng.
+- Trình duyệt không thể ngăn việc chụp bằng thiết bị bên ngoài.
+- Thiếu dữ liệu hợp pháp hoặc thiếu hụt năng lực nhóm có thể làm giảm phạm vi.
+- Hiệu quả và chi phí thương mại hóa chưa được xác minh bằng thí điểm thực tế.
+
+> Chi tiết xem tại [Kế hoạch quản lý rủi ro](./LIBIF-Software-Risk-Management-Plan.md).
+
+## 12. Quản lý phạm vi và phê duyệt
+
+- Product Owner sở hữu tầm nhìn, sắp xếp ưu tiên và đề xuất thay đổi phạm vi.
+- Nhóm đánh giá tác động của thay đổi đến thời gian, chi phí, chất lượng và rủi ro.
+- Thay đổi vượt đường cơ sở phải được nhóm và giảng viên xem xét trước khi thực hiện.
+- Tài liệu được rà soát sau Sprint 1, Sprint 2 và khi có thay đổi đã được phê duyệt.
+
+> Quy trình chi tiết xem tại [Kế hoạch quản lý dự án](./LIBIF-Project-Planning.md). Cơ sở thời gian và chi phí xem tại [Ước tính dự án](./LIBIF-Project-Estimation.md).

@@ -1,159 +1,145 @@
-# ĐIỀU LỆ DỰ ÁN (PROJECT CHARTER)
+# ĐIỀU LỆ DỰ ÁN LIBIF
 
-**Tên dự án:** Hệ thống Thư viện Số Thương mại & Quản lý Bản quyền Số (Commercial Digital Library System)  
-**Tên tài liệu:** `docs/markdowns-vi-v2/LIBIF-Project-Charter.md`  
-**Mã dự án:** CDLS-2026  
-**Phân loại:** Đóng gói sản phẩm thương mại / Phát triển theo hợp đồng cho thư viện thứ ba  
-**Ngôn ngữ tài liệu:** Tiếng Việt  
-**Tình trạng:** Bản phê duyệt chính thức (Approved Charter)  
+## 1. Thông tin chung
 
----
+| Nội dung | Thông tin |
+| :--- | :--- |
+| Tên dự án | Hệ thống Thư viện Số và Quản lý Bản quyền Số LIBIF |
+| Loại dự án | Nguyên mẫu khả dụng tối thiểu phục vụ học tập và trình diễn |
+| Thời gian | 10 tuần, 5 Sprint |
+| Nhân lực | 6 sinh viên, 15 giờ/người/tuần, tổng cộng 900 giờ công |
+| Chi phí tiền mặt | Mức cơ sở 8.800.000 đồng; không vượt quá 10.000.000 đồng |
+| Người cho phép khởi động | Giảng viên phụ trách |
+| Người điều hành phạm vi sản phẩm | Product Owner |
 
-## 1. Tổng quan Dự án (Project Overview)
+## 2. Mục đích và lý do thực hiện
 
-Dự án **Hệ thống Thư viện Số Thương mại (CDLS)** được khởi động nhằm xây dựng một giải pháp phần mềm quản lý kho tri thức số khép kín, an toàn bản quyền và tối ưu cho quy trình vận hành của các thư viện đại học, thư viện chuyên ngành và thư viện công cộng.  
-Hệ thống giải quyết bài toán chuyển đổi sách giấy sang tài sản số có khả năng tìm kiếm toàn văn (full-text search) thông qua **Tesseract OCR Engine** kết hợp **Giao diện đối soát Side-by-side dành cho Thủ thư**, đồng thời bảo vệ an toàn nội dung số thông qua **cơ chế bảo mật đa lớp (HTML5 Canvas Reader, Watermark động, Screenshot Blur, DRM và mã hóa AES-256)**.
+Hiện nay, thủ thư phải lưu tệp quét, nhận dạng ký tự, sửa văn bản, biên mục và chia sẻ tài liệu qua nhiều công cụ rời rạc. Sinh viên chủ yếu tìm theo thông tin mô tả, phải yêu cầu tệp hoặc đọc thủ công và khó tìm đúng trang chứa nội dung cần thiết. LIBIF được khởi động để kiểm chứng một quy trình thống nhất: thủ thư tải tài liệu lên, kiểm tra kết quả OCR, phê duyệt và phân quyền; sinh viên tìm kiếm toàn văn và đọc trực tuyến có kiểm soát.
 
----
+Điều lệ này chính thức xác lập mục tiêu, phạm vi, nguồn lực, quyền quyết định và trách nhiệm của các bên trong 10 tuần thực hiện.
 
-## 2. Mục tiêu Kinh doanh (Business Objectives)
+## 3. Mục tiêu và tiêu chí thành công
 
-| STT | Mục tiêu Kinh doanh | Mô tả Chi tiết | Chỉ số Đo lường (KPIs) | Loại Thông tin |
-| :--- | :--- | :--- | :--- | :--- |
-| **BO-01** | **Thương mại hóa sản phẩm phần mềm** | Đóng gói sản phẩm thành công để bán bản quyền (On-premise) hoặc triển khai dịch vụ (SaaS) cho các thư viện thứ ba. | Hoàn thiện bản đóng gói sản phẩm thương mại đạt chuẩn UAT. | **EXPERT JUDGEMENT** |
-| **BO-02** | **Bảo vệ tuyệt đối tài sản số** | Triệt tiêu nguy cơ rò rỉ file gốc và vi phạm bản quyền khi phục vụ độc giả từ xa. | $0$ sự cố rò rỉ đường dẫn file PDF thô ra môi trường Internet. | **FACT** |
-| **BO-03** | **Tối ưu hóa năng suất vận hành thư viện** | Tự động hóa khâu OCR và chuẩn hóa quy trình kiểm duyệt dữ liệu số của thủ thư. | Giảm $70\%$ thời gian xử lý trích xuất văn bản so với làm thủ công rời rạc. | **INDUSTRY PRACTICE** |
-| **BO-04** | **Nâng cao khả năng truy cập tri thức** | Cho phép độc giả tra cứu từ khóa toàn văn và đọc sách trực tuyến 24/7. | Tốc độ tìm kiếm toàn văn $< 2$ giây trên kho dữ liệu thử nghiệm. | **INDUSTRY PRACTICE** |
+| Mục tiêu | Tiêu chí xác nhận |
+| :--- | :--- |
+| Hoàn thiện quy trình cốt lõi | Chạy được luồng tải lên → OCR → đối soát → phê duyệt → tìm kiếm → đọc trực tuyến |
+| Hỗ trợ tìm kiếm nội dung | Trả về đúng tài liệu và trang chứa từ khóa trên bộ dữ liệu thử nghiệm |
+| Kiểm soát quyền truy cập | Kiểm tra quyền trước khi đọc, không hiển thị đường dẫn tệp PDF gốc trên giao diện, có watermark và nhật ký truy cập |
+| Bảo đảm chất lượng bản trình diễn | Cài đặt và chạy được bằng Docker; không còn lỗi nghiêm trọng trong các luồng cốt lõi |
+| Tuân thủ giới hạn dự án | Hoàn thành trong 10 tuần và không vượt quá 10.000.000 đồng |
 
----
+Các cơ chế bảo vệ chỉ nhằm giảm nguy cơ sao chép trái phép, không cam kết ngăn chặn tuyệt đối việc ghi lại nội dung trên thiết bị người dùng.
 
-## 3. Tiêu chí Thành công (Success Criteria)
+## 4. Phạm vi cấp cao
 
-| STT | Tiêu chí Thành công | Phương pháp Kiểm tra / Đo lường | Bên Phê duyệt |
-| :--- | :--- | :--- | :--- |
-| **SC-01** | **Bảo mật Bản quyền $100\%$** | Không thể khai thác URL file gốc qua công cụ bắt link (IDM, F12); Watermark động nhúng chính xác ID/IP người đọc. | Trưởng nhóm An toàn Thông tin (SecOps Lead) |
-| **SC-02** | **Chất lượng Dữ liệu OCR Đã duyệt** | $100\%$ tài liệu xuất bản được thủ thư đối soát trên giao diện Side-by-side UI và đạt chất lượng tri thức không có sai sót. | Thủ thư Trưởng (Lead Librarian) |
-| **SC-03** | **Chấp nhận của Người dùng (UAT)** | Đạt $100\%$ kịch bản nghiệm thu UAT đối với các luồng nghiệp vụ Số hóa, Duyệt OCR, Xuất bản và Đọc an toàn. | Giám đốc Sản phẩm / Khách hàng |
-| **SC-04** | **Đúng Tiến độ & Ngân sách** | Hoàn thành sản phẩm theo đúng các mốc thời gian (Milestones) và trong hạn mức ngân sách được duyệt. | Nhà đầu tư Dự án (Sponsor) |
+### 4.1. Trong phạm vi
 
----
+- Tải lên và lưu trữ tài liệu thử nghiệm có quyền sử dụng.
+- Nhận dạng ký tự bằng Tesseract và xử lý nền.
+- Giao diện đối chiếu ảnh gốc với văn bản OCR, sửa và phê duyệt.
+- Biên mục, phân quyền, mã hóa, ghi nhật ký truy cập.
+- Tìm kiếm toàn văn theo tài liệu và trang.
+- Đọc trực tuyến bằng Canvas, kèm watermark và các biện pháp hạn chế tải trực tiếp.
+- Đóng gói Docker, kiểm thử, tài liệu và trình diễn.
 
-## 4. Sản phẩm Bàn giao Chính (Major Deliverables)
+### 4.2. Ngoài phạm vi
 
-| Mã Sản phẩm | Tên Sản phẩm Bàn giao | Mô tả Chi tiết | Người Chịu Trách nhiệm |
-| :--- | :--- | :--- | :--- |
-| **DEL-01** | **Tài liệu Phân tích Nghiệp vụ & Kiến trúc** | Bản mô tả yêu cầu (SRS), Thiết kế kiến trúc bảo mật DRM và Thiết kế giao diện (UI/UX). | Business Analyst (BA) Lead |
-| **DEL-02** | **Phân hệ Số hóa & Tesseract OCR** | Module upload file scan, tiền xử lý ảnh và Tesseract OCR Engine tích hợp ngầm. | Backend Lead |
-| **DEL-03** | **Phân hệ Kiểm duyệt OCR Side-by-side** | Giao diện màn hình kép đối soát ảnh gốc và văn bản OCR dành cho thủ thư. | Frontend Lead |
-| **DEL-04** | **Phân hệ HTML5 Canvas Reader An toàn** | Trình đọc sách Web mã hóa stream, Watermark động, Screenshot Blur và Block Download. | Frontend & Security Lead |
-| **DEL-05** | **Phân hệ Quản trị Phân quyền & Audit Log** | Module cấu hình hạn mức đọc đồng thời, phân quyền nhóm và ghi nhật ký hoạt động. | Backend Lead |
-| **DEL-06** | **Bộ Đóng gói Triển khai & Tài liệu HDSD** | Gói cài đặt (Docker/Installer), Tài liệu hướng dẫn sử dụng và Bộ kịch bản kiểm thử UAT. | DevOps & QA Lead |
+- Mua sắm máy quét hoặc thực hiện số hóa tài liệu giấy.
+- Xác lập hay mua bản quyền nội dung.
+- Ứng dụng di động, thanh toán, đa đơn vị và vận hành thương mại.
+- Kiểm thử xâm nhập chuyên nghiệp, cam kết mức dịch vụ hoặc hỗ trợ dài hạn.
+- Cam kết chống sao chép tuyệt đối.
 
----
+## 5. Sản phẩm bàn giao và mốc thực hiện
 
-## 5. Các Cột mốc Chính (Major Milestones)
+| Mốc | Tuần | Sản phẩm chính |
+| :--- | :---: | :--- |
+| M1 | 1–2 | Phạm vi cơ sở, kiến trúc, tải lên và OCR ban đầu |
+| M2 | 3–4 | Đối soát OCR, biên mục và phê duyệt |
+| M3 | 5–6 | Phân quyền, mã hóa và nhật ký truy cập |
+| M4 | 7–8 | Tìm kiếm toàn văn, trình đọc Canvas và watermark |
+| M5 | 9–10 | Tích hợp, kiểm thử, Docker, tài liệu và trình diễn |
 
-| Cột mốc (Milestone) | Nội dung Công việc Chính | Thời gian Dự kiến | Loại Đánh giá |
-| :--- | :--- | :--- | :--- |
-| **M1: Kick-off & Architecture** | Phê duyệt Điều lệ dự án, hoàn thiện SRS và Kiến trúc hệ thống. | Tháng 1 | **ESTIMATED** |
-| **M2: Core OCR & Review UI** | Hoàn thành Phân hệ Số hóa, Tesseract OCR ngầm và Giao diện Side-by-side UI. | Tháng 3 | **ESTIMATED** |
-| **M3: Security & Canvas Reader** | Hoàn thành HTML5 Canvas Reader, Watermark động, DRM và Chống tải file. | Tháng 5 | **ESTIMATED** |
-| **M4: Integration & Internal QA** | Tích hợp toàn hệ thống, kiểm thử bảo mật (Pentest) và kiểm thử chức năng. | Tháng 6 | **ESTIMATED** |
-| **M5: UAT & Product Release** | Nghiệm thu UAT với Thủ thư/Khách hàng và phát hành bản đóng gói thương mại. | Tháng 7 | **ESTIMATED** |
+Sản phẩm cuối gồm hồ sơ quản lý và yêu cầu, mã nguồn, môi trường chạy thử, bộ kiểm thử, báo cáo và kịch bản trình diễn.
 
----
+## 6. Giả định, ràng buộc và rủi ro chính
 
-## 6. Ràng buộc Dự án (Project Constraints)
+- Dùng khoảng 10–20 tài liệu tiếng Việt hợp pháp, chất lượng quét khuyến nghị 300 DPI.
+- Nếu không có thủ thư tham gia thường xuyên, Product Owner đại diện xác nhận nghiệp vụ.
+- Ưu tiên tái sử dụng công nghệ và kết quả thử nghiệm sẵn có để phù hợp 900 giờ công.
+- Rủi ro chính gồm chất lượng OCR không ổn định, thiếu hụt thời gian của thành viên, thay đổi công cụ và giới hạn bảo vệ nội dung trên trình duyệt.
+- Chi tiết xem tại [Đề xuất dự án](./LIBIF-Project-Proposal.md) và [Tầm nhìn và phạm vi](./LIBIF-Project-Vision-Scope.md).
 
-* **Ràng buộc Kỹ thuật:** Phải chạy trên các trình duyệt Web hiện đại chuẩn HTML5 (Chrome, Firefox, Edge, Safari) mà không yêu cầu người dùng cài đặt thêm plugin/extension bên ngoài.
-* **Ràng buộc Công nghệ OCR:** Phải sử dụng **Tesseract OCR Engine** self-hosted trên hạ tầng máy chủ của hệ thống để tối ưu chi phí bản quyền và đảm bảo tự chủ bảo mật dữ liệu.
-* **Ràng buộc Bản quyền:** Không cung cấp bất kỳ cơ chế nào cho phép xuất ngược file PDF gốc ra ngoài sau khi đã mã hóa đưa vào kho số.
-* **Ràng buộc Ngân sách:** Ngân sách phát triển phải nằm trong hạn mức phê duyệt của Nhà đầu tư (Sponsor).
+## 7. Các bên liên quan
 
----
-
-## 7. Giả định Dự án (Project Assumptions)
-
-| Mã | Mô tả Giả định | Tác động nếu Giả định Sai | Phương pháp Xác minh |
-| :--- | :--- | :--- | :--- |
-| **ASN-01** | Khách hàng (Thư viện) trang bị máy quét (scanner) đạt chất lượng tối thiểu 300 DPI. | Tỷ lệ OCR nhận dạng sai cao, tăng thời gian sửa thủ công của thủ thư. | Khảo sát thực tế hạ tầng thiết bị của thư viện đối tác. |
-| **ASN-02** | Đội ngũ kỹ thuật có đủ năng lực làm chủ Tesseract OCR và mã hóa HTML5 Canvas. | Tiến độ bị chậm do mất thời gian nghiên cứu công nghệ bảo mật. | Đánh giá năng lực nhân sự (Skill Matrix) trước khi Kick-off. |
-| **ASN-03** | Độc giả chấp nhận việc xem sách số có nhúng Watermark động trên màn hình. | Độc giả phàn nàn về trải nghiệm thị giác khi đọc. | Thử nghiệm UI mẫu trên nhóm độc giả tập trung (Focus Group). |
-
----
-
-## 8. Phân tích Các bên Liên quan (Stakeholder Analysis)
-
-| Bên Liên quan | Vai trò | Mục tiêu Cốt lõi | Mối quan ngại Chính | Kỳ vọng Sản phẩm |
-| :--- | :--- | :--- | :--- | :--- |
-| **Project Sponsor** | Nhà đầu tư / Giám đốc | Thương mại hóa sản phẩm, thu hồi vốn đầu tư. | Vượt ngân sách, chậm tiến độ, khó bán sản phẩm. | Phần mềm đóng gói chất lượng cao, dễ triển khai. |
-| **Library Director** | Khách hàng / Đại diện Thư viện | Hiện đại hóa thư viện, mở rộng phục vụ từ xa. | Sách số bị thất thoát, bị kiện vi phạm bản quyền. | Bảo mật tuyệt đối, minh bạch báo cáo khai thác. |
-| **Librarian Lead** | Người dùng chính (Thủ thư) | Số hóa nhanh, kiểm duyệt OCR thuận tiện. | Giao diện phức tạp, tăng tải công việc hàng ngày. | Giao diện Side-by-side dễ dùng, thao tác ít click. |
-| **Security Lead** | Chuyên gia An toàn thông tin | Đảm bảo hệ thống không có lỗ hổng bảo mật. | Lỗ hổng rò rỉ link file, công cụ bắt link tải. | Cơ chế DRM, Watermark động và mã hóa AES-256 vững chắc. |
-| **Development Team** | Đội ngũ Phát triển Phần mềm | Xây dựng hệ thống chạy mượt mà, đúng thiết kế. | Yêu cầu tính năng thay đổi liên tục (Scope creep). | Yêu cầu rõ ràng, kiến trúc phần mềm chuẩn hóa. |
-
----
-
-## 9. Ma trận RACI (Responsibility & Accountability)
-
-> **Ghi chú ký hiệu:**  
-> **R (Responsible):** Người trực tiếp thực thi.  
-> **A (Accountable):** Người chịu trách nhiệm giải trình duy nhất (1 vị trí 'A' cho mỗi công việc).  
-> **C (Consulted):** Người được tham vấn ý kiến chuyên môn.  
-> **I (Informed):** Người nhận thông tin cập nhật.
-
-| Hạng mục Công việc / Deliverable | Sponsor | PM | BA | Dev Lead | SecOps | QA Lead | Thủ thư / Khách hàng |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Phê duyệt Điều lệ & Ngân sách Dự án** | **A** | R | C | I | I | I | C |
-| **Thu thập & Phân tích Yêu cầu (SRS)** | I | A | **R** | C | C | C | C |
-| **Thiết kế Kiến trúc & Module Bảo mật DRM** | I | A | C | **R** | C | C | I |
-| **Phát triển Engine Tesseract OCR & Side-by-side UI** | I | A | C | **R** | I | C | I |
-| **Phát triển HTML5 Canvas Reader & Watermark** | I | A | C | **R** | C | C | I |
-| **Kiểm thử Bảo mật & Chống Rò rỉ Dữ liệu** | I | A | I | C | **R** | C | I |
-| **Kiểm thử Chức năng & Đảm bảo Chất lượng** | I | A | C | C | I | **R** | I |
-| **Nghiệm thu UAT & Bàn giao Sản phẩm** | C | A | C | I | I | C | **R** |
-
----
-
-## 10. Ma trận Mức độ Ảnh hưởng vs Quyền lợi (Stakeholder Influence vs Interest Matrix)
-
-| Mức độ Ảnh hưởng (Influence) | Quyền lợi Thấp (Low Interest) | Quyền lợi Cao (High Interest) |
+| Mã | Bên liên quan | Trách nhiệm và quyền lợi chính |
 | :--- | :--- | :--- |
-| **Ảnh hưởng Cao (High Influence)** | **QUẢN LÝ CHẶT CHẼ (Keep Satisfied)**<br>• Đội ngũ Pháp lý & Bảo hộ Bản quyền<br>• Cơ quan Quản lý Nhà nước về Xuất bản | **HỢP TÁC TÍCH CỰC (Manage Closely)**<br>• Nhà đầu tư Dự án (Project Sponsor)<br>• Ban Giám đốc Thư viện (Customer)<br>• Trưởng nhóm An toàn Thông tin (Security Lead) |
-| **Ảnh hưởng Thấp (Low Influence)** | **GIÁM SÁT TỐI THIỂU (Monitor)**<br>• Đơn vị Cung cấp Máy quét / Phần cứng | **THÔNG TIN THƯỜNG XUYÊN (Keep Informed)**<br>• Thủ thư (Librarians - Primary Users)<br>• Độc giả (Readers - End Users) |
+| GV | Giảng viên phụ trách | Cho phép khởi động, đánh giá kết quả và phê duyệt thay đổi vượt mức cơ sở |
+| PO | TV-01 — Product Owner, phân tích nghiệp vụ | Quản lý giá trị, phạm vi, backlog, tiêu chí chấp nhận và nghiệm thu nội bộ |
+| TL | TV-02 — Scrum Master, trưởng kỹ thuật | Điều phối Sprint, kiến trúc, tích hợp và tháo gỡ trở ngại |
+| OCR | TV-03 — Phát triển backend và OCR | OCR, xử lý nền, dữ liệu và dịch vụ backend liên quan |
+| FE | TV-04 — Phát triển giao diện | Giao diện quản trị, đối soát và biên mục |
+| AT | TV-05 — Phát triển trình đọc và bảo vệ nội dung | Canvas, mã hóa phía trình duyệt, watermark và gia cố giao diện |
+| QA | TV-06 — Kiểm thử và vận hành phát triển | Kiểm thử, tích hợp liên tục, Docker, môi trường thử và điều phối tài liệu |
+| TT | Đại diện thủ thư | Xác nhận quy trình hiện tại, góp ý đối soát, biên mục và phân quyền |
+| SV | Đại diện sinh viên | Góp ý khả năng tìm kiếm, đọc và mức dễ sử dụng |
+| CSH | Chủ sở hữu hoặc bên cung cấp nội dung | Xác nhận quyền sử dụng và các giới hạn áp dụng cho dữ liệu thử nghiệm |
 
-### Bảng Chi tiết Chiến lược Quản lý Stakeholder
+## 8. Ma trận RACI
 
-| Phân nhóm Ma trận | Các Bên Liên quan | Mục tiêu Quản lý | Chiến lược Giao tiếp & Hành động |
-| :--- | :--- | :--- | :--- |
-| **Hợp tác Tích cực** *(High Influence, High Interest)* | Project Sponsor, Ban Giám đốc Thư viện, Security Lead | Duy trì sự ủng hộ tối đa và đồng thuận chiến lược. | Báo cáo tiến độ hàng tuần/tháng; tham vấn trực tiếp các quyết định về ngân sách, kiến trúc bảo mật và nghiệm thu. |
-| **Quản lý Chặt chẽ** *(High Influence, Low Interest)* | Đội ngũ Pháp lý, Cơ quan Quản lý Bản quyền | Đảm bảo tuân thủ $100\%$ pháp lý, tránh nguy cơ đình chỉ. | Tham vấn về khung pháp lý bản quyền số, cập nhật các cam kết bảo vệ dữ liệu theo Luật Sở hữu Trí tuệ. |
-| **Thông tin Thường xuyên** *(Low Influence, High Interest)* | Thủ thư (Librarians), Độc giả (Readers) | Đảm bảo sản phẩm đáp ứng tốt nhu cầu sử dụng thực tế. | Tổ chức các buổi demo UI/UX, thử nghiệm giao diện Side-by-side và khảo sát ý kiến độc giả định kỳ. |
-| **Giám sát Tối thiểu** *(Low Influence, Low Interest)* | Nhà cung cấp thiết bị máy quét (Scanner Vendors) | Đảm bảo tương thích kỹ thuật hạ tầng đầu vào. | Theo dõi định dạng file kết xuất ảnh quét (300 DPI, PDF/Image) để đảm bảo đầu vào chuẩn cho Tesseract OCR. |
+Ký hiệu được dùng như sau:
 
----
+- **R:** trực tiếp thực hiện công việc.
+- **A:** chịu trách nhiệm giải trình cuối cùng; mỗi công việc chỉ có một A.
+- **C:** được tham vấn trước khi quyết định hoặc hoàn thành.
+- **I:** được thông báo kết quả hoặc tiến độ.
 
-## 11. Kế hoạch Giao tiếp & Báo cáo (Communication Plan)
+| Công việc | GV | PO | TL | OCR | FE | AT | QA | TT | SV | CSH |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| Phê duyệt điều lệ và mức cơ sở | **A** | **R** | C | I | I | I | I | C | I | C |
+| Quản lý backlog và tiêu chí chấp nhận | I | **A/R** | C | C | C | C | C | C | C | I |
+| Lập kế hoạch Sprint, theo dõi và xử lý trở ngại | I | C | **A/R** | R | R | R | R | I | I | I |
+| Thiết kế kiến trúc và tích hợp hệ thống | I | C | **A/R** | C | C | C | C | I | I | I |
+| Phát triển tải lên, OCR, dữ liệu và xử lý nền | I | C | **A** | **R** | C | C | C | C | I | I |
+| Phát triển đối soát, biên mục và giao diện quản trị | I | C | **A** | C | **R** | C | C | C | I | I |
+| Phát triển phân quyền, mã hóa và nhật ký | I | C | **A** | **R** | C | R | C | C | I | I |
+| Phát triển tìm kiếm, Canvas và watermark | I | C | **A** | R | C | **R** | C | C | C | I |
+| Lập và thực hiện kế hoạch kiểm thử | I | C | C | C | C | C | **A/R** | C | C | I |
+| Tổ chức đánh giá với thủ thư và sinh viên | I | **A** | C | I | C | C | **R** | **R** | **R** | I |
+| Đóng gói Docker và duy trì môi trường thử | I | I | **A** | C | C | C | **R** | I | I | I |
+| Hoàn thiện hồ sơ, báo cáo và trình diễn | I | **A/R** | R | R | R | R | **R** | C | C | I |
+| Xác nhận quyền sử dụng dữ liệu thử nghiệm | I | **A/R** | I | I | I | I | C | C | I | C |
+| Ưu tiên hoặc hoán đổi tính năng trong mức cơ sở | I | **A/R** | C | C | C | C | C | C | C | I |
+| Thay đổi thời hạn, trần chi phí hoặc mục tiêu chính | **A** | **R** | R | I | I | I | C | C | I | C |
 
-| Loại Giao tiếp | Mục đích | Tần suất | Hình thức / Kênh | Người Chủ trì | Thành phần Tham gia |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **Daily Standup** | Cập nhật tiến độ kỹ thuật, tháo gỡ khó khăn hàng ngày. | Hàng ngày (15 phút) | Trực tiếp / MS Teams | Scrum Master / Dev Lead | Đội ngũ Phát triển, QA |
-| **Weekly Progress Meeting** | Báo cáo tiến độ mốc, quản lý rủi ro và chi phí. | Hàng tuần | Hợp trực tuyến | Project Manager (PM) | PM, BA Leads, Dev Leads, QA Lead |
-| **Sponsor Steering Meeting** | Báo cáo chiến lược, xin phê duyệt điều chỉnh lớn. | Hàng tháng | Hợp trực tiếp / Hybrid | Project Manager | Sponsor, Ban Giám đốc, PM |
-| **User Feedback Session** | Demo tính năng và thu thập phản hồi người dùng. | Theo đợt Release | Demo trực tiếp | BA Lead | Thủ thư mẫu, Độc giả đại diện |
-| **Ad-hoc Security Review** | Thẩm định các phát hiện lỗ hổng an toàn thông tin. | Khi phát sinh | Hợp đột xuất | Security Lead | SecOps, PM, Dev Lead |
+## 9. Ma trận ảnh hưởng và quyền lợi
 
----
-
-## 12. Quyền hạn Phê duyệt (Approval Authority)
-
-| Phạm vi Quyết định | Người có Quyền hạn Phê duyệt Duy nhất | Hạn mức / Điều kiện |
+|  | Quyền lợi thấp | Quyền lợi cao |
 | :--- | :--- | :--- |
-| **Phê duyệt Điều lệ & Thay đổi Ngân sách** | **Project Sponsor** | Thay đổi ngân sách $> 5\%$ hoặc thay đổi mục tiêu chiến lược. |
-| **Phê duyệt Kế hoạch & Scope Change** | **Project Manager (PM)** | Thay đổi phạm vi tính năng không làm chậm tiến độ chung quá 1 tuần. |
-| **Phê duyệt Kiến trúc Kỹ thuật & Công nghệ** | **Software Architect / Dev Lead** | Lựa chọn thư viện, công nghệ mã hóa và cấu trúc dữ liệu. |
-| **Phê duyệt An toàn Thông tin & DRM** | **Security Lead (SecOps)** | Quyết định cơ chế bảo mật đủ điều kiện vận hành thương mại. |
-| **Phê duyệt Nghiệm thu Sản phẩm (UAT)** | **Giám đốc Thư viện / Khách hàng** | Phê duyệt chính thức sản phẩm bàn giao đưa vào vận hành. |
+| **Ảnh hưởng cao** | **Duy trì hài lòng:** chủ sở hữu hoặc bên cung cấp nội dung | **Phối hợp chặt chẽ:** giảng viên, Product Owner, Scrum Master và trưởng kỹ thuật |
+| **Ảnh hưởng thấp** | **Theo dõi:** nhà cung cấp công cụ và hạ tầng phụ thuộc | **Thông tin thường xuyên:** TV-03 đến TV-06, đại diện thủ thư và đại diện sinh viên |
 
----
-> **Xác nhận Phê duyệt:** Tệp Điều lệ Dự án (LIBIF-Project-Charter.md) là văn bản pháp lý nội bộ chính thức xác lập quyền hạn của Giám đốc Dự án và cam kết nguồn lực từ Nhà đầu tư.
+| Nhóm | Cách tương tác |
+| :--- | :--- |
+| Phối hợp chặt chẽ | Cập nhật hằng tuần, tham gia lập kế hoạch và đánh giá cuối mỗi Sprint; xử lý ngay thay đổi ảnh hưởng mức cơ sở |
+| Duy trì hài lòng | Tham vấn trước khi dùng dữ liệu hoặc thay đổi điều kiện truy cập nội dung |
+| Thông tin thường xuyên | Theo dõi backlog và tiến độ; tham gia họp ngắn, kiểm thử và phiên trình diễn phù hợp vai trò |
+| Theo dõi | Kiểm tra thay đổi phiên bản, giấy phép hoặc khả năng cung cấp khi có dấu hiệu ảnh hưởng dự án |
+
+## 10. Quyền quyết định và phê duyệt
+
+| Quyết định | Người có quyền giải trình cuối cùng | Điều kiện |
+| :--- | :--- | :--- |
+| Tầm nhìn, thứ tự ưu tiên và tiêu chí chấp nhận | Product Owner | Không vượt thời hạn, trần chi phí và mục tiêu đã duyệt |
+| Kiến trúc, tích hợp và tiêu chuẩn kỹ thuật | Scrum Master, trưởng kỹ thuật | Có tham vấn thành viên phụ trách và kiểm thử |
+| Chất lượng bản dựng và kết quả kiểm thử | TV-06 | Lỗi nghiêm trọng phải được báo cho Product Owner và trưởng kỹ thuật |
+| Thay đổi vượt phạm vi cơ sở | Giảng viên phụ trách | Áp dụng khi đổi mục tiêu chính, kéo dài thời hạn hoặc vượt trần chi phí |
+| Chấp nhận sản phẩm cuối của nhóm | Product Owner | Dựa trên tiêu chí thành công và bằng chứng kiểm thử; giảng viên đánh giá kết quả học phần |
+
+Điều lệ có hiệu lực khi giảng viên phụ trách chấp thuận. Mọi thay đổi phải được ghi nhận trong backlog hoặc nhật ký thay đổi và thông báo cho các bên chịu ảnh hưởng.
+
+## 11. Tài liệu liên quan
+
+- [Đề xuất dự án LIBIF](./LIBIF-Project-Proposal.md)
+- [Tầm nhìn và phạm vi LIBIF](./LIBIF-Project-Vision-Scope.md)
+- [Ước lượng dự án LIBIF](./LIBIF-Project-Estimation.md)
