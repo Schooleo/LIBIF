@@ -27,7 +27,7 @@
   + Bước 2: Rà soát & cố định 8 gói công việc (WP-01 -> WP-08), phân định In-scope vs Out-of-scope.
   + Bước 3: Xác lập danh mục 8 sản phẩm bàn giao (DEL-01 -> DEL-08) kèm hạn nộp và định dạng.
   + Bước 4: Xây dựng tiêu chí chấp nhận cụ thể: 8 tiêu chí sản phẩm (AC-01..08) + 6 tiêu chí QLDA.
-  + Bước 5: Thống nhất lịch trình 5 Sprint, phân công nguồn lực, ngân sách (8.8M) và cơ chế nghiệm thu.
+  + Bước 5: Thống nhất lịch trình 5 Sprint, phân công nguồn lực (900h), ngân sách (0 VNĐ) và cơ chế nghiệm thu.
 - Đầu ra: Bản SOW chính thức 16 mục làm căn cứ nghiệm thu và bảo vệ đồ án cuối kỳ.
 
 3. SO SÁNH THỜI GIAN & CHI PHÍ: PROPOSAL vs ESTIMATION vs SOW
@@ -36,7 +36,7 @@
 +-----------------------+-----------------------------+----------------------------+-----------------------------+
 | Bản chất              | Chào hàng & Xin phê duyệt   | Tính toán & Phân tích kỹ   | Cam kết phạm vi bàn giao    |
 | Thời gian (Schedule)  | Mục tiêu sơ bộ / 7 tháng    | 10 tuần, 5 Sprint (±20-30%)| 10 tuần cố định (Mốc G1-G5) |
-| Chi phí (Cost)        | Khái toán / Ngân sách dự trù| 8.8M VNĐ (phân tích kịch bản)| 8.8M VNĐ (Hạn mức & Trần 10M)|
+| Chi phí (Cost)        | Khái toán / Ngân sách dự trù| 0 VNĐ (tối ưu free-tier)   | 0 VNĐ (Cam kết không phát sinh)|
 +-----------------------+-----------------------------+----------------------------+-----------------------------+
 
 4. PHÂN BIỆT HỢP ĐỒNG GIÁ CỐ ĐỊNH (FIXED-PRICE) vs THEO THỜI GIAN & VẬT TƯ (T&M)
@@ -107,7 +107,7 @@ Tài liệu SOW trả lời 7 câu hỏi mấu chốt:
 3. **Sản phẩm bàn giao (Deliverables):** Cụ thể bàn giao những tài liệu, mã nguồn và gói triển khai nào (8 Deliverables DEL-01 đến 08)?
 4. **Tiêu chuẩn chấp nhận (Acceptance Criteria):** Điều kiện nào để nghiệm thu (8 tiêu chí sản phẩm AC-01..08 và 6 tiêu chí quản lý dự án)?
 5. **Tiến độ & Milestone:** Lịch trình bàn giao 5 Sprint và 5 mốc kiểm soát (G1 đến G5) diễn ra khi nào?
-6. **Nguồn lực & Ngân sách:** Ai làm (6 SV x 15h/tuần = 900h) và hạn mức chi phí là bao nhiêu (8.8M VNĐ)?
+6. **Nguồn lực & Ngân sách:** Ai làm (6 SV x 15h/tuần = 900h) và hạn mức chi phí là bao nhiêu (0 VNĐ - dùng tài nguyên miễn phí)?
 7. **Quy trình thay đổi & Nghiệm thu:** Thay đổi xử lý ra sao và quy trình bàn giao cuối kỳ thế nào?
 
 ### Q2: Các đầu vào cần thiết và các bước nhóm đã thực hiện để tạo tài liệu SOW?
@@ -116,7 +116,7 @@ Tài liệu SOW trả lời 7 câu hỏi mấu chốt:
   - `LIBIF-Project-Vision-Scope.md` (Phạm vi trong và ngoài).
   - `LIBIF-Product-Backlog.md` (16 PBIs, acceptance criteria).
   - `LIBIF-Architecture.md` (Kiến trúc kỹ thuật, tech stack).
-  - `LIBIF-Project-Estimation.md` (Baseline 136 SP, 900h, 8.8M VNĐ).
+  - `LIBIF-Project-Estimation.md` (Baseline 136 SP, 900h, 0 VNĐ).
   - `LIBIF-Project-Planning.md` (Lịch 5 Sprint, ma trận RACI).
 - **Các bước thực hiện (Steps):**
   - *Bước 1:* Xác định tính chất tài liệu là thỏa thuận phạm vi học phần giữa Nhóm sinh viên và Giảng viên.
@@ -130,7 +130,7 @@ Tài liệu SOW trả lời 7 câu hỏi mấu chốt:
 ### Q3: Tài liệu SOW của nhóm đã được đánh giá thế nào?
 1. **Đánh giá tính ràng buộc & rõ ràng (Clarity & Non-ambiguity):** Đảm bảo mọi Deliverable đều có định dạng rõ ràng (Git repo, Docker Compose, Markdown/PDF) và Acceptance Criteria có thể kiểm chứng được bằng mắt hoặc bằng test tự động.
 2. **Đánh giá ranh giới phạm vi (Scope Boundary Check):** Rà soát mục Out-of-scope để ngăn ngừa kỳ vọng vượt quá năng lực sinh viên (như cam kết chống chụp màn hình 100% bằng camera ngoài).
-3. **Đánh giá tính nhất quán (Consistency Check):** Khớp nối chính xác với `LIBIF-Project-Estimation.md` và `LIBIF-Project-Planning.md` về thời gian (10 tuần), nguồn lực (900h) và ngân sách (8.8M VNĐ).
+3. **Đánh giá tính nhất quán (Consistency Check):** Khớp nối chính xác với `LIBIF-Project-Estimation.md` và `LIBIF-Project-Planning.md` về thời gian (10 tuần), nguồn lực (900h) và ngân sách (0 VNĐ).
 4. **Phê duyệt bởi các bên:** SOW được đại diện nhóm (PO, SM, Dev) và Giảng viên phụ trách cùng ký nhận (Mục 16).
 
 ### Q4: Tại sao cần tạo tài liệu Phát biểu công việc (SOW)?
@@ -150,7 +150,7 @@ Tài liệu SOW trả lời 7 câu hỏi mấu chốt:
 | :--- | :--- | :--- | :--- |
 | **Bản chất** | Tài liệu **chào hàng, thuyết phục** phê duyệt chủ trương | Tài liệu **tính toán khoa học, phân tích** công sức và chi phí | Tài liệu **cam kết phạm vi & thỏa thuận bàn giao** |
 | **Về Thời gian (Schedule)** | - Đưa ra khung thời gian mục tiêu (Target Schedule).<br>- Nhìn ở tầm nhìn rộng (ví dụ: Lộ trình 7 tháng hoàn chỉnh của giải pháp thương mại, hoặc 10 tuần học phần).<br>- Mang tính định hướng tổng quan. | - Tính toán thời lượng dựa trên quy mô (136 SP ÷ 27 SP/Sprint = 10 tuần, 5 Sprint).<br>- Kèm **biên sai số (-20% đến +30%)**.<br>- Xác định các điểm tái ước tính (Sprint 1, Sprint 2). | - Chốt thành **Lịch trình bàn giao cố định (Committed Timeline)**: Đúng 10 tuần, không gia hạn.<br>- Cố định các mốc Milestone cụ thể (G1 đến G5) gắn liền với từng Deliverable. |
-| **Về Chi phí (Cost)** | - Đưa ra khái toán / Ngân sách dự trù ban đầu để xin phê duyệt đầu tư.<br>- Thường là con số ước lượng vòng đầu (Ballpark estimate). | - Phân tích chi tiết từng hạng mục chi phí (Agent 3M, VPS 4M, Domain 600k, In ấn 400k + Dự phòng 10% = 8.8M).<br>- Xây dựng nhiều kịch bản (Tối thiểu, Tiết kiệm, Baseline, Trần 10M). | - Chốt thành **Hạn mức tài chính & Điều khoản chi tiêu (Budget Cap)**: Baseline 8.8M VNĐ, trần 10M VNĐ.<br>- Quy định rõ chi phí nhân công SV là 0 VNĐ, chỉ thanh toán chi phí thực tế. |
+| **Về Chi phí (Cost)** | - Đưa ra khái toán / Ngân sách dự trù ban đầu để xin phê duyệt đầu tư.<br>- Thường là con số ước lượng vòng đầu (Ballpark estimate). | - Phân tích chi tiết mô hình tài nguyên (Azure for Students, Free AI, Subdomain, In ấn = 0 VNĐ).<br>- Phân tích kịch bản tài nguyên và phương án dự phòng khi hết hạn mức. | - Chốt thành **Hạn mức tài chính cam kết (0 VNĐ)**: Tận dụng 100% tài nguyên miễn phí, cam kết không phát sinh chi phí tiền mặt.<br>- Quy định rõ công sức 06 SV được quản lý bằng 900 giờ-người. |
 
 ### Q7: Các câu hỏi chính cần trả lời trong tài liệu Hợp đồng dự án phần mềm (Software Contract) là gì?
 *(Đã trình bày chi tiết tại Mục 2.2)*:
@@ -191,5 +191,5 @@ Tài liệu SOW trả lời 7 câu hỏi mấu chốt:
 |:---|:---|:---|
 | *1. "Trong SOW, nhóm cam kết tính năng DRM Canvas và Screenshot Blur (PBI-11, 15). Nếu người dùng dùng điện thoại chụp màn hình từ bên ngoài thì hệ thống có chặn được không? SOW có bị coi là không đạt nghiệm thu không?"* | Giới hạn kỹ thuật và ranh giới nghiệm thu. | **Trả lời:** "Thưa thầy, tại Mục 6.3 và Mục 4.4 của tài liệu SOW, nhóm đã quy định rõ ràng: Cơ chế DRM Canvas, Screenshot Blur và Dynamic Watermark là các biện pháp **răn đe, giảm thiểu rủi ro và hỗ trợ truy vết ở mức prototype/MVP**, không phải là giải pháp bảo mật phần cứng tuyệt đối. Việc người dùng dùng camera ngoài chụp màn hình nằm ngoài phạm vi kỹ thuật của một ứng dụng Web. Do đó, tiêu chí AC-06 được coi là đạt khi hệ thống che mờ khi mất focus, gắn watermark định danh người dùng/IP và không để lộ link tải file trực tiếp trên trình duyệt." |
 | *2. "Nếu giảng viên yêu cầu bổ sung tính năng 'Đọc sách trên ứng dụng di động (Mobile App)' vào tuần thứ 6, nhóm xử lý theo SOW thế nào?"* | Quy trình quản lý thay đổi phạm vi. | **Trả lời:** "Thưa thầy, căn cứ theo Mục 4.4 (Ngoài phạm vi) và Mục 13 (Quản lý thay đổi) của SOW: Tính năng Mobile App hiện nằm ngoài phạm vi đồ án 10 tuần. Nếu Giảng viên yêu cầu bổ sung, nhóm sẽ lập một Change Request: Đánh giá Story Points của Mobile App (khoảng 30-40 SP), sau đó đề xuất chuyển một khối lượng Must Have tương đương hoặc đưa tính năng này vào Product Roadmap sau học phần, vì thời hạn 10 tuần và năng lực 900h của nhóm là cố định." |
-| *3. "SOW này tương đương với loại Hợp đồng nào trong thực tế: Giá cố định (Fixed-Price) hay Theo thời gian & vật tư (T&M)?"* | Ánh xạ lý thuyết hợp đồng vào đồ án. | **Trả lời:** "Thưa thầy, SOW của nhóm mang bản chất của mô hình **Agile Fixed-Price Contract (Hợp đồng Agile giá cố định)**: Nhóm cố định về thời gian (10 tuần) và nguồn lực/ngân sách trần (900h effort, 8.8M VNĐ), đồng thời cam kết 13 PBI Must Have cốt lõi. Tuy nhiên, nhóm duy trì tính linh hoạt của Agile qua 3 PBI Should Have (13 SP) làm phạm vi co giãn và cho phép hoán đổi tính năng tương đương khi có yêu cầu thay đổi từ phía giảng viên/khách hàng." |
+| *3. "SOW này tương đương với loại Hợp đồng nào trong thực tế: Giá cố định (Fixed-Price) hay Theo thời gian & vật tư (T&M)?"* | Ánh xạ lý thuyết hợp đồng vào đồ án. | **Trả lời:** "Thưa thầy, SOW của nhóm mang bản chất của mô hình **Agile Fixed-Price Contract (Hợp đồng Agile giá cố định)**: Nhóm cố định về thời gian (10 tuần) và nguồn lực/ngân sách (900h effort, 0 VNĐ tiền mặt tối ưu free-tier), đồng thời cam kết 13 PBI Must Have cốt lõi. Tuy nhiên, nhóm duy trì tính linh hoạt của Agile qua 3 PBI Should Have (13 SP) làm phạm vi co giãn và cho phép hoán đổi tính năng tương đương khi có yêu cầu thay đổi từ phía giảng viên/khách hàng." |
 | *4. "Tại sao trong bảng ngân sách SOW, chi phí nhân công của 6 sinh viên lại ghi là 0 VNĐ? Nếu ra doanh nghiệp thật thì tính thế nào?"* | Thực tiễn đồ án vs Môi trường doanh nghiệp. | **Trả lời:** "Thưa thầy, trong bối cảnh học phần đại học, công sức của sinh viên là hoạt động học tập thực hành nên được ghi nhận bằng **900 giờ-người**, không phát sinh giao dịch tiền tệ thực tế (0 VNĐ). Nếu ra môi trường doanh nghiệp thật theo hợp đồng T&M hoặc Fixed-Price, 900 giờ công này sẽ được nhân với đơn giá giờ (Hourly Rate, ví dụ 15 - 25 USD/giờ cho lập trình viên), tạo nên chi phí nhân công từ 300 - 500 triệu VNĐ, cộng với chi phí quản lý chung (Overhead) và lợi nhuận định mức." |

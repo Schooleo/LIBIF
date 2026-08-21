@@ -18,8 +18,8 @@
 | **Tổng nguồn lực cam kết** | 06 sinh viên × 15 giờ/tuần = **900 giờ-người** (765 giờ tập trung sản phẩm) |
 | **Quy mô Backlog cam kết** | **136 Story Points** (117 SP tính năng + 19 SP Enablers) |
 | **Phân loại phạm vi bàn giao** | **13 Must Have (104 SP) bắt buộc**; **03 Should Have (13 SP) co giãn** |
-| **Hạn mức tài chính** | **8.800.000 VNĐ** (đã gồm 10% dự phòng); Trần kiểm soát: 10.000.000 VNĐ |
-| **Chi phí nhân công** | **0 VNĐ** (công sức sinh viên quản lý bằng giờ công học phần) |
+| **Chi phí tiền mặt dự kiến** | **0 VNĐ** (Toàn bộ sử dụng Azure for Students, AI free-tier và tài nguyên sẵn có) |
+| **Chi phí nhân công** | **0 VNĐ** (công sức 06 sinh viên quản lý bằng 900 giờ-người) |
 
 ---
 
@@ -95,16 +95,15 @@
 | **Sprint 4 / Mốc G4** | 7-8 | PBI-10, 11, 14, 15 (29 SP) | Tìm kiếm toàn văn, Canvas Reader, Dynamic Watermark, Blur |
 | **Sprint 5 / Mốc G5** | 9-10 | PBI-12, 13, EN-02, 03 (24 SP)| Tích hợp, Test toàn diện, Docker hoàn chỉnh, Nộp bài & Demo |
 
-#### 4.2 Hạn mức ngân sách tiền mặt
-| STT | Hạng mục chi phí | Hạn mức phân bổ (VNĐ) | Nguyên tắc quản trị |
+#### 4.2 Ngân sách và Chi phí thực hiện
+| STT | Hạng mục chi phí | Hạn mức phân bổ (VNĐ) | Ghi chú & Nguồn lực |
 | :---: | :--- | ---: | :--- |
 | 1 | **Công sức 06 sinh viên** | **0 VNĐ** | 900 giờ-người phục vụ học tập thực hành |
-| 2 | **Coding Agent** | 3.000.000 VNĐ | Hạn mức công cụ AI hỗ trợ lập trình trong 10 tuần |
-| 3 | **VPS Staging** | 4.000.000 VNĐ | Máy chủ 4 Cores, 8GB RAM phục vụ OCR & demo |
-| 4 | **Tên miền, DNS, Backup** | 600.000 VNĐ | Chi phí dịch vụ hạ tầng phụ trợ |
-| 5 | **Dữ liệu mẫu & Vật tư in ấn**| 400.000 VNĐ | Tài liệu quét 300 DPI, in ấn tài liệu nộp thi |
-| 6 | **Dự phòng rủi ro (10%)** | 800.000 VNĐ | Quản lý phát sinh tài nguyên hạ tầng |
-| | **TỔNG NGÂN SÁCH BASELINE** | **8.800.000 VNĐ** | **Trần kiểm soát: 10.000.000 VNĐ** |
+| 2 | **Hạ tầng (Hosting, DB, MinIO)** | **0 VNĐ** | Azure for Students (miễn phí) |
+| 3 | **Coding Agent & AI Tools** | **0 VNĐ** | Free tier: Codex, Gemini CLI, Copilot |
+| 4 | **Tên miền & Dịch vụ phụ trợ** | **0 VNĐ** | Sử dụng subdomain miễn phí |
+| 5 | **Dữ liệu test & In ấn** | **0 VNĐ** | Dữ liệu mẫu có sẵn, in ấn nội bộ |
+| | **TỔNG CHI PHÍ TIỀN MẶT** | **0 VNĐ** | **Tối ưu toàn diện bằng tài nguyên miễn phí** |
 
 ---
 
@@ -129,12 +128,3 @@
 6. **Bảo vệ & Nghiệm thu học phần:** Trình bày, demo trực tiếp và trả lời câu hỏi vấn đáp trước Giảng viên.
 
 ---
-
-### 6. XÁC NHẬN VÀ PHÊ DUYỆT STATEMENT OF WORK
-
-| Vai trò | Họ và tên | Chữ ký / Xác nhận | Ngày phê duyệt |
-| :--- | :--- | :--- | :---: |
-| **Product Owner / Đại diện nhóm** | | | 12/08/2026 |
-| **Scrum Master / Trưởng nhóm** | | | 12/08/2026 |
-| **Đại diện Nhóm Kỹ thuật** | | | 12/08/2026 |
-| **Giảng viên phụ trách học phần** | **TS. Ngô Huy Biên** | | |

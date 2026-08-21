@@ -10,7 +10,7 @@
 | Bên hướng dẫn/đánh giá | Giảng viên phụ trách học phần |
 | Phương pháp phát triển | Scrum, 05 Sprint × 02 tuần |
 | Thời gian thực hiện | 10 tuần học |
-| Baseline tham chiếu | `LIBIF-Project-Estimation.md`, phiên bản 2.0 |
+| Baseline tham chiếu | `LIBIF-Project-Estimation.md`, phiên bản 3.0 |
 | Phiên bản tài liệu | 1.0 |
 | Ngày lập | 12/08/2026 |
 | Trạng thái | Đề xuất thống nhất phạm vi công việc học phần |
@@ -19,9 +19,33 @@
 
 ## 1. Mục đích và Tính chất Tài liệu
 
-Statement of Work (SOW) này xác định công việc nhóm sinh viên cam kết thực hiện, sản phẩm bàn giao, tiêu chí chấp nhận, thời gian, nguồn lực, chi phí và giới hạn của đồ án LIBIF.
+Statement of Work (SOW) này xác định công việc nhóm sinh viên cam kết thực hiện, sản phẩm bàn giao, tiêu chí chấp nhận, thời gian, nguồn lực, chi phí và giới hạn của đồ án LIBIF. Theo lý thuyết quản lý dự án (Slide 06 – Software Project Planning), SOW là **bản mô tả chính thức các yêu cầu tối thiểu cần thực hiện**, đóng vai trò như phụ lục kỹ thuật cốt lõi gắn liền với thỏa thuận dự án.
 
-Đây là **thỏa thuận phạm vi phục vụ quản lý và đánh giá học phần**, không phải hợp đồng thương mại, cam kết cung cấp dịch vụ production hoặc chứng nhận an toàn thông tin. Các thuật ngữ “bàn giao”, “nghiệm thu” và “chi phí” trong tài liệu được hiểu trong bối cảnh đồ án sinh viên.
+Đây là **thỏa thuận phạm vi phục vụ quản lý và đánh giá học phần**, không phải hợp đồng thương mại, cam kết cung cấp dịch vụ production hoặc chứng nhận an toàn thông tin. Các thuật ngữ "bàn giao", "nghiệm thu" và "chi phí" trong tài liệu được hiểu trong bối cảnh đồ án sinh viên.
+
+### 1.1 Quá trình Hình thành và Đầu vào
+
+#### Tài liệu đầu vào (Inputs)
+
+| # | Tài liệu đầu vào | Vai trò đối với SOW |
+| :---: | :--- | :--- |
+| 1 | `LIBIF-Project-Charter.md` | Mục tiêu dự án, ràng buộc, mốc lớn và các bên liên quan |
+| 2 | `LIBIF-Project-Vision-Scope.md` | Ranh giới phạm vi trong (In-scope) và ngoài (Out-of-scope) |
+| 3 | `LIBIF-Product-Backlog.md` | 16 PBIs với acceptance criteria, mức ưu tiên Must/Should |
+| 4 | `LIBIF-Architecture.md` | Kiến trúc kỹ thuật, tech stack và ràng buộc công nghệ |
+| 5 | `LIBIF-Proof-Of-Concept.md` | Kết quả PoC Canvas DRM, xác nhận tính khả thi kỹ thuật |
+| 6 | `LIBIF-Project-Estimation.md` | Baseline quy mô (136 SP), effort (900h), chi phí (0 VNĐ) |
+| 7 | `LIBIF-Project-Planning.md` | Lịch 05 Sprint, ma trận RACI và kế hoạch quản lý |
+
+#### Các bước hình thành SOW
+
+1. **Xác định tính chất tài liệu:** Định vị SOW là thỏa thuận phạm vi giữa Nhóm sinh viên (Bên thực hiện) và Giảng viên (Bên hướng dẫn/đánh giá), không phải hợp đồng thương mại.
+2. **Cấu trúc hóa gói công việc:** Rà soát WBS từ Kế hoạch dự án, phân thành 08 gói công việc (WP-01 → WP-08), phân định rõ In-scope và Out-of-scope.
+3. **Định nghĩa sản phẩm bàn giao:** Xác lập 08 deliverables (DEL-01 → DEL-08) với định dạng, nội dung tối thiểu và thời hạn cụ thể.
+4. **Xây dựng tiêu chí chấp nhận:** Thiết lập bộ tiêu chí 2 tầng — 08 tiêu chí sản phẩm (AC-01 → AC-08) và 06 tiêu chí quản lý dự án (PM-AC-01 → PM-AC-06).
+5. **Thống nhất lịch trình và nguồn lực:** Chốt lịch 05 Sprint với 05 mốc kiểm soát (G1 → G5), phân công 06 vai trò và xác nhận effort 900 giờ-người.
+6. **Tích hợp điều khoản đặc biệt:** Quy định về quyền sở hữu trí tuệ, bản quyền dữ liệu mẫu và nguyên tắc sử dụng AI/Coding Agent minh bạch.
+7. **Lập quy trình nghiệm thu và điều kiện hoàn tất:** Xây dựng quy trình nghiệm thu nội bộ và xác lập điều kiện kết thúc SOW.
 
 ---
 
@@ -198,24 +222,26 @@ Mỗi sinh viên dự kiến đóng góp 15 giờ/tuần trong 10 tuần. Tổng
 - Hạ tầng: máy cá nhân, Git repository, CI/CD và 01 môi trường staging.
 - Coding Agent: hỗ trợ trong 10 tuần theo quy định sử dụng AI của học phần.
 
+### 8.3 Địa điểm và Môi trường làm việc
+
+- **Địa điểm làm việc:** Làm việc kết hợp từ xa (online) và các buổi làm việc trực tiếp tại Trường ĐH Khoa học Tự nhiên, ĐHQG-HCM.
+- **Môi trường kỹ thuật:** Máy cá nhân của các thành viên, Git/GitHub, Docker Compose local và môi trường staging trên đám mây (Azure for Students).
+
 ---
 
 ## 9. Ngân sách và Điều kiện Chi phí
 
-| Hạng mục | Baseline (VNĐ) |
-| :--- | ---: |
-| Công sức 06 sinh viên | 0 tiền lương; quản lý bằng 900 giờ-người |
-| Coding Agent | 3.000.000 |
-| VPS staging | 4.000.000 |
-| Domain, backup và dịch vụ phụ trợ | 600.000 |
-| Dữ liệu test, in ấn và vật tư demo | 400.000 |
-| Dự phòng 10% | 800.000 |
-| **Tổng** | **8.800.000** |
+| Hạng mục | Chi phí (VNĐ) | Ghi chú |
+| :--- | ---: | :--- |
+| Công sức 06 sinh viên | 0 | 900 giờ-người, quản lý bằng công sức |
+| Hạ tầng (Hosting, DB, Storage) | 0 | Azure for Students (miễn phí) |
+| AI Agent | 0 | Free tier: Codex, Gemini CLI, v.v. |
+| Tên miền | 0 | Sử dụng subdomain miễn phí |
+| Dữ liệu test và in ấn | 0 | Tài liệu có sẵn, in nội bộ |
+| **Tổng chi phí tiền mặt** | **0 VNĐ** | **Toàn bộ sử dụng tài nguyên miễn phí** |
 
-- Baseline là hạn mức lập kế hoạch, không phải nghĩa vụ phải chi hết.
-- Nhóm ưu tiên tài nguyên trường, free tier và dịch vụ sẵn có.
-- Mọi khoản chi cần được nhóm thống nhất và ghi nhận thực tế.
-- Tổng dự báo vượt 10.000.000 VNĐ cần được cả nhóm và giảng viên xem xét.
+- Nhóm ưu tiên tối đa tài nguyên trường, free tier và dịch vụ sẵn có.
+- Nếu phát sinh chi phí bất khả kháng, nhóm thống nhất và ghi nhận thực tế.
 - Chi phí production, scanner, pentest thương mại, bản quyền nội dung và bảo trì không thuộc SOW.
 
 ---
@@ -303,7 +329,7 @@ Việc Product Owner chấp nhận PBI là nghiệm thu nội bộ của nhóm, 
 | Tăng/giảm phạm vi chức năng | PO đề xuất, nhóm ước tính | Lập Change Request và đổi bằng PBI/SP tương đương |
 | Thay đổi kiến trúc lớn | Tech Lead và nhóm | Ghi ADR, tác động effort/rủi ro và cập nhật tài liệu |
 | Thay đổi deadline/yêu cầu học phần | Giảng viên | Chỉ áp dụng sau xác nhận chính thức |
-| Dự báo chi phí vượt 10 triệu VNĐ | Cả nhóm và giảng viên xem xét | Ưu tiên phương án miễn phí hoặc điều chỉnh phạm vi |
+| Phát sinh chi phí ngoài kế hoạch | Cả nhóm thống nhất | Ghi nhận thực tế và ưu tiên phương án miễn phí |
 
 Mọi thay đổi baseline phải có lý do, ảnh hưởng, người quyết định và ngày hiệu lực. Thỏa thuận qua lời nói không được xem là thay đổi chính thức nếu chưa được ghi lại.
 
@@ -328,7 +354,7 @@ SOW được xem là hoàn tất khi:
 - Nhóm đã nộp các deliverable bắt buộc ở Mục 5.
 - Có release/tag cuối kỳ, test report và hướng dẫn chạy.
 - Có báo cáo phạm vi hoàn thành/chưa hoàn thành và giới hạn đã biết.
-- Chi phí thực tế được đối chiếu với baseline.
+- Chi phí thực tế (nếu phát sinh) được ghi nhận và đối chiếu.
 - Retrospective cuối dự án và lessons learned được ghi nhận.
 
 Những hạng mục ngoài phạm vi hoặc chưa hoàn thành được đưa vào Product Backlog/Roadmap sau học phần, không mặc nhiên kéo dài nghĩa vụ của SOW.
