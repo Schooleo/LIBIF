@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LIBIF Admin - Report Export Completed</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary": "#ffffff",
+                        "tertiary": "#002525",
+                        "tertiary-fixed-dim": "#74d6d6",
+                        "tertiary-fixed": "#91f3f2",
+                        "outline": "#717976",
+                        "on-surface": "#151c27",
+                        "on-primary-fixed": "#00201b",
+                        "error-container": "#ffdad6",
+                        "secondary": "#12696b",
+                        "on-primary-container": "#7ca79d",
+                        "secondary-fixed": "#a5eff1",
+                        "secondary-container": "#a2edee",
+                        "on-background": "#151c27",
+                        "on-error-container": "#93000a",
+                        "on-primary": "#ffffff",
+                        "primary-container": "#103c35",
+                        "inverse-primary": "#a4cfc5",
+                        "surface": "#f9f9ff",
+                        "surface-bright": "#f9f9ff",
+                        "on-tertiary-container": "#47adac",
+                        "on-secondary-container": "#1a6d6f",
+                        "primary-fixed-dim": "#a4cfc5",
+                        "on-error": "#ffffff",
+                        "surface-variant": "#dce2f3",
+                        "surface-container": "#e7eefe",
+                        "surface-container-highest": "#dce2f3",
+                        "on-secondary-fixed": "#002021",
+                        "tertiary-container": "#003c3c",
+                        "background": "#f9f9ff",
+                        "primary-fixed": "#bfece1",
+                        "primary": "#002520",
+                        "surface-dim": "#d3daea",
+                        "surface-container-low": "#f0f3ff",
+                        "outline-variant": "#c0c8c5",
+                        "on-tertiary-fixed": "#002020",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-high": "#e2e8f8",
+                        "on-surface-variant": "#414846",
+                        "inverse-on-surface": "#ebf1ff",
+                        "secondary-fixed-dim": "#89d3d5",
+                        "on-secondary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "on-primary-fixed-variant": "#244e46",
+                        "on-tertiary-fixed-variant": "#004f50",
+                        "inverse-surface": "#2a313d",
+                        "on-secondary-fixed-variant": "#004f51",
+                        "surface-tint": "#3d665e"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "unit": "8px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "lg": "24px",
+                        "xs": "4px",
+                        "xl": "32px",
+                        "gutter": "16px",
+                        "container-max": "1440px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Be Vietnam Pro"],
+                        "display-lg-mobile": ["Be Vietnam Pro"],
+                        "body-md": ["Be Vietnam Pro"],
+                        "display-lg": ["Be Vietnam Pro"],
+                        "label-caps": ["Be Vietnam Pro"],
+                        "title-sm": ["Be Vietnam Pro"],
+                        "body-sm": ["Be Vietnam Pro"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "display-lg-mobile": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "title-sm": ["18px", { "lineHeight": "24px", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="h-full bg-background font-body-md text-on-surface flex flex-col md:flex-row antialiased">
+<!-- Mobile Top App Bar (Visible on mobile, hides on md+) -->
+<header class="md:hidden flex items-center justify-between px-md py-sm bg-surface border-b border-outline-variant shadow-sm w-full sticky top-0 z-30">
+<div class="flex items-center gap-sm">
+<span class="font-headline-md text-headline-md text-primary font-bold">LIBIF</span>
+</div>
+<button class="text-on-surface-variant hover:text-secondary p-xs rounded-full hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">menu</span>
+</button>
+</header>
+<!-- SideNavBar (Hidden on mobile, visible on md+) -->
+<!-- Note: Intent mapping -> "Analytics" is the closest fit for generating reports, so it is set as active -->
+<nav class="hidden md:flex flex-col h-full w-[248px] fixed left-0 top-0 bg-primary shadow-sm py-lg z-20">
+<!-- Header -->
+<div class="px-lg mb-xl flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center border border-on-primary-fixed-variant">
+<img alt="Admin Avatar" class="w-full h-full object-cover rounded-full" data-alt="A professional headshot of a librarian or archivist in a well-lit, modern institutional setting. The lighting is soft and neutral, conveying trust and competence. Corporate minimalism aesthetic with dark greens and pristine whites." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBAs3bSBXRf3fpD9UleiXHT-vs5XZ72jWtEKlN73ukwN6C6GBigNyGrfRDblYYoaaj3DuA0pfHk7ojAnpBp-gjO7VhSfQc9y77tFhSTQYV9hQCRW1xRhQUTREjxgEpIhNESfXXXjKAOlbS4byRD_lJbywXn2sM8PmLbmjd_0EyhkQZlD3HAU7f32YgxsAlW9t3teUVIHPuVLOWXdy9a2RSXyQsAYIi1B8dRUFcRvKMPohH0_Q8BU3OJm_wCyOAtxhVSc5JP42lsBJc"/>
+</div>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-on-primary">LIBIF Admin</h1>
+<p class="font-body-sm text-body-sm text-on-primary-container">Institutional Control</p>
+</div>
+</div>
+<!-- Navigation Links -->
+<div class="flex-1 overflow-y-auto">
+<ul class="flex flex-col">
+<!-- Dashboard -->
+<li>
+<a class="text-on-primary-container/70 hover:bg-primary-fixed-dim/10 flex items-center gap-md px-lg py-md transition-all active:scale-95" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">dashboard</span>
+<span class="font-body-sm text-body-sm">Dashboard</span>
+</a>
+</li>
+<!-- Repository -->
+<li>
+<a class="text-on-primary-container/70 hover:bg-primary-fixed-dim/10 flex items-center gap-md px-lg py-md transition-all active:scale-95" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">inventory_2</span>
+<span class="font-body-sm text-body-sm">Repository</span>
+</a>
+</li>
+<!-- Metadata -->
+<li>
+<a class="text-on-primary-container/70 hover:bg-primary-fixed-dim/10 flex items-center gap-md px-lg py-md transition-all active:scale-95" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">label</span>
+<span class="font-body-sm text-body-sm">Metadata</span>
+</a>
+</li>
+<!-- Access Control -->
+<li>
+<a class="text-on-primary-container/70 hover:bg-primary-fixed-dim/10 flex items-center gap-md px-lg py-md transition-all active:scale-95" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">key</span>
+<span class="font-body-sm text-body-sm">Access Control</span>
+</a>
+</li>
+<!-- Analytics (Active for Report) -->
+<li>
+<a class="bg-primary-container border-l-4 border-on-tertiary-container text-on-tertiary-container flex items-center gap-md px-lg py-md transition-transform duration-150 active:scale-95 shadow-sm" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">analytics</span>
+<span class="font-body-sm text-body-sm font-semibold">Analytics</span>
+</a>
+</li>
+<!-- System Logs -->
+<li>
+<a class="text-on-primary-container/70 hover:bg-primary-fixed-dim/10 flex items-center gap-md px-lg py-md transition-all active:scale-95" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">terminal</span>
+<span class="font-body-sm text-body-sm">System Logs</span>
+</a>
+</li>
+</ul>
+</div>
+<!-- CTA -->
+<div class="px-lg mt-md mb-lg">
+<button class="w-full bg-surface-tint text-on-primary hover:bg-surface-tint/90 font-body-sm text-body-sm py-sm px-md rounded transition-colors flex items-center justify-center gap-sm shadow-sm active:scale-95 duration-150">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0; font-size: 18px;">upload_file</span>
+                Upload Document
+            </button>
+</div>
+<!-- Footer Links -->
+<ul class="flex flex-col border-t border-primary-container/50 pt-md">
+<li>
+<a class="text-on-primary-container/70 hover:bg-primary-fixed-dim/10 flex items-center gap-md px-lg py-md transition-all active:scale-95" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">settings</span>
+<span class="font-body-sm text-body-sm">Settings</span>
+</a>
+</li>
+<li>
+<a class="text-on-primary-container/70 hover:bg-primary-fixed-dim/10 flex items-center gap-md px-lg py-md transition-all active:scale-95" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">contact_support</span>
+<span class="font-body-sm text-body-sm">Support</span>
+</a>
+</li>
+</ul>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 flex md:ml-[248px] h-full overflow-hidden bg-background">
+<!-- Canvas (Left side, primary content space - empty for this task, focusing on side panel) -->
+<div class="flex-1 hidden lg:flex flex-col h-full bg-surface-bright relative">
+<!-- Simulated Main Content Background Pattern -->
+<div class="absolute inset-0 opacity-[0.03] bg-[radial-gradient(#103c35_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none"></div>
+<div class="p-lg xl:p-xl h-full flex flex-col items-center justify-center text-center max-w-container-max mx-auto">
+<div class="w-16 h-16 rounded-full bg-surface-container-low flex items-center justify-center mb-md text-surface-tint">
+<span class="material-symbols-outlined text-display-lg" style="font-variation-settings: 'FILL' 0;">bar_chart</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface mb-sm">Analytics Workspace</h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-md">Select a report type or configure data points to generate comprehensive institutional insights.</p>
+</div>
+</div>
+<!-- Side Panel (Success State) -->
+<aside class="w-full lg:w-[420px] h-full bg-surface border-l border-outline-variant shadow-[-4px_0_12px_rgba(16,60,53,0.03)] flex flex-col z-10 overflow-y-auto">
+<!-- Panel Header (Close action implied) -->
+<div class="flex justify-between items-center px-lg py-md border-b border-outline-variant sticky top-0 bg-surface/90 backdrop-blur-sm z-20">
+<h2 class="font-title-sm text-title-sm text-on-surface">Export Status</h2>
+<button aria-label="Close panel" class="text-on-surface-variant hover:text-on-surface p-xs rounded-full hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">close</span>
+</button>
+</div>
+<!-- Panel Content -->
+<div class="flex-1 p-lg flex flex-col">
+<!-- Success Graphic & Header -->
+<div class="flex flex-col items-center text-center mt-xl mb-xl">
+<div class="w-20 h-20 rounded-full bg-tertiary-fixed-dim/20 flex items-center justify-center mb-md relative">
+<!-- Ripple effect ring -->
+<div class="absolute inset-0 rounded-full border-2 border-tertiary-fixed-dim/30 animate-[ping_2s_cubic-bezier(0,0,0.2,1)_infinite]"></div>
+<span class="material-symbols-outlined text-on-tertiary-container" style="font-size: 40px; font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-xs">Report Ready for Download</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Your requested data export has been successfully generated.</p>
+</div>
+<!-- Report Details Card -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-md mb-lg">
+<h4 class="font-title-sm text-title-sm text-on-surface mb-md pb-xs border-b border-outline-variant">Report Details</h4>
+<dl class="flex flex-col gap-sm">
+<div class="flex flex-col sm:flex-row sm:justify-between gap-xs sm:gap-md py-xs">
+<dt class="font-body-sm text-body-sm text-on-surface-variant w-[100px] shrink-0">Filename</dt>
+<dd class="font-body-sm text-body-sm text-on-surface font-medium truncate" title="LIBIF_Report_Oct2023.xlsx">
+                                LIBIF_Report_Oct2023.xlsx
+                            </dd>
+</div>
+<div class="flex flex-col sm:flex-row sm:justify-between gap-xs sm:gap-md py-xs">
+<dt class="font-body-sm text-body-sm text-on-surface-variant w-[100px] shrink-0">Generated</dt>
+<dd class="font-body-sm text-body-sm text-on-surface">Today, 10:47 AM</dd>
+</div>
+<div class="flex flex-col sm:flex-row sm:justify-between gap-xs sm:gap-md py-xs">
+<dt class="font-body-sm text-body-sm text-on-surface-variant w-[100px] shrink-0">Filters</dt>
+<dd class="font-body-sm text-body-sm text-on-surface text-right sm:text-left">
+                                Oct 01 - Oct 31 • All Categories
+                            </dd>
+</div>
+</dl>
+</div>
+<!-- Primary Action -->
+<button class="w-full bg-primary-container text-on-primary hover:bg-primary-container/90 font-title-sm text-title-sm py-md px-lg rounded-lg transition-colors flex items-center justify-center gap-sm shadow-[0px_4px_12px_rgba(16,60,53,0.15)] mb-md active:scale-[0.98] duration-150">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">download</span>
+                    Download Excel
+                </button>
+<!-- Secondary Actions -->
+<div class="flex flex-col gap-sm mt-xs">
+<button class="w-full bg-transparent border border-outline text-primary-container hover:bg-surface-container-low hover:border-primary-container font-title-sm text-title-sm py-sm px-lg rounded-lg transition-colors flex items-center justify-center gap-sm active:bg-surface-container-highest">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0; font-size: 20px;">preview</span>
+                        View in Browser
+                    </button>
+<button class="w-full bg-transparent text-secondary hover:bg-secondary-fixed/30 font-title-sm text-title-sm py-sm px-lg rounded-lg transition-colors flex items-center justify-center gap-sm active:bg-secondary-fixed/50">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0; font-size: 20px;">replay</span>
+                        Generate Another Report
+                    </button>
+</div>
+</div>
+<!-- Panel Footer / Context Link -->
+<div class="p-md bg-surface-container-low border-t border-outline-variant mt-auto">
+<p class="font-body-sm text-body-sm text-on-surface-variant text-center flex items-center justify-center gap-xs flex-wrap">
+<span class="material-symbols-outlined text-on-surface-variant" style="font-size: 16px; font-variation-settings: 'FILL' 0;">info</span>
+                    A copy has been saved to your
+                    <a class="text-secondary font-medium hover:underline hover:text-secondary-container transition-colors inline-flex items-center gap-xs" href="#">
+                        Archives
+                        <span class="material-symbols-outlined" style="font-size: 14px;">arrow_forward</span>
+</a>
+</p>
+</div>
+</aside>
+</main>
+</body></html>

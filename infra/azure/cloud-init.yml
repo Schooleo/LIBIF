@@ -1,0 +1,56 @@
+#cloud-config
+package_update: true
+package_upgrade: true
+
+disk_setup:
+  /dev/disk/azure/scsi1/lun0:
+    table_type: gpt
+    layout: true
+    overwrite: false
+
+fs_setup:
+  - label: libif-data
+    filesystem: ext4
+    device: /dev/disk/azure/scsi1/lun0
+    partition: auto
+
+mounts:
+  - [LABEL=libif-data, /srv/libif, ext4, "defaults,nofail,nodev,nosuid", "0", "2"]
+
+packages:
+  - ca-certificates
+  - curl
+  - docker-compose-v2
+  - docker.io
+  - git
+  - jq
+
+write_files:
+  - path: /etc/docker/daemon.json
+    owner: root:root
+    permissions: "0644"
+    content: |
+      {
+        "data-root": "/srv/libif/docker",
+        "log-driver": "json-file",
+        "log-opts": {
+          "max-size": "10m",
+          "max-file": "3"
+        }
+      }
+  - path: /etc/sysctl.d/99-libif.conf
+    owner: root:root
+    permissions: "0644"
+    content: |
+      vm.swappiness=10
+      vm.max_map_count=262144
+
+runcmd:
+  - [mkdir, -p, /etc/libif, /opt/libif, /srv/libif/docker]
+  - [chmod, "0700", /etc/libif]
+  - [systemctl, daemon-reload]
+  - [systemctl, enable, --now, docker]
+  - [sysctl, --system]
+  - [bash, -lc, "fallocate -l 4G /srv/libif/swapfile && chmod 600 /srv/libif/swapfile && mkswap /srv/libif/swapfile && swapon /srv/libif/swapfile && echo '/srv/libif/swapfile none swap sw 0 0' >> /etc/fstab"]
+
+final_message: "LIBIF Azure host bootstrap completed after $UPTIME seconds"

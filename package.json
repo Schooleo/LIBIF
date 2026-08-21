@@ -2,6 +2,7 @@
   "name": "libif",
   "private": true,
   "version": "0.1.0",
+  "packageManager": "npm@11.6.2",
   "description": "LIBIF",
   "workspaces": [
     "packages/shared",
@@ -13,6 +14,8 @@
     "build": "npm run build --workspaces --if-present",
     "lint": "npm run lint --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
+    "test:worker": "npm run test:worker -w apps/api",
+    "openapi:generate": "npm run openapi:generate -w apps/api && npm run api:types -w apps/web",
     "test:e2e": "npm run test:e2e -w apps/api",
     "db:migrate": "npm run db:migrate -w apps/api",
     "db:seed": "npm run db:seed -w apps/api"

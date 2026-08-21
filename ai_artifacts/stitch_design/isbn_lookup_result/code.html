@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LIBIF Admin - ISBN Lookup Result</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .step-active { border-color: #138A8A; color: #138A8A; }
+        .step-inactive { border-color: #E2E8F0; color: #717976; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #E2E8F0; border-radius: 10px; }
+        
+        /* Layout adjustments based on sidebar */
+        .main-content { margin-left: 16rem; width: calc(100% - 16rem); }
+        @media (max-width: 768px) {
+            .main-content { margin-left: 0; width: 100%; }
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed-variant": "#004f51",
+                        "on-primary-fixed-variant": "#244e46",
+                        "surface-tint": "#3d665e",
+                        "secondary-fixed": "#a5eff1",
+                        "on-tertiary": "#ffffff",
+                        "surface-variant": "#dce2f3",
+                        "on-tertiary-fixed-variant": "#004f50",
+                        "surface-container-high": "#e2e8f8",
+                        "surface-container-lowest": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "surface-bright": "#f9f9ff",
+                        "secondary": "#12696b",
+                        "error": "#ba1a1a",
+                        "secondary-fixed-dim": "#89d3d5",
+                        "tertiary-container": "#003c3c",
+                        "background": "#f9f9ff",
+                        "inverse-primary": "#a4cfc5",
+                        "primary-container": "#103c35",
+                        "outline-variant": "#c0c8c5",
+                        "primary-fixed-dim": "#a4cfc5",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed": "#91f3f2",
+                        "surface-dim": "#d3daea",
+                        "on-surface": "#151c27",
+                        "on-primary": "#ffffff",
+                        "surface-container-low": "#f0f3ff",
+                        "on-secondary-fixed": "#002021",
+                        "inverse-on-surface": "#ebf1ff",
+                        "surface-container-highest": "#dce2f3",
+                        "on-error": "#ffffff",
+                        "tertiary": "#002525",
+                        "primary": "#002520",
+                        "on-tertiary-fixed": "#002020",
+                        "on-surface-variant": "#414846",
+                        "on-background": "#151c27",
+                        "on-tertiary-container": "#47adac",
+                        "surface": "#f9f9ff",
+                        "on-secondary-container": "#1a6d6f",
+                        "outline": "#717976",
+                        "on-primary-fixed": "#00201b",
+                        "surface-container": "#e7eefe",
+                        "primary-fixed": "#bfece1",
+                        "inverse-surface": "#2a313d",
+                        "error-container": "#ffdad6",
+                        "on-primary-container": "#7ca79d",
+                        "tertiary-fixed-dim": "#74d6d6",
+                        "secondary-container": "#a2edee"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "gutter": "16px",
+                        "container-max": "1440px",
+                        "xl": "32px",
+                        "md": "16px",
+                        "sm": "8px",
+                        "lg": "24px",
+                        "unit": "8px"
+                    },
+                    "fontFamily": {
+                        "display-lg-mobile": ["Be Vietnam Pro"],
+                        "label-caps": ["Be Vietnam Pro"],
+                        "headline-md": ["Be Vietnam Pro"],
+                        "body-sm": ["Be Vietnam Pro"],
+                        "body-md": ["Be Vietnam Pro"],
+                        "title-sm": ["Be Vietnam Pro"],
+                        "display-lg": ["Be Vietnam Pro"]
+                    },
+                    "fontSize": {
+                        "display-lg-mobile": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "title-sm": ["18px", { "lineHeight": "24px", "fontWeight": "600" }],
+                        "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background font-body-md text-on-background min-h-screen">
+<!-- SideNavBar (JSON Derived) -->
+<aside class="flex flex-col h-screen bg-primary dark:bg-primary-container text-on-primary dark:text-on-primary-container font-body-md text-body-md h-full w-64 fixed left-0 top-0 border-r border-outline-variant shadow-sm z-50">
+<div class="p-lg flex items-center gap-3">
+<div class="w-10 h-10 bg-on-primary-fixed-variant rounded-lg flex items-center justify-center overflow-hidden">
+<img class="w-8 h-8 object-contain" data-alt="A minimalist university insignia featuring a stylized open book and a laurel wreath, rendered in a sophisticated institutional green and ivory. The lighting is soft and professional, evoking a sense of historical trust and archival permanence within a modern academic setting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuALtXV7aDqc3ahju-61HAq3GDak75NiAV_AOjpwYfRxW8S6X8cO_K_IJRWCBB4h05wByIVBBmrmrNMO4lG_sS553dsa7J3Wy_RGZkp_cpvtytFaflLM2VX398s8ANo0xUWBgR-eymRCsnnF372Ca8Q99iB3sJhEwA3o3wnc-nXBy2G-Peq7qXw-rsh4GV_9M6KLvb6_p3dsh_PVegl9UZC1yue65AzHUvX4HrGIjAmq5vO5fWlulRIlf2NF0sjyoIjkE9nV6pIDcSE"/>
+</div>
+<div>
+<h1 class="font-display-lg text-display-lg font-bold text-on-primary leading-none" style="font-size: 20px;">LIBIF Admin</h1>
+<p class="text-[10px] opacity-70 uppercase tracking-widest">Institutional Access</p>
+</div>
+</div>
+<nav class="mt-xl flex-1">
+<!-- Dashboard (Inactive) -->
+<div class="flex items-center gap-3 px-4 py-3 text-on-primary opacity-80 hover:bg-primary-fixed-dim hover:text-on-primary-fixed-dim transition-colors cursor-pointer duration-200 ease-in-out">
+<span class="material-symbols-outlined">dashboard</span>
+<span>Dashboard</span>
+</div>
+<!-- Repository (Inactive) -->
+<div class="flex items-center gap-3 px-4 py-3 text-on-primary opacity-80 hover:bg-primary-fixed-dim hover:text-on-primary-fixed-dim transition-colors cursor-pointer duration-200 ease-in-out">
+<span class="material-symbols-outlined">inventory_2</span>
+<span>Repository</span>
+</div>
+<!-- Metadata (Active) -->
+<div class="flex items-center gap-3 px-4 py-3 bg-primary-container text-on-primary-container border-l-4 border-secondary cursor-pointer">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">label</span>
+<span class="font-semibold">Metadata</span>
+</div>
+<!-- Acquisitions (Inactive) -->
+<div class="flex items-center gap-3 px-4 py-3 text-on-primary opacity-80 hover:bg-primary-fixed-dim hover:text-on-primary-fixed-dim transition-colors cursor-pointer duration-200 ease-in-out">
+<span class="material-symbols-outlined">shopping_cart</span>
+<span>Acquisitions</span>
+</div>
+<!-- Settings (Inactive) -->
+<div class="flex items-center gap-3 px-4 py-3 text-on-primary opacity-80 hover:bg-primary-fixed-dim hover:text-on-primary-fixed-dim transition-colors cursor-pointer duration-200 ease-in-out">
+<span class="material-symbols-outlined">settings</span>
+<span>Settings</span>
+</div>
+</nav>
+<div class="p-lg mt-auto border-t border-on-primary/10">
+<button class="w-full bg-secondary text-on-secondary py-3 rounded-lg flex items-center justify-center gap-2 font-semibold hover:bg-secondary/90 transition-all mb-lg">
+<span class="material-symbols-outlined">cloud_upload</span>
+                Upload Document
+            </button>
+<div class="flex flex-col gap-2">
+<div class="flex items-center gap-3 px-4 py-2 text-on-primary opacity-80 hover:text-on-primary-fixed-dim cursor-pointer transition-colors">
+<span class="material-symbols-outlined text-sm">help</span>
+<span class="text-sm">Help Center</span>
+</div>
+<div class="flex items-center gap-3 px-4 py-2 text-on-primary opacity-80 hover:text-on-primary-fixed-dim cursor-pointer transition-colors">
+<span class="material-symbols-outlined text-sm">logout</span>
+<span class="text-sm">Log Out</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="main-content min-h-screen flex flex-col">
+<!-- TopNavBar (JSON Derived) -->
+<header class="w-full h-16 sticky top-0 z-40 bg-surface dark:bg-surface-dim flex items-center justify-between px-lg ml-64 border-b border-outline-variant flat no shadows">
+<div class="flex items-center gap-lg">
+<span class="font-headline-md text-headline-md font-extrabold text-primary">LIBIF</span>
+<div class="h-8 w-px bg-outline-variant mx-2"></div>
+<nav class="hidden md:flex items-center space-x-6">
+<a class="text-on-surface-variant font-medium hover:text-secondary transition-all font-title-sm text-title-sm" href="#">Collections</a>
+<a class="text-on-surface-variant font-medium hover:text-secondary transition-all font-title-sm text-title-sm" href="#">Publishers</a>
+<a class="text-on-surface-variant font-medium hover:text-secondary transition-all font-title-sm text-title-sm" href="#">Archives</a>
+</nav>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative hidden sm:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="pl-10 pr-4 py-2 bg-surface-container-low border border-outline-variant rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-secondary/20 w-64" placeholder="Quick Search" type="text"/>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">notifications</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">apps</button>
+<div class="w-8 h-8 rounded-full bg-surface-container-highest overflow-hidden border border-outline-variant">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a female librarian in a modern library setting with blurred bookshelves in the background. She is wearing a dark academic blazer and glasses, reflecting a persona of institutional knowledge and expertise. The lighting is natural and crisp." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAOqQTNnGZvVVWRE79pFQjSz2kyqfSS3EEfzN6V8hZRoQt1Z3lTkq_1Qk-MP2KR_kMnsgRtNuS1jV33LPs9-WhvIOKrA1XX-3rfXWy9TfigLGbZ8oQiCujDlIjs42hyhyHwD9FD_bxay1xjj00htZFC4qNN3n9wHIM3ZTdRcDPSv_mt5TUIojfKUdQ3KAJIzD6UXf4bQ0BiX0EL2tSsbcl0K4Hw0ad68mWzB-bC68dl1qACLF9AA5FPqSrrip9urn0-swyAg6CFq-4"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Canvas Area -->
+<section class="flex-1 p-xl max-w-5xl mx-auto w-full">
+<!-- Step Indicator -->
+<div class="flex items-center justify-between mb-xl px-md">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full border-2 border-secondary bg-secondary-container flex items-center justify-center text-secondary font-bold">
+<span class="material-symbols-outlined">check</span>
+</div>
+<div>
+<p class="text-xs font-bold text-outline uppercase tracking-tighter">Step 1</p>
+<p class="font-bold text-on-surface">Upload File</p>
+</div>
+</div>
+<div class="flex-1 h-px bg-outline-variant mx-4"></div>
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full border-2 border-secondary bg-secondary flex items-center justify-center text-on-secondary font-bold">2</div>
+<div>
+<p class="text-xs font-bold text-secondary uppercase tracking-tighter">Step 2</p>
+<p class="font-bold text-on-surface">Assign Metadata</p>
+</div>
+</div>
+<div class="flex-1 h-px bg-outline-variant mx-4 opacity-30"></div>
+<div class="flex items-center gap-4 opacity-40">
+<div class="w-10 h-10 rounded-full border-2 border-outline-variant flex items-center justify-center text-outline font-bold">3</div>
+<div>
+<p class="text-xs font-bold text-outline uppercase tracking-tighter">Step 3</p>
+<p class="font-bold text-on-surface">Final Review</p>
+</div>
+</div>
+</div>
+<!-- Main Form Card -->
+<div class="bg-white border border-outline-variant rounded-xl overflow-hidden shadow-sm">
+<!-- Info Alert -->
+<div class="bg-secondary-container/50 px-lg py-3 flex items-center gap-3 border-b border-outline-variant">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">info</span>
+<p class="text-on-secondary-container font-medium text-sm">
+                        3 fields auto-filled from ISBN: <span class="font-bold">9781408839990</span>
+</p>
+<button class="ml-auto text-xs font-bold text-secondary uppercase hover:underline">Re-scan</button>
+</div>
+<div class="p-lg grid grid-cols-1 lg:grid-cols-12 gap-xl">
+<!-- Left Column: Preview/Visual -->
+<div class="lg:col-span-4 flex flex-col gap-md">
+<div class="aspect-[3/4] bg-surface-container rounded-lg border border-outline-variant flex items-center justify-center relative group overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A high-resolution book cover for 'The Silk Road: A New History' by Peter Frankopan. The cover features an intricate golden map pattern on a deep navy background, with elegant serif typography. The lighting is studio-quality, highlighting the texture of the paper and the metallic gold ink." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA-6joE534BzG0umhs6WecBcw2Thuk85SYrhmhqlH6pqw_QNX2mIoJMeh6cGPUzXArwFoJqNObF4izz8XckIe9M-1xbBl9Y4uvAJAc89VNM-H2m54MKJVyPK1C_eSli87xnmGNWZPIU-gKLa19KOWIYcgqB2exspO8DNXwZSM-axSUQZD0MnqHoTswOd9pNYDB1sR27a0jfROxW4da_V2gu9jxq4P2l9z8Abh7FMu998crAiWzlO_RPQVueYvCEzwfsx6tpzDOBVr0"/>
+<div class="absolute inset-0 bg-primary/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+<button class="bg-white/90 px-4 py-2 rounded-full text-xs font-bold text-primary flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">zoom_in</span> View Full Cover
+                                </button>
+</div>
+</div>
+<div class="bg-surface-container-low p-md rounded-lg border border-outline-variant">
+<h4 class="text-xs font-bold text-outline uppercase mb-2">Extraction Status</h4>
+<div class="flex items-center gap-2 text-sm text-on-secondary-container">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span>Source: Open Library API</span>
+</div>
+<div class="mt-3 w-full bg-outline-variant h-1 rounded-full overflow-hidden">
+<div class="bg-secondary h-full w-[85%]"></div>
+</div>
+<p class="text-[10px] mt-2 text-outline">Confidence Score: 85%</p>
+</div>
+</div>
+<!-- Right Column: Form Fields -->
+<div class="lg:col-span-8 space-y-lg">
+<div class="flex items-center justify-between">
+<h2 class="font-title-sm text-title-sm text-primary">Metadata Details</h2>
+<span class="text-xs text-outline italic">You can manually edit any field below</span>
+</div>
+<div class="grid grid-cols-1 gap-lg">
+<!-- Title Field -->
+<div class="space-y-sm">
+<div class="flex items-center justify-between">
+<label class="font-label-caps text-label-caps text-on-surface-variant">Title</label>
+<span class="px-2 py-0.5 bg-secondary-container text-on-secondary-container text-[10px] font-bold rounded uppercase tracking-wide">Auto-filled</span>
+</div>
+<input class="w-full px-4 py-3 border border-secondary rounded-lg focus:ring-2 focus:ring-secondary/10 bg-secondary-container/5 font-semibold" type="text" value="The Silk Road: A New History"/>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-lg">
+<!-- Author Field -->
+<div class="space-y-sm">
+<div class="flex items-center justify-between">
+<label class="font-label-caps text-label-caps text-on-surface-variant">Author</label>
+<span class="px-2 py-0.5 bg-secondary-container text-on-secondary-container text-[10px] font-bold rounded uppercase tracking-wide">Auto-filled</span>
+</div>
+<input class="w-full px-4 py-3 border border-secondary rounded-lg focus:ring-2 focus:ring-secondary/10 bg-secondary-container/5" type="text" value="Peter Frankopan"/>
+</div>
+<!-- ISBN Field -->
+<div class="space-y-sm">
+<label class="font-label-caps text-label-caps text-on-surface-variant">ISBN-13</label>
+<div class="relative">
+<input class="w-full px-4 py-3 border border-outline-variant rounded-lg bg-surface-container-low font-mono" type="text" value="9781408839990"/>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-secondary">verified</span>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-lg">
+<!-- Publisher Field -->
+<div class="space-y-sm">
+<div class="flex items-center justify-between">
+<label class="font-label-caps text-label-caps text-on-surface-variant">Publisher</label>
+<span class="px-2 py-0.5 bg-secondary-container text-on-secondary-container text-[10px] font-bold rounded uppercase tracking-wide">Auto-filled</span>
+</div>
+<input class="w-full px-4 py-3 border border-secondary rounded-lg focus:ring-2 focus:ring-secondary/10 bg-secondary-container/5" type="text" value="Bloomsbury"/>
+</div>
+<!-- Publication Date -->
+<div class="space-y-sm">
+<label class="font-label-caps text-label-caps text-on-surface-variant">Publication Date</label>
+<input class="w-full px-4 py-3 border border-outline-variant rounded-lg focus:border-secondary focus:ring-2 focus:ring-secondary/10" placeholder="e.g. 2015" type="text"/>
+</div>
+</div>
+<!-- Subject/Keywords -->
+<div class="space-y-sm">
+<label class="font-label-caps text-label-caps text-on-surface-variant">Keywords / Tags</label>
+<div class="flex flex-wrap gap-2 p-3 border border-outline-variant rounded-lg min-h-[50px] bg-white">
+<span class="flex items-center gap-1 px-3 py-1 bg-surface-container-high rounded-full text-xs text-primary font-medium">History <button class="material-symbols-outlined text-[14px]">close</button></span>
+<span class="flex items-center gap-1 px-3 py-1 bg-surface-container-high rounded-full text-xs text-primary font-medium">Central Asia <button class="material-symbols-outlined text-[14px]">close</button></span>
+<span class="flex items-center gap-1 px-3 py-1 bg-surface-container-high rounded-full text-xs text-primary font-medium">Trade Routes <button class="material-symbols-outlined text-[14px]">close</button></span>
+<button class="text-secondary text-xs font-bold ml-2">+ Add Tag</button>
+</div>
+</div>
+<!-- Manual Entry Note (Variant Mention) -->
+<div class="p-4 border border-dashed border-outline-variant rounded-lg bg-surface-container-low/30">
+<p class="text-xs text-outline leading-relaxed italic">
+                                    Note: If lookup failed, all fields would appear empty with a red 'No information found' alert. You would then manually populate fields or attempt a different ISBN lookup.
+                                </p>
+</div>
+</div>
+</div>
+</div>
+<!-- Form Actions -->
+<div class="bg-surface-container-low px-lg py-lg flex items-center justify-between border-t border-outline-variant">
+<button class="flex items-center gap-2 text-on-surface-variant font-semibold hover:text-primary transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+                        Back to Upload
+                    </button>
+<div class="flex items-center gap-4">
+<button class="px-6 py-3 border border-secondary text-secondary rounded-lg font-semibold hover:bg-secondary/5 transition-all">
+                            Save as Draft
+                        </button>
+<button class="px-8 py-3 bg-secondary text-on-secondary rounded-lg font-bold shadow-md hover:bg-secondary/90 transition-all flex items-center gap-2">
+                            Continue to Review
+                            <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Atmospheric Visual Background Element -->
+<div class="mt-xl opacity-10">
+<div class="h-64 w-full relative">
+
+<div class="absolute inset-0 bg-gradient-to-t from-background to-transparent"></div>
+</div>
+</div>
+</section>
+</main>
+<!-- Micro-interactions Script -->
+<script>
+        // Simple hover effect for inputs to emphasize "Auto-filled" status
+        const autoFilledInputs = document.querySelectorAll('input.border-secondary');
+        autoFilledInputs.forEach(input => {
+            input.addEventListener('focus', () => {
+                input.classList.remove('bg-secondary-container/5');
+                input.classList.add('bg-white');
+            });
+            input.addEventListener('blur', () => {
+                input.classList.add('bg-secondary-container/5');
+                input.classList.remove('bg-white');
+            });
+        });
+    </script>
+</body></html>

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Upload in Progress - LIBIF</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                            "on-tertiary-fixed-variant": "#004f50",
+                            "on-error": "#ffffff",
+                            "on-tertiary-container": "#47adac",
+                            "on-error-container": "#93000a",
+                            "surface-bright": "#f9f9ff",
+                            "surface": "#f9f9ff",
+                            "on-primary-container": "#7ca79d",
+                            "inverse-surface": "#2a313d",
+                            "primary-fixed": "#bfece1",
+                            "secondary-fixed": "#a5eff1",
+                            "on-tertiary-fixed": "#002020",
+                            "on-surface": "#151c27",
+                            "on-primary": "#ffffff",
+                            "tertiary-container": "#003c3c",
+                            "surface-container-high": "#e2e8f8",
+                            "surface-variant": "#dce2f3",
+                            "on-secondary-container": "#1a6d6f",
+                            "surface-tint": "#3d665e",
+                            "on-primary-fixed-variant": "#244e46",
+                            "surface-container-highest": "#dce2f3",
+                            "secondary-container": "#a2edee",
+                            "on-primary-fixed": "#00201b",
+                            "on-secondary-fixed": "#002021",
+                            "outline-variant": "#c0c8c5",
+                            "on-background": "#151c27",
+                            "secondary": "#12696b",
+                            "inverse-primary": "#a4cfc5",
+                            "on-secondary-fixed-variant": "#004f51",
+                            "surface-container-lowest": "#ffffff",
+                            "on-tertiary": "#ffffff",
+                            "on-surface-variant": "#414846",
+                            "primary": "#002520",
+                            "tertiary-fixed-dim": "#74d6d6",
+                            "surface-container-low": "#f0f3ff",
+                            "surface-dim": "#d3daea",
+                            "outline": "#717976",
+                            "inverse-on-surface": "#ebf1ff",
+                            "secondary-fixed-dim": "#89d3d5",
+                            "on-secondary": "#ffffff",
+                            "primary-fixed-dim": "#a4cfc5",
+                            "error": "#ba1a1a",
+                            "surface-container": "#e7eefe",
+                            "tertiary": "#002525",
+                            "background": "#f9f9ff",
+                            "primary-container": "#103c35",
+                            "tertiary-fixed": "#91f3f2",
+                            "error-container": "#ffdad6"
+                    },
+                    "borderRadius": {
+                            "DEFAULT": "0.25rem",
+                            "lg": "0.5rem",
+                            "xl": "0.75rem",
+                            "full": "9999px"
+                    },
+                    "spacing": {
+                            "xs": "4px",
+                            "lg": "24px",
+                            "gutter": "16px",
+                            "xl": "32px",
+                            "unit": "8px",
+                            "md": "16px",
+                            "sm": "8px",
+                            "container-max": "1440px"
+                    },
+                    "fontFamily": {
+                            "body-sm": ["Be Vietnam Pro"],
+                            "body-md": ["Be Vietnam Pro"],
+                            "title-sm": ["Be Vietnam Pro"],
+                            "display-lg-mobile": ["Be Vietnam Pro"],
+                            "display-lg": ["Be Vietnam Pro"],
+                            "label-caps": ["Be Vietnam Pro"],
+                            "headline-md": ["Be Vietnam Pro"]
+                    },
+                    "fontSize": {
+                            "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                            "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                            "title-sm": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                            "display-lg-mobile": ["28px", {"lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                            "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                            "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                            "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .progress-bar-fill {
+            transition: width 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased overflow-hidden">
+<!-- Top Navigation -->
+<header class="bg-surface text-primary font-body-md docked full-width top-0 border-b border-outline-variant flat no shadows">
+<div class="flex justify-between items-center w-full px-lg py-md max-w-container-max mx-auto">
+<div class="flex items-center gap-md">
+<span class="font-display-lg text-display-lg font-bold text-primary tracking-tight">LIBIF</span>
+</div>
+<nav class="hidden md:flex items-center gap-lg">
+<!-- Hiding standard nav links as this is a focused task view, but keeping structural shell intent intact -->
+</nav>
+<div class="flex items-center gap-md">
+<button class="text-on-surface-variant hover:text-secondary hover:bg-surface-container-low transition-colors rounded-full p-2 cursor-pointer duration-200 ease-in-out">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+</button>
+<button class="text-on-surface-variant hover:text-secondary hover:bg-surface-container-low transition-colors rounded-full p-2 cursor-pointer duration-200 ease-in-out">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<div class="h-8 w-8 rounded-full overflow-hidden border border-outline-variant ml-2">
+<img alt="User Profile Menu" class="w-full h-full object-cover" data-alt="A professional headshot of an academic librarian in a softly lit, modern library setting, wearing subtle glasses and a neutral grey blazer. Corporate minimalism style with cool tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLWEmZ5dEmPA-s5OYimRjvwtjlJbiJKCh_bn33PJGCgNtmaTFScNSplRomSKUlEleAySce2KvtS2LrgjMQZtUtG0GD4ZkFAB1ucYQ5deSVL94wuTMBl7DDVWaypqBW65mIFuP1-bZHVqGAPQLXOdmShUNr3CuxQkplrRXlCl0b6CaFQ8NSZDvqLP5i24s3-ajeHbTt8hT1oUwdF4FQrvBrD1oDZm2oJ73glzJr-qCHesKKsEFdQUG2rGPDlsJtIzmwY3Uf-n_-BIk"/>
+</div>
+</div>
+</div>
+</header>
+<div class="flex h-[calc(100vh-73px)]">
+<!-- Side Navigation Shell -->
+<aside class="hidden md:flex flex-col h-full py-lg bg-primary text-on-primary font-body-sm w-[248px] shadow-sm flex-shrink-0">
+<div class="px-lg pb-md mb-md border-b border-on-primary-fixed-variant">
+<div class="flex items-center gap-sm mb-xs">
+<div class="h-10 w-10 rounded bg-primary-container flex items-center justify-center overflow-hidden">
+<img alt="Admin Avatar" class="w-full h-full object-cover" data-alt="Abstract institutional logo featuring geometric book shapes in deep teal and stark white, creating a sense of trust and order. Corporate minimalism." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDMFzbeUaP3J7mHXNJayfFWUbL69as_QH-teTfmi6c-v8dxyG7IuET6jXn2QHzituerldyHp69zldHCk5MDOREIDk_tH7kI3nevB-3YXE4IpaDbV367ZyJ4L28eiifSiJs7yDvHwinHB9Q9vQTB39M0yzKrlsQb9zXJh1wGWwCH1W3jR8rZH4trAPA56JklTSGpG4Q_nPnMqA-0pH1REkzM-jxx_JyoumYobVPu38_SdDyHIiUeH1_HpLm1_bhvybgVFs9F7PLmV74"/>
+</div>
+<div>
+<div class="font-title-sm text-title-sm font-semibold">LIBIF Admin</div>
+<div class="text-on-primary-container/70 text-xs">Institutional Control</div>
+</div>
+</div>
+</div>
+<nav class="flex-1 overflow-y-auto">
+<a class="text-on-primary-container/70 hover:bg-primary-fixed-dim/10 flex items-center gap-md px-lg py-md hover:bg-primary-container/20 transition-all duration-150 active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+                    Dashboard
+                </a>
+<a class="text-on-primary-container/70 hover:bg-primary-fixed-dim/10 flex items-center gap-md px-lg py-md hover:bg-primary-container/20 transition-all duration-150 active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+                    Repository
+                </a>
+<!-- Suppressing active state mapping here as the primary intent is an upload task, not general browsing, but visually maintaining shell structure -->
+<a class="text-on-primary-container/70 hover:bg-primary-fixed-dim/10 flex items-center gap-md px-lg py-md hover:bg-primary-container/20 transition-all duration-150 active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="label">label</span>
+                    Metadata
+                </a>
+<a class="text-on-primary-container/70 hover:bg-primary-fixed-dim/10 flex items-center gap-md px-lg py-md hover:bg-primary-container/20 transition-all duration-150 active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="key">key</span>
+                    Access Control
+                </a>
+<a class="text-on-primary-container/70 hover:bg-primary-fixed-dim/10 flex items-center gap-md px-lg py-md hover:bg-primary-container/20 transition-all duration-150 active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+                    Analytics
+                </a>
+<a class="text-on-primary-container/70 hover:bg-primary-fixed-dim/10 flex items-center gap-md px-lg py-md hover:bg-primary-container/20 transition-all duration-150 active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="terminal">terminal</span>
+                    System Logs
+                </a>
+</nav>
+<div class="px-lg mt-auto pt-md border-t border-on-primary-fixed-variant">
+<button class="w-full bg-primary-container text-on-primary-container font-title-sm py-sm rounded border border-on-primary-fixed-variant hover:bg-surface-tint hover:text-on-primary transition-colors flex justify-center items-center gap-sm">
+                    Upload Document
+                 </button>
+</div>
+<div class="mt-md">
+<a class="text-on-primary-container/70 hover:bg-primary-fixed-dim/10 flex items-center gap-md px-lg py-sm hover:bg-primary-container/20 transition-all duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+                    Settings
+                </a>
+<a class="text-on-primary-container/70 hover:bg-primary-fixed-dim/10 flex items-center gap-md px-lg py-sm hover:bg-primary-container/20 transition-all duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="contact_support">contact_support</span>
+                    Support
+                </a>
+</div>
+</aside>
+<!-- Main Content Area (Task Focused) -->
+<main class="flex-1 bg-surface-container-low overflow-y-auto relative">
+<div class="max-w-4xl mx-auto py-xl px-lg">
+<!-- Header -->
+<div class="mb-xl flex items-center justify-between">
+<div>
+<h1 class="font-headline-md text-headline-md text-on-surface mb-xs">Upload Document</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Add a new document to the institutional repository.</p>
+</div>
+<button class="text-on-surface-variant hover:text-on-surface flex items-center gap-xs">
+<span class="material-symbols-outlined" data-icon="close">close</span>
+<span class="font-title-sm text-sm">Cancel Upload</span>
+</button>
+</div>
+<!-- Stepper -->
+<div class="bg-surface border border-outline-variant rounded-lg p-md mb-xl shadow-[0px_4px_12px_rgba(16,60,53,0.08)]">
+<div class="flex items-center justify-between">
+<!-- Step 1: Active -->
+<div class="flex items-center gap-sm flex-1">
+<div class="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center font-title-sm text-sm shrink-0">1</div>
+<span class="font-title-sm text-title-sm text-on-surface">File Upload</span>
+</div>
+<!-- Connector -->
+<div class="flex-1 h-px bg-outline-variant mx-md"></div>
+<!-- Step 2: Disabled -->
+<div class="flex items-center gap-sm flex-1 opacity-50 grayscale cursor-not-allowed">
+<div class="w-8 h-8 rounded-full border-2 border-outline text-outline flex items-center justify-center font-title-sm text-sm shrink-0">2</div>
+<span class="font-title-sm text-title-sm text-on-surface-variant">Metadata Extraction</span>
+</div>
+</div>
+</div>
+<!-- Upload Progress Card (Bento/Glass style hint via subtle structural tones) -->
+<div class="bg-surface border border-outline-variant rounded-lg overflow-hidden shadow-[0px_4px_12px_rgba(16,60,53,0.08)] mb-lg relative">
+<div class="p-xl relative z-10">
+<div class="flex items-start gap-lg">
+<!-- Document Icon -->
+<div class="w-16 h-16 rounded bg-error-container text-on-error-container flex items-center justify-center shrink-0 border border-error/20">
+<span class="material-symbols-outlined text-4xl" data-icon="picture_as_pdf" data-weight="fill" style="font-variation-settings: 'FILL' 1;">picture_as_pdf</span>
+</div>
+<!-- Details & Progress -->
+<div class="flex-1">
+<div class="flex justify-between items-start mb-sm">
+<div>
+<h3 class="font-title-sm text-title-sm text-on-surface truncate pr-md">History_of_Technological_Innovation.pdf</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">142.5 MB</p>
+</div>
+<button class="text-outline hover:text-error transition-colors p-1" title="Cancel this file">
+<span class="material-symbols-outlined" data-icon="cancel">cancel</span>
+</button>
+</div>
+<!-- Progress Bar Track -->
+<div class="h-2 w-full bg-surface-variant rounded-full overflow-hidden mb-sm mt-md">
+<div class="h-full bg-secondary progress-bar-fill rounded-full" style="width: 64%;"></div>
+</div>
+<!-- Status Text -->
+<div class="flex justify-between items-center">
+<span class="font-label-caps text-label-caps text-secondary">Uploading... (91.2 MB of 142.5 MB)</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant font-mono">45 seconds remaining</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Subtle background tint representing progress area -->
+<div class="absolute inset-y-0 left-0 bg-secondary/5 z-0 progress-bar-fill" style="width: 64%;"></div>
+</div>
+<!-- Action Area -->
+<div class="flex justify-end pt-md">
+<button class="bg-surface-variant text-on-surface-variant font-title-sm px-xl py-sm rounded border border-outline-variant opacity-50 cursor-not-allowed" disabled="">
+                        Continue to Metadata
+                    </button>
+</div>
+</div>
+</main>
+</div>
+</body></html>

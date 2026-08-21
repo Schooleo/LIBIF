@@ -1,0 +1,525 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Librarian Dashboard - LIBIF Admin</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-tertiary-fixed-variant": "#004f50",
+                      "on-error": "#ffffff",
+                      "on-tertiary-container": "#47adac",
+                      "on-error-container": "#93000a",
+                      "surface-bright": "#f9f9ff",
+                      "surface": "#f9f9ff",
+                      "on-primary-container": "#7ca79d",
+                      "inverse-surface": "#2a313d",
+                      "primary-fixed": "#bfece1",
+                      "secondary-fixed": "#a5eff1",
+                      "on-tertiary-fixed": "#002020",
+                      "on-surface": "#151c27",
+                      "on-primary": "#ffffff",
+                      "tertiary-container": "#003c3c",
+                      "surface-container-high": "#e2e8f8",
+                      "surface-variant": "#dce2f3",
+                      "on-secondary-container": "#1a6d6f",
+                      "surface-tint": "#3d665e",
+                      "on-primary-fixed-variant": "#244e46",
+                      "surface-container-highest": "#dce2f3",
+                      "secondary-container": "#a2edee",
+                      "on-primary-fixed": "#00201b",
+                      "on-secondary-fixed": "#002021",
+                      "outline-variant": "#c0c8c5",
+                      "on-background": "#151c27",
+                      "secondary": "#12696b",
+                      "inverse-primary": "#a4cfc5",
+                      "on-secondary-fixed-variant": "#004f51",
+                      "surface-container-lowest": "#ffffff",
+                      "on-tertiary": "#ffffff",
+                      "on-surface-variant": "#414846",
+                      "primary": "#002520",
+                      "tertiary-fixed-dim": "#74d6d6",
+                      "surface-container-low": "#f0f3ff",
+                      "surface-dim": "#d3daea",
+                      "outline": "#717976",
+                      "inverse-on-surface": "#ebf1ff",
+                      "secondary-fixed-dim": "#89d3d5",
+                      "on-secondary": "#ffffff",
+                      "primary-fixed-dim": "#a4cfc5",
+                      "error": "#ba1a1a",
+                      "surface-container": "#e7eefe",
+                      "tertiary": "#002525",
+                      "background": "#f9f9ff",
+                      "primary-container": "#103c35",
+                      "tertiary-fixed": "#91f3f2",
+                      "error-container": "#ffdad6"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "xs": "4px",
+                      "lg": "24px",
+                      "gutter": "16px",
+                      "xl": "32px",
+                      "unit": "8px",
+                      "md": "16px",
+                      "sm": "8px",
+                      "container-max": "1440px"
+              },
+              "fontFamily": {
+                      "body-sm": [
+                              "Be Vietnam Pro"
+                      ],
+                      "body-md": [
+                              "Be Vietnam Pro"
+                      ],
+                      "title-sm": [
+                              "Be Vietnam Pro"
+                      ],
+                      "display-lg-mobile": [
+                              "Be Vietnam Pro"
+                      ],
+                      "display-lg": [
+                              "Be Vietnam Pro"
+                      ],
+                      "label-caps": [
+                              "Be Vietnam Pro"
+                      ],
+                      "headline-md": [
+                              "Be Vietnam Pro"
+                      ]
+              },
+              "fontSize": {
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "title-sm": [
+                              "18px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "display-lg-mobile": [
+                              "28px",
+                              {
+                                      "lineHeight": "34px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "display-lg": [
+                              "36px",
+                              {
+                                      "lineHeight": "44px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "label-caps": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+    </script>
+<style>
+        /* Custom overrides to match the exact aesthetic requirements */
+        body {
+            background-color: #F7F9F8;
+            color: #151c27; /* on-surface */
+        }
+        .admin-card {
+            background-color: #FFFFFF;
+            border: 1px solid #D9E1DE; /* Overriding with specific border color requested */
+            border-radius: 0.25rem;
+        }
+        .admin-input {
+            border: 1px solid #E2E8F0;
+        }
+        .admin-input:focus {
+            border-color: #0C6668;
+            box-shadow: 0 0 0 2px #E8F3F2;
+            outline: none;
+        }
+        .table-row-hover:hover {
+            background-color: #F7F9F8;
+        }
+        .status-chip-ready {
+            background-color: #e6f4ea; /* surface_light_green equivalent */
+            color: #103C35;
+        }
+        .status-chip-processing {
+            background-color: #e2f1f8; /* surface_light_cyan equivalent */
+            color: #103C35;
+        }
+        .status-chip-error {
+            background-color: #fce8e6;
+            color: #ba1a1a;
+        }
+    </style>
+</head>
+<body class="font-body-md text-body-md text-on-surface antialiased overflow-x-hidden min-h-screen flex">
+<!-- Desktop Side Navigation (Hidden on Mobile) -->
+<nav class="hidden md:flex flex-col h-screen w-[248px] bg-primary text-on-primary shadow-sm flex-shrink-0 fixed left-0 top-0 z-20">
+<!-- Header -->
+<div class="px-lg py-xl border-b border-primary-container">
+<div class="flex items-center">
+
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-on-primary">LIBIF Admin</h1>
+<p class="font-body-sm text-body-sm text-on-primary-container">Institutional Control</p>
+</div>
+</div>
+<button class="mt-lg w-full bg-surface-tint hover:bg-secondary text-on-primary font-title-sm text-title-sm py-unit px-md rounded transition-colors flex items-center justify-center gap-sm">
+<span class="material-symbols-outlined" style="font-size: 18px;">upload</span>
+                Upload Document
+            </button>
+</div>
+<!-- Main Nav Links -->
+<div class="flex-1 overflow-y-auto py-lg flex flex-col gap-xs">
+<!-- Active State for Dashboard -->
+<a class="bg-primary-container border-l-4 border-on-tertiary-container text-on-tertiary-container flex items-center gap-md px-lg py-md transition-transform duration-150 active:scale-95" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-title-sm text-title-sm">Dashboard</span>
+</a>
+<a class="text-on-primary-container/70 hover:bg-primary-container/20 flex items-center gap-md px-lg py-md transition-all duration-150 active:scale-95" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="font-title-sm text-title-sm">Repository</span>
+</a>
+<a class="text-on-primary-container/70 hover:bg-primary-container/20 flex items-center gap-md px-lg py-md transition-all duration-150 active:scale-95" href="#">
+<span class="material-symbols-outlined">label</span>
+<span class="font-title-sm text-title-sm">Metadata</span>
+</a>
+<a class="text-on-primary-container/70 hover:bg-primary-container/20 flex items-center gap-md px-lg py-md transition-all duration-150 active:scale-95" href="#">
+<span class="material-symbols-outlined">key</span>
+<span class="font-title-sm text-title-sm">Access Control</span>
+</a>
+<a class="text-on-primary-container/70 hover:bg-primary-container/20 flex items-center gap-md px-lg py-md transition-all duration-150 active:scale-95" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-title-sm text-title-sm">Analytics</span>
+</a>
+<a class="text-on-primary-container/70 hover:bg-primary-container/20 flex items-center gap-md px-lg py-md transition-all duration-150 active:scale-95" href="#">
+<span class="material-symbols-outlined">terminal</span>
+<span class="font-title-sm text-title-sm">System Logs</span>
+</a>
+</div>
+<!-- Footer Nav Links -->
+<div class="border-t border-primary-container py-md flex flex-col gap-xs mt-auto">
+<a class="text-on-primary-container/70 hover:bg-primary-container/20 flex items-center gap-md px-lg py-md transition-all duration-150 active:scale-95" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-title-sm text-title-sm">Settings</span>
+</a>
+<a class="text-on-primary-container/70 hover:bg-primary-container/20 flex items-center gap-md px-lg py-md transition-all duration-150 active:scale-95" href="#">
+<span class="material-symbols-outlined">contact_support</span>
+<span class="font-title-sm text-title-sm">Support</span>
+</a>
+</div>
+</nav>
+<!-- Mobile Top Header (Visible only on Mobile) -->
+<header class="md:hidden fixed top-0 w-full bg-primary text-on-primary p-md flex justify-between items-center z-20 shadow-sm">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined cursor-pointer" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">menu</span>
+<h1 class="font-title-sm text-title-sm font-bold">LIBIF Admin</h1>
+</div>
+<button class="bg-surface-tint text-on-primary p-xs rounded">
+<span class="material-symbols-outlined" style="font-size: 20px;">upload</span>
+</button>
+</header>
+<!-- Mobile Menu Overlay (Hidden by default) -->
+<div class="hidden md:hidden fixed inset-0 bg-primary/90 z-30 pt-xl px-lg" id="mobile-menu">
+<div class="flex justify-end mb-lg">
+<span class="material-symbols-outlined text-on-primary cursor-pointer text-[32px]" onclick="document.getElementById('mobile-menu').classList.add('hidden')">close</span>
+</div>
+<div class="flex flex-col gap-lg text-on-primary font-title-sm text-title-sm">
+<a class="flex items-center gap-md text-on-tertiary-container" href="#"><span class="material-symbols-outlined">dashboard</span> Dashboard</a>
+<a class="flex items-center gap-md" href="#"><span class="material-symbols-outlined">inventory_2</span> Repository</a>
+<a class="flex items-center gap-md" href="#"><span class="material-symbols-outlined">label</span> Metadata</a>
+<a class="flex items-center gap-md" href="#"><span class="material-symbols-outlined">key</span> Access Control</a>
+<a class="flex items-center gap-md" href="#"><span class="material-symbols-outlined">analytics</span> Analytics</a>
+<a class="flex items-center gap-md" href="#"><span class="material-symbols-outlined">terminal</span> System Logs</a>
+</div>
+</div>
+<!-- Main Content Area -->
+<main class="flex-1 md:ml-[248px] w-full mt-[56px] md:mt-0 p-lg md:p-xl max-w-[1440px] mx-auto min-h-screen flex flex-col gap-xl">
+<!-- Page Header -->
+<header class="flex flex-col gap-xs mb-md">
+<h2 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface">Librarian Dashboard</h2>
+<p class="font-title-sm text-title-sm text-on-surface-variant">Operational Overview</p>
+</header>
+<!-- KPI Grid -->
+<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter">
+<!-- Metric Card 1 -->
+<div class="admin-card p-md flex flex-col gap-sm">
+<div class="flex justify-between items-center">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Total Documents</span>
+<span class="material-symbols-outlined text-outline">inventory_2</span>
+</div>
+<div class="font-headline-md text-headline-md text-on-surface">42,850</div>
+</div>
+<!-- Metric Card 2 -->
+<div class="admin-card p-md flex flex-col gap-sm">
+<div class="flex justify-between items-center">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Processing</span>
+<span class="material-symbols-outlined text-outline">autorenew</span>
+</div>
+<div class="font-headline-md text-headline-md text-on-surface">124</div>
+</div>
+<!-- Metric Card 3 -->
+<div class="admin-card p-md flex flex-col gap-sm">
+<div class="flex justify-between items-center">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Awaiting Approval</span>
+<span class="material-symbols-outlined text-outline">pending_actions</span>
+</div>
+<div class="font-headline-md text-headline-md text-on-surface">86</div>
+</div>
+<!-- Metric Card 4 (Alert) -->
+<div class="admin-card p-md flex flex-col gap-sm relative overflow-hidden">
+<div class="absolute top-0 left-0 w-full h-1 bg-error"></div>
+<div class="flex justify-between items-center">
+<span class="font-label-caps text-label-caps text-error uppercase tracking-wider">Processing Failures</span>
+<span class="material-symbols-outlined text-error">error</span>
+</div>
+<div class="font-headline-md text-headline-md text-error">12</div>
+</div>
+</section>
+<!-- Main Content Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Left Column: Tables and Timelines (8 cols) -->
+<div class="lg:col-span-8 flex flex-col gap-xl">
+<!-- Recent Uploads Table -->
+<section class="admin-card overflow-hidden">
+<div class="p-md border-b border-outline-variant flex justify-between items-center bg-surface-container-lowest">
+<h3 class="font-title-sm text-title-sm text-on-surface">Recent Uploads</h3>
+<button class="text-secondary hover:text-secondary-fixed font-label-caps text-label-caps uppercase tracking-wider">View All</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-bright border-b border-outline-variant">
+<th class="p-md font-label-caps text-label-caps text-on-surface-variant font-semibold">Filename</th>
+<th class="p-md font-label-caps text-label-caps text-on-surface-variant font-semibold">Upload Date</th>
+<th class="p-md font-label-caps text-label-caps text-on-surface-variant font-semibold">Librarian</th>
+<th class="p-md font-label-caps text-label-caps text-on-surface-variant font-semibold">Status</th>
+<th class="p-md font-label-caps text-label-caps text-on-surface-variant font-semibold text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="font-body-sm text-body-sm">
+<tr class="border-b border-outline-variant/50 table-row-hover transition-colors">
+<td class="p-md font-medium text-on-surface flex items-center gap-sm">
+<span class="material-symbols-outlined text-outline text-[18px]">description</span>
+                                        Medical_Ethics_Vol_12.pdf
+                                    </td>
+<td class="p-md text-on-surface-variant">Oct 24, 09:12 AM</td>
+<td class="p-md text-on-surface-variant">S. Jenkins</td>
+<td class="p-md">
+<span class="px-2 py-1 rounded-sm font-label-caps text-[10px] status-chip-ready uppercase tracking-wider">Ready</span>
+</td>
+<td class="p-md text-right">
+<button class="text-outline hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]">more_vert</span></button>
+</td>
+</tr>
+<tr class="border-b border-outline-variant/50 table-row-hover transition-colors">
+<td class="p-md font-medium text-on-surface flex items-center gap-sm">
+<span class="material-symbols-outlined text-outline text-[18px]">description</span>
+                                        Nguyen_Thesis_Final.pdf
+                                    </td>
+<td class="p-md text-on-surface-variant">Oct 24, 08:45 AM</td>
+<td class="p-md text-on-surface-variant">A. Patel</td>
+<td class="p-md">
+<span class="px-2 py-1 rounded-sm font-label-caps text-[10px] status-chip-processing uppercase tracking-wider flex items-center gap-1 w-max">
+<span class="material-symbols-outlined text-[12px] animate-spin">sync</span> Processing
+                                        </span>
+</td>
+<td class="p-md text-right">
+<button class="text-outline hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]">more_vert</span></button>
+</td>
+</tr>
+<tr class="border-b border-outline-variant/50 table-row-hover transition-colors">
+<td class="p-md font-medium text-on-surface flex items-center gap-sm">
+<span class="material-symbols-outlined text-outline text-[18px]">description</span>
+                                        Climate_Data_2023_Raw.csv
+                                    </td>
+<td class="p-md text-on-surface-variant">Oct 23, 16:30 PM</td>
+<td class="p-md text-on-surface-variant">M. Ross</td>
+<td class="p-md">
+<span class="px-2 py-1 rounded-sm font-label-caps text-[10px] status-chip-error uppercase tracking-wider">Error</span>
+</td>
+<td class="p-md text-right">
+<button class="text-outline hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]">more_vert</span></button>
+</td>
+</tr>
+<tr class="border-b border-outline-variant/50 table-row-hover transition-colors">
+<td class="p-md font-medium text-on-surface flex items-center gap-sm">
+<span class="material-symbols-outlined text-outline text-[18px]">description</span>
+                                        Historical_Maps_Scan_B.tiff
+                                    </td>
+<td class="p-md text-on-surface-variant">Oct 23, 14:15 PM</td>
+<td class="p-md text-on-surface-variant">System (API)</td>
+<td class="p-md">
+<span class="px-2 py-1 rounded-sm font-label-caps text-[10px] status-chip-ready uppercase tracking-wider">Ready</span>
+</td>
+<td class="p-md text-right">
+<button class="text-outline hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]">more_vert</span></button>
+</td>
+</tr>
+<tr class="table-row-hover transition-colors">
+<td class="p-md font-medium text-on-surface flex items-center gap-sm">
+<span class="material-symbols-outlined text-outline text-[18px]">description</span>
+                                        Journal_Biology_Iss4.pdf
+                                    </td>
+<td class="p-md text-on-surface-variant">Oct 23, 11:00 AM</td>
+<td class="p-md text-on-surface-variant">S. Jenkins</td>
+<td class="p-md">
+<span class="px-2 py-1 rounded-sm font-label-caps text-[10px] status-chip-ready uppercase tracking-wider">Ready</span>
+</td>
+<td class="p-md text-right">
+<button class="text-outline hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]">more_vert</span></button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- Pipeline Activity Timeline -->
+<section class="admin-card p-md">
+<div class="mb-md flex justify-between items-center">
+<h3 class="font-title-sm text-title-sm text-on-surface">Pipeline Activity</h3>
+</div>
+<div class="flex flex-col gap-md relative pl-sm">
+<!-- Vertical Line -->
+<div class="absolute left-[15px] top-2 bottom-2 w-px bg-outline-variant"></div>
+<!-- Event 1 -->
+<div class="flex gap-md relative z-10">
+<div class="w-2 h-2 rounded-full bg-secondary mt-2 outline outline-4 outline-surface-container-lowest"></div>
+<div>
+<p class="font-body-sm text-body-sm font-medium text-on-surface">Batch Indexing Completed</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">1,200 documents successfully indexed across 3 collections.</p>
+<span class="font-label-caps text-label-caps text-outline block mt-xs">10 minutes ago</span>
+</div>
+</div>
+<!-- Event 2 -->
+<div class="flex gap-md relative z-10">
+<div class="w-2 h-2 rounded-full bg-surface-tint mt-2 outline outline-4 outline-surface-container-lowest"></div>
+<div>
+<p class="font-body-sm text-body-sm font-medium text-on-surface">OCR Node Scaled Up</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">System automatically allocated 2 additional nodes for heavy load.</p>
+<span class="font-label-caps text-label-caps text-outline block mt-xs">45 minutes ago</span>
+</div>
+</div>
+<!-- Event 3 -->
+<div class="flex gap-md relative z-10">
+<div class="w-2 h-2 rounded-full bg-error mt-2 outline outline-4 outline-surface-container-lowest"></div>
+<div>
+<p class="font-body-sm text-body-sm font-medium text-on-surface">Metadata Conflict Detected</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Conflicts found in batch upload 'Historical_Archives_1920'.</p>
+<span class="font-label-caps text-label-caps text-outline block mt-xs">2 hours ago</span>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Right Column: Context/Tasks (4 cols) -->
+<div class="lg:col-span-4 flex flex-col gap-xl">
+<!-- Pending Tasks -->
+<section class="admin-card bg-[#E8F3F2] border-none shadow-sm">
+<div class="p-md border-b border-primary-container/10">
+<h3 class="font-title-sm text-title-sm text-primary flex items-center gap-xs">
+<span class="material-symbols-outlined">assignment</span>
+                            Priority Tasks
+                        </h3>
+</div>
+<div class="p-md flex flex-col gap-md">
+<!-- Task 1 -->
+<div class="bg-surface-container-lowest p-sm rounded border border-outline-variant/30 flex gap-md items-start">
+<span class="material-symbols-outlined text-error mt-xs">warning</span>
+<div class="flex-1">
+<p class="font-body-sm text-body-sm font-medium text-on-surface">Review 4 metadata conflicts</p>
+<p class="font-label-caps text-label-caps text-on-surface-variant mt-1">High Priority</p>
+</div>
+<button class="text-secondary hover:text-primary transition-colors">
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+<!-- Task 2 -->
+<div class="bg-surface-container-lowest p-sm rounded border border-outline-variant/30 flex gap-md items-start">
+<span class="material-symbols-outlined text-secondary mt-xs">rule</span>
+<div class="flex-1">
+<p class="font-body-sm text-body-sm font-medium text-on-surface">Approve 12 batch uploads</p>
+<p class="font-label-caps text-label-caps text-on-surface-variant mt-1">Pending Review</p>
+</div>
+<button class="text-secondary hover:text-primary transition-colors">
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+<!-- Task 3 -->
+<div class="bg-surface-container-lowest p-sm rounded border border-outline-variant/30 flex gap-md items-start opacity-70">
+<span class="material-symbols-outlined text-outline mt-xs">dns</span>
+<div class="flex-1">
+<p class="font-body-sm text-body-sm font-medium text-on-surface line-through">Routine index optimization</p>
+<p class="font-label-caps text-label-caps text-on-surface-variant mt-1">Completed by System</p>
+</div>
+<span class="material-symbols-outlined text-outline">check</span>
+</div>
+</div>
+</section>
+<!-- System Health Snippet -->
+<section class="admin-card p-md">
+<h3 class="font-title-sm text-title-sm text-on-surface mb-md">System Health</h3>
+<div class="flex flex-col gap-sm">
+<div class="flex justify-between items-center">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Storage</span>
+<span class="font-body-sm text-body-sm font-medium">68%</span>
+</div>
+<div class="w-full bg-surface-variant h-1 rounded-full overflow-hidden">
+<div class="bg-secondary h-full" style="width: 68%;"></div>
+</div>
+<div class="flex justify-between items-center mt-sm">
+<span class="font-body-sm text-body-sm text-on-surface-variant">API Rate Limit</span>
+<span class="font-body-sm text-body-sm font-medium">12%</span>
+</div>
+<div class="w-full bg-surface-variant h-1 rounded-full overflow-hidden">
+<div class="bg-surface-tint h-full" style="width: 12%;"></div>
+</div>
+</div>
+</section>
+</div>
+</div>
+</main>
+
+
+</body></html>

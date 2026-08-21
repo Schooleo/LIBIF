@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LIBIF Admin - Edit Metadata</title>
+<!-- Google Fonts: Be Vietnam Pro -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined';
+            font-weight: normal;
+            font-style: normal;
+            font-size: 24px;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            display: inline-block;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-smoothing: antialiased;
+        }
+        /* Custom scrollbar for form area to maintain minimalist aesthetic */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #dce2f3; /* surface-variant */
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #c0c8c5; /* outline-variant */
+        }
+    </style>
+<!-- Tailwind Config -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-surface": "#2a313d",
+                        "on-secondary-fixed-variant": "#004f51",
+                        "surface-tint": "#3d665e",
+                        "on-secondary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "on-primary-fixed-variant": "#244e46",
+                        "on-tertiary-fixed-variant": "#004f50",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-high": "#e2e8f8",
+                        "on-surface-variant": "#414846",
+                        "inverse-on-surface": "#ebf1ff",
+                        "secondary-fixed-dim": "#89d3d5",
+                        "surface-dim": "#d3daea",
+                        "surface-container-low": "#f0f3ff",
+                        "outline-variant": "#c0c8c5",
+                        "on-tertiary-fixed": "#002020",
+                        "primary-fixed": "#bfece1",
+                        "primary": "#002520",
+                        "tertiary-container": "#003c3c",
+                        "background": "#f9f9ff",
+                        "surface-container": "#e7eefe",
+                        "surface-container-highest": "#dce2f3",
+                        "on-secondary-fixed": "#002021",
+                        "surface-variant": "#dce2f3",
+                        "surface-bright": "#f9f9ff",
+                        "on-tertiary-container": "#47adac",
+                        "on-secondary-container": "#1a6d6f",
+                        "primary-fixed-dim": "#a4cfc5",
+                        "on-error": "#ffffff",
+                        "primary-container": "#103c35",
+                        "inverse-primary": "#a4cfc5",
+                        "surface": "#f9f9ff",
+                        "on-error-container": "#93000a",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed": "#a5eff1",
+                        "secondary-container": "#a2edee",
+                        "on-background": "#151c27",
+                        "tertiary-fixed": "#91f3f2",
+                        "outline": "#717976",
+                        "on-surface": "#151c27",
+                        "on-primary-fixed": "#00201b",
+                        "error-container": "#ffdad6",
+                        "secondary": "#12696b",
+                        "on-primary-container": "#7ca79d",
+                        "on-tertiary": "#ffffff",
+                        "tertiary": "#002525",
+                        "tertiary-fixed-dim": "#74d6d6"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "lg": "24px",
+                        "xs": "4px",
+                        "xl": "32px",
+                        "gutter": "16px",
+                        "container-max": "1440px",
+                        "unit": "8px",
+                        "sm": "8px",
+                        "md": "16px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Be Vietnam Pro"],
+                        "headline-md": ["Be Vietnam Pro"],
+                        "display-lg-mobile": ["Be Vietnam Pro"],
+                        "body-md": ["Be Vietnam Pro"],
+                        "title-sm": ["Be Vietnam Pro"],
+                        "body-sm": ["Be Vietnam Pro"],
+                        "label-caps": ["Be Vietnam Pro"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "display-lg-mobile": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "title-sm": ["18px", { "lineHeight": "24px", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700" }]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background h-screen flex overflow-hidden">
+<!-- SideNavBar (Shared Component) -->
+<nav class="bg-primary dark:bg-primary-container text-on-primary dark:text-on-primary-container font-body-sm text-body-sm fixed left-0 top-0 h-full w-[248px] flex flex-col py-lg shadow-sm z-50">
+<!-- Header -->
+<div class="px-lg mb-xl flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-primary-container overflow-hidden border border-outline/30 flex-shrink-0">
+<img alt="Admin Avatar" class="w-full h-full object-cover" data-alt="A small circular avatar placeholder image for an administrator profile in a corporate digital library system. Cool tones, minimalist." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDkIePrT18l2QFCRzZ9SjxwCMicq8IxwbnPWe1ArSGE0lIn2jUWT438RvMNVI6KUSpZUZ6mt9nvPhEJfNUNSGD8PFkRfS1uQ7sWs_g1O6vaDopxVVcj0RR0kPlLClaHKZtDvsFfhmW3UJMr2cjMuyXl6Pnb5QmSu-fst8OeF6v7jliWeQ61a6fD7ljwTBcF7p-ah0e7_J6uWd1-2ICZmyujBsNDddS2W7NJwE0O25fR83G4yimksjEpUz7Lv0z8MjqqEiYsLWS22ug"/>
+</div>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-on-primary dark:text-on-primary-fixed">LIBIF Admin</h1>
+<p class="text-on-primary-container opacity-80">Institutional Control</p>
+</div>
+</div>
+<!-- Main Navigation -->
+<div class="flex-1 flex flex-col gap-xs overflow-y-auto px-xs">
+<a class="text-on-primary-container/70 dark:text-on-primary-fixed-variant hover:bg-primary-fixed-dim/10 flex items-center gap-md px-lg py-md hover:bg-primary-container/20 transition-all duration-150 active:scale-95 rounded-DEFAULT mx-sm" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">dashboard</span>
+                Dashboard
+            </a>
+<a class="text-on-primary-container/70 dark:text-on-primary-fixed-variant hover:bg-primary-fixed-dim/10 flex items-center gap-md px-lg py-md hover:bg-primary-container/20 transition-all duration-150 active:scale-95 rounded-DEFAULT mx-sm" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">inventory_2</span>
+                Repository
+            </a>
+<!-- ACTIVE ITEM -->
+<a class="bg-primary-container dark:bg-primary border-l-4 border-on-tertiary-container text-on-tertiary-container flex items-center gap-md px-lg py-md hover:bg-primary-container/20 transition-all duration-150 active:scale-95 mx-sm" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">label</span>
+                Metadata
+            </a>
+<a class="text-on-primary-container/70 dark:text-on-primary-fixed-variant hover:bg-primary-fixed-dim/10 flex items-center gap-md px-lg py-md hover:bg-primary-container/20 transition-all duration-150 active:scale-95 rounded-DEFAULT mx-sm" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">key</span>
+                Access Control
+            </a>
+<a class="text-on-primary-container/70 dark:text-on-primary-fixed-variant hover:bg-primary-fixed-dim/10 flex items-center gap-md px-lg py-md hover:bg-primary-container/20 transition-all duration-150 active:scale-95 rounded-DEFAULT mx-sm" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">analytics</span>
+                Analytics
+            </a>
+<a class="text-on-primary-container/70 dark:text-on-primary-fixed-variant hover:bg-primary-fixed-dim/10 flex items-center gap-md px-lg py-md hover:bg-primary-container/20 transition-all duration-150 active:scale-95 rounded-DEFAULT mx-sm" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">terminal</span>
+                System Logs
+            </a>
+</div>
+<!-- CTA & Footer -->
+<div class="px-lg mt-auto flex flex-col gap-md pt-lg border-t border-primary-container/50">
+<button class="w-full bg-secondary text-on-secondary hover:bg-secondary-container hover:text-on-secondary-container transition-colors py-sm px-md rounded-DEFAULT font-label-caps text-label-caps flex items-center justify-center gap-sm shadow-sm">
+<span class="material-symbols-outlined text-[18px]">upload</span>
+                Upload Document
+            </button>
+<div class="flex flex-col gap-xs">
+<a class="text-on-primary-container/70 hover:text-on-primary flex items-center gap-md py-sm px-sm transition-colors text-sm" href="#">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 0;">settings</span>
+                    Settings
+                </a>
+<a class="text-on-primary-container/70 hover:text-on-primary flex items-center gap-md py-sm px-sm transition-colors text-sm" href="#">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 0;">contact_support</span>
+                    Support
+                </a>
+</div>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="ml-[248px] flex-1 flex flex-col h-full bg-background relative">
+<!-- Context Header (Sticky) -->
+<header class="bg-surface-container-lowest border-b border-outline-variant px-xl py-lg flex-shrink-0 z-10 sticky top-0">
+<!-- Breadcrumbs -->
+<div class="flex items-center gap-sm text-on-surface-variant font-body-sm text-body-sm mb-sm">
+<a class="hover:text-secondary transition-colors" href="#">Repository</a>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+<a class="hover:text-secondary transition-colors" href="#">Physical Sciences</a>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+<span>Doc-8829-Quantum</span>
+</div>
+<div class="flex justify-between items-end">
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface tracking-tight">The Principles of Quantum Mechanics</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-xs">Editing document metadata structure.</p>
+</div>
+<!-- Local Tab Nav (Contextual) -->
+<div class="flex gap-lg border-b border-outline-variant mt-md">
+<button class="pb-sm text-on-surface-variant font-body-md text-body-md hover:text-secondary transition-colors border-b-2 border-transparent">Overview</button>
+<button class="pb-sm text-secondary font-body-md text-body-md font-semibold border-b-2 border-secondary">Metadata</button>
+<button class="pb-sm text-on-surface-variant font-body-md text-body-md hover:text-secondary transition-colors border-b-2 border-transparent">File Resources</button>
+<button class="pb-sm text-on-surface-variant font-body-md text-body-md hover:text-secondary transition-colors border-b-2 border-transparent">History</button>
+</div>
+</div>
+</header>
+<!-- Scrollable Form Area -->
+<div class="flex-1 overflow-y-auto px-xl py-lg pb-32">
+<div class="max-w-[960px] mx-auto">
+<!-- Unsaved Changes Banner -->
+<div class="bg-surface-variant border-l-4 border-secondary rounded-r-DEFAULT p-md mb-xl flex items-start sm:items-center justify-between gap-md shadow-sm">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-secondary">info</span>
+<div>
+<p class="font-title-sm text-title-sm text-on-surface">Unsaved changes detected</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-xs">You have modified metadata fields. Please save to apply changes globally.</p>
+</div>
+</div>
+<button class="flex-shrink-0 bg-secondary text-on-secondary hover:bg-secondary-container hover:text-on-secondary-container transition-colors px-md py-sm rounded-DEFAULT font-label-caps text-label-caps shadow-sm">
+                        Save Now
+                    </button>
+</div>
+<form class="space-y-xl">
+<!-- Section 1: Core Bibliographic Data -->
+<section class="bg-surface-container-lowest border border-outline-variant rounded-lg p-lg shadow-sm">
+<h3 class="font-title-sm text-title-sm text-on-surface mb-lg pb-sm border-b border-outline-variant flex items-center gap-sm">
+<span class="material-symbols-outlined text-[20px] text-on-surface-variant">book</span>
+                            Bibliographic Information
+                        </h3>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-lg">
+<!-- ISBN -->
+<div class="md:col-span-12 flex items-end gap-md">
+<div class="flex-1">
+<label class="block font-title-sm text-title-sm text-on-surface mb-xs" for="isbn">ISBN / Identifier</label>
+<input class="w-full bg-surface border border-outline-variant rounded-DEFAULT px-md py-sm font-body-md text-body-md text-on-surface focus:outline-none focus:border-secondary focus:ring-2 focus:ring-secondary-container transition-all" id="isbn" type="text" value="978-0198520115"/>
+</div>
+<button class="flex-shrink-0 h-[42px] px-md border border-outline-variant bg-surface-container hover:bg-surface-container-high text-on-surface rounded-DEFAULT font-label-caps text-label-caps flex items-center gap-sm transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">search</span>
+                                    Look up
+                                </button>
+</div>
+<!-- Title -->
+<div class="md:col-span-12">
+<label class="block font-title-sm text-title-sm text-on-surface mb-xs" for="title">Document Title <span class="text-error">*</span></label>
+<input class="w-full bg-surface border border-outline-variant rounded-DEFAULT px-md py-sm font-body-md text-body-md text-on-surface focus:outline-none focus:border-secondary focus:ring-2 focus:ring-secondary-container transition-all" id="title" required="" type="text" value="The Principles of Quantum Mechanics"/>
+</div>
+<!-- Author(s) -->
+<div class="md:col-span-12">
+<label class="block font-title-sm text-title-sm text-on-surface mb-xs" for="authors">Author(s)</label>
+<div class="w-full bg-surface border border-outline-variant rounded-DEFAULT p-xs flex flex-wrap gap-xs focus-within:border-secondary focus-within:ring-2 focus-within:ring-secondary-container transition-all min-h-[42px] items-center">
+<!-- Existing Chips -->
+<span class="inline-flex items-center gap-xs px-sm py-xs bg-surface-container-highest text-on-surface rounded-full font-body-sm text-body-sm">
+                                        Paul A. M. Dirac
+                                        <button class="hover:text-error transition-colors flex items-center" type="button"><span class="material-symbols-outlined text-[16px]">close</span></button>
+</span>
+<input class="flex-1 min-w-[120px] bg-transparent border-none focus:ring-0 px-sm font-body-md text-body-md text-on-surface h-full" id="authors" placeholder="Add author..." type="text"/>
+</div>
+</div>
+<!-- Publisher & Year -->
+<div class="md:col-span-8">
+<label class="block font-title-sm text-title-sm text-on-surface mb-xs" for="publisher">Publisher</label>
+<input class="w-full bg-surface border border-outline-variant rounded-DEFAULT px-md py-sm font-body-md text-body-md text-on-surface focus:outline-none focus:border-secondary focus:ring-2 focus:ring-secondary-container transition-all" id="publisher" type="text" value="Oxford University Press"/>
+</div>
+<div class="md:col-span-4">
+<label class="block font-title-sm text-title-sm text-on-surface mb-xs" for="year">Publication Year</label>
+<input class="w-full bg-surface border border-outline-variant rounded-DEFAULT px-md py-sm font-body-md text-body-md text-on-surface focus:outline-none focus:border-secondary focus:ring-2 focus:ring-secondary-container transition-all" id="year" type="number" value="1981"/>
+</div>
+</div>
+</section>
+<!-- Section 2: Classification -->
+<section class="bg-surface-container-lowest border border-outline-variant rounded-lg p-lg shadow-sm">
+<h3 class="font-title-sm text-title-sm text-on-surface mb-lg pb-sm border-b border-outline-variant flex items-center gap-sm">
+<span class="material-symbols-outlined text-[20px] text-on-surface-variant">category</span>
+                            Classification &amp; Taxonomy
+                        </h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-lg">
+<!-- Category Selector -->
+<div>
+<label class="block font-title-sm text-title-sm text-on-surface mb-xs" for="category">Primary Category</label>
+<div class="relative">
+<select class="w-full bg-surface border border-outline-variant rounded-DEFAULT px-md py-sm pr-10 font-body-md text-body-md text-on-surface appearance-none focus:outline-none focus:border-secondary focus:ring-2 focus:ring-secondary-container transition-all" id="category">
+<option value="physics">Physical Sciences</option>
+<option value="math">Mathematics</option>
+<option value="chem">Chemistry</option>
+<option value="bio">Biological Sciences</option>
+</select>
+<span class="material-symbols-outlined absolute right-md top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
+</div>
+</div>
+<!-- Language -->
+<div>
+<label class="block font-title-sm text-title-sm text-on-surface mb-xs" for="language">Language</label>
+<div class="relative">
+<select class="w-full bg-surface border border-outline-variant rounded-DEFAULT px-md py-sm pr-10 font-body-md text-body-md text-on-surface appearance-none focus:outline-none focus:border-secondary focus:ring-2 focus:ring-secondary-container transition-all" id="language">
+<option value="en">English (EN)</option>
+<option value="fr">French (FR)</option>
+<option value="de">German (DE)</option>
+<option value="es">Spanish (ES)</option>
+</select>
+<span class="material-symbols-outlined absolute right-md top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
+</div>
+</div>
+<!-- Tags -->
+<div class="md:col-span-2">
+<label class="block font-title-sm text-title-sm text-on-surface mb-xs">Subject Tags</label>
+<div class="w-full bg-surface border border-outline-variant rounded-DEFAULT p-xs flex flex-wrap gap-xs focus-within:border-secondary focus-within:ring-2 focus-within:ring-secondary-container transition-all min-h-[80px] content-start">
+<span class="inline-flex items-center gap-xs px-sm py-xs bg-surface-container-highest text-on-surface rounded-full font-body-sm text-body-sm mb-1">
+                                        Quantum Mechanics
+                                        <button class="hover:text-error transition-colors flex items-center" type="button"><span class="material-symbols-outlined text-[16px]">close</span></button>
+</span>
+<span class="inline-flex items-center gap-xs px-sm py-xs bg-surface-container-highest text-on-surface rounded-full font-body-sm text-body-sm mb-1">
+                                        Theoretical Physics
+                                        <button class="hover:text-error transition-colors flex items-center" type="button"><span class="material-symbols-outlined text-[16px]">close</span></button>
+</span>
+<span class="inline-flex items-center gap-xs px-sm py-xs bg-surface-container-highest text-on-surface rounded-full font-body-sm text-body-sm mb-1">
+                                        Foundational Text
+                                        <button class="hover:text-error transition-colors flex items-center" type="button"><span class="material-symbols-outlined text-[16px]">close</span></button>
+</span>
+<input class="flex-1 min-w-[200px] bg-transparent border-none focus:ring-0 px-sm font-body-md text-body-md text-on-surface h-[32px]" placeholder="Type and press enter to add tag..." type="text"/>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 3: Audit & System (Read Only) -->
+<section class="bg-surface-container-low border border-outline-variant/50 rounded-lg p-lg">
+<h3 class="font-title-sm text-title-sm text-on-surface-variant mb-lg pb-sm border-b border-outline-variant/50 flex items-center gap-sm">
+<span class="material-symbols-outlined text-[20px] text-on-surface-variant">admin_panel_settings</span>
+                            System Audit Records (Read-only)
+                        </h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-lg">
+<div>
+<label class="block font-title-sm text-title-sm text-on-surface-variant mb-xs">Internal Archive ID</label>
+<input class="w-full bg-surface-container border border-outline-variant/50 rounded-DEFAULT px-md py-sm font-body-md text-body-md text-on-surface-variant opacity-70 cursor-not-allowed" disabled="" type="text" value="ARCH-1992-004829"/>
+</div>
+<div>
+<label class="block font-title-sm text-title-sm text-on-surface-variant mb-xs">Upload Date &amp; Time</label>
+<input class="w-full bg-surface-container border border-outline-variant/50 rounded-DEFAULT px-md py-sm font-body-md text-body-md text-on-surface-variant opacity-70 cursor-not-allowed" disabled="" type="text" value="Oct 12, 2023 - 14:32:05 UTC"/>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-md flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]">info</span>
+                            Audit fields are managed by the system backend and cannot be modified manually.
+                        </p>
+</section>
+</form>
+</div>
+</div>
+<!-- Sticky Footer Actions -->
+<div class="absolute bottom-0 left-0 w-full bg-surface-container-lowest border-t border-outline-variant p-lg flex justify-end gap-md shadow-[0_-4px_12px_rgba(16,60,53,0.05)] z-20">
+<div class="max-w-[960px] mx-auto w-full flex justify-end gap-md">
+<button class="px-xl py-sm rounded-DEFAULT border border-outline text-on-surface hover:bg-surface-container transition-colors font-label-caps text-label-caps" type="button">
+                    Cancel
+                </button>
+<button class="px-xl py-sm rounded-DEFAULT bg-primary text-on-primary hover:bg-primary-container transition-colors font-label-caps text-label-caps shadow-sm" type="button">
+                    Save changes
+                </button>
+</div>
+</div>
+</main>
+<script>
+        // Simple script to handle 'Look up' button visual feedback
+        document.querySelector('button:has(span.material-symbols-outlined:contains("search"))').addEventListener('click', function() {
+            const btn = this;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<span class="material-symbols-outlined text-[18px] animate-spin">sync</span> Searching...';
+            btn.classList.add('opacity-80', 'cursor-not-allowed');
+            setTimeout(() => {
+                btn.innerHTML = '<span class="material-symbols-outlined text-[18px] text-secondary">check_circle</span> Verified';
+                btn.classList.remove('opacity-80', 'cursor-not-allowed');
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                }, 3000);
+            }, 1500);
+        });
+    </script>
+</body></html>

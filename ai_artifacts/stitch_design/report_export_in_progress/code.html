@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MGT-06 - Report Export In Progress</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary": "#ffffff",
+                    "tertiary": "#002525",
+                    "tertiary-fixed-dim": "#74d6d6",
+                    "tertiary-fixed": "#91f3f2",
+                    "outline": "#717976",
+                    "on-surface": "#151c27",
+                    "on-primary-fixed": "#00201b",
+                    "error-container": "#ffdad6",
+                    "secondary": "#12696b",
+                    "on-primary-container": "#7ca79d",
+                    "secondary-fixed": "#a5eff1",
+                    "secondary-container": "#a2edee",
+                    "on-background": "#151c27",
+                    "on-error-container": "#93000a",
+                    "on-primary": "#ffffff",
+                    "primary-container": "#103c35",
+                    "inverse-primary": "#a4cfc5",
+                    "surface": "#f9f9ff",
+                    "surface-bright": "#f9f9ff",
+                    "on-tertiary-container": "#47adac",
+                    "on-secondary-container": "#1a6d6f",
+                    "primary-fixed-dim": "#a4cfc5",
+                    "on-error": "#ffffff",
+                    "surface-variant": "#dce2f3",
+                    "surface-container": "#e7eefe",
+                    "surface-container-highest": "#dce2f3",
+                    "on-secondary-fixed": "#002021",
+                    "tertiary-container": "#003c3c",
+                    "background": "#f9f9ff",
+                    "primary-fixed": "#bfece1",
+                    "primary": "#002520",
+                    "surface-dim": "#d3daea",
+                    "surface-container-low": "#f0f3ff",
+                    "outline-variant": "#c0c8c5",
+                    "on-tertiary-fixed": "#002020",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-high": "#e2e8f8",
+                    "on-surface-variant": "#414846",
+                    "inverse-on-surface": "#ebf1ff",
+                    "secondary-fixed-dim": "#89d3d5",
+                    "on-secondary": "#ffffff",
+                    "error": "#ba1a1a",
+                    "on-primary-fixed-variant": "#244e46",
+                    "on-tertiary-fixed-variant": "#004f50",
+                    "inverse-surface": "#2a313d",
+                    "on-secondary-fixed-variant": "#004f51",
+                    "surface-tint": "#3d665e"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "unit": "8px",
+                    "sm": "8px",
+                    "md": "16px",
+                    "lg": "24px",
+                    "xs": "4px",
+                    "xl": "32px",
+                    "gutter": "16px",
+                    "container-max": "1440px"
+            },
+            "fontFamily": {
+                    "headline-md": [
+                            "Be Vietnam Pro"
+                    ],
+                    "display-lg-mobile": [
+                            "Be Vietnam Pro"
+                    ],
+                    "body-md": [
+                            "Be Vietnam Pro"
+                    ],
+                    "display-lg": [
+                            "Be Vietnam Pro"
+                    ],
+                    "label-caps": [
+                            "Be Vietnam Pro"
+                    ],
+                    "title-sm": [
+                            "Be Vietnam Pro"
+                    ],
+                    "body-sm": [
+                            "Be Vietnam Pro"
+                    ]
+            },
+            "fontSize": {
+                    "headline-md": [
+                            "24px",
+                            {
+                                    "lineHeight": "32px",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "display-lg-mobile": [
+                            "28px",
+                            {
+                                    "lineHeight": "34px",
+                                    "letterSpacing": "-0.01em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "body-md": [
+                            "16px",
+                            {
+                                    "lineHeight": "24px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "display-lg": [
+                            "36px",
+                            {
+                                    "lineHeight": "44px",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "label-caps": [
+                            "12px",
+                            {
+                                    "lineHeight": "16px",
+                                    "letterSpacing": "0.05em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "title-sm": [
+                            "18px",
+                            {
+                                    "lineHeight": "24px",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "body-sm": [
+                            "14px",
+                            {
+                                    "lineHeight": "20px",
+                                    "fontWeight": "400"
+                            }
+                    ]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        .indeterminate-progress {
+            position: relative;
+            overflow: hidden;
+            background-color: #dce2f3; /* surface-variant */
+            border-radius: 9999px;
+            height: 4px;
+            width: 100%;
+        }
+        
+        .indeterminate-progress::before {
+            content: '';
+            position: absolute;
+            background-color: #12696b; /* secondary */
+            top: 0;
+            left: 0;
+            bottom: 0;
+            will-change: left, right;
+            animation: indeterminate 2.1s cubic-bezier(0.65, 0.815, 0.735, 0.395) infinite;
+        }
+        
+        .indeterminate-progress::after {
+            content: '';
+            position: absolute;
+            background-color: #12696b; /* secondary */
+            top: 0;
+            left: 0;
+            bottom: 0;
+            will-change: left, right;
+            animation: indeterminate-short 2.1s cubic-bezier(0.165, 0.84, 0.44, 1) infinite;
+            animation-delay: 1.15s;
+        }
+
+        @keyframes indeterminate {
+            0% {
+                left: -35%;
+                right: 100%;
+            }
+            60% {
+                left: 100%;
+                right: -90%;
+            }
+            100% {
+                left: 100%;
+                right: -90%;
+            }
+        }
+
+        @keyframes indeterminate-short {
+            0% {
+                left: -200%;
+                right: 100%;
+            }
+            60% {
+                left: 107%;
+                right: -8%;
+            }
+            100% {
+                left: 107%;
+                right: -8%;
+            }
+        }
+    </style>
+</head>
+<body class="h-full bg-background font-body-md text-on-background antialiased overflow-hidden">
+<!-- Faux Dashboard Background (Dimmed/Blurred) -->
+<div class="absolute inset-0 z-0 bg-surface flex pointer-events-none">
+<!-- Dummy Side Nav -->
+<aside class="hidden md:flex flex-col w-[248px] h-full bg-primary py-lg shadow-sm border-r border-outline-variant opacity-60 filter blur-[2px]">
+<div class="px-lg pb-md mb-md border-b border-on-primary-container/20">
+<div class="font-headline-md text-headline-md font-bold text-on-primary">LIBIF Admin</div>
+<div class="font-body-sm text-body-sm text-on-primary-container">Institutional Control</div>
+</div>
+<nav class="flex-1 space-y-unit">
+<a class="bg-primary-container border-l-4 border-on-tertiary-container text-on-tertiary-container flex items-center gap-md px-lg py-md transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="font-title-sm text-title-sm">Dashboard</span>
+</a>
+<a class="text-on-primary-container/70 flex items-center gap-md px-lg py-md" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-body-md text-body-md">Analytics</span>
+</a>
+<!-- More dummy items -->
+<div class="px-lg py-md flex items-center gap-md text-on-primary-container/70"><div class="w-6 h-6 bg-on-primary-container/20 rounded"></div><div class="h-4 w-24 bg-on-primary-container/20 rounded"></div></div>
+<div class="px-lg py-md flex items-center gap-md text-on-primary-container/70"><div class="w-6 h-6 bg-on-primary-container/20 rounded"></div><div class="h-4 w-32 bg-on-primary-container/20 rounded"></div></div>
+</nav>
+</aside>
+<!-- Dummy Main Content -->
+<main class="flex-1 flex flex-col h-full bg-background opacity-60 filter blur-[2px]">
+<!-- Dummy Top Bar -->
+<header class="h-16 border-b border-outline-variant bg-surface flex items-center justify-between px-lg">
+<div class="h-6 w-48 bg-surface-variant rounded"></div>
+<div class="h-8 w-8 bg-surface-variant rounded-full"></div>
+</header>
+<!-- Dummy Dashboard Content -->
+<div class="p-lg grid grid-cols-12 gap-gutter max-w-container-max mx-auto w-full">
+<div class="col-span-12 md:col-span-8 bg-surface-container-lowest border border-outline-variant rounded-lg p-md h-64">
+<div class="h-6 w-32 bg-surface-variant rounded mb-md"></div>
+<div class="space-y-sm">
+<div class="h-4 w-full bg-surface-variant rounded"></div>
+<div class="h-4 w-full bg-surface-variant rounded"></div>
+<div class="h-4 w-3/4 bg-surface-variant rounded"></div>
+</div>
+</div>
+<div class="col-span-12 md:col-span-4 bg-surface-container-lowest border border-outline-variant rounded-lg p-md h-64">
+<div class="h-6 w-24 bg-surface-variant rounded mb-md"></div>
+<div class="w-full h-32 bg-surface-variant rounded-full mx-auto mt-lg max-w-[128px]"></div>
+</div>
+<div class="col-span-12 bg-surface-container-lowest border border-outline-variant rounded-lg p-md h-96 mt-gutter">
+<div class="h-6 w-40 bg-surface-variant rounded mb-md border-b border-outline-variant pb-sm"></div>
+<div class="space-y-unit mt-md">
+<div class="h-12 w-full bg-surface-variant/50 rounded"></div>
+<div class="h-12 w-full bg-surface-variant/50 rounded"></div>
+<div class="h-12 w-full bg-surface-variant/50 rounded"></div>
+</div>
+</div>
+</div>
+</main>
+<!-- Dark overlay to subtly dim the background -->
+<div class="absolute inset-0 bg-on-background/5 pointer-events-none z-10"></div>
+</div>
+<!-- Floating Status Card (Toast) -->
+<div class="fixed bottom-lg right-lg z-50 w-full max-w-[400px] flex flex-col gap-sm animate-[slideIn_0.3s_ease-out]">
+<div class="bg-surface-container-lowest border border-outline-variant shadow-[0px_4px_12px_rgba(16,60,53,0.08)] rounded-lg overflow-hidden flex flex-col">
+<!-- Header Area -->
+<div class="p-md pb-xs flex items-start justify-between">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-on-secondary-container text-[20px]" style="font-variation-settings: 'FILL' 0;">description</span>
+</div>
+<div>
+<h3 class="font-title-sm text-title-sm text-on-surface m-0">Generating Excel Report...</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant m-0 mt-xs">Your report is being processed in the background. You can continue working.</p>
+</div>
+</div>
+<button aria-label="Close" class="text-on-surface-variant hover:text-on-surface transition-colors p-xs -mr-xs -mt-xs rounded-full hover:bg-surface-variant/50">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+<!-- Metadata Area -->
+<div class="px-md py-sm">
+<div class="bg-surface-container-low rounded-md p-sm border border-outline-variant/50">
+<div class="flex justify-between items-center mb-xs">
+<span class="font-label-caps text-label-caps text-on-surface-variant">Requested by</span>
+<span class="font-body-sm text-body-sm font-semibold text-on-surface">Admin User</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-label-caps text-label-caps text-on-surface-variant">Started</span>
+<span class="font-body-sm text-body-sm text-on-surface">10:45 AM</span>
+</div>
+</div>
+</div>
+<!-- Progress Bar -->
+<div class="px-md py-sm">
+<div class="indeterminate-progress"></div>
+</div>
+<!-- Actions Area -->
+<div class="p-md pt-sm flex justify-end gap-sm border-t border-outline-variant/30 bg-surface/50">
+<button class="px-md py-sm rounded-md font-body-sm text-body-sm font-semibold text-secondary hover:bg-surface-container-high transition-colors border border-transparent focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-1">
+                    Close
+                </button>
+<button class="px-md py-sm rounded-md font-body-sm text-body-sm font-semibold text-on-primary bg-primary-container hover:bg-tertiary transition-colors border border-transparent focus:outline-none focus:ring-2 focus:ring-primary-container focus:ring-offset-1 flex items-center gap-xs">
+                    View in Notifications
+                    <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<style>
+        @keyframes slideIn {
+            from {
+                transform: translateY(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</body></html>

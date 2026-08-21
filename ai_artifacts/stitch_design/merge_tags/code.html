@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Merge Tags - LIBIF Admin</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-fixed": "#bfece1",
+                        "on-primary": "#ffffff",
+                        "surface-variant": "#dce2f3",
+                        "outline-variant": "#c0c8c5",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-fixed": "#002020",
+                        "tertiary-container": "#003c3c",
+                        "primary-fixed-dim": "#a4cfc5",
+                        "primary-container": "#103c35",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-container": "#47adac",
+                        "surface-container-high": "#e2e8f8",
+                        "tertiary-fixed-dim": "#74d6d6",
+                        "secondary-container": "#a2edee",
+                        "on-secondary-container": "#1a6d6f",
+                        "on-secondary-fixed-variant": "#004f51",
+                        "inverse-primary": "#a4cfc5",
+                        "secondary-fixed-dim": "#89d3d5",
+                        "surface-container-low": "#f0f3ff",
+                        "on-primary-container": "#7ca79d",
+                        "inverse-surface": "#2a313d",
+                        "surface-tint": "#3d665e",
+                        "secondary": "#12696b",
+                        "tertiary": "#002525",
+                        "surface-bright": "#f9f9ff",
+                        "on-secondary-fixed": "#002021",
+                        "tertiary-fixed": "#91f3f2",
+                        "primary": "#002520",
+                        "error": "#ba1a1a",
+                        "background": "#f9f9ff",
+                        "surface-container-highest": "#dce2f3",
+                        "secondary-fixed": "#a5eff1",
+                        "on-error": "#ffffff",
+                        "surface-container": "#e7eefe",
+                        "surface": "#f9f9ff",
+                        "on-primary-fixed-variant": "#244e46",
+                        "on-background": "#151c27",
+                        "on-error-container": "#93000a",
+                        "on-tertiary": "#ffffff",
+                        "on-surface-variant": "#414846",
+                        "on-surface": "#151c27",
+                        "on-tertiary-fixed-variant": "#004f50",
+                        "on-primary-fixed": "#00201b",
+                        "error-container": "#ffdad6",
+                        "surface-dim": "#d3daea",
+                        "inverse-on-surface": "#ebf1ff",
+                        "outline": "#717976"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "lg": "24px",
+                        "gutter": "16px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "xl": "32px",
+                        "container-max": "1440px",
+                        "xs": "4px",
+                        "unit": "8px"
+                    },
+                    "fontFamily": {
+                        "title-sm": ["Be Vietnam Pro"],
+                        "display-lg": ["Be Vietnam Pro"],
+                        "display-lg-mobile": ["Be Vietnam Pro"],
+                        "body-sm": ["Be Vietnam Pro"],
+                        "label-caps": ["Be Vietnam Pro"],
+                        "body-md": ["Be Vietnam Pro"],
+                        "headline-md": ["Be Vietnam Pro"]
+                    },
+                    "fontSize": {
+                        "title-sm": ["18px", { "lineHeight": "24px", "fontWeight": "600" }],
+                        "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "display-lg-mobile": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Be Vietnam Pro', sans-serif; background-color: #F7F9F8; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .filled-icon { font-variation-settings: 'FILL' 1; }
+        
+        /* Custom Scrollbar for preview list */
+        .preview-list::-webkit-scrollbar { width: 6px; }
+        .preview-list::-webkit-scrollbar-track { background: transparent; }
+        .preview-list::-webkit-scrollbar-thumb { background-color: #c0c8c5; border-radius: 9999px; }
+        
+        /* Input Focus Glow */
+        .input-glow:focus-within { border-color: #0C6668; box-shadow: 0 0 0 2px #E8F3F2; }
+    </style>
+</head>
+<body class="text-on-surface bg-[#F7F9F8] h-screen flex overflow-hidden">
+<!-- SideNavBar -->
+<nav class="bg-[#0B2F2D] text-on-primary h-screen w-64 fixed left-0 top-0 border-r border-outline-variant flex flex-col py-lg z-20 hidden md:flex">
+<div class="px-md mb-xl flex items-center gap-md">
+<div class="w-10 h-10 rounded bg-surface-container-lowest flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">auto_stories</span>
+</div>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-on-primary">LIBIF</h1>
+<p class="font-label-caps text-label-caps text-on-primary-fixed-variant opacity-80">Enterprise Management</p>
+</div>
+</div>
+<div class="px-md mb-lg">
+<button class="w-full bg-secondary-container text-on-secondary-container font-title-sm text-title-sm py-sm px-md rounded-DEFAULT flex items-center justify-center gap-sm hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined">add</span>
+                New Document
+            </button>
+</div>
+<ul class="flex-1 flex flex-col gap-sm">
+<li>
+<a class="flex items-center gap-md px-lg py-sm font-title-sm text-title-sm text-on-primary-fixed-variant opacity-80 hover:bg-primary-container/50 transition-colors duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+                    Workspace
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-md px-lg py-sm font-title-sm text-title-sm text-on-primary-fixed-variant opacity-80 hover:bg-primary-container/50 transition-colors duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+                    Collections
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-md px-lg py-sm font-title-sm text-title-sm text-on-primary-fixed-variant opacity-80 hover:bg-primary-container/50 transition-colors duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined">history_edu</span>
+                    Archives
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-md px-lg py-sm font-title-sm text-title-sm border-l-4 border-secondary bg-primary-container text-on-primary font-semibold hover:bg-primary-container/50 transition-colors duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined filled-icon">admin_panel_settings</span>
+                    Administration
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-md px-lg py-sm font-title-sm text-title-sm text-on-primary-fixed-variant opacity-80 hover:bg-primary-container/50 transition-colors duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined">group</span>
+                    Users
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-md px-lg py-sm font-title-sm text-title-sm text-on-primary-fixed-variant opacity-80 hover:bg-primary-container/50 transition-colors duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined">settings</span>
+                    Settings
+                </a>
+</li>
+</ul>
+<div class="mt-auto flex flex-col gap-sm border-t border-primary-fixed-variant/30 pt-md">
+<a class="flex items-center gap-md px-lg py-sm font-body-sm text-body-sm text-on-primary-fixed-variant opacity-80 hover:bg-primary-container/50 transition-colors duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined text-[20px]">check_circle</span>
+                System Status
+            </a>
+<a class="flex items-center gap-md px-lg py-sm font-body-sm text-body-sm text-on-primary-fixed-variant opacity-80 hover:bg-primary-container/50 transition-colors duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined text-[20px]">help</span>
+                Support
+            </a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 ml-0 md:ml-64 flex flex-col h-full overflow-hidden">
+<!-- Header -->
+<header class="bg-surface border-b border-outline-variant px-lg py-md flex items-center gap-md sticky top-0 z-10">
+<a class="text-on-surface-variant hover:text-secondary transition-colors md:hidden" href="#">
+<span class="material-symbols-outlined">menu</span>
+</a>
+<a class="text-on-surface-variant hover:text-secondary transition-colors flex items-center" href="#">
+<span class="material-symbols-outlined mr-xs">arrow_back</span>
+<span class="font-body-sm text-body-sm sr-only">Back to Administration</span>
+</a>
+<div>
+<div class="flex items-center gap-sm text-on-surface-variant font-body-sm text-body-sm mb-1">
+<span>Administration</span>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+<span>Tag Management</span>
+</div>
+<h2 class="font-headline-md text-headline-md font-bold text-primary">Merge Tags</h2>
+</div>
+</header>
+<!-- Content Canvas -->
+<div class="flex-1 overflow-y-auto p-md md:p-lg">
+<div class="max-w-4xl mx-auto">
+<div class="mb-lg">
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl">
+                        Consolidate tag variations into a single canonical tag. All documents currently associated with the Source Tag will be updated to use the Destination Tag. The Source Tag will be permanently deleted after merging.
+                    </p>
+</div>
+<!-- Main Layout Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-lg">
+<!-- Selection Panel -->
+<div class="lg:col-span-5 flex flex-col gap-lg">
+<!-- Source Tag Box -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-md">
+<label class="block font-title-sm text-title-sm text-primary mb-sm">Source Tag</label>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-md">Select the tag you wish to remove.</p>
+<div class="relative input-glow rounded border border-outline-variant bg-surface transition-all duration-150">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full bg-transparent border-none pl-xl pr-sm py-sm font-body-md text-body-md text-on-surface focus:ring-0" placeholder="Search tags..." type="text" value="Modernist Literature"/>
+</div>
+<div class="mt-sm p-sm bg-[#E8F3F2] border border-[#a2edee] rounded flex items-center justify-between">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-secondary">label_off</span>
+<span class="font-body-sm text-body-sm font-semibold text-primary">Modernist Literature</span>
+</div>
+<span class="font-label-caps text-label-caps text-on-surface-variant bg-surface-container-high px-2 py-1 rounded">142 uses</span>
+</div>
+</div>
+<!-- Merge Direction Icon -->
+<div class="flex justify-center -my-md z-10">
+<div class="bg-surface border border-outline-variant rounded-full w-10 h-10 flex items-center justify-center text-secondary shadow-[0px_4px_12px_rgba(16,60,53,0.08)]">
+<span class="material-symbols-outlined">arrow_downward</span>
+</div>
+</div>
+<!-- Destination Tag Box -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-md border-t-4 border-t-primary-container">
+<label class="block font-title-sm text-title-sm text-primary mb-sm">Destination Tag</label>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-md">Select the canonical tag to keep.</p>
+<div class="relative input-glow rounded border border-outline-variant bg-surface transition-all duration-150">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full bg-transparent border-none pl-xl pr-sm py-sm font-body-md text-body-md text-on-surface focus:ring-0" placeholder="Search tags..." type="text" value="Modernism"/>
+</div>
+<div class="mt-sm p-sm bg-[#F7F9F8] border border-outline-variant rounded flex items-center justify-between">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary">label</span>
+<span class="font-body-sm text-body-sm font-semibold text-primary">Modernism</span>
+</div>
+<span class="font-label-caps text-label-caps text-on-surface-variant bg-surface-container-high px-2 py-1 rounded">840 uses</span>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="flex items-center gap-md pt-sm">
+<button class="flex-1 bg-primary-container text-on-primary font-title-sm text-title-sm py-sm px-lg rounded transition-colors hover:bg-[#138A8A]">
+                                Merge Tags
+                            </button>
+<button class="flex-1 border border-outline-variant text-on-surface font-title-sm text-title-sm py-sm px-lg rounded transition-colors hover:bg-surface-variant">
+                                Cancel
+                            </button>
+</div>
+</div>
+<!-- Preview Panel -->
+<div class="lg:col-span-7 bg-surface-container-lowest border border-outline-variant rounded-lg flex flex-col h-[600px]">
+<div class="p-md border-b border-outline-variant flex items-center justify-between bg-surface/50">
+<div>
+<h3 class="font-title-sm text-title-sm text-primary">Affected Documents Preview</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">These 142 items will have their tags updated.</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">info</span>
+</div>
+<div class="flex-1 overflow-y-auto p-0 preview-list">
+<!-- List Item 1 -->
+<div class="p-md border-b border-outline-variant hover:bg-[#F7F9F8] transition-colors flex items-start gap-md">
+<div class="w-8 h-8 rounded bg-surface-variant flex items-center justify-center shrink-0 mt-1">
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant">book</span>
+</div>
+<div class="flex-1 min-w-0">
+<h4 class="font-body-md text-body-md font-semibold text-primary truncate">Ulysses</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate">James Joyce, 1922</p>
+<div class="flex items-center gap-sm mt-xs text-xs">
+<span class="line-through text-error/70 font-body-sm">Modernist Literature</span>
+<span class="material-symbols-outlined text-[14px] text-outline">arrow_forward</span>
+<span class="text-secondary font-body-sm font-semibold">Modernism</span>
+</div>
+</div>
+</div>
+<!-- List Item 2 -->
+<div class="p-md border-b border-outline-variant hover:bg-[#F7F9F8] transition-colors flex items-start gap-md">
+<div class="w-8 h-8 rounded bg-surface-variant flex items-center justify-center shrink-0 mt-1">
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant">book</span>
+</div>
+<div class="flex-1 min-w-0">
+<h4 class="font-body-md text-body-md font-semibold text-primary truncate">Mrs Dalloway</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate">Virginia Woolf, 1925</p>
+<div class="flex items-center gap-sm mt-xs text-xs">
+<span class="line-through text-error/70 font-body-sm">Modernist Literature</span>
+<span class="material-symbols-outlined text-[14px] text-outline">arrow_forward</span>
+<span class="text-secondary font-body-sm font-semibold">Modernism</span>
+</div>
+</div>
+</div>
+<!-- List Item 3 -->
+<div class="p-md border-b border-outline-variant hover:bg-[#F7F9F8] transition-colors flex items-start gap-md">
+<div class="w-8 h-8 rounded bg-surface-variant flex items-center justify-center shrink-0 mt-1">
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant">article</span>
+</div>
+<div class="flex-1 min-w-0">
+<h4 class="font-body-md text-body-md font-semibold text-primary truncate">Tradition and the Individual Talent</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate">T.S. Eliot, 1919 (Journal Essay)</p>
+<div class="flex items-center gap-sm mt-xs text-xs">
+<span class="line-through text-error/70 font-body-sm">Modernist Literature</span>
+<span class="material-symbols-outlined text-[14px] text-outline">arrow_forward</span>
+<span class="text-secondary font-body-sm font-semibold">Modernism</span>
+</div>
+</div>
+</div>
+<div class="p-lg text-center text-on-surface-variant font-body-sm text-body-sm">
+                                + 139 more documents
+                            </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

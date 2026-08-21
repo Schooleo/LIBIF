@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Send a completed GitHub Actions CI result to the pull request author.
+"""Send completed GitHub Actions CI and CD results by email.
 
 This script is intended to run from a privileged `workflow_run` workflow. It does
-not check out or execute pull-request code. PR metadata is fetched from the
-GitHub API, and the recipient is resolved from the author's public profile email
-or from their non-noreply commit author email.
+not check out or execute triggering-workflow code. CI recipient metadata is
+fetched from the GitHub API. CD notifications use a configured operations
+recipient and include the stable access domain for the target environment.
 """
 
 from __future__ import annotations
@@ -24,6 +24,10 @@ from typing import Any
 EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 NOREPLY_DOMAINS = ("@users.noreply.github.com",)
 NOREPLY_EXACT = {"noreply@github.com"}
+CD_WORKFLOWS = {
+    "Staging Images": ("Staging", "STAGING_ACCESS_URL"),
+    "Production": ("Production", "PRODUCTION_ACCESS_URL"),
+}
 
 
 def log(level: str, message: str) -> None:
@@ -126,7 +130,7 @@ def smtp_configured() -> bool:
     required = ["SMTP_HOST", "SMTP_USERNAME", "SMTP_PASSWORD", "SMTP_FROM"]
     missing = [name for name in required if not os.getenv(name)]
     if missing:
-        log("warning", f"Skipping CI result email because SMTP secrets are missing: {', '.join(missing)}")
+        log("warning", f"Skipping workflow result email because SMTP secrets are missing: {', '.join(missing)}")
         return False
     return True
 
@@ -159,10 +163,7 @@ def send_email(recipient: str, subject: str, body: str) -> None:
             smtp.send_message(message)
 
 
-def main() -> int:
-    if not smtp_configured():
-        return 0
-
+def send_ci_result() -> int:
     workflow_run = load_workflow_run()
     repository = os.getenv("GITHUB_REPOSITORY") or ""
     if not repository:
@@ -208,6 +209,93 @@ This message was sent automatically by GitHub Actions.
     send_email(recipient, subject, body)
     log("notice", f"Sent CI result email for PR #{pr_number} to @{author_login} using {source}.")
     return 0
+
+
+def resolve_cd_recipient() -> tuple[str | None, str]:
+    for name in (
+        "CD_NOTIFICATION_EMAIL",
+        "CI_RESULTS_FALLBACK_EMAIL",
+        "SMTP_USERNAME",
+        "SMTP_FROM",
+    ):
+        value = os.getenv(name, "").strip()
+        if is_deliverable_email(value):
+            return value, name
+    return None, "no deliverable CD notification email configured"
+
+
+def normalize_access_url(value: str | None) -> tuple[str | None, str | None]:
+    raw = (value or "").strip()
+    if not raw:
+        return None, None
+    if "://" not in raw:
+        raw = f"https://{raw}"
+    parsed = urllib.parse.urlsplit(raw)
+    if parsed.scheme not in {"http", "https"} or not parsed.hostname:
+        return None, None
+    return raw.rstrip("/"), parsed.hostname
+
+
+def send_cd_result() -> int:
+    workflow_run = load_workflow_run()
+    workflow_name = workflow_run.get("name") or "Unknown CD workflow"
+    environment_name, access_variable = CD_WORKFLOWS.get(
+        workflow_name,
+        (workflow_name, ""),
+    )
+    access_url, access_domain = normalize_access_url(os.getenv(access_variable))
+
+    recipient, source = resolve_cd_recipient()
+    if not recipient:
+        log("warning", f"Skipping CD result email: {source}.")
+        return 0
+
+    repository = os.getenv("GITHUB_REPOSITORY") or "unknown repository"
+    conclusion = workflow_run.get("conclusion") or "completed"
+    status = conclusion.upper()
+    short_sha = (workflow_run.get("head_sha") or "")[:12] or "unknown"
+    ref_name = workflow_run.get("head_branch") or "unknown"
+    title = workflow_run.get("display_title") or "Untitled deployment"
+    run_url = workflow_run.get("html_url") or ""
+    domain_line = access_domain or f"Not configured ({access_variable})"
+    url_line = access_url or f"Not configured ({access_variable})"
+    if conclusion != "success":
+        result_note = "The deployment did not complete successfully; the access URL may still serve the previous successful release."
+    elif workflow_name == "Staging Images":
+        result_note = "The staging images are published. The self-hosted staging host must pull this commit before the access URL serves the new release."
+    else:
+        result_note = "The access URL points to the newly deployed environment."
+
+    subject = f"[{repository}] {environment_name} CD {status}"
+    body = f"""LIBIF deployment workflow completed.
+
+Repository: {repository}
+Environment: {environment_name}
+Workflow: {workflow_name}
+Release: {title}
+Git ref: {ref_name}
+Commit: {short_sha}
+Result: {status}
+Access domain: {domain_line}
+Access URL: {url_line}
+Workflow run: {run_url}
+
+{result_note}
+
+This message was sent automatically by GitHub Actions.
+"""
+
+    send_email(recipient, subject, body)
+    log("notice", f"Sent {environment_name} CD result email using {source}.")
+    return 0
+
+
+def main() -> int:
+    if not smtp_configured():
+        return 0
+    if (os.getenv("NOTIFICATION_KIND") or "ci").lower() == "cd":
+        return send_cd_result()
+    return send_ci_result()
 
 
 if __name__ == "__main__":

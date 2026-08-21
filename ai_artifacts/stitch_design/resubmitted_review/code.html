@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>KnowledgeArchive - Resubmitted Review</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-bright": "#f9f9ff",
+                    "on-secondary-fixed": "#002021",
+                    "tertiary-fixed": "#91f3f2",
+                    "primary": "#002520",
+                    "surface-container-low": "#f0f3ff",
+                    "on-primary-container": "#7ca79d",
+                    "inverse-surface": "#2a313d",
+                    "surface-tint": "#3d665e",
+                    "secondary": "#12696b",
+                    "tertiary": "#002525",
+                    "on-tertiary": "#ffffff",
+                    "on-surface-variant": "#414846",
+                    "on-surface": "#151c27",
+                    "on-tertiary-fixed-variant": "#004f50",
+                    "on-primary-fixed": "#00201b",
+                    "error-container": "#ffdad6",
+                    "surface-dim": "#d3daea",
+                    "inverse-on-surface": "#ebf1ff",
+                    "outline": "#717976",
+                    "error": "#ba1a1a",
+                    "background": "#f9f9ff",
+                    "surface-container-highest": "#dce2f3",
+                    "secondary-fixed": "#a5eff1",
+                    "on-error": "#ffffff",
+                    "surface-container": "#e7eefe",
+                    "surface": "#f9f9ff",
+                    "on-primary-fixed-variant": "#244e46",
+                    "on-background": "#151c27",
+                    "on-error-container": "#93000a",
+                    "surface-container-lowest": "#ffffff",
+                    "on-tertiary-fixed": "#002020",
+                    "tertiary-container": "#003c3c",
+                    "primary-fixed-dim": "#a4cfc5",
+                    "primary-container": "#103c35",
+                    "on-secondary": "#ffffff",
+                    "primary-fixed": "#bfece1",
+                    "on-primary": "#ffffff",
+                    "surface-variant": "#dce2f3",
+                    "outline-variant": "#c0c8c5",
+                    "on-secondary-container": "#1a6d6f",
+                    "on-secondary-fixed-variant": "#004f51",
+                    "inverse-primary": "#a4cfc5",
+                    "secondary-fixed-dim": "#89d3d5",
+                    "on-tertiary-container": "#47adac",
+                    "surface-container-high": "#e2e8f8",
+                    "tertiary-fixed-dim": "#74d6d6",
+                    "secondary-container": "#a2edee"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "xs": "4px",
+                    "unit": "8px",
+                    "xl": "32px",
+                    "container-max": "1440px",
+                    "sm": "8px",
+                    "md": "16px",
+                    "gutter": "16px",
+                    "lg": "24px"
+            },
+            "fontFamily": {
+                    "display-lg-mobile": [
+                            "Be Vietnam Pro"
+                    ],
+                    "body-sm": [
+                            "Be Vietnam Pro"
+                    ],
+                    "label-caps": [
+                            "Be Vietnam Pro"
+                    ],
+                    "body-md": [
+                            "Be Vietnam Pro"
+                    ],
+                    "headline-md": [
+                            "Be Vietnam Pro"
+                    ],
+                    "title-sm": [
+                            "Be Vietnam Pro"
+                    ],
+                    "display-lg": [
+                            "Be Vietnam Pro"
+                    ]
+            },
+            "fontSize": {
+                    "display-lg-mobile": [
+                            "28px",
+                            {
+                                    "lineHeight": "34px",
+                                    "letterSpacing": "-0.01em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "body-sm": [
+                            "14px",
+                            {
+                                    "lineHeight": "20px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "label-caps": [
+                            "12px",
+                            {
+                                    "lineHeight": "16px",
+                                    "letterSpacing": "0.05em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "body-md": [
+                            "16px",
+                            {
+                                    "lineHeight": "24px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "headline-md": [
+                            "24px",
+                            {
+                                    "lineHeight": "32px",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "title-sm": [
+                            "18px",
+                            {
+                                    "lineHeight": "24px",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "display-lg": [
+                            "36px",
+                            {
+                                    "lineHeight": "44px",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "700"
+                            }
+                    ]
+            }
+    },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1;
+        }
+        
+        /* Custom Scrollbar for document viewer */
+        .doc-viewer::-webkit-scrollbar {
+            width: 8px;
+        }
+        .doc-viewer::-webkit-scrollbar-track {
+            background: #f0f3ff;
+        }
+        .doc-viewer::-webkit-scrollbar-thumb {
+            background-color: #c0c8c5;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md text-body-md antialiased flex flex-col h-screen overflow-hidden">
+<!-- TopAppBar -->
+<header class="bg-surface dark:bg-surface text-primary dark:text-inverse-primary font-body-sm text-body-sm docked full-width top-0 sticky z-40 border-b border-outline-variant flat no shadows transition-all duration-200 flex justify-between items-center px-lg py-md w-full shrink-0">
+<div class="flex items-center gap-md">
+<span class="font-title-sm text-title-sm font-bold text-primary">KnowledgeArchive</span>
+<div class="h-6 w-px bg-outline-variant mx-sm"></div>
+<span class="text-on-surface-variant font-title-sm text-title-sm">Review Workspace</span>
+</div>
+<div class="flex items-center gap-lg">
+<nav class="hidden md:flex gap-md items-center">
+<a class="text-on-surface-variant hover:text-on-surface hover:text-secondary transition-all duration-200" href="#">Quick View</a>
+<a class="text-on-surface-variant hover:text-on-surface hover:text-secondary transition-all duration-200" href="#">Recent</a>
+<a class="text-on-surface-variant hover:text-on-surface hover:text-secondary transition-all duration-200" href="#">Reports</a>
+</nav>
+<div class="flex items-center gap-sm">
+<button aria-label="notifications" class="p-2 rounded-full hover:bg-surface-variant text-on-surface-variant transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button aria-label="history" class="p-2 rounded-full hover:bg-surface-variant text-on-surface-variant transition-colors">
+<span class="material-symbols-outlined">history</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-primary-container text-on-primary overflow-hidden ml-sm">
+<img alt="Administrator Profile" class="w-full h-full object-cover" data-alt="A small, professional headshot portrait of an administrator in a corporate setting, with soft, even lighting, creating a bright, modern light-mode aesthetic. The portrait uses a sophisticated palette of deep blacks and pristine whites, emphasizing clarity and institutional trust." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9sJ9uFVR1bzZtlUKEH2fC1s68rBi93JQt0Y5AATowUOvc3nT5YSxEdUDgeNu7su64h1tYHJ5sCbvrkjSBbDuZFk_of3kPK-eLugFe9Nb0te95azTPEwBI3o69ECqW0lbBju514aHa69gf8n7KzeQIDti1YML0L7eCi5ov3Th3TTyDmA6Dx69bIQNMePQhP_5oSZesz24VrQoECIdqV43QM_0cxIYjSnf9LzDUhUuPgFDr9p4NXQWGNRovGF6ACX9D0jnMW7NiG6c"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content Area - Split View -->
+<main class="flex-1 flex overflow-hidden">
+<!-- Document Viewer Panel (Left) -->
+<section class="w-2/3 bg-surface-bright border-r border-outline-variant flex flex-col relative h-full">
+<!-- Document Header -->
+<div class="p-md border-b border-outline-variant flex justify-between items-start bg-surface-container-lowest shrink-0">
+<div>
+<div class="flex items-center gap-sm mb-xs">
+<span class="material-symbols-outlined text-secondary">description</span>
+<h1 class="font-title-sm text-title-sm text-on-surface">Economic Impacts of Localized Automation in Manufacturing Sectors</h1>
+<span class="bg-surface-variant text-on-surface-variant px-2 py-1 rounded text-xs font-semibold tracking-wider uppercase font-label-caps ml-sm">v2.1</span>
+</div>
+<p class="text-body-sm text-on-surface-variant">Submitted by: Dr. Aris Thorne • Dept. of Economics • 2 hours ago</p>
+</div>
+<div class="flex items-center gap-sm">
+<button class="flex items-center gap-xs px-3 py-1.5 border border-outline-variant rounded hover:bg-surface-variant text-on-surface-variant transition-colors text-body-sm">
+<span class="material-symbols-outlined" style="font-size: 18px;">download</span> Download Original
+                    </button>
+</div>
+</div>
+<!-- Document Canvas -->
+<div class="flex-1 overflow-y-auto doc-viewer p-lg bg-surface-container-low flex justify-center items-start">
+<!-- Mock Document Page -->
+<div class="w-full max-w-4xl bg-white shadow-[0px_4px_12px_rgba(16,60,53,0.08)] border border-outline-variant min-h-[1056px] p-xl relative">
+<!-- Watermark -->
+<div class="absolute inset-0 flex items-center justify-center opacity-[0.03] pointer-events-none">
+<span class="font-display-lg text-display-lg transform -rotate-45">RESUBMISSION DRAFT</span>
+</div>
+<!-- Doc Content -->
+<h2 class="font-headline-md text-headline-md mb-md">Abstract</h2>
+<p class="mb-lg leading-relaxed text-on-surface-variant text-justify">
+                        This paper investigates the localized economic impacts of automation adoption within specific manufacturing hubs in the midwestern United States. While broad aggregate studies suggest a net-neutral employment effect over a ten-year horizon, granular analysis at the county level reveals significant short-term frictional unemployment and wage depression in cohorts lacking secondary technical education. Furthermore, the transition period is marked by an increased reliance on regional safety nets, creating fiscal strain on local municipalities. We propose a localized adaptation framework, emphasizing targeted vocational retraining subsidies deployed concurrently with automation tax incentives, to mitigate these transitional economic shocks.
+                    </p>
+<h2 class="font-headline-md text-headline-md mb-md">1. Introduction</h2>
+<p class="mb-lg leading-relaxed text-on-surface-variant text-justify">
+                        The narrative surrounding automation in manufacturing has largely bifurcated into optimistic macro-level productivity forecasts and pessimistic micro-level displacement anxieties. This study seeks to bridge this gap by anchoring the analysis in a highly specific geographic and industrial context. Previous iterations of this research (Thorne, 2021) generalized the impacts across diverse manufacturing sectors. This revised analysis focuses strictly on precision machining and assembly operations within a tri-state area, utilizing a newly available municipal tax database to track indirect economic indicators during periods of rapid capital investment in automated systems.
+                    </p>
+<!-- Annotation Highlight -->
+<div class="bg-secondary-fixed/30 border-l-2 border-secondary pl-sm py-xs my-md relative group cursor-pointer">
+<p class="leading-relaxed text-on-surface-variant text-justify">
+                            By isolating these specific variables, we aim to demonstrate that the speed of automation integration, rather than the absolute scale, is the primary driver of localized economic disruption.
+                        </p>
+<!-- Annotation Tooltip -->
+<div class="absolute left-full ml-sm top-0 w-64 bg-surface shadow-[0px_4px_12px_rgba(16,60,53,0.08)] border border-outline-variant rounded p-sm hidden group-hover:block z-10">
+<p class="text-body-sm font-semibold mb-xs">Resolved: Clarification Added</p>
+<p class="text-body-sm text-on-surface-variant">Reviewer note addressed: "Please clarify if speed vs scale is the main hypothesis here."</p>
+</div>
+</div>
+<h2 class="font-headline-md text-headline-md mb-md">2. Methodology and Data Sources</h2>
+<p class="mb-lg leading-relaxed text-on-surface-variant text-justify">
+                        Data was aggregated from state-level employment security commissions and cross-referenced with capital expenditure reports filed under the Regional Manufacturing Incentive Program (RMIP). The primary challenge in this methodology is the differentiation between automation-driven job displacement and displacement resulting from broader macroeconomic cyclicality. To address this, we employed a difference-in-differences (DiD) estimation strategy, utilizing counties with similar industrial compositions but differing rates of automation adoption as control groups.
+                    </p>
+</div>
+</div>
+<!-- Viewer Controls -->
+<div class="absolute bottom-md left-1/2 transform -translate-x-1/2 bg-surface border border-outline-variant rounded-full shadow-[0px_4px_12px_rgba(16,60,53,0.08)] px-md py-sm flex items-center gap-md">
+<button class="text-on-surface-variant hover:text-secondary"><span class="material-symbols-outlined">zoom_out</span></button>
+<span class="text-body-sm font-semibold w-12 text-center">100%</span>
+<button class="text-on-surface-variant hover:text-secondary"><span class="material-symbols-outlined">zoom_in</span></button>
+<div class="w-px h-4 bg-outline-variant"></div>
+<button class="text-on-surface-variant hover:text-secondary"><span class="material-symbols-outlined">first_page</span></button>
+<span class="text-body-sm">Page 1 of 42</span>
+<button class="text-on-surface-variant hover:text-secondary"><span class="material-symbols-outlined">last_page</span></button>
+</div>
+</section>
+<!-- Review Panel (Right) -->
+<aside class="w-1/3 bg-surface-container-lowest border-l border-outline-variant flex flex-col h-full overflow-hidden">
+<!-- Panel Header -->
+<div class="p-md border-b border-outline-variant shrink-0 bg-surface-bright">
+<h3 class="font-title-sm text-title-sm font-bold text-on-surface mb-xs">Resubmission Review</h3>
+<p class="text-body-sm text-on-surface-variant">Reviewing changes from v1 to v2.1</p>
+</div>
+<!-- Panel Content - Scrollable -->
+<div class="flex-1 overflow-y-auto p-md space-y-lg">
+<!-- System Processing Results -->
+<div class="border border-outline-variant rounded bg-surface p-md">
+<h4 class="font-title-sm text-title-sm text-on-surface mb-sm flex items-center gap-xs">
+<span class="material-symbols-outlined text-secondary" style="font-size: 20px;">memory</span> Processing Rerun Result
+                    </h4>
+<div class="grid grid-cols-2 gap-sm">
+<div class="bg-surface-container-low p-sm rounded border border-outline-variant">
+<p class="text-label-caps text-on-surface-variant mb-xs">OCR CONFIDENCE</p>
+<p class="font-headline-md text-headline-md text-secondary">99.8%</p>
+<p class="text-body-sm text-on-surface-variant flex items-center gap-xs mt-xs">
+<span class="material-symbols-outlined text-secondary" style="font-size: 16px;">arrow_upward</span> +2.1% from v1
+                            </p>
+</div>
+<div class="bg-surface-container-low p-sm rounded border border-outline-variant">
+<p class="text-label-caps text-on-surface-variant mb-xs">METADATA SYNC</p>
+<p class="font-headline-md text-headline-md text-secondary">Valid</p>
+<p class="text-body-sm text-on-surface-variant flex items-center gap-xs mt-xs">
+<span class="material-symbols-outlined text-secondary" style="font-size: 16px;">check_circle</span> All fields match
+                            </p>
+</div>
+</div>
+</div>
+<!-- Resolved Issues Checklist -->
+<div>
+<h4 class="font-title-sm text-title-sm text-on-surface mb-sm border-b border-outline-variant pb-xs flex justify-between items-center">
+                        Resolved Issues
+                        <span class="bg-surface-variant text-on-surface-variant px-2 py-0.5 rounded text-xs">3 of 3 Fixed</span>
+</h4>
+<ul class="space-y-sm mt-sm">
+<li class="flex gap-sm p-sm bg-surface-bright border border-outline-variant rounded items-start">
+<span class="material-symbols-outlined text-secondary mt-0.5">check_circle</span>
+<div>
+<p class="text-body-sm font-semibold text-on-surface">Methodology Clarification</p>
+<p class="text-body-sm text-on-surface-variant mt-xs">Added explicit definition of control groups used in DiD analysis.</p>
+<button class="text-secondary hover:text-secondary-container text-body-sm font-semibold mt-sm flex items-center gap-xs">
+<span class="material-symbols-outlined" style="font-size: 16px;">visibility</span> Jump to diff
+                                </button>
+</div>
+</li>
+<li class="flex gap-sm p-sm bg-surface-bright border border-outline-variant rounded items-start">
+<span class="material-symbols-outlined text-secondary mt-0.5">check_circle</span>
+<div>
+<p class="text-body-sm font-semibold text-on-surface">Missing References</p>
+<p class="text-body-sm text-on-surface-variant mt-xs">Citations for regional tax databases are now included in the bibliography.</p>
+</div>
+</li>
+<li class="flex gap-sm p-sm bg-surface-bright border border-outline-variant rounded items-start">
+<span class="material-symbols-outlined text-secondary mt-0.5">check_circle</span>
+<div>
+<p class="text-body-sm font-semibold text-on-surface">Formatting Corrections</p>
+<p class="text-body-sm text-on-surface-variant mt-xs">Fixed margin inconsistencies on tables 2 and 4.</p>
+</div>
+</li>
+</ul>
+</div>
+<!-- Prior Reviewer Comments -->
+<div>
+<h4 class="font-title-sm text-title-sm text-on-surface mb-sm border-b border-outline-variant pb-xs">Prior Review Context</h4>
+<div class="bg-surface p-sm border border-outline-variant rounded border-l-4 border-l-surface-tint">
+<div class="flex justify-between items-center mb-xs">
+<span class="text-body-sm font-semibold">Reviewer: J. Sterling</span>
+<span class="text-body-sm text-on-surface-variant">Oct 12, 2023</span>
+</div>
+<p class="text-body-sm text-on-surface-variant italic">
+                            "The premise is solid, but the methodology section is too brief to justify the control group selection. Needs expansion before approval."
+                        </p>
+</div>
+</div>
+<!-- Current Review Notes Input -->
+<div>
+<h4 class="font-title-sm text-title-sm text-on-surface mb-sm border-b border-outline-variant pb-xs">Add Final Remarks</h4>
+<textarea class="w-full h-24 p-sm border border-outline-variant rounded focus:border-secondary focus:ring-2 focus:ring-secondary-fixed/20 bg-surface-bright text-body-sm resize-none" placeholder="Enter remarks for the audit log or author..."></textarea>
+</div>
+</div>
+<!-- Action Buttons Footer -->
+<div class="p-md border-t border-outline-variant bg-surface shrink-0 flex flex-col gap-sm">
+<button class="w-full bg-primary-container text-on-primary-container hover:bg-secondary hover:text-on-secondary py-2 px-4 rounded font-semibold transition-colors flex justify-center items-center gap-sm">
+<span class="material-symbols-outlined">publish</span> Approve and Publish
+                </button>
+<div class="flex gap-sm">
+<button class="w-1/2 border border-secondary text-secondary hover:bg-secondary-fixed/20 py-2 px-4 rounded font-semibold transition-colors text-body-sm">
+                        Request Fix
+                    </button>
+<button class="w-1/2 border border-error text-error hover:bg-error-container/20 py-2 px-4 rounded font-semibold transition-colors text-body-sm">
+                        Reject
+                    </button>
+</div>
+</div>
+</aside>
+</main>
+</body></html>
