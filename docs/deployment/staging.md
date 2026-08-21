@@ -73,6 +73,13 @@ TAILSCALE_HOSTNAME="libif-staging"
 LIBIF_STAGING_BASE_URL="https://libif-staging.<tailnet-name>.ts.net"
 ```
 
+Set the same origin as the `STAGING_ACCESS_URL` GitHub repository variable. The
+`CD Email Notification` workflow includes this domain in every successful or
+failed `Staging Images` notification. Set the optional
+`CD_NOTIFICATION_EMAIL` repository secret to choose the recipient; otherwise
+the notifier falls back to `CI_RESULTS_FALLBACK_EMAIL`, `SMTP_USERNAME`, then
+`SMTP_FROM`. It reuses the repository's existing `SMTP_*` secrets.
+
 Replace every database, Redis, MinIO, token-signing, Tailscale, and demonstration-account placeholder with unique values. Do not reuse production secrets.
 
 Authenticate the GitHub CLI and Docker to read the workflow result and GHCR packages. Public packages need no Docker token; private packages require a token with `read:packages`:

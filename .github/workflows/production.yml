@@ -32,7 +32,7 @@ jobs:
             exit 1
           fi
 
-          git fetch origin main --depth=0
+          git fetch --no-tags origin main:refs/remotes/origin/main
           [[ "$(git rev-parse "${GITHUB_REF_NAME}^{commit}")" == "${GITHUB_SHA}" ]]
           git merge-base --is-ancestor "${GITHUB_SHA}" origin/main
 

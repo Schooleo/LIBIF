@@ -1,0 +1,37 @@
+name: CD Email Notification
+
+on:
+  workflow_run:
+    workflows: [Staging Images, Production]
+    types: [completed]
+
+permissions:
+  contents: read
+
+jobs:
+  email-cd-result:
+    name: Email deployment result
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout trusted notification script
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          persist-credentials: false
+
+      - name: Send CD result email
+        env:
+          NOTIFICATION_KIND: cd
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          SMTP_FROM: ${{ secrets.SMTP_FROM }}
+          SMTP_SECURE: ${{ secrets.SMTP_SECURE }}
+          CD_NOTIFICATION_EMAIL: ${{ secrets.CD_NOTIFICATION_EMAIL }}
+          CI_RESULTS_FALLBACK_EMAIL: ${{ secrets.CI_RESULTS_FALLBACK_EMAIL }}
+          STAGING_ACCESS_URL: ${{ vars.STAGING_ACCESS_URL }}
+          PRODUCTION_ACCESS_URL: ${{ vars.PRODUCTION_ACCESS_URL }}
+        run: python3 .github/scripts/send-ci-result-email.py
