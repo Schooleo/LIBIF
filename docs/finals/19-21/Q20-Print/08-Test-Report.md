@@ -1,91 +1,90 @@
-# TEST COMPLETION REPORT — LIBIF
+# BÁO CÁO HOÀN THÀNH KIỂM THỬ — LIBIF
 
 ## 1. Identification và executive decision
 
 | Trường | Giá trị |
 |---|---|
-| Report ID/version | `LIBIF-TR-[ ]` |
-| Test Plan/version | `[ ]` |
-| SUT release/tag/commit/image digest | `[ ]` |
-| Environment/dataset/time window | `[ ]` |
-| Overall conclusion | PASS / PASS WITH ACCEPTED RISK / FAIL / INCOMPLETE |
-| Release recommendation | GO / CONDITIONAL GO / NO-GO |
+| Mã báo cáo/phiên bản | `LIBIF-TR-[ ]` |
+| Kế hoạch Kiểm thử/version | `[ ]` |
+| Bản phát hành/thẻ/mã xác nhận/mã băm ảnh của SUT | `[ ]` |
+| Môi trường/bộ dữ liệu/thời gian kiểm thử | `[ ]` |
+| Kết luận chung | PASS / PASS WITH ACCEPTED RISK / FAIL / INCOMPLETE |
+| Phát hành recommendation | GO / CONDITIONAL GO / NO-GO |
 
-Lý do kết luận (3–5 câu, gắn exit criteria và residual risk): `[ĐIỀN]`.
+Lý do kết luận (3–5 câu, gắn tiêu chí kết thúc và rủi ro còn lại): `[ĐIỀN]`.
 
-## 2. Scope thực thi và deviations
+## 2. Phạm vi thực thi và sai lệch
 
-| Planned item/type | Planned | Executed | Not executed + reason | Deviation approval |
+| Kế hoạch hạng mục/type | Kế hoạch | Đã thực hiện | Not executed + reason | Deviation approval |
 |---|---:|---:|---|---|
 | | | | | |
 
-Mọi thay đổi environment/data/scope/threshold so với Test Plan phải ghi ảnh hưởng tới độ tin cậy của kết luận.
+Mọi thay đổi môi trường/dữ liệu/phạm vi/ngưỡng so với Kế hoạch Kiểm thử phải ghi ảnh hưởng tới độ tin cậy của kết luận.
 
 ## 3. Kết quả tổng hợp
 
-| Level/type | Total | Pass | Fail | Blocked | Skip/Not run | Pass rate* | Evidence |
+| Cấp độ/loại | Tổng | Đạt | Không đạt | Bị chặn | Bỏ qua/Chưa chạy | Tỷ lệ đạt* | Evidence |
 |---|---:|---:|---:|---:|---:|---:|---|
-| Unit | | | | | | | |
-| Integration | | | | | | | |
-| E2E/Regression | | | | | | | |
-| Security | | | | | | | |
-| Performance | | | | | | | |
+| Đơn vị | | | | | | | |
+| Tích hợp | | | | | | | |
+| E2E/Kiểm thử hồi quy | | | | | | | |
+| Bảo mật | | | | | | | |
+| Hiệu năng | | | | | | | |
 | UAT | | | | | | | |
 
-`Pass rate = Pass / Executed`, ghi rõ Executed có/không gồm Blocked. Không dùng pass rate nếu mẫu test/coverage không đại diện.
+`Tỷ lệ đạt = Đạt / Đã thực hiện`, ghi rõ Đã thực hiện có/không gồm Bị chặn. Không dùng đạt rate nếu mẫu test/coverage không đại diện.
 
-## 4. Requirement/risk coverage
+## 4. Độ bao phủ yêu cầu và rủi ro
 
-| PBI/AC | Risk | Planned/Executed | Final status | Defects | Evidence |
+| PBI/AC | Risk | Kế hoạch/Đã thực hiện | Trạng thái cuối | Lỗi | Evidence |
 |---|---|---:|---|---|---|
 | AC-01…AC-08 | | | | | |
 
-| Risk | Test response completed? | Result | Residual likelihood/impact | Risk owner/acceptance |
+| Rủi ro | Biện pháp kiểm thử đã hoàn thành? | Kết quả | Khả năng xảy ra/ảnh hưởng còn lại | Người phụ trách/chấp nhận rủi ro |
 |---|---|---|---|---|
 | TR-01…TR-08 | | | | |
 
-## 5. Defect analysis
+## 5. Phân tích lỗi
 
-| Severity | Raised | Closed | Reopened | Open | Deferred/accepted |
+| Mức nghiêm trọng | Đã ghi nhận | Đã đóng | Đã mở lại | Còn mở | Trì hoãn/đã chấp nhận |
 |---|---:|---:|---:|---:|---:|
-| Critical | | | | | |
-| High | | | | | |
-| Medium | | | | | |
-| Low | | | | | |
+| nghiêm trọng | | | | | |
+| cao | | | | | |
+| trung bình | | | | | |
+| thấp | | | | | |
 
-### Open defects / known limitations
+### Còn mở defects / known limitations
 
-| ID | Impact/workaround | Affected PBI/user | Decision/risk | Owner/target |
+| Mã | Ảnh hưởng/cách khắc phục tạm thời | PBI/người dùng bị ảnh hưởng | Quyết định/rủi ro | Người phụ trách/mục tiêu |
 |---|---|---|---|---|
 | | | | | |
 
-## 6. Quality objectives và exit criteria
+## 6. Quality objectives và tiêu chí kết thúc
 
-| Objective/criterion | Target | Actual | Met? | Evidence/rationale |
+| Objective/criterion | Mục tiêu | Thực tế | Met? | Evidence/lý do |
 |---|---:|---:|---|---|
-| Must-have AC pass | 100% | | | |
-| Critical/High open | 0 | | | |
-| Search p95 on baseline dataset | < 2s | | | |
-| Fresh install | Pass | | | |
-| DoD/release checklist | 100% required | | | |
+| Must-have AC đạt | 100% | | | |
+| nghiêm trọng/cao còn mở | 0 | | | |
+| Search p95 on đường cơ sở bộ dữ liệu | < 2s | | | |
+| Fresh install | Đạt | | | |
+| Danh sách kiểm tra DoD/phát hành | 100% mục bắt buộc | | | |
 
-## 7. Customer/UAT feedback
+## 7. Phản hồi khách hàng/UAT
 
-| Session/FB IDs | Accepted | Backlog/change | Rejected/deferred | Acceptance decision |
+| Session/FB IDs | Chấp nhận | Danh sách sản phẩm/change | Rejected/deferred | Chấp nhận decision |
 |---|---:|---:|---:|---|
 | | | | | |
 
-## 8. Lessons, follow-up và archive
+## 8. Bài học, hành động tiếp theo và lưu trữ
 
-- Test process/effectiveness observations: `[ ]`.
-- Escaped/flaky/environment causes và CAPA: `[issue, owner, due]`.
-- Archived artifacts: Test Plan, cases, RTM, raw results, logs, screenshots, defect export, inspection, feedback, config and checksums: `[links]`.
+- Kiểm thử process/effectiveness observations: `[ ]`.
+- Nguyên nhân lỗi lọt, kiểm thử thiếu ổn định hoặc sự cố môi trường và CAPA: `[vấn đề, người phụ trách, thời hạn]`.
+- Sản phẩm đã lưu trữ: Kế hoạch Kiểm thử, cases, RTM, raw results, logs, screenshots, lỗi export, inspection, phản hồi, config and checksums: `[links]`.
 
-## 9. Sign-off
+## 9. Xác nhận phê duyệt
 
-| Vai trò | Họ tên | Decision | Residual risk accepted | Ngày/link |
+| Vai trò | Họ tên | Quyết định | Rủi ro còn lại được chấp nhận | Ngày/link |
 |---|---|---|---|---|
-| QA/Test Lead | | | | |
+| QA/Kiểm thử Lead | | | | |
 | Tech Lead | | | | |
-| Product Owner | | | | |
-
+| Chủ sản phẩm | | | | |

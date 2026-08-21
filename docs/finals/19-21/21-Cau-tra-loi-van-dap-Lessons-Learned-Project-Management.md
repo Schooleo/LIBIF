@@ -2,41 +2,41 @@
 
 > Tách từ `19-20-21-Cau-tra-loi-van-dap.md`. Nội dung dựa trên ba PDF lý thuyết và hồ sơ LIBIF trong workspace. Chỉ khẳng định kết quả thực hiện khi có bằng chứng thật.
 
-# 21. LESSONS LEARNED REGISTER VÀ SOFTWARE PROJECT MANAGEMENT
+# 21. SỔ ĐĂNG KÝ BÀI HỌC KINH NGHIỆM VÀ QUẢN LÝ DỰ ÁN PHẦN MỀM
 
-## 21.1. Quá trình hình thành Lessons Learned Register
+## 21.1. Quá trình hình thành Sổ đăng ký Bài học Kinh nghiệm
 
-Lessons Learned Register không nên chờ đến cuối dự án mới viết. Nhóm tạo và cập nhật nó từ các sự kiện:
+Sổ đăng ký Bài học Kinh nghiệm không nên chờ đến cuối dự án mới viết. Nhóm tạo và cập nhật sổ từ các sự kiện:
 
-- Sprint Review/Retrospective.
-- Risk/issue/change/defect triage.
-- Sai lệch estimate, schedule, quality hoặc scope.
-- Code inspection, test completion, customer feedback và incident.
-- Milestone/release/project closure.
+- Rà soát Sprint và Cải tiến Sprint.
+- Hoạt động sàng lọc rủi ro, vấn đề, thay đổi và lỗi.
+- Sai lệch về ước lượng, lịch trình, chất lượng hoặc phạm vi.
+- Thanh tra mã nguồn, hoàn thành kiểm thử, phản hồi khách hàng và sự cố.
+- Các mốc quan trọng, đợt phát hành và kết thúc dự án.
 
 Quy trình:
 
-1. **Collect facts**: sự kiện, thời điểm, evidence và impact; tách fact khỏi opinion.
-2. **Describe outcome**: điều gì tốt, chưa tốt hoặc gây bất ngờ.
-3. **Analyze cause**: Five Whys, fishbone, brainstorming/mute mapping hoặc force-field analysis.
-4. **Formulate lesson** theo dạng điều kiện–hành động–kết quả, không chỉ “cần cố gắng hơn”.
-5. **Convert to action**: owner, due date, priority và artifact/process cần thay đổi.
-6. **Validate**: ở Sprint sau kiểm tra action có được áp dụng và metric có cải thiện không.
-7. **Share/archive**: lưu trong knowledge repository để dự án sau tái sử dụng.
+1. **Thu thập sự kiện**: ghi sự kiện, thời điểm, bằng chứng và ảnh hưởng; tách dữ kiện khỏi ý kiến.
+2. **Mô tả kết quả**: nêu điều đã làm tốt, chưa tốt hoặc gây bất ngờ.
+3. **Phân tích nguyên nhân**: dùng Năm câu hỏi Tại sao, sơ đồ xương cá, động não, lập bản đồ ý kiến thầm lặng hoặc phân tích trường lực.
+4. **Đúc kết bài học** theo dạng điều kiện – hành động – kết quả, không chỉ ghi “cần cố gắng hơn”.
+5. **Chuyển thành hành động**: xác định người phụ trách, thời hạn, mức ưu tiên và sản phẩm hoặc quy trình cần thay đổi.
+6. **Xác nhận hiệu quả**: ở Sprint sau, kiểm tra hành động đã được áp dụng chưa và chỉ số có cải thiện không.
+7. **Chia sẻ và lưu trữ**: lưu trong kho tri thức để các dự án sau tái sử dụng.
 
-Trường tối thiểu: Lesson ID, date/source, category, context, event, impact, root cause, what worked/did not work, recommendation, action/owner/due date, target project/Sprint, evidence, validation result, status và approver.
+Các trường tối thiểu gồm: mã bài học, ngày và nguồn, nhóm bài học, bối cảnh, sự kiện, ảnh hưởng, nguyên nhân gốc, điều làm tốt hoặc chưa tốt, khuyến nghị, hành động, người phụ trách, thời hạn, dự án hoặc Sprint áp dụng, bằng chứng, kết quả xác nhận, trạng thái và người phê duyệt.
 
-## 21.2. Lessons Learned Register được đánh giá thế nào?
+## 21.2. Sổ đăng ký Bài học Kinh nghiệm được đánh giá thế nào?
 
-- **Specific và evidence-based**: có sự kiện/metric/record, không phải nhận xét chung.
-- **Causal**: phân biệt triệu chứng và root cause.
-- **Actionable**: nêu hành động, owner, thời hạn và nơi cập nhật.
-- **Transferable**: nói rõ context/điều kiện để dự án khác biết khi nào áp dụng.
-- **Balanced**: ghi cả practice hiệu quả để tiếp tục và vấn đề cần sửa.
-- **Closed-loop**: action được theo dõi và validation ở Sprint/dự án sau.
-- **Psychological safety**: tập trung hệ thống/quy trình, không biến retrospective thành nơi đổ lỗi cá nhân.
+- **Cụ thể và có bằng chứng**: có sự kiện, chỉ số hoặc hồ sơ, không phải nhận xét chung chung.
+- **Thể hiện quan hệ nhân quả**: phân biệt triệu chứng với nguyên nhân gốc.
+- **Có thể hành động**: nêu rõ hành động, người phụ trách, thời hạn và nơi cần cập nhật.
+- **Có thể chuyển giao**: nói rõ bối cảnh và điều kiện để dự án khác biết khi nào áp dụng.
+- **Cân bằng**: ghi cả cách làm hiệu quả cần tiếp tục và vấn đề cần sửa.
+- **Khép kín vòng cải tiến**: hành động được theo dõi và xác nhận ở Sprint hoặc dự án sau.
+- **Bảo đảm an toàn tâm lý**: tập trung vào hệ thống và quy trình, không biến buổi Cải tiến Sprint thành nơi đổ lỗi cá nhân.
 
-Với LIBIF, ví dụ một lesson hợp lệ phải là: “Vì OCR accuracy phụ thuộc chất lượng scan, từ Sprint kế tiếp dataset phải version hóa theo DPI/language và có ground truth; QA owner kiểm tra trước benchmark.” Câu “OCR cần tốt hơn” chưa phải lesson actionable.
+Với LIBIF, một bài học hợp lệ có thể là: “Vì độ chính xác OCR phụ thuộc chất lượng bản quét, từ Sprint kế tiếp bộ dữ liệu phải được quản lý phiên bản theo độ phân giải DPI và ngôn ngữ, đồng thời có dữ liệu chuẩn để đối chiếu; người phụ trách QA kiểm tra trước khi đo chuẩn.” Câu “OCR cần tốt hơn” chưa phải một bài học có thể chuyển thành hành động.
 
 ## 21.3. Quản lý dự án là gì?
 
@@ -124,4 +124,3 @@ PMO giúp chuyển sang process-driven management bằng cách:
 Đánh đổi là chi phí và nguy cơ quan liêu. PMO tốt phải tailor mức kiểm soát theo quy mô/risk, hỗ trợ delivery thay vì chỉ yêu cầu biểu mẫu.
 
 ---
-

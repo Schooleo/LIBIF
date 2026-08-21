@@ -1,56 +1,55 @@
-# BIÊN BẢN CODE INSPECTION — LIBIF
+# BIÊN BẢN THANH TRA MÃ NGUỒN — LIBIF
 
 ## A. Thông tin phiên
 
 | Trường | Giá trị |
 |---|---|
-| Inspection ID / Date-time | `CI-[ ]` / `[ ]` |
+| Inspection ID / Ngày giờ | `CI-[ ]` / `[ ]` |
 | PBI/PR/commit | `[ ]` / `[URL]` / `[full SHA]` |
-| Module/files/LOC changed | `[ ]` |
-| Mục tiêu/risk | `[ ]` |
-| Author | `[ ]` |
-| Moderator / Reader / Recorder / Inspectors | `[ ]` |
-| Pre-check evidence | build `[ ]`; lint `[ ]`; tests `[ ]` |
+| Mô-đun/tệp/số dòng mã thay đổi | `[ ]` |
+| Mục tiêu/rủi ro | `[ ]` |
+| Tác giả | `[ ]` |
+| Điều phối viên / Người đọc / Người ghi biên bản / Người thanh tra | `[ ]` |
+| Pre-check bằng chứng | build `[ ]`; lint `[ ]`; tests `[ ]` |
 
-## B. Entry checklist
+## B. Danh sách kiểm tra đầu vào
 
-- [ ] Scope nhỏ và diff ổn định; author đã self-review.
-- [ ] Requirement/AC/design/risk có sẵn; build/static checks pass hoặc failure đã biết.
-- [ ] Reviewer độc lập với author; security-sensitive scope có reviewer phù hợp.
+- [ ] Phạm vi nhỏ và phần mã thay đổi ổn định; tác giả đã tự rà soát.
+- [ ] Yêu cầu/AC/thiết kế/rủi ro có sẵn; build/static checks đạt hoặc lỗi đã biết.
+- [ ] Người rà soát độc lập với tác giả; phạm vi nhạy cảm về bảo mật có người rà soát phù hợp.
 
-## C. Checklist inspection
+## C. Danh sách kiểm tra thanh tra
 
-- [ ] Correctness: code đáp ứng AC, boundary/error/state/concurrency đúng.
-- [ ] Design: dependency/module responsibility/API/schema nhất quán kiến trúc.
-- [ ] Maintainability: naming, duplication, complexity, dead code, comments có lý do.
-- [ ] Type/error/logging: không nuốt lỗi; log có context nhưng không lộ secret/PII.
-- [ ] Security: input/upload validation; authn + object-level authz; injection/path traversal; secret/key/nonce; crypto API; rate/abuse; audit.
-- [ ] Data/concurrency: transaction, idempotency, Redis lock/atomicity, retry/timeout.
-- [ ] Test quality: meaningful assertion, positive/negative/boundary, determinism, cleanup.
-- [ ] Operations: configuration, migration, observability, backward compatibility/rollback.
+- [ ] Tính đúng đắn: code đáp ứng AC, boundary/error/state/concurrency đúng.
+- [ ] Thiết kế: dependency/module responsibility/API/schema nhất quán kiến trúc.
+- [ ] Khả năng bảo trì: naming, duplication, complexity, dead code, comments có lý do.
+- [ ] Loại/error/logging: không nuốt lỗi; log có context nhưng không lộ secret/PII.
+- [ ] Bảo mật: input/upload validation; authn + object-level authz; injection/path traversal; secret/key/nonce; crypto API; rate/abuse; audit.
+- [ ] Dữ liệu/xử lý đồng thời: transaction, idempotency, Redis lock/atomicity, retry/timeout.
+- [ ] Chất lượng kiểm thử: phép khẳng định có ý nghĩa, trường hợp đúng/sai/biên, tính xác định và dọn dẹp dữ liệu.
+- [ ] Vận hành: configuration, migration, observability, backward compatibility/rollback.
 
-## D. Findings
+## D. Các phát hiện
 
-| Finding ID | File:line / symbol | Category | Severity | Observation + violated criterion | Recommended action | Owner | Due | Status / fix commit | Verification |
+| Phát hiện ID | File:line / symbol | Phân loại | Mức nghiêm trọng | Quan sát + violated criterion | Hành động đề xuất | Người phụ trách | Thời hạn | Trạng thái / mã xác nhận sửa lỗi | Xác minh |
 |---|---|---|---|---|---|---|---|---|---|
 | | | | | | | | | | |
 
-Severity: Critical/Major/Minor/Observation. Đây là severity của inspection finding, không tự động đồng nhất defect severity.
+Mức nghiêm trọng: nghiêm trọng/mức cao/Minor/Quan sát. Đây là severity của inspection phát hiện, không tự động đồng nhất lỗi severity.
 
 ## E. Kết luận và follow-up
 
-| Metric | Value |
+| Chỉ số | Giá trị |
 |---|---:|
 | Preparation / meeting / rework time | `[ ] / [ ] / [ ]` |
-| Findings Critical/Major/Minor | `[ ] / [ ] / [ ]` |
-| Decision | Accept / Accept after rework / Re-inspection required / Reject |
-| Open action IDs | `[ ]` |
+| Các phát hiện nghiêm trọng/mức cao/Minor | `[ ] / [ ] / [ ]` |
+| Quyết định | Chấp nhận / Chấp nhận sau khi làm lại / Yêu cầu thanh tra lại / Từ chối |
+| Còn mở action IDs | `[ ]` |
 
-Moderator chỉ đóng phiên sau khi kiểm tra fix commit và cập nhật từng finding. Đính kèm PR diff, CI log và ảnh/export approval; không chỉ chụp màn hình cuộc họp.
+Điều phối viên chỉ đóng phiên sau khi kiểm tra mã xác nhận sửa lỗi và cập nhật từng phát hiện. Đính kèm PR phần mã thay đổi, CI log và ảnh/bản xuất phê duyệt; không chỉ chụp màn hình cuộc họp.
 
 | Vai trò | Họ tên | Xác nhận | Ngày |
 |---|---|---|---|
-| Author | | | |
-| Moderator | | | |
+| Tác giả | | | |
+| Điều phối viên | | | |
 | Inspector | | | |
-
