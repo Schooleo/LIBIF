@@ -1,5 +1,11 @@
+export interface OcrPageText {
+  pageNumber: number;
+  text: string;
+}
+
 export interface OcrResult {
   text: string;
+  pages: OcrPageText[];
   method: 'EMBEDDED_TEXT' | 'OCR' | 'HYBRID';
   pageCount: number;
   language: string;

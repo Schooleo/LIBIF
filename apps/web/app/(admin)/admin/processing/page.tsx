@@ -1,7 +1,8 @@
 import { headers } from 'next/headers';
 import { PageHeader } from '../../../../components/layout';
 import { InlineAlert } from '../../../../components/ui';
-import { ProcessingQueue, type ProcessingJob } from '../../../../components/domain/processing/ProcessingQueue';
+import type { ProcessingJob } from '../../../../components/domain/processing/ProcessingQueue';
+import { ProcessingQueueTabs } from '../../../../components/domain/processing/ProcessingQueueTabs';
 import { getApiBaseUrl } from '../../../../lib/api-client';
 import { getDevAuthHeaders } from '../../../../lib/auth/session';
 
@@ -35,18 +36,9 @@ export default async function AdminProcessingPage() {
     loadError = (error as Error).message;
   }
 
-  const activeCount = jobs.filter((j) => j.status === 'QUEUED' || j.status === 'RUNNING').length;
-
   return (
     <section className="ui-stack">
-      <div className="flex justify-between items-center">
-        <PageHeader title="Processing Queue" />
-        {!loadError && (
-          <span className="text-sm font-semibold text-neutral-600 bg-neutral-100 px-3 py-1 rounded-full">
-            Active Jobs ({activeCount})
-          </span>
-        )}
-      </div>
+      <PageHeader title="Processing Queue" />
 
       {loadError ? (
         <InlineAlert tone="error">
@@ -55,7 +47,7 @@ export default async function AdminProcessingPage() {
       ) : null}
       {!loadError && (
         <section className="ui-stack" aria-label="Processing jobs">
-          <ProcessingQueue jobs={jobs} />
+          <ProcessingQueueTabs jobs={jobs} />
         </section>
       )}
     </section>

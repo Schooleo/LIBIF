@@ -1455,7 +1455,7 @@
             "name": "q",
             "required": false,
             "in": "query",
-            "description": "Full-text search over title and isbn",
+            "description": "Full-text search over published titles, ISBNs, and processed document text.",
             "schema": {
               "type": "string"
             }
@@ -2415,6 +2415,52 @@
           }
         ],
         "summary": "Get protected document manifest metadata for reader canvas viewing.",
+        "tags": [
+          "Access"
+        ]
+      }
+    },
+    "/api/access/documents/{documentId}/search": {
+      "get": {
+        "operationId": "searchDocumentText",
+        "parameters": [
+          {
+            "name": "documentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "q",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "minLength": 2,
+              "maxLength": 100,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentPageSearchResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Search authorized document text and return up to five matching pages.",
         "tags": [
           "Access"
         ]
@@ -6107,6 +6153,59 @@
           "minZoom",
           "maxZoom",
           "pages"
+        ]
+      },
+      "DocumentPageSearchResultDto": {
+        "type": "object",
+        "properties": {
+          "pageNumber": {
+            "type": "number"
+          },
+          "matchCount": {
+            "type": "number"
+          },
+          "snippet": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "pageNumber",
+          "matchCount"
+        ]
+      },
+      "DocumentPageSearchResponseDto": {
+        "type": "object",
+        "properties": {
+          "available": {
+            "type": "boolean"
+          },
+          "query": {
+            "type": "string"
+          },
+          "results": {
+            "maxItems": 5,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DocumentPageSearchResultDto"
+            }
+          },
+          "totalMatches": {
+            "type": "number"
+          },
+          "totalPagesWithMatches": {
+            "type": "number"
+          },
+          "truncated": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "available",
+          "query",
+          "results",
+          "totalMatches",
+          "totalPagesWithMatches",
+          "truncated"
         ]
       },
       "ProtectedDocumentUrlDto": {

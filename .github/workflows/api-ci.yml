@@ -1,6 +1,7 @@
 name: API CI
 
 on:
+  workflow_call:
   pull_request:
     branches: [main, dev]
     paths:
@@ -9,24 +10,54 @@ on:
       - 'docker/api.Dockerfile'
       - '.dockerignore'
       - '.env.example'
+      - '.env.production.example'
+      - '.env.azure.production.example'
+      - '.env.staging.example'
       - 'docker-compose.yml'
+      - 'docker-compose.staging.yml'
+      - 'docker-compose.production.yml'
+      - 'docker-compose.azure.yml'
+      - 'docker/nginx/**'
+      - 'docker/tailscale/**'
+      - 'docker/caddy/**'
+      - 'infra/azure/**'
+      - 'scripts/azure/**'
+      - 'scripts/staging/**'
+      - 'Makefile'
       - 'package.json'
       - 'package-lock.json'
       - '.github/scripts/npm-ci-with-retry.sh'
       - '.github/workflows/api-ci.yml'
+      - '.github/workflows/staging.yml'
+      - '.github/workflows/production.yml'
   push:
-    branches: [main, dev]
+    branches: [dev]
     paths:
       - 'apps/api/**'
       - 'packages/shared/**'
       - 'docker/api.Dockerfile'
       - '.dockerignore'
       - '.env.example'
+      - '.env.production.example'
+      - '.env.azure.production.example'
+      - '.env.staging.example'
       - 'docker-compose.yml'
+      - 'docker-compose.staging.yml'
+      - 'docker-compose.production.yml'
+      - 'docker-compose.azure.yml'
+      - 'docker/nginx/**'
+      - 'docker/tailscale/**'
+      - 'docker/caddy/**'
+      - 'infra/azure/**'
+      - 'scripts/azure/**'
+      - 'scripts/staging/**'
+      - 'Makefile'
       - 'package.json'
       - 'package-lock.json'
       - '.github/scripts/npm-ci-with-retry.sh'
       - '.github/workflows/api-ci.yml'
+      - '.github/workflows/staging.yml'
+      - '.github/workflows/production.yml'
 
 permissions:
   contents: read
@@ -36,6 +67,29 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  lint:
+    name: Lint API
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: .github/scripts/npm-ci-with-retry.sh
+
+      - name: Lint shared contracts and API
+        run: |
+          npm run lint -w packages/shared
+          npm run lint -w apps/api
+
   build:
     name: Build API
     runs-on: ubuntu-latest
@@ -121,9 +175,44 @@ jobs:
       - name: Run worker integration gate
         run: npm run test:worker
 
+  e2e:
+    name: Test API end to end
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install PDF and image tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes poppler-utils imagemagick
+
+      - name: Install dependencies
+        run: .github/scripts/npm-ci-with-retry.sh
+
+      - name: Prepare CI environment
+        run: cp .env.example .env
+
+      - name: Start API test infrastructure
+        run: docker compose up --detach --wait
+
+      - name: Apply database migrations
+        run: npm run prisma:migrate:deploy -w apps/api
+
+      - name: Run API end-to-end tests
+        run: npm run test:e2e
+
   publish-dev:
-    name: Publish API integration image
-    needs: [build, test, worker-integration]
+    name: Publish dev testing images
+    needs: [lint, build, test, worker-integration, e2e]
     if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -146,7 +235,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Generate image metadata
-        id: metadata
+        id: api-metadata
         uses: docker/metadata-action@v6
         with:
           images: ghcr.io/${{ github.repository_owner }}/libif-api
@@ -154,15 +243,36 @@ jobs:
             latest=false
           tags: |
             type=raw,value=latest
-            type=raw,value=${{ github.sha }}
 
-      - name: Build and publish image
+      - name: Build and publish API and worker image
         uses: docker/build-push-action@v6
         with:
           context: .
           file: docker/api.Dockerfile
           push: true
-          tags: ${{ steps.metadata.outputs.tags }}
-          labels: ${{ steps.metadata.outputs.labels }}
+          tags: ${{ steps.api-metadata.outputs.tags }}
+          labels: ${{ steps.api-metadata.outputs.labels }}
+          cache-from: type=gha,scope=api
+          cache-to: type=gha,mode=max,scope=api
+
+      - name: Generate migration image metadata
+        id: migrate-metadata
+        uses: docker/metadata-action@v6
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/libif-migrate
+          flavor: |
+            latest=false
+          tags: |
+            type=raw,value=latest
+
+      - name: Build and publish migration image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/api.Dockerfile
+          target: build
+          push: true
+          tags: ${{ steps.migrate-metadata.outputs.tags }}
+          labels: ${{ steps.migrate-metadata.outputs.labels }}
           cache-from: type=gha,scope=api
           cache-to: type=gha,mode=max,scope=api

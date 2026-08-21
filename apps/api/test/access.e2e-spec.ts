@@ -16,6 +16,9 @@ class FakeProcessingQueue {
 }
 
 describe('AccessModule (e2e)', () => {
+  const originalReaderPageRateLimit = process.env.READER_PAGE_RATE_LIMIT_PER_MIN;
+  const originalReaderImpossibleRate = process.env.READER_IMPOSSIBLE_RATE_PER_MIN;
+  const originalReaderInvalidProbeLimit = process.env.READER_MAX_INVALID_PROBES;
   let app: INestApplication;
   let prisma: PrismaService;
   let hasher: PasswordHasher;
@@ -30,6 +33,9 @@ describe('AccessModule (e2e)', () => {
   beforeAll(async () => {
     process.env.LIBIF_SCRYPT_N = '1024';
     process.env.LIBIF_ENABLE_DEV_AUTH = 'false';
+    process.env.READER_PAGE_RATE_LIMIT_PER_MIN = '30';
+    process.env.READER_IMPOSSIBLE_RATE_PER_MIN = '60';
+    process.env.READER_MAX_INVALID_PROBES = '5';
 
     const moduleRef = await Test.createTestingModule({ imports: [AppModule] })
       .overrideProvider(ProcessingQueue)
@@ -132,6 +138,9 @@ describe('AccessModule (e2e)', () => {
     await clearReaderAccessRateKeys();
     await app.close();
     await prisma.$disconnect();
+    restoreEnvironment('READER_PAGE_RATE_LIMIT_PER_MIN', originalReaderPageRateLimit);
+    restoreEnvironment('READER_IMPOSSIBLE_RATE_PER_MIN', originalReaderImpossibleRate);
+    restoreEnvironment('READER_MAX_INVALID_PROBES', originalReaderInvalidProbeLimit);
   });
 
   beforeEach(async () => {
@@ -339,5 +348,13 @@ async function clearReaderAccessRateKeys(): Promise<void> {
     }
   } finally {
     await redis.quit();
+  }
+}
+
+function restoreEnvironment(name: string, value: string | undefined): void {
+  if (value === undefined) {
+    delete process.env[name];
+  } else {
+    process.env[name] = value;
   }
 }

@@ -15,7 +15,7 @@ export class AuthCookieService {
   setSessionCookie(response: Response, token: string, expiresAt: Date): void {
     response.cookie(SESSION_COOKIE_NAME, token, {
       httpOnly: true,
-      secure: this.isProduction(),
+      secure: this.isSecureCookie(),
       sameSite: 'lax',
       path: '/',
       expires: expiresAt,
@@ -26,7 +26,7 @@ export class AuthCookieService {
   clearSessionCookie(response: Response): void {
     response.clearCookie(SESSION_COOKIE_NAME, {
       httpOnly: true,
-      secure: this.isProduction(),
+      secure: this.isSecureCookie(),
       sameSite: 'lax',
       path: '/',
       domain: this.cookieDomain()
@@ -38,7 +38,10 @@ export class AuthCookieService {
     return domain || undefined;
   }
 
-  private isProduction(): boolean {
+  private isSecureCookie(): boolean {
+    const configured = this.config.get<string>('LIBIF_SESSION_COOKIE_SECURE')?.trim().toLowerCase();
+    if (configured === 'true') return true;
+    if (configured === 'false') return false;
     return this.config.get('NODE_ENV') === 'production';
   }
 }

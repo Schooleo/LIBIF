@@ -16,6 +16,7 @@ export type StatusKey =
   | 'validation_failed'
   | 'failed'
   | 'cancelled'
+  | 'superseded'
   | 'queued'
   | 'compressing'
   | 'performing_ocr'
@@ -67,6 +68,7 @@ export const statusConfig: Record<StatusKey, StatusConfig> = {
   validation_failed: { label: 'Validation failed', tone: 'error', marker: '●' },
   failed: { label: 'Failed', tone: 'error', marker: '●' },
   cancelled: { label: 'Cancelled', tone: 'neutral', marker: '◌' },
+  superseded: { label: 'Superseded', tone: 'neutral', marker: '◌' },
 
   queued: { label: 'Queued', tone: 'neutral', marker: '○' },
   compressing: { label: 'Compressing', tone: 'info', marker: '●' },

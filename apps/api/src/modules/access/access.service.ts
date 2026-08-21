@@ -16,6 +16,7 @@ import {
   ReaderAccessRiskLevel,
 } from '../../generated/prisma/client';
 import { PrismaService } from '../database/prisma.service';
+import { DocumentTextSearchService } from '../processing/document-text-search.service';
 import {
   PROTECTED_PAGE_RENDERER,
   ProtectedPageRenderer,
@@ -61,6 +62,7 @@ export class AccessService {
     private readonly storage: StorageService,
     private readonly auditService: ReaderAccessAuditService,
     private readonly rateLimitService: ReaderRateLimitService,
+    private readonly documentTextSearch: DocumentTextSearchService,
     @Inject(PROTECTED_PAGE_RENDERER)
     private readonly pageRenderer: ProtectedPageRenderer,
     @Optional() @Inject(ConfigService) config?: ConfigService,
@@ -159,6 +161,27 @@ export class AccessService {
       maxZoom: 2.0,
       pages,
     };
+  }
+
+  async searchDocumentText(
+    userId: string,
+    userRole: string,
+    documentId: string,
+    query: string
+  ) {
+    const decision = await this.getAccessDecision(userId, userRole, documentId);
+    if (!decision.allowed) {
+      await this.recordDeniedAccessEvent({
+        userId,
+        documentId,
+        reasonCode: denialReasonCode(decision.documentStatus)
+      });
+      throw new ForbiddenException(decision.reason || 'Access denied for document search');
+    }
+
+    return this.documentTextSearch.searchDocument(documentId, query, {
+      includeSnippets: isStaffRole(userRole)
+    });
   }
 
   async getProtectedPage(

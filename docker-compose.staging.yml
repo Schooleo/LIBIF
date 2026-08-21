@@ -1,0 +1,194 @@
+name: ${COMPOSE_PROJECT_NAME:-libif-staging}
+
+x-api-environment: &api-environment
+  NODE_ENV: production
+  DATABASE_URL: postgresql://${POSTGRES_USER:?Set POSTGRES_USER in .env.staging}:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env.staging}@postgres:5432/${POSTGRES_DB:?Set POSTGRES_DB in .env.staging}?schema=public
+  REDIS_URL: redis://:${REDIS_PASSWORD:?Set REDIS_PASSWORD in .env.staging}@redis:6379
+  S3_ENDPOINT: http://minio:9000
+  S3_REGION: ${S3_REGION:-us-east-1}
+  S3_BUCKET: ${S3_BUCKET:-libif-pdfs}
+  S3_ACCESS_KEY_ID: ${MINIO_ROOT_USER:?Set MINIO_ROOT_USER in .env.staging}
+  S3_SECRET_ACCESS_KEY: ${MINIO_ROOT_PASSWORD:?Set MINIO_ROOT_PASSWORD in .env.staging}
+  LIBIF_WEB_BASE_URL: ${LIBIF_STAGING_BASE_URL:?Set LIBIF_STAGING_BASE_URL in .env.staging}
+  LIBIF_CORS_ORIGINS: ${LIBIF_CORS_ORIGINS:-}
+  LIBIF_ENABLE_DEV_AUTH: "false"
+  LIBIF_ALLOW_IN_MEMORY_READER_LIMITS: "false"
+  LIBIF_TRUST_PROXY: "true"
+  LIBIF_SESSION_COOKIE_SECURE: "true"
+  LIBIF_SOURCE_ACCESS_TOKEN_SECRET: ${LIBIF_SOURCE_ACCESS_TOKEN_SECRET:?Set LIBIF_SOURCE_ACCESS_TOKEN_SECRET in .env.staging}
+  SMTP_HOST: ${SMTP_HOST:-}
+  SMTP_PORT: ${SMTP_PORT:-587}
+  SMTP_USERNAME: ${SMTP_USERNAME:-}
+  SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+  SMTP_FROM: ${SMTP_FROM:-}
+  SMTP_SECURE: ${SMTP_SECURE:-starttls}
+  API_PORT: "3001"
+
+services:
+  postgres:
+    image: postgres:18.4-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?Set POSTGRES_USER in .env.staging}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env.staging}
+      POSTGRES_DB: ${POSTGRES_DB:?Set POSTGRES_DB in .env.staging}
+    volumes:
+      - staging_postgres_data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+
+  redis:
+    image: redis:8.8.0-alpine
+    command:
+      - redis-server
+      - --appendonly
+      - "yes"
+      - --requirepass
+      - ${REDIS_PASSWORD:?Set REDIS_PASSWORD in .env.staging}
+    environment:
+      REDISCLI_AUTH: ${REDIS_PASSWORD:?Set REDIS_PASSWORD in .env.staging}
+    volumes:
+      - staging_redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+
+  minio:
+    image: minio/minio:RELEASE.2025-09-07T16-13-09Z
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:?Set MINIO_ROOT_USER in .env.staging}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?Set MINIO_ROOT_PASSWORD in .env.staging}
+    volumes:
+      - staging_minio_data:/data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+
+  migrate:
+    image: ghcr.io/${LIBIF_GHCR_NAMESPACE:?Set LIBIF_GHCR_NAMESPACE in .env.staging}/libif-migrate:${LIBIF_STAGING_RELEASE_SHA:?Set LIBIF_STAGING_RELEASE_SHA in .env.staging}
+    command: npx prisma migrate deploy --config apps/api/prisma.config.ts
+    environment: *api-environment
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+
+  seed:
+    image: ghcr.io/${LIBIF_GHCR_NAMESPACE:?Set LIBIF_GHCR_NAMESPACE in .env.staging}/libif-migrate:${LIBIF_STAGING_RELEASE_SHA:?Set LIBIF_STAGING_RELEASE_SHA in .env.staging}
+    working_dir: /app/apps/api
+    command: npx tsx prisma/seed.ts
+    environment:
+      <<: *api-environment
+      LIBIF_SEED_ADMIN_PASSWORD: ${STAGING_ADMIN_PASSWORD:?Set STAGING_ADMIN_PASSWORD in .env.staging}
+      LIBIF_SEED_LIBRARIAN_PASSWORD: ${STAGING_LIBRARIAN_PASSWORD:?Set STAGING_LIBRARIAN_PASSWORD in .env.staging}
+      LIBIF_SEED_READER_PASSWORD: ${STAGING_READER_PASSWORD:?Set STAGING_READER_PASSWORD in .env.staging}
+      LIBIF_SEED_READER2_PASSWORD: ${STAGING_READER2_PASSWORD:?Set STAGING_READER2_PASSWORD in .env.staging}
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      minio:
+        condition: service_healthy
+    restart: "no"
+    profiles: ["seed"]
+
+  api:
+    image: ghcr.io/${LIBIF_GHCR_NAMESPACE:?Set LIBIF_GHCR_NAMESPACE in .env.staging}/libif-api:${LIBIF_STAGING_RELEASE_SHA:?Set LIBIF_STAGING_RELEASE_SHA in .env.staging}
+    environment: *api-environment
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      minio:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3001/api/health').then((response) => process.exit(response.ok ? 0 : 1)).catch(() => process.exit(1))"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+
+  worker:
+    image: ghcr.io/${LIBIF_GHCR_NAMESPACE:?Set LIBIF_GHCR_NAMESPACE in .env.staging}/libif-api:${LIBIF_STAGING_RELEASE_SHA:?Set LIBIF_STAGING_RELEASE_SHA in .env.staging}
+    command: node apps/api/dist/src/worker.main.js
+    environment: *api-environment
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      minio:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  web:
+    image: ghcr.io/${LIBIF_GHCR_NAMESPACE:?Set LIBIF_GHCR_NAMESPACE in .env.staging}/libif-web:${LIBIF_STAGING_RELEASE_SHA:?Set LIBIF_STAGING_RELEASE_SHA in .env.staging}
+    environment:
+      NODE_ENV: production
+      NEXT_PUBLIC_API_BASE_URL: ""
+      INTERNAL_API_BASE_URL: http://api:3001
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000').then((response) => process.exit(response.ok ? 0 : 1)).catch(() => process.exit(1))"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+
+  tailscale:
+    image: tailscale/tailscale:v1.98.9
+    hostname: ${TAILSCALE_HOSTNAME:-libif-staging}
+    environment:
+      TS_AUTHKEY: ${TAILSCALE_AUTHKEY:?Set TAILSCALE_AUTHKEY in .env.staging}
+      TS_AUTH_ONCE: "true"
+      TS_ACCEPT_DNS: "false"
+      TS_HOSTNAME: ${TAILSCALE_HOSTNAME:-libif-staging}
+      TS_SERVE_CONFIG: /config/funnel.json
+      TS_STATE_DIR: /var/lib/tailscale
+      TS_USERSPACE: "false"
+    volumes:
+      - staging_tailscale_data:/var/lib/tailscale
+      # Tailscale watches the containing directory for Serve/Funnel updates.
+      - ./docker/tailscale:/config:ro
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:1.29.1-alpine
+    network_mode: service:tailscale
+    volumes:
+      - ./docker/nginx/staging.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      tailscale:
+        condition: service_started
+      api:
+        condition: service_healthy
+      web:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--spider", "http://127.0.0.1:8080/api/health"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+
+volumes:
+  staging_postgres_data:
+  staging_redis_data:
+  staging_minio_data:
+  staging_tailscale_data:

@@ -1,6 +1,7 @@
 import { Inject, Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Job, Worker } from 'bullmq';
+import { createHash } from 'node:crypto';
 import {
   BookAuditAction,
   BookFileStatus,
@@ -68,9 +69,10 @@ export class ProcessingProcessor implements OnModuleInit, OnModuleDestroy {
 
   async processJob(job: Job<BookUploadedEvent>): Promise<void> {
     const { processingJobId, bookId, fileId } = job.data;
-    const artifactKey = `artifacts/${bookId}/${fileId}/${processingJobId}/extracted.txt`;
+    const extractedTextKey = `artifacts/${bookId}/${fileId}/${processingJobId}/extracted.txt`;
+    const pageTextKey = `artifacts/${bookId}/${fileId}/${processingJobId}/page-text.json`;
     let claimed = false;
-    let artifactUploaded = false;
+    const uploadedArtifactKeys: string[] = [];
 
     this.logger.log(`Processing job ${processingJobId} for book ${bookId}`);
 
@@ -115,8 +117,8 @@ export class ProcessingProcessor implements OnModuleInit, OnModuleDestroy {
 
       await this.assertJobIsCurrent(processingJobId, fileId);
       const textBuffer = Buffer.from(ocrResult.text, 'utf8');
-      await this.storage.putObject(dbJob.bookFile.bucket, artifactKey, textBuffer, 'text/plain');
-      artifactUploaded = true;
+      await this.storage.putObject(dbJob.bookFile.bucket, extractedTextKey, textBuffer, 'text/plain');
+      uploadedArtifactKeys.push(extractedTextKey);
       await this.assertJobIsCurrent(processingJobId, fileId);
 
       await this.prisma.processingArtifact.upsert({
@@ -132,7 +134,7 @@ export class ProcessingProcessor implements OnModuleInit, OnModuleDestroy {
           kind: ProcessingArtifactKind.EXTRACTED_TEXT,
           extractionMethod: ocrResult.method as TextExtractionMethod,
           bucket: dbJob.bookFile.bucket,
-          objectKey: artifactKey,
+          objectKey: extractedTextKey,
           mimeType: 'text/plain',
           sizeBytes: BigInt(textBuffer.byteLength),
           checksumSha256: ocrResult.checksumSha256,
@@ -150,6 +152,43 @@ export class ProcessingProcessor implements OnModuleInit, OnModuleDestroy {
         }
       });
 
+      const pageTextBuffer = Buffer.from(JSON.stringify({ version: 1, pages: ocrResult.pages }), 'utf8');
+      const pageTextChecksum = createHash('sha256').update(pageTextBuffer).digest('hex');
+      await this.storage.putObject(dbJob.bookFile.bucket, pageTextKey, pageTextBuffer, 'application/json');
+      uploadedArtifactKeys.push(pageTextKey);
+      await this.assertJobIsCurrent(processingJobId, fileId);
+
+      await this.prisma.processingArtifact.upsert({
+        where: {
+          processingJobId_kind: {
+            processingJobId,
+            kind: ProcessingArtifactKind.OCR_LAYOUT
+          }
+        },
+        create: {
+          processingJobId,
+          bookFileId: fileId,
+          kind: ProcessingArtifactKind.OCR_LAYOUT,
+          extractionMethod: ocrResult.method as TextExtractionMethod,
+          bucket: dbJob.bookFile.bucket,
+          objectKey: pageTextKey,
+          mimeType: 'application/json',
+          sizeBytes: BigInt(pageTextBuffer.byteLength),
+          checksumSha256: pageTextChecksum,
+          language: ocrResult.language,
+          pageCount: ocrResult.pageCount,
+          metadata: { schemaVersion: 1 }
+        },
+        update: {
+          extractionMethod: ocrResult.method as TextExtractionMethod,
+          sizeBytes: BigInt(pageTextBuffer.byteLength),
+          checksumSha256: pageTextChecksum,
+          language: ocrResult.language,
+          pageCount: ocrResult.pageCount,
+          metadata: { schemaVersion: 1 }
+        }
+      });
+
       await this.setStage(processingJobId, 'indexing', 80);
       await this.completeJob(processingJobId, bookId, fileId, ocrResult.text);
       this.logger.log(`ProcessingJob ${processingJobId} completed successfully.`);
@@ -164,7 +203,7 @@ export class ProcessingProcessor implements OnModuleInit, OnModuleDestroy {
       if (error instanceof ProcessingJobAbortedError) {
         this.logger.warn(`ProcessingJob ${processingJobId} stopped without mutation: ${error.message}`);
         if (claimed) {
-          await this.cleanupStaleArtifact(processingJobId, dbJob.bookFile.bucket, artifactKey, artifactUploaded);
+          await this.cleanupStaleArtifacts(processingJobId, dbJob.bookFile.bucket, uploadedArtifactKeys);
         }
         return;
       }
@@ -179,7 +218,7 @@ export class ProcessingProcessor implements OnModuleInit, OnModuleDestroy {
         `ProcessingJob ${processingJobId} failed: ${errorMessage(error)}`,
         error instanceof Error ? error.stack : undefined
       );
-      await this.cleanupStaleArtifact(processingJobId, dbJob.bookFile.bucket, artifactKey, artifactUploaded);
+      await this.cleanupStaleArtifacts(processingJobId, dbJob.bookFile.bucket, uploadedArtifactKeys);
       const failed = await this.failRunningJob(processingJobId, bookId, safeMessage);
       if (failed) {
         try {
@@ -370,16 +409,13 @@ export class ProcessingProcessor implements OnModuleInit, OnModuleDestroy {
     });
   }
 
-  private async cleanupStaleArtifact(
+  private async cleanupStaleArtifacts(
     processingJobId: string,
     bucket: string,
-    artifactKey: string,
-    artifactUploaded: boolean
+    artifactKeys: string[]
   ): Promise<void> {
     await this.prisma.processingArtifact.deleteMany({ where: { processingJobId } });
-    if (artifactUploaded) {
-      await this.storage.deleteObject(bucket, artifactKey);
-    }
+    await Promise.all(artifactKeys.map((artifactKey) => this.storage.deleteObject(bucket, artifactKey)));
   }
 
   private async notifyReviewers(title: string, bookId: string, processingJobId: string): Promise<void> {

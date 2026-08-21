@@ -9,6 +9,7 @@ import {
   ReaderAccessRiskLevel,
 } from '../../generated/prisma/client';
 import { PrismaService } from '../database/prisma.service';
+import { DocumentTextSearchService } from '../processing/document-text-search.service';
 import {
   PROTECTED_PAGE_RENDERER,
   type ProtectedPageRenderer,
@@ -27,6 +28,7 @@ describe('AccessService', () => {
   let auditService: { recordEvent: jest.Mock };
   let rateLimitService: { checkPageAccessRate: jest.Mock };
   let pageRenderer: jest.Mocked<ProtectedPageRenderer>;
+  let documentTextSearch: { searchDocument: jest.Mock };
 
   const makeBook = (id: string, status: string) => ({
     id,
@@ -65,6 +67,16 @@ describe('AccessService', () => {
     const mockStorage = { getObjectBuffer: jest.fn() };
     auditService = { recordEvent: jest.fn().mockResolvedValue({ id: 'evt-1' }) };
     rateLimitService = { checkPageAccessRate: jest.fn().mockResolvedValue({ allowed: true }) };
+    documentTextSearch = {
+      searchDocument: jest.fn().mockResolvedValue({
+        available: true,
+        query: 'keyword',
+        results: [{ pageNumber: 2, matchCount: 1 }],
+        totalMatches: 1,
+        totalPagesWithMatches: 1,
+        truncated: false
+      })
+    };
     pageRenderer = {
       renderBasePage: jest.fn().mockResolvedValue({
         content: Buffer.from('base'),
@@ -93,6 +105,7 @@ describe('AccessService', () => {
         { provide: StorageService, useValue: mockStorage },
         { provide: ReaderAccessAuditService, useValue: auditService },
         { provide: ReaderRateLimitService, useValue: rateLimitService },
+        { provide: DocumentTextSearchService, useValue: documentTextSearch },
         { provide: PROTECTED_PAGE_RENDERER, useValue: pageRenderer },
       ],
     }).compile();
@@ -157,6 +170,29 @@ describe('AccessService', () => {
     expect(auditService.recordEvent).toHaveBeenCalledWith(
       expect.objectContaining({ eventType: ReaderAccessEventType.VIEWER_OPENED }),
     );
+  });
+
+  it('allows Reader page search for published documents without snippets', async () => {
+    await service.searchDocumentText('user-1', 'READER', 'pub-1', 'keyword');
+
+    expect(documentTextSearch.searchDocument).toHaveBeenCalledWith('pub-1', 'keyword', {
+      includeSnippets: false
+    });
+  });
+
+  it('includes snippets for staff page search on unpublished documents', async () => {
+    await service.searchDocumentText('admin-1', 'ADMIN', 'pending-approval-1', 'keyword');
+
+    expect(documentTextSearch.searchDocument).toHaveBeenCalledWith('pending-approval-1', 'keyword', {
+      includeSnippets: true
+    });
+  });
+
+  it('denies Reader page search for unpublished documents', async () => {
+    await expect(
+      service.searchDocumentText('user-1', 'READER', 'pending-approval-1', 'keyword')
+    ).rejects.toThrow(ForbiddenException);
+    expect(documentTextSearch.searchDocument).not.toHaveBeenCalled();
   });
 
   it('records a bounded denial event when manifest access is denied', async () => {

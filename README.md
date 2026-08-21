@@ -50,35 +50,69 @@ OCR stays inside the LIBIF deployment boundary: Redis jobs contain database iden
 
 API runs on `http://localhost:3001` and web runs on the Next.js dev port, usually `http://localhost:3000`.
 
-### Self-contained local Docker stack
+### Production deployment
 
-`docker-compose.local.yml` starts PostgreSQL, Redis, MinIO, the migration job, API, worker, web app, Nginx, and a shared Tailscale demonstration machine. Seeding is intentionally separate so routine restarts do not mutate local workflow data or reset development-account passwords. Tailscale persists its identity in the ignored `./tailscale-data` directory. Nginx shares the Tailscale network namespace and accepts requests exclusively for `libif.local.com`; no LIBIF service publishes a host port.
+LIBIF supports two production layouts:
 
-Set `TAILSCALE_AUTHKEY` in `.env` to a reusable, non-ephemeral auth key and ask teammates to map the Tailscale machine's `tailscale ip -4` address to `libif.local.com` (or publish the same mapping through your shared DNS):
+1. **One Linux VPS:** `docker-compose.production.yml` keeps the Next.js frontend, NestJS API, BullMQ OCR worker, PostgreSQL, authenticated persistent Redis, MinIO, migrations, and a Caddy HTTPS edge together. Copy `.env.production.example` to the ignored `.env.production`, replace every placeholder, point `LIBIF_HOSTNAME` at the VPS, then run `make production-config` and `make production-up`. Only ports 80/443 are published; Caddy automatically provisions and renews the public certificate. See the [free VPS comparison and production runbook](docs/deployment/free-vps.md).
+2. **Vercel frontend + Azure backend:** deploy the frontend to Vercel and keep the API, OCR worker, PostgreSQL, Redis, MinIO, migrations, and API HTTPS edge on one Azure Linux VM. `docker-compose.azure.yml` disables the VPS web edge and selects the backend-only model. Bicep provisions the VM and a GitHub OIDC identity; semantic release tags in the strict `vMAJOR.MINOR.PATCH` form (for example, `v1.2.3`) publish matching GHCR images and deploy only after the API and web quality gates pass. Release tags must point to commits already contained in `main`. See the [Azure for Students deployment guide](docs/deployment/azure-students.md).
 
-```text
-<tailscale-machine-ip> libif.local.com
-```
+Vercel supports NestJS, but LIBIF uses Vercel for the Next.js frontend only. The NestJS API and BullMQ OCR worker remain on a container platform with PostgreSQL, Redis, MinIO-compatible private storage, Poppler, and ImageMagick. The worker is a persistent queue consumer and the document pipeline can exceed Vercel Function request, bundle, and payload limits, so adapting only the HTTP controller surface to serverless functions would not produce a complete LIBIF backend deployment.
 
-Then build and start the stack:
+Create one Vercel project with `apps/web` as its Root Directory and keep **Include source files outside of the Root Directory** enabled so the web workspace can use `packages/shared`. `apps/web/vercel.json` selects Next.js, builds the web workspace from the monorepo root, and disables Vercel's automatic `main` deployment. Preview branches may still use Vercel Git deployments.
+
+The `Production` GitHub Actions workflow is the only automated Vercel/Azure production deployment path. Create and push a strict semantic release tag from a validated `main` commit—for example, `git tag v1.2.3 && git push origin v1.2.3`. The workflow rejects tags with suffixes such as `v1.2.3-beta.1` and tags whose commits are not contained in `main`. It then calls the complete API and web CI workflows—including lint, unit/component tests, API end-to-end tests, worker integration, and production builds—before deploying the tagged frontend to Vercel and the identically tagged backend images to Azure.
+
+Configure these GitHub Actions secrets:
+
+| Secret | Purpose |
+|---|---|
+| `VERCEL_TOKEN` | Vercel access token used by the production workflow. |
+| `VERCEL_ORG_ID` | Vercel account or team ID that owns the web project. |
+| `VERCEL_WEB_PROJECT_ID` | Vercel project ID for the `apps/web` project. |
+
+Configure `NEXT_PUBLIC_API_BASE_URL` and `INTERNAL_API_BASE_URL` in the Vercel project's Production environment to the externally hosted API URL. Use frontend and API custom hostnames under the same registrable domain (for example, `library.example.edu` and `api.example.edu`) so the API's secure `SameSite=Lax` session cookie remains same-site; a default `*.vercel.app` hostname paired with an unrelated API domain will not preserve credentialed browser sessions. On the API host, set `LIBIF_WEB_BASE_URL` to the production frontend origin and add only intentional preview origins to `LIBIF_CORS_ORIGINS`.
+
+### Self-hosted pre-production staging
+
+`docker-compose.staging.yml` is the presentation and acceptance-test environment. It runs PostgreSQL, authenticated Redis, MinIO, migrations, the API, OCR worker, web app, Nginx, and a persistent Tailscale sidecar on one self-hosted machine. Successful `main` CI publishes the application images only under the full Git commit SHA. `make staging-up` selects the newest successful `main` SHA, verifies that all three GHCR artifacts exist, pins `.env.staging`, pulls those exact images, and starts without a local build. Tailscale Funnel terminates public HTTPS at the node's `*.ts.net` address and forwards only to Nginx's loopback listener; Docker publishes no host ports, and Nginx routes `/api` and web traffic through one browser origin.
+
+Create the private staging environment and replace every placeholder:
 
 ```bash
-make local-up
-# or: COMPOSE_PROJECT_NAME=libif-local docker compose -f docker-compose.local.yml up --build -d
+cp .env.staging.example .env.staging
+chmod 600 .env.staging
+editor .env.staging
 
-# Populate or refresh the local-only development accounts, documentation PDFs,
-# and the public catalogue search projection when needed.
-make local-seed
-
-# Rebuild search text from existing extracted/OCR artifacts without reseeding.
-make local-reindex-search
+# Requires authenticated `gh` and read access to the GHCR packages. This
+# replaces the SHA placeholder with the newest complete main release.
+make staging-pin-main
+make staging-config
+make staging-up
+make staging-funnel
 ```
 
-Teammates then access `http://libif.local.com` through the tailnet: **teammate → shared Tailscale machine → Nginx → LIBIF services**. The API is available only through the same origin at `/api`; PostgreSQL, Redis, MinIO, the API, and worker do not publish host ports. Configure `SMTP_*` in `.env` for Gmail password-reset delivery (Gmail App Password, port `587`, `SMTP_SECURE=starttls`). Stop it with `make local-down`. This stack intentionally uses HTTP and development cookie settings for demonstration, so do not use it as a production deployment.
+`LIBIF_STAGING_BASE_URL` must exactly match the Funnel origin, normally `https://<TAILSCALE_HOSTNAME>.<tailnet-name>.ts.net`. The tailnet must have MagicDNS, HTTPS certificates, and the Funnel node attribute enabled. Funnel makes staging publicly reachable, so development-header authentication stays disabled, infrastructure credentials and demonstration passwords are required, and only synthetic/non-sensitive documents should be loaded.
+
+```bash
+# Optional presentation dataset and page/catalogue indexes.
+make staging-seed
+
+# Maintenance for data that already exists in staging.
+make staging-reindex-search
+make staging-backfill-page-search
+
+# Stop containers while retaining staging and Tailscale identity volumes.
+make staging-down
+```
+
+Tailscale owns certificate issuance and HTTPS; the former private CA, custom `libif.local.com` mapping, and certificate-export workflow are no longer part of the staging design. See the [self-hosted staging runbook](docs/deployment/staging.md) for Funnel policy, preparation, validation, and teardown.
+
+Image promotion is branch-specific: `dev` publishes only the moving `latest` API, migration, and web tags for a self-hosted development-testing environment; `main` publishes only full-SHA staging tags; semantic Git tags publish only versioned production release tags. Each namespace has one writer, and staging or production Compose paths never reference `latest`.
 
 ## Seeded development accounts
 
-`make local-seed` populates the self-contained Docker stack with one usable email/password account for each role, documentation PDFs, and a search projection of existing extracted/OCR artifacts. `make local-reindex-search` rebuilds that projection without reseeding. `make db-seed` / `npm run db:seed` remains available for the non-Docker development database. These credentials are for local development only.
+`make staging-seed` populates staging with demonstration accounts, documentation PDFs, catalogue search text, and page-level Reader/Approval search data. It reads unique passwords from `.env.staging`; the fixed passwords below remain only as defaults for the non-public developer database created by `make db-seed` / `npm run db:seed`. New processing jobs create page-level data automatically. Run `make staging-backfill-page-search` for PDFs processed before page search was added, or `make staging-reindex-search` to rebuild only the public catalogue projection.
 
 | Role | Email | Password |
 |---|---|---|
@@ -110,8 +144,23 @@ The repository includes a `Makefile` for common local workflows:
 | `make infra-logs` | Follow core service logs. |
 | `make db-migrate` | Apply Prisma migrations. |
 | `make db-seed` | Seed development users and starter categories. |
-| `make local-seed` | Explicitly migrate, seed, and index processed text in the self-contained Docker stack without restarting application services. |
-| `make local-reindex-search` | Rebuild public catalogue search text from existing extracted/OCR artifacts. |
+| `make staging-config` | Validate the private staging environment, Funnel origin, and Compose model. |
+| `make staging-pin-main` | Pin staging to the newest successful `main` SHA whose complete image set exists in GHCR. |
+| `make staging-up` | Pull and start the newest successful `main` SHA behind Tailscale Funnel. |
+| `make staging-funnel` | Show the active public Funnel route. |
+| `make staging-seed` | Migrate, seed presentation accounts/documents, and index staging search data. |
+| `make staging-reindex-search` | Rebuild the staging public-catalogue search projection. |
+| `make staging-backfill-page-search` | Build page-level search data for existing staging PDFs. |
+| `make staging-down` | Stop staging without deleting persistent data or Tailscale identity. |
+| `make production-config` | Validate the production Compose file and private environment without starting services. |
+| `make production-up` | Build and start the single-host production stack, then wait for health checks. |
+| `make production-down` | Stop the production stack without deleting persistent volumes. |
+| `make production-logs` | Follow production container logs. |
+| `make production-ps` | Show production container and health status. |
+| `make azure-config` | Validate the Azure backend-only Compose configuration and private environment. |
+| `make azure-down` | Stop the Azure backend stack without deleting persistent volumes. |
+| `make azure-logs` | Follow Azure backend container logs. |
+| `make azure-ps` | Show Azure backend container and health status. |
 | `make prisma-generate` | Generate Prisma client. |
 | `make db-reset` | Reset local DB, run migrations, and seed data. |
 | `make dev` | Start the web app, HTTP API, and background OCR worker together. |
@@ -236,9 +285,9 @@ For a manual smoke test:
 - Protected Reader accessibility decision and full manual responsive/network smoke evidence.
 - Phase 8 integration hardening, accessibility/visual QA, release notes, and demo readiness.
 
-## GitHub Actions CI notifications
+## GitHub Actions CI and notifications
 
-Pull requests run the `CI` workflow, which installs npm workspaces, prepares `.env` from `.env.example`, then runs build and test jobs. When that workflow completes for a pull request, `CI Email Notification` sends the result to the PR author through SMTP.
+Pull requests run the API and web CI workflows. Pushes to `dev` run the same gates and publish integration container images. Pushing a valid `vMAJOR.MINOR.PATCH` tag for a commit contained in `main` invokes both workflows through the `Production` workflow and deploys the frontend to Vercel only after every required job succeeds. When `AZURE_DEPLOY_ENABLED=true`, the same tagged revision also publishes backend images under the release tag and full commit SHA, then deploys the release-tagged images to the Azure VM through GitHub OIDC. When either CI workflow completes for a pull request, `CI Email Notification` sends the result to the PR author through SMTP.
 
 Configure these repository secrets before expecting emails:
 

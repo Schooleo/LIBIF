@@ -468,6 +468,19 @@ export interface components {
     "maxZoom": number;
     "pages": components['schemas']["ProtectedPageDescriptorDto"][];
   };
+    "DocumentPageSearchResultDto": {
+    "pageNumber": number;
+    "matchCount": number;
+    "snippet"?: string;
+  };
+    "DocumentPageSearchResponseDto": {
+    "available": boolean;
+    "query": string;
+    "results": components['schemas']["DocumentPageSearchResultDto"][];
+    "totalMatches": number;
+    "totalPagesWithMatches": number;
+    "truncated": boolean;
+  };
     "ProtectedDocumentUrlDto": {
     "token": string;
     "expiresAt": string;
@@ -1676,6 +1689,25 @@ export interface paths {
       "200": {
         content: {
           "application/json": components['schemas']["ProtectedDocumentManifestDto"];
+        };
+      };
+      };
+    };
+  };
+  "/api/access/documents/{documentId}/search": {
+    get: {
+      parameters: {
+        path: {
+          "documentId": string;
+        };
+        query: {
+          "q": string;
+        };
+      };
+      responses: {
+      "200": {
+        content: {
+          "application/json": components['schemas']["DocumentPageSearchResponseDto"];
         };
       };
       };

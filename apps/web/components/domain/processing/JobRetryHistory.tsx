@@ -29,7 +29,7 @@ export function JobRetryHistory({ historyJobs, currentJobId }: JobRetryHistoryPr
     },
     {
       key: 'status',
-      header: 'Status',
+      header: 'Processing Status',
       render: (job) => <ProcessingStatusBadge status={job.status} />
     },
     {

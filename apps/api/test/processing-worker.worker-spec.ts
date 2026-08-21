@@ -5,6 +5,7 @@ import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import {
   BookFileStatus,
+  ProcessingArtifactKind,
   ProcessingJobStatus,
   TextExtractionMethod,
   UserRole
@@ -96,8 +97,8 @@ describe('Processing worker infrastructure integration', () => {
     const completed = await waitForJob(fixture.jobId, ProcessingJobStatus.SUCCEEDED);
     await waitForQueueIdle();
 
-    const [artifact, approvalCount, startedCount] = await Promise.all([
-      prisma.processingArtifact.findFirst({ where: { processingJobId: fixture.jobId } }),
+    const [artifacts, approvalCount, startedCount] = await Promise.all([
+      prisma.processingArtifact.findMany({ where: { processingJobId: fixture.jobId } }),
       prisma.approvalReview.count({ where: { processingJobId: fixture.jobId } }),
       prisma.bookAuditEvent.count({
         where: { bookId: fixture.bookId, action: 'PROCESSING_STARTED' }
@@ -105,17 +106,29 @@ describe('Processing worker infrastructure integration', () => {
     ]);
 
     expect(completed.attempts).toBe(1);
-    expect(artifact).toMatchObject({
+    const extractedArtifact = artifacts.find((artifact) => artifact.kind === ProcessingArtifactKind.EXTRACTED_TEXT);
+    const pageTextArtifact = artifacts.find((artifact) => artifact.kind === ProcessingArtifactKind.OCR_LAYOUT);
+    expect(extractedArtifact).toMatchObject({
       bookFileId: fixture.fileId,
       extractionMethod: TextExtractionMethod.EMBEDDED_TEXT,
       pageCount: 1,
       metadata: null
     });
+    expect(pageTextArtifact).toMatchObject({
+      bookFileId: fixture.fileId,
+      extractionMethod: TextExtractionMethod.EMBEDDED_TEXT,
+      pageCount: 1,
+      metadata: { schemaVersion: 1 }
+    });
     expect(approvalCount).toBe(1);
     expect(startedCount).toBe(1);
 
-    const persistedText = await storage.getObjectBuffer(bucket, artifact!.objectKey);
+    const persistedText = await storage.getObjectBuffer(bucket, extractedArtifact!.objectKey);
     expect(persistedText.toString('utf8')).toContain('LIBIF Worker Integration Fixture');
+    const persistedPages = JSON.parse((await storage.getObjectBuffer(bucket, pageTextArtifact!.objectKey)).toString('utf8'));
+    expect(persistedPages.pages).toEqual([
+      expect.objectContaining({ pageNumber: 1, text: expect.stringContaining('LIBIF Worker Integration Fixture') })
+    ]);
   });
 
   it('runs deterministic OCR for a scanned Vietnamese PDF and persists real output', async () => {
@@ -125,7 +138,7 @@ describe('Processing worker infrastructure integration', () => {
     await waitForJob(fixture.jobId, ProcessingJobStatus.SUCCEEDED);
 
     const artifact = await prisma.processingArtifact.findFirstOrThrow({
-      where: { processingJobId: fixture.jobId }
+      where: { processingJobId: fixture.jobId, kind: ProcessingArtifactKind.EXTRACTED_TEXT }
     });
     const persistedText = (await storage.getObjectBuffer(bucket, artifact.objectKey)).toString('utf8');
 
@@ -138,6 +151,14 @@ describe('Processing worker infrastructure integration', () => {
     });
     expect(persistedText).toContain('LIBIF SCANNED DOCUMENT');
     expect(persistedText).not.toContain('[OCR Processed]');
+
+    const pageTextArtifact = await prisma.processingArtifact.findFirstOrThrow({
+      where: { processingJobId: fixture.jobId, kind: ProcessingArtifactKind.OCR_LAYOUT }
+    });
+    const persistedPages = JSON.parse((await storage.getObjectBuffer(bucket, pageTextArtifact.objectKey)).toString('utf8'));
+    expect(persistedPages.pages).toEqual([
+      expect.objectContaining({ pageNumber: 1, text: expect.stringContaining('LIBIF SCANNED DOCUMENT') })
+    ]);
   });
 
   it('fails a corrupt PDF safely without artifacts or approval rows', async () => {
@@ -242,6 +263,7 @@ describe('Processing worker infrastructure integration', () => {
       }
     });
     createdObjectKeys.push(`artifacts/${book.id}/${file.id}/${job.id}/extracted.txt`);
+    createdObjectKeys.push(`artifacts/${book.id}/${file.id}/${job.id}/page-text.json`);
 
     return {
       bookId: book.id,
