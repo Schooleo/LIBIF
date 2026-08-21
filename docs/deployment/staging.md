@@ -75,10 +75,11 @@ LIBIF_STAGING_BASE_URL="https://libif-staging.<tailnet-name>.ts.net"
 
 Set the same origin as the `STAGING_ACCESS_URL` GitHub repository variable. The
 `CD Email Notification` workflow includes this domain in every successful or
-failed `Staging Images` notification. Set the optional
-`CD_NOTIFICATION_EMAIL` repository secret to choose the recipient; otherwise
-the notifier falls back to `CI_RESULTS_FALLBACK_EMAIL`, `SMTP_USERNAME`, then
-`SMTP_FROM`. It reuses the repository's existing `SMTP_*` secrets.
+failed `Staging Images` notification. The notifier emails the author of the PR
+associated with the deployed commit. If no deliverable author address is
+available, it falls back to `CD_NOTIFICATION_EMAIL`,
+`CI_RESULTS_FALLBACK_EMAIL`, `SMTP_USERNAME`, then `SMTP_FROM`. It reuses the
+repository's existing `SMTP_*` secrets.
 
 Replace every database, Redis, MinIO, token-signing, Tailscale, and demonstration-account placeholder with unique values. Do not reuse production secrets.
 

@@ -2,9 +2,9 @@
 """Send completed GitHub Actions CI and CD results by email.
 
 This script is intended to run from a privileged `workflow_run` workflow. It does
-not check out or execute triggering-workflow code. CI recipient metadata is
-fetched from the GitHub API. CD notifications use a configured operations
-recipient and include the stable access domain for the target environment.
+not check out or execute triggering-workflow code. Recipient metadata is fetched
+from the GitHub API. CD notifications prefer the associated pull-request author,
+fall back to a configured operations recipient, and include the target domain.
 """
 
 from __future__ import annotations
@@ -101,7 +101,7 @@ def associated_pull_request(repository: str, workflow_run: dict[str, Any]) -> di
     return github_api(f"/repos/{repository}/pulls/{pulls[0]['number']}")
 
 
-def resolve_recipient(repository: str, pr: dict[str, Any]) -> tuple[str | None, str]:
+def resolve_pr_author_recipient(repository: str, pr: dict[str, Any]) -> tuple[str | None, str]:
     author = pr.get("user") or {}
     login = author.get("login", "")
     if login:
@@ -118,6 +118,14 @@ def resolve_recipient(repository: str, pr: dict[str, Any]) -> tuple[str | None, 
         email = ((commit.get("commit") or {}).get("author") or {}).get("email")
         if is_deliverable_email(email):
             return email.strip(), "PR commit author email"
+
+    return None, "no public or non-noreply PR author email available"
+
+
+def resolve_recipient(repository: str, pr: dict[str, Any]) -> tuple[str | None, str]:
+    recipient, source = resolve_pr_author_recipient(repository, pr)
+    if recipient:
+        return recipient, source
 
     fallback = os.getenv("CI_RESULTS_FALLBACK_EMAIL", "").strip()
     if is_deliverable_email(fallback):
@@ -211,7 +219,22 @@ This message was sent automatically by GitHub Actions.
     return 0
 
 
-def resolve_cd_recipient() -> tuple[str | None, str]:
+def resolve_cd_recipient(
+    repository: str,
+    workflow_run: dict[str, Any],
+) -> tuple[str | None, str, dict[str, Any] | None]:
+    pull_request = None
+    if repository:
+        try:
+            pull_request = associated_pull_request(repository, workflow_run)
+        except Exception as error:
+            log("warning", f"Unable to resolve the CD workflow pull request: {error}")
+
+    if pull_request:
+        recipient, source = resolve_pr_author_recipient(repository, pull_request)
+        if recipient:
+            return recipient, source, pull_request
+
     for name in (
         "CD_NOTIFICATION_EMAIL",
         "CI_RESULTS_FALLBACK_EMAIL",
@@ -220,8 +243,8 @@ def resolve_cd_recipient() -> tuple[str | None, str]:
     ):
         value = os.getenv(name, "").strip()
         if is_deliverable_email(value):
-            return value, name
-    return None, "no deliverable CD notification email configured"
+            return value, name, pull_request
+    return None, "no deliverable CD notification email configured", pull_request
 
 
 def normalize_access_url(value: str | None) -> tuple[str | None, str | None]:
@@ -238,6 +261,7 @@ def normalize_access_url(value: str | None) -> tuple[str | None, str | None]:
 
 def send_cd_result() -> int:
     workflow_run = load_workflow_run()
+    repository = os.getenv("GITHUB_REPOSITORY") or ""
     workflow_name = workflow_run.get("name") or "Unknown CD workflow"
     environment_name, access_variable = CD_WORKFLOWS.get(
         workflow_name,
@@ -245,12 +269,12 @@ def send_cd_result() -> int:
     )
     access_url, access_domain = normalize_access_url(os.getenv(access_variable))
 
-    recipient, source = resolve_cd_recipient()
+    recipient, source, pull_request = resolve_cd_recipient(repository, workflow_run)
     if not recipient:
         log("warning", f"Skipping CD result email: {source}.")
         return 0
 
-    repository = os.getenv("GITHUB_REPOSITORY") or "unknown repository"
+    repository = repository or "unknown repository"
     conclusion = workflow_run.get("conclusion") or "completed"
     status = conclusion.upper()
     short_sha = (workflow_run.get("head_sha") or "")[:12] or "unknown"
@@ -259,6 +283,13 @@ def send_cd_result() -> int:
     run_url = workflow_run.get("html_url") or ""
     domain_line = access_domain or f"Not configured ({access_variable})"
     url_line = access_url or f"Not configured ({access_variable})"
+    pull_request_context = ""
+    owner_login = ""
+    if pull_request:
+        pr_number = pull_request["number"]
+        pr_title = pull_request.get("title") or "Untitled PR"
+        owner_login = (pull_request.get("user") or {}).get("login", "PR author")
+        pull_request_context = f"Pull request: #{pr_number} - {pr_title}\nRelease owner: @{owner_login}\n"
     if conclusion != "success":
         result_note = "The deployment did not complete successfully; the access URL may still serve the previous successful release."
     elif workflow_name == "Staging Images":
@@ -273,7 +304,7 @@ Repository: {repository}
 Environment: {environment_name}
 Workflow: {workflow_name}
 Release: {title}
-Git ref: {ref_name}
+{pull_request_context}Git ref: {ref_name}
 Commit: {short_sha}
 Result: {status}
 Access domain: {domain_line}
@@ -286,7 +317,8 @@ This message was sent automatically by GitHub Actions.
 """
 
     send_email(recipient, subject, body)
-    log("notice", f"Sent {environment_name} CD result email using {source}.")
+    owner_context = f" to @{owner_login}" if owner_login and "PR" in source else ""
+    log("notice", f"Sent {environment_name} CD result email{owner_context} using {source}.")
     return 0
 
 
