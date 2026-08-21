@@ -39,11 +39,20 @@ jobs:
   api-ci:
     name: API quality gate
     needs: [validate-release]
+    # The called workflow has a dev-only publisher requesting packages:write;
+    # reusable workflows cannot elevate beyond their caller's token ceiling.
+    permissions:
+      contents: read
+      packages: write
     uses: ./.github/workflows/api-ci.yml
 
   web-ci:
     name: Web quality gate
     needs: [validate-release]
+    # Keep the permission scoped to the reusable call rather than all jobs.
+    permissions:
+      contents: read
+      packages: write
     uses: ./.github/workflows/web-ci.yml
 
   deploy-web:
