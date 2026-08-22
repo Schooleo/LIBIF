@@ -19,7 +19,7 @@
 | **Effort tập trung sản phẩm** | **765 giờ-người** (sau khi trừ 15% hội họp và gián đoạn học tập) |
 | **Tổng quy mô Backlog** | **136 Story Points** (117 SP tính năng + 19 SP Enablers) |
 | **Phạm vi cam kết (MoSCoW)** | **13 Must Have (104 SP)**; **03 Should Have (13 SP co giãn)** |
-| **Ngân sách tiền mặt** | **8.800.000 VNĐ** (đã bao gồm 10% dự phòng rủi ro) |
+| **Ngân sách tiền mặt** | **0 VNĐ** (Toàn bộ sử dụng Azure for Students, AI free-tier và tài nguyên sẵn có) |
 | **Mục tiêu cuối cùng** | Bàn giao MVP hoạt động được, bộ tài liệu và demo trước cuối tuần 10 |
 
 ---

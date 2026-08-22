@@ -23,7 +23,7 @@
   + When: Lịch trình & Milestone (10 tuần, 5 Sprint, 5 Mốc G1-G5).
   + Who & Where: Cơ cấu tổ chức & Trách nhiệm (6 SV, ma trận RACI, TV-01 -> TV-06).
   + How (Tech & Manage): Mô hình Scrum, Modular Monolith, Docker/CI-CD, Quản lý rủi ro & chất lượng.
-  + How Much: Nguồn lực & Chi phí (900h effort, 8.8M VNĐ ngân sách).
+  + How Much: Nguồn lực & Chi phí (900h effort, 0 VNĐ ngân sách - tối ưu free-tier).
 
 2. QUÁ TRÌNH HÌNH THÀNH (Đầu vào -> Phương pháp -> Đầu ra)
 - Đầu vào (Inputs): Project Charter, Vision & Scope, Product Backlog, Architecture, PoC, Project Estimation.
@@ -81,7 +81,7 @@ Là bộ khung tư duy kinh điển áp dụng cho mọi dự án phần mềm �
 4. **Who (Ai):** Ai chịu trách nhiệm cho các chức năng? Cơ cấu nhóm và sự phân công ra sao? (LIBIF: 6 sinh viên với vai trò PO, SM/Tech Lead, Dev, QA/DevOps qua ma trận RACI).
 5. **Where (Ở đâu):** Các bên liên quan nằm ở đâu về mặt tổ chức? (LIBIF: Nhóm sinh viên, giảng viên hướng dẫn, người dùng đại diện).
 6. **How technically & managerially (Làm thế nào):** Về mặt kỹ thuật và quản lý sẽ thực hiện ra sao? (LIBIF: Kỹ thuật dùng Modular Monolith/React/NestJS/Docker; Quản lý dùng quy trình Scrum 2 tuần/Sprint).
-7. **How much (Bao nhiêu):** Cần bao nhiêu tài nguyên, công sức và tiền bạc? (LIBIF: 900 giờ công danh nghĩa, 765 giờ tập trung, ngân sách 8.800.000 VNĐ).
+7. **How much (Bao nhiêu):** Cần bao nhiêu tài nguyên, công sức và tiền bạc? (LIBIF: 900 giờ công danh nghĩa, 765 giờ tập trung, ngân sách 0 VNĐ tối ưu free-tier).
 
 ### 2.3 Các cấp độ lập kế hoạch trong Agile (Agile Planning Onion)
 Theo Mike Cohn (*Agile Estimating and Planning*), lập kế hoạch trong Agile diễn ra theo nhiều tầng:
@@ -131,11 +131,11 @@ Tài liệu trả lời trọn vẹn 7 câu hỏi theo nguyên lý W5HH:
 3. **Khi nào (When):** Lịch trình 10 tuần, 5 Sprint và 5 mốc Milestone (G1 -> G5).
 4. **Ai & Ở đâu (Who & Where):** Cơ cấu 6 sinh viên, ma trận RACI và vai trò của giảng viên/người dùng đại diện.
 5. **Thực hiện thế nào (How):** Quy trình Scrum, quy tắc luồng việc (DoR, DoD), kế hoạch kiểm thử, kế hoạch quản lý cấu hình và rủi ro.
-6. **Chi phí bao nhiêu (How Much):** 900 giờ-người, ngân sách tiền mặt 8.800.000 VNĐ.
+6. **Chi phí bao nhiêu (How Much):** 900 giờ-người, ngân sách tiền mặt 0 VNĐ (sử dụng Azure for Students, Free AI, Subdomain).
 
 ### Q2: Các đầu vào cần thiết và các bước nhóm đã thực hiện để tạo tài liệu Kế hoạch dự án?
 - **Đầu vào (Inputs):**
-  - `LIBIF-Project-Estimation.md` (Baseline quy mô 136 SP, effort 900h, chi phí 8.8M).
+  - `LIBIF-Project-Estimation.md` (Baseline quy mô 136 SP, effort 900h, chi phí 0 VNĐ).
   - `LIBIF-Product-Backlog.md` (Danh sách 16 PBIs, User Stories, Acceptance Criteria).
   - `LIBIF-Architecture.md` (Thiết kế hệ thống Modular Monolith, công nghệ, hạ tầng).
   - `LIBIF-Proof-Of-Concept.md` (Kết quả thử nghiệm kỹ thuật Canvas DRM).
@@ -152,7 +152,7 @@ Tài liệu trả lời trọn vẹn 7 câu hỏi theo nguyên lý W5HH:
 ### Q3: Tài liệu Kế hoạch dự án của nhóm đã được đánh giá thế nào?
 1. **Đánh giá tính đầy đủ & khả thi (Completeness & Feasibility):** Rà soát toàn bộ các gói công việc WBS đảm bảo không thiếu sót khâu nào từ khởi tạo, lập trình, kiểm thử đến đóng gói bàn giao.
 2. **Đánh giá sự cam kết của thành viên (Team Buy-in & Commitment):** Toàn bộ 6 thành viên đồng thuận với mức cam kết 15 giờ/tuần, hiểu rõ ma trận RACI và vai trò chịu trách nhiệm của mình.
-3. **Đánh giá tính nhất quán đa tài liệu (Cross-document Consistency):** Đối chiếu với tài liệu Ước lượng (`LIBIF-Project-Estimation.md`) và Tuyên bố công việc (`LIBIF-Statement-Of-Work.md`), đảm bảo thống nhất tuyệt đối về số lượng PBI (16), Story Points (136), số Sprint (5), effort (900h) và ngân sách (8.8M).
+3. **Đánh giá tính nhất quán đa tài liệu (Cross-document Consistency):** Đối chiếu với tài liệu Ước lượng (`LIBIF-Project-Estimation.md`) và Tuyên bố công việc (`LIBIF-Statement-Of-Work.md`), đảm bảo thống nhất tuyệt đối về số lượng PBI (16), Story Points (136), số Sprint (5), effort (900h) và ngân sách (0 VNĐ).
 4. **Phê duyệt bởi Giảng viên & Nhóm:** Kế hoạch có mục ký duyệt chính thức ở phần kết (Mục 15).
 
 ### Q4: Tại sao cần tạo tài liệu Kế hoạch dự án?
@@ -188,7 +188,7 @@ Tài liệu trả lời trọn vẹn 7 câu hỏi theo nguyên lý W5HH:
 | **Bản chất** | **"Luật chơi" / Khung phương pháp luận** | **"Bản đồ thực thi" cho một dự án cụ thể** |
 | **Câu hỏi trả lời** | *Chúng ta làm việc theo quy trình, nguyên tắc nào?* | *Với dự án này, làm cái gì, khi nào xong, ai làm, tốn bao nhiêu tiền?* |
 | **Tính tái sử dụng** | Có thể tái sử dụng cho nhiều dự án khác nhau trong tổ chức | Duy nhất cho dự án cụ thể (LIBIF), không tái sử dụng nguyên vẹn |
-| **Nội dung chính** | - Lựa chọn mô hình SDLC (Scrum, Kanban, Waterfall)<br>- Định nghĩa các vai trò chuẩn (PO, SM, Dev, QA)<br>- Quy định các sự kiện, nghi thức (Planning, Daily, Review, Retro)<br>- Tiêu chuẩn chất lượng chung (Coding Standard, DoR, DoD template)<br>- Quy trình kiểm thử, tích hợp liên tục (CI/CD workflow) | - Mục tiêu cụ thể & WBS của dự án LIBIF<br>- Phân công đích danh từng con người (TV-01 đến TV-06, RACI)<br>- Lịch trình chi tiết (Sprint 1 bắt đầu ngày nào, PBI nào làm ở Sprint nào)<br>- Ngân sách chi tiết (8.8M VNĐ) & Năng lực giờ công (900h)<br>- Danh mục rủi ro cụ thể của dự án (OCR tiếng Việt, Web Crypto...) |
+| **Nội dung chính** | - Lựa chọn mô hình SDLC (Scrum, Kanban, Waterfall)<br>- Định nghĩa các vai trò chuẩn (PO, SM, Dev, QA)<br>- Quy định các sự kiện, nghi thức (Planning, Daily, Review, Retro)<br>- Tiêu chuẩn chất lượng chung (Coding Standard, DoR, DoD template)<br>- Quy trình kiểm thử, tích hợp liên tục (CI/CD workflow) | - Mục tiêu cụ thể & WBS của dự án LIBIF<br>- Phân công đích danh từng con người (TV-01 đến TV-06, RACI)<br>- Lịch trình chi tiết (Sprint 1 bắt đầu ngày nào, PBI nào làm ở Sprint nào)<br>- Ngân sách chi tiết (0 VNĐ) & Năng lực giờ công (900h)<br>- Danh mục rủi ro cụ thể của dự án (OCR tiếng Việt, Web Crypto...) |
 | **Tần suất thay đổi** | Ổn định, ít thay đổi trong suốt vòng đời dự án | Cập nhật liên tục sau mỗi Sprint dựa trên dữ liệu thực tế |
 
 ---

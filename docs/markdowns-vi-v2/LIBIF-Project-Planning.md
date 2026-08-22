@@ -9,7 +9,7 @@
 | Phương pháp phát triển | Scrum |
 | Quy mô nhóm | 06 sinh viên, có Coding Agent hỗ trợ xuyên suốt |
 | Thời gian thực hiện | 10 tuần học, 05 Sprint × 02 tuần |
-| Baseline tham chiếu | `LIBIF-Project-Estimation.md`, phiên bản 2.0 |
+| Baseline tham chiếu | `LIBIF-Project-Estimation.md`, phiên bản 3.0 |
 | Phiên bản tài liệu | 1.0 |
 | Ngày lập | 12/08/2026 |
 | Trạng thái | Kế hoạch đề xuất để nhóm và giảng viên thống nhất |
@@ -18,15 +18,46 @@
 
 ## 1. Mục đích Tài liệu
 
-Tài liệu này mô tả cách nhóm lập kế hoạch, tổ chức, thực hiện, theo dõi và kết thúc đồ án LIBIF trong học phần Quản lý Dự án Phần mềm. Kế hoạch chuyển các baseline trong `LIBIF-Project-Estimation.md` thành hoạt động quản trị cụ thể cho 05 Sprint.
+Tài liệu này mô tả cách nhóm lập kế hoạch, tổ chức, thực hiện, theo dõi và kết thúc đồ án LIBIF trong học phần Quản lý Dự án Phần mềm. Theo lý thuyết quản lý dự án (Slide 06 – Software Project Planning & Slide 06.1 – Agile Planning), Kế hoạch dự án là **"bản đồ dẫn đường" (Navigation Map)** tích hợp toàn bộ các hoạt động kỹ thuật và quản trị theo nguyên lý W5HH (Barry Boehm), đồng thời chuyển hóa các baseline từ `LIBIF-Project-Estimation.md` thành hoạt động điều hành cụ thể cho 05 Sprint.
 
 Mục tiêu quản lý dự án gồm:
 
 - Hoàn thành MVP/prototype có thể cài đặt, kiểm thử và demo vào cuối tuần 10.
 - Thực hành đầy đủ các hoạt động Scrum và lưu bằng chứng quản lý dự án.
-- Kiểm soát phạm vi 136 SP, effort 900 giờ-người và ngân sách tiền mặt 8.800.000 VNĐ.
+- Kiểm soát phạm vi 136 SP, effort 900 giờ-người danh nghĩa (765 giờ tập trung) và ngân sách tiền mặt 0 VNĐ.
 - Phân công minh bạch, cân bằng đóng góp và giảm phụ thuộc vào cá nhân.
 - Sử dụng Coding Agent có kiểm soát, tuân thủ quy định học thuật và bảo đảm thành viên hiểu đầu ra.
+
+### 1.1 Quá trình Hình thành, Đầu vào và Phương pháp Đánh giá Kế hoạch
+
+#### Tài liệu đầu vào (Inputs)
+
+| # | Tài liệu đầu vào | Vai trò đối với Kế hoạch dự án |
+| :---: | :--- | :--- |
+| 1 | `LIBIF-Project-Charter.md` | Mục tiêu dự án, ràng buộc thời gian/học phần, các mốc lớn và bên liên quan |
+| 2 | `LIBIF-Project-Vision-Scope.md` | Hiện trạng, bài toán, ranh giới phạm vi trong (In-scope) và ngoài (Out-of-scope) |
+| 3 | `LIBIF-Product-Backlog.md` | 16 PBIs với User Stories, Acceptance Criteria và mức ưu tiên MoSCoW |
+| 4 | `LIBIF-Architecture.md` | Kiến trúc Modular Monolith, tech stack, sơ đồ phân rã thành phần và ràng buộc kỹ thuật |
+| 5 | `LIBIF-Proof-Of-Concept.md` | Kết quả PoC Canvas DRM, xác nhận tính khả thi kỹ thuật |
+| 6 | `LIBIF-Project-Estimation.md` | Baseline quy mô (136 SP), thời gian (10 tuần, 05 Sprint), công sức (900h), chi phí (0 VNĐ) |
+| 7 | `LIBIF-Statement-Of-Work.md` | Thỏa thuận cam kết phạm vi và danh mục sản phẩm bàn giao (DEL-01 → DEL-08) |
+
+#### Các bước hình thành Kế hoạch
+
+1. **Xác lập mục tiêu & tiêu chí thành công:** Định nghĩa 07 tiêu chí thành công cụ thể (SC-01 đến SC-07) trả lời câu hỏi *Why & What* theo nguyên lý W5HH.
+2. **Xây dựng cấu trúc phân rã công việc (WBS):** Phân rã dự án thành 08 gói công việc (1.0 Quản lý đến 8.0 Bàn giao) từ Product Backlog và Deliverables.
+3. **Thiết lập cơ cấu tổ chức & RACI:** Phân định 06 vai trò chính/kiêm nhiệm và thiết lập ma trận RACI (*Who & Where*).
+4. **Lập kế hoạch phát hành Agile (Fixed-Date Release Plan):** Phân bổ 136 SP vào 05 Sprint (Sprint Mapping) với 05 mốc Milestone G1 → G5 (*When*).
+5. **Xây dựng kế hoạch quản lý chất lượng:** Thiết lập luồng trạng thái Kanban/Scrum, tiêu chuẩn Definition of Ready (DoR) và Definition of Done (DoD) (*How*).
+6. **Xây dựng các kế hoạch tích hợp quản trị:** Kế hoạch nguồn lực, chi phí 0 VNĐ, giao tiếp, quản lý rủi ro (Risk Register), quản lý thay đổi và cấu hình.
+7. **Lập kế hoạch kết thúc dự án & ký duyệt:** Quy trình đóng dự án và cơ chế phê duyệt kế hoạch.
+
+#### Phương pháp đánh giá và thẩm định Kế hoạch
+
+1. **Tính đầy đủ và khả thi (Completeness & Feasibility):** Rà soát toàn bộ các gói WBS, đảm bảo bao phủ đầy đủ 7 câu hỏi W5HH và các cấp độ Agile Planning Onion; khối lượng 136 SP khả thi trong 10 tuần với 900 giờ công.
+2. **Sự đồng thuận và cam kết của nhóm (Team Consensus & Commitment):** Toàn bộ 06 thành viên cam kết capacity 15 giờ/tuần, đồng thuận với vai trò phân công trong ma trận RACI và tiêu chuẩn Definition of Done.
+3. **Tính nhất quán đa tài liệu (Cross-document Consistency):** Đối chiếu và khớp nối tuyệt đối với Baseline của `LIBIF-Project-Estimation.md` (136 SP, 900h, 0 VNĐ), `LIBIF-Statement-Of-Work.md` và `LIBIF-Product-Backlog.md`.
+4. **Khả năng thích ứng và kiểm soát (Adaptability & Agility):** Kế hoạch định kỳ được đánh giá lại sau mỗi Sprint Review/Retro và tái ước tính tại mốc Sprint 1 & Sprint 2; có kịch bản co giãn 3 Should Have khi velocity giảm.
 
 ---
 
@@ -39,11 +70,11 @@ Mục tiêu quản lý dự án gồm:
 | Phạm vi | 16 PBIs và 03 enablers, tổng 136 SP |
 | Phạm vi bắt buộc | 13 PBI Must Have, tổng 104 SP tính năng |
 | Phạm vi co giãn | PBI-03, PBI-13, PBI-15, tổng 13 SP |
-| Thời gian | 10 tuần, 05 Sprint × 02 tuần |
+| Thời gian | 10 tuần, 05 Sprint × 02 tuần (Mốc G1 đến G5) |
 | Nguồn lực | 06 sinh viên × 15 giờ/tuần × 10 tuần = 900 giờ-người |
 | Effort tập trung | 765 giờ-người |
-| Chi phí tiền mặt | 8.800.000 VNĐ, đã gồm dự phòng 10% |
-| Trần kiểm soát chi phí | 10.000.000 VNĐ |
+| Chi phí tiền mặt | 0 VNĐ (Toàn bộ sử dụng Azure for Students, AI free-tier và tài nguyên sẵn có) |
+| Chi phí nhân công | 0 VNĐ (công sức sinh viên quản lý bằng 900 giờ-người) |
 
 ### 2.2 Tiêu chí thành công của học phần
 
@@ -218,17 +249,16 @@ Mỗi thành viên khai báo capacity trước Sprint Planning và cập nhật 
 
 | Hạng mục | Ngân sách (VNĐ) | Quy tắc kiểm soát |
 | :--- | ---: | :--- |
-| Coding Agent | 3.000.000 | Là hạn mức 10 tuần; kiểm tra quyền truy cập sẵn có trước khi mua. |
-| VPS staging | 4.000.000 | Ưu tiên tài nguyên trường/free tier; chỉ mua khi cần. |
-| Domain, backup và dịch vụ phụ trợ | 600.000 | PO/SM xác nhận trước khi chi. |
-| Dữ liệu test, in ấn và vật tư demo | 400.000 | Có hóa đơn hoặc ghi nhận chi phí thực tế. |
-| Dự phòng 10% | 800.000 | Chỉ dùng cho quota compute/storage hoặc sự cố cần thiết. |
-| **Tổng baseline** | **8.800.000** | Trần kiểm soát 10.000.000 VNĐ. |
+| Công sức 06 sinh viên | 0 | 900 giờ-người, quản lý bằng công sức |
+| Hạ tầng (Hosting, DB, Storage) | 0 | Azure for Students (miễn phí) |
+| Coding Agent & AI Tools | 0 | Free tier: Codex, Gemini CLI, v.v. |
+| Tên miền & Dịch vụ phụ trợ | 0 | Sử dụng subdomain miễn phí |
+| Dữ liệu test, in ấn và vật tư demo | 0 | Tài liệu có sẵn, in nội bộ |
+| **Tổng chi phí tiền mặt** | **0 VNĐ** | **Tối ưu toàn diện bằng tài nguyên miễn phí** |
 
-- TV-01 duy trì bảng thu chi; ít nhất một thành viên khác đối soát.
-- Không mua dịch vụ khi có phương án miễn phí đáp ứng được mục tiêu học phần và không làm tăng rủi ro đáng kể.
-- Khoản chi vượt ngân sách hạng mục phải được nhóm thống nhất trước.
-- Dự báo tổng vượt 10.000.000 VNĐ phải được giảng viên phụ trách xem xét.
+- TV-01 duy trì bảng theo dõi tài nguyên; ít nhất một thành viên khác đối soát.
+- Không mua dịch vụ khi có phương án miễn phí đáp ứng được mục tiêu học phần.
+- Mọi phát sinh chi phí tiền mặt ngoài dự kiến phải được toàn nhóm thảo luận và thống nhất trước.
 
 ---
 
@@ -337,7 +367,7 @@ Risk Register được rà soát trong Sprint Planning và cập nhật tối th
 | WIP age | Phát hiện task bị kẹt | Một task In Progress quá 03 ngày làm việc |
 | Defect Critical/High | Kiểm soát chất lượng | Có Critical hoặc quá 05 High trước code freeze |
 | Pipeline pass rate | Độ ổn định tích hợp | Nhánh chính thất bại quá 01 ngày |
-| Chi phí dự báo | Kiểm soát ngân sách | Forecast vượt 10.000.000 VNĐ |
+| Chi phí dự báo | Kiểm soát ngân sách | Có chi phí tiền mặt phát sinh ngoài dự kiến |
 
 Cuối mỗi Sprint, Scrum Master cập nhật dashboard/báo cáo; Product Owner cập nhật forecast phạm vi; QA/DevOps cập nhật chất lượng và release readiness.
 
