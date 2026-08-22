@@ -6,6 +6,11 @@ param location string = resourceGroup().location
 @maxLength(24)
 param namePrefix string = 'libif-prod'
 
+@description('Azure-managed public DNS label for the API endpoint. Must be unique within the Azure region.')
+@minLength(3)
+@maxLength(63)
+param publicDnsLabel string = 'libif-schooleo-prod'
+
 @description('GitHub repository in owner/name form. Used to restrict the production OIDC identity.')
 param githubRepository string = 'Schooleo/LIBIF'
 
@@ -134,6 +139,9 @@ resource publicIp 'Microsoft.Network/publicIPAddresses@2024-05-01' = {
     publicIPAllocationMethod: 'Static'
     publicIPAddressVersion: 'IPv4'
     idleTimeoutInMinutes: 15
+    dnsSettings: {
+      domainNameLabel: publicDnsLabel
+    }
   }
 }
 
@@ -259,6 +267,7 @@ resource deploymentRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
 
 output vmName string = virtualMachine.name
 output publicIpAddress string = publicIp.properties.ipAddress
+output publicDnsName string = publicIp.properties.dnsSettings.fqdn
 output deployClientId string = deployIdentity.properties.clientId
 output deployPrincipalId string = deployIdentity.properties.principalId
 output tenantId string = tenant().tenantId
