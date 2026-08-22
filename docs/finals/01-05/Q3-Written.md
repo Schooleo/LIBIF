@@ -29,14 +29,14 @@
     │  C — Người được tham vấn trước quyết định   │
     │  I — Người được thông báo kết quả           │
     │                     ↓                       │
-    │  [MA TRẬN ẢNH HƯỞNG & QUYỀN LỢI]           │
+    │  [MA TRẬN ẢNH HƯỞNG & QUYỀN LỢI]            │
     │  Ảnh hưởng cao / Quyền lợi cao:             │
     │    → Phối hợp chặt (GV, PO, TL)             │
     │  Ảnh hưởng cao / Quyền lợi thấp:            │
-    │    → Duy trì hài lòng (Chủ sở hữu nội dung)│
+    │    → Duy trì hài lòng (Chủ sở hữu nội dung) │
     │  Ảnh hưởng thấp / Quyền lợi cao:            │
     │    → Thông tin thường xuyên (TV-03..06,     │
-    │      đại diện thủ thư, sinh viên)            │
+    │      đại diện thủ thư, sinh viên)           │
     │  Ảnh hưởng thấp / Quyền lợi thấp:           │
     │    → Theo dõi (Nhà cung cấp công cụ)        │
     │                     ↓                       │

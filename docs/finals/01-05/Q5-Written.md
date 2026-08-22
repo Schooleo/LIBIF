@@ -14,17 +14,17 @@
     ┌─────────────────────────────────────────────┐
     │      ĐẦU RA — Software Architecture         │
     │                                             │
-    │  [KIẾN TRÚC TỔNG THỂ]                      │
+    │  [KIẾN TRÚC TỔNG THỂ]                       │
     │  Modular Monolith (NestJS)                  │
-    │  ← không chọn Microservices vì quá phức tạp│
-    │  cho nhóm nhỏ và tiến độ 10 tuần           │
+    │  ← không chọn Microservices vì quá phức tạp │
+    │  cho nhóm nhỏ và tiến độ 10 tuần            │
     │                     ↓                       │
-    │  [LUỒNG DỮ LIỆU — Pipe & Filter]           │
+    │  [LUỒNG DỮ LIỆU — Pipe & Filter]            │
     │  Upload → OCR (Redis BullMQ) →              │
     │  Đối soát (Human-in-the-loop) →             │
     │  AES-256 MinIO → Index PostgreSQL           │
     │                     ↓                       │
-    │  [BẢO MẬT DRM — Zero-Download 4 lớp]       │
+    │  [BẢO MẬT DRM — Zero-Download 4 lớp]        │
     │  L1: MinIO Vault (file mã hóa AES-256)      │
     │  L2: Signed Token TTL 30s (không Presigned) │
     │  L3: RAM Decrypt → HTML5 Canvas (no DOM)    │
@@ -34,9 +34,9 @@
     │  Next.js / NestJS / PostgreSQL 16 /         │
     │  Redis+BullMQ / MinIO / Tesseract / Docker  │
     │                     ↓                       │
-    │  [THUỘC TÍNH CHẤT LƯỢNG]                   │
+    │  [THUỘC TÍNH CHẤT LƯỢNG]                    │
     │  Bảo mật / Tương thích hạ tầng /            │
-    │  Hiệu năng (<50ms render, <2s tìm kiếm) /  │
+    │  Hiệu năng (<50ms render, <2s tìm kiếm) /   │
     │  Khả năng mở rộng                           │
     └──────────────────────┬──────────────────────┘
                            │

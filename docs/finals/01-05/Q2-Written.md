@@ -14,25 +14,25 @@
     │      ĐẦU RA — Vision & Scope                │
     │                                             │
     │  [As-Is — Hiện trạng]                       │
-    │  Thủ thư: xử lý rời rạc bằng nhiều công cụ │
+    │  Thủ thư: xử lý rời rạc bằng nhiều công cụ  │
     │  Sinh viên: tìm theo nhan đề, nhận PDF      │
     │                     ↓ Gap Analysis          │
     │  [To-Be — Tương lai]                        │
-    │  Thủ thư: Tải lên → OCR → Đối soát         │
+    │  Thủ thư: Tải lên → OCR → Đối soát          │
     │           → Phê duyệt → Xuất bản            │
-    │  Sinh viên: Tìm toàn văn → Chọn đúng trang │
+    │  Sinh viên: Tìm toàn văn → Chọn đúng trang  │
     │             → Kiểm tra quyền → Đọc Canvas   │
     │                     ↓                       │
     │  [Phạm vi sản phẩm]                         │
-    │  In-Scope: OCR, đối soát, mã hóa, phân     │
+    │  In-Scope: OCR, đối soát, mã hóa, phân      │
     │    quyền, Canvas, watermark, audit log      │
     │  Out-of-Scope: máy quét, bản quyền nội      │
     │    dung, ứng dụng di động, vận hành thật    │
     │                     ↓                       │
     │  [Tính năng ưu tiên]                        │
-    │  Bắt buộc: OCR / Đối soát / Mã hóa /       │
+    │  Bắt buộc: OCR / Đối soát / Mã hóa /        │
     │    Canvas / Watermark / Audit log           │
-    │  Nên có: Theo dõi hàng chờ / Nhảy trang /  │
+    │  Nên có: Theo dõi hàng chờ / Nhảy trang /   │
     │    Screenshot blur                          │
     └──────────────────────┬──────────────────────┘
                            │

@@ -6,11 +6,11 @@
 
     ┌─────────────────────────────────────────────┐
     │              ĐẦU VÀO (Inputs)               │
-    │  ① Idea: số hóa tài liệu quét, kiểm soát   │
-    │     quyền đọc và truy vết bản quyền         │
-    │  ② Business case: thủ thư xử lý rời rạc,   │
-    │     sinh viên không tìm được toàn văn,      │
-    │     thư viện thiếu bằng chứng truy vết      │
+    │  ① Idea: số hóa tài liệu quét, kiểm soát    │
+    │     quyền đọc và truy vết bản quyền          │
+    │  ② Business case: thủ thư xử lý rời rạc,     │
+    │     sinh viên không tìm được toàn văn,        │
+    │     thư viện thiếu bằng chứng truy vết       │
     │  ③ 3 đối thủ: DSpace / Greenstone /         │
     │     Ex Libris Alma                          │
     └──────────────────────┬──────────────────────┘
@@ -19,12 +19,12 @@
     ┌─────────────────────────────────────────────┐
     │         ĐẦU RA — Project Proposal           │
     │  • Problem Statement                        │
-    │  • Mục tiêu & Tiêu chí thành công          │
+    │  • Mục tiêu & Tiêu chí thành công           │
     │  • Scope: In-Scope / Out-of-Scope           │
     │  • Deliverables                             │
     │  • Time: 10 tuần / 5 Sprint                 │
-    │  • Cost: 8.800.000 VNĐ (trần 10 triệu)     │
-    │  • Feasibility (Kỹ thuật/Tiến độ/Tài chính)│
+    │  • Cost: 8.800.000 VNĐ (trần 10 triệu)      │
+    │  • Feasibility (Kỹ thuật/Tiến độ/Tài chính) │
     │  • Rủi ro chính                             │
     └──────────────────────┬──────────────────────┘
                            │
