@@ -90,7 +90,7 @@ flowchart TD
 - Áp dụng được mã hóa, quyền truy cập, giới hạn phiên, dấu nhận diện và nhật ký trên dữ liệu thử.
 - Tìm đúng tài liệu và trang chứa từ khóa trong tập dữ liệu mẫu.
 - Cài đặt và chạy được theo hướng dẫn; không còn lỗi nghiêm trọng khi bàn giao.
-- Hoàn thành trong 10 tuần và không vượt trần chi phí 10.000.000 VNĐ.
+- Hoàn thành trong 10 tuần và không phát sinh chi phí tiền mặt ngoài dự kiến.
 
 > Tiêu chí nghiệm thu đầy đủ xem tại [Phạm vi công việc](./LIBIF-Statement-Of-Work.md).
 
@@ -182,7 +182,7 @@ Các biện pháp trên nhằm giảm rủi ro và hỗ trợ truy vết, không
 ### 10.2 Ràng buộc
 
 - 06 sinh viên tham gia khoảng 15 giờ/người/tuần trong 10 tuần.
-- Ngân sách cơ sở 8.800.000 VNĐ; trần kiểm soát 10.000.000 VNĐ.
+- Ngân sách tiền mặt 0 VNĐ (tối ưu toàn diện bằng tài nguyên Azure for Students, Free AI và tài nguyên miễn phí sẵn có).
 - Phạm vi ưu tiên thấp được hoãn trước khi xem xét kéo dài thời hạn.
 
 ### 10.3 Phụ thuộc

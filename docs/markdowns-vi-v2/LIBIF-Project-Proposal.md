@@ -6,7 +6,7 @@
 
 ## 1. Tóm tắt đề xuất
 
-LIBIF là thư viện số giúp thủ thư nhận dạng chữ từ tài liệu quét, đối soát nội dung, xuất bản và cung cấp quyền đọc trực tuyến có kiểm soát. Dự án nhằm kiểm chứng luồng nghiệp vụ cốt lõi trong 10 tuần với ngân sách tiền mặt 8.800.000 VNĐ, trước khi xem xét thí điểm tại thư viện thật.
+LIBIF là thư viện số giúp thủ thư nhận dạng chữ từ tài liệu quét, đối soát nội dung, xuất bản và cung cấp quyền đọc trực tuyến có kiểm soát. Dự án nhằm kiểm chứng luồng nghiệp vụ cốt lõi trong 10 tuần với ngân sách tiền mặt 0 VNĐ (tối ưu hóa toàn bộ bằng tài nguyên miễn phí), trước khi xem xét thí điểm tại thư viện thật.
 
 ## 2. Tình huống kinh doanh
 
@@ -26,7 +26,7 @@ Nếu chỉ lưu PDF trên dịch vụ chia sẻ tệp, thư viện giải quy�
 
 - Hoàn thành luồng tải tài liệu → nhận dạng chữ → đối soát → phê duyệt → tìm kiếm → đọc trực tuyến.
 - Không công khai đường dẫn PDF gốc trên giao diện; dấu nhận diện động và nhật ký hoạt động vận hành trong kịch bản thử nghiệm.
-- Hoàn thành trong 10 tuần, không vượt trần chi phí và không còn lỗi nghiêm trọng trước khi bàn giao.
+- Hoàn thành trong 10 tuần, không phát sinh chi phí tiền mặt ngoài dự kiến và không còn lỗi nghiêm trọng trước khi bàn giao.
 - Có đủ bằng chứng kiểm thử, nghiệm thu và vận hành 05 Sprint.
 
 > Chi tiết xem tại [Điều lệ dự án](./LIBIF-Project-Charter.md) và [Phạm vi công việc](./LIBIF-Statement-Of-Work.md).
@@ -102,17 +102,16 @@ Các lợi ích trên là mục tiêu cần đo bằng dữ liệu thử nghiệ
 | **Tổng** | **10 tuần** | **05 Sprint, 900 giờ-người của 06 sinh viên** |
 
 ### 11.2 Chi phí
+| Hạng mục | Dự toán (VNĐ) | Ghi chú |
+| :--- | ---: | :--- |
+| Công sức 06 sinh viên | 0 | 900 giờ-người (765h tập trung sản phẩm) |
+| Máy chủ thử nghiệm & Cơ sở dữ liệu | 0 | Azure for Students (miễn phí) |
+| Công cụ AI hỗ trợ lập trình | 0 | Free tier (Codex, Gemini CLI, Copilot) |
+| Tên miền & Dịch vụ phụ trợ | 0 | Subdomain miễn phí |
+| Dữ liệu thử và in ấn | 0 | Tài liệu có sẵn, in nội bộ |
+| **Tổng ngân sách tiền mặt** | **0** | **Tối ưu toàn diện bằng tài nguyên miễn phí** |
 
-| Hạng mục | Dự toán (VNĐ) |
-| :--- | ---: |
-| Hạn mức công cụ hỗ trợ lập trình | 3.000.000 |
-| Máy chủ thử nghiệm | 4.000.000 |
-| Tên miền, sao lưu và dịch vụ phụ trợ | 600.000 |
-| Dữ liệu thử, in ấn và vật tư trình diễn | 400.000 |
-| Dự phòng rủi ro 10% | 800.000 |
-| **Tổng ngân sách tiền mặt** | **8.800.000** |
-
-Công sức sinh viên được quản lý bằng giờ-người nên chi phí lương trong học phần là 0 VNĐ. tối đa là 10.000.000 VNĐ; mọi dự báo vượt mức phải được nhóm xem xét.
+Công sức sinh viên được quản lý bằng giờ-người (900 giờ công) nên chi phí lương trong học phần là 0 VNĐ. Mọi phát sinh chi phí tiền mặt ngoài dự kiến phải được cả nhóm thảo luận và thống nhất trước.
 
 Dự toán chưa gồm máy quét, bản quyền nội dung, tư vấn pháp lý, kiểm thử xâm nhập chuyên nghiệp, hạ tầng vận hành thật và bảo trì. Chi phí thương mại hóa chỉ được xác lập sau khi bản mẫu đạt nghiệm thu và có yêu cầu cụ thể từ thư viện thí điểm.
 

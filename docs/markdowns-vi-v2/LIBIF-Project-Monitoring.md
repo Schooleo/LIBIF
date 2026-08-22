@@ -42,8 +42,8 @@ Kế hoạch không dùng dữ liệu để giám sát cá nhân một cách má
 | Capacity | 06 sinh viên × 15 giờ/tuần = 90 giờ/tuần |
 | Effort danh nghĩa | 900 giờ-người |
 | Effort tập trung | 765 giờ-người |
-| Ngân sách tiền mặt | 8.800.000 VNĐ, gồm dự phòng 10% |
-| Trần kiểm soát chi phí | 10.000.000 VNĐ |
+| Ngân sách tiền mặt | 0 VNĐ (Toàn bộ sử dụng Azure for Students, AI free-tier và tài nguyên sẵn có) |
+| Chi phí nhân công | 0 VNĐ (quản lý bằng 900 giờ-người) |
 | Ngưỡng velocity | Sau Sprint 2, cần trung bình tối thiểu 24 SP/Sprint |
 
 Mọi chỉ số trong tài liệu này phải ghi rõ đang so sánh với baseline nào. Nếu baseline được thay đổi theo quy trình Change Control, dashboard và báo cáo kỳ tiếp theo phải dùng baseline mới và lưu lịch sử thay đổi.
@@ -137,10 +137,9 @@ flowchart LR
 
 | Dữ liệu | Nội dung | Nguồn | Owner | Tần suất | Cách sử dụng |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| Actual cost | Số tiền đã chi, ngày chi, hạng mục, người thanh toán | Sổ chi phí + hóa đơn | TV-01; TV-06 đối soát | Khi phát sinh | Theo dõi tiền mặt thực tế |
-| Committed cost | Khoản đã đặt/mua nhưng chưa thanh toán đủ | Sổ chi phí | TV-01 | Hằng tuần | Forecast chi phí |
-| Cost forecast | `Actual cost + Committed cost + Estimate to complete` | Sổ chi phí | TV-01 | Hằng tuần/Cuối Sprint | So với baseline và trần 10 triệu |
-| Reserve usage | Phần dự phòng 800.000 VNĐ đã dùng, lý do và phê duyệt | Sổ chi phí/Decision Log | TV-01, Scrum Master | Khi phát sinh | Minh bạch dùng dự phòng |
+| Actual cost | Số tiền đã chi (nếu phát sinh), ngày chi, hạng mục | Sổ chi phí + hóa đơn | TV-01; TV-06 đối soát | Khi phát sinh | Theo dõi tiền mặt thực tế |
+| Committed cost | Khoản cam kết chi (nếu có) | Sổ chi phí | TV-01 | Hằng tuần | Forecast chi phí |
+| Cost forecast | `Actual cost + Committed cost + Estimate to complete` | Sổ chi phí | TV-01 | Hằng tuần/Cuối Sprint | Giám sát phát sinh so với baseline 0 VNĐ |
 
 Không theo dõi “chi phí nhân công” vì công sức sinh viên đã được quản lý riêng bằng effort. Chỉ ghi nhận tiền mặt thực chi hoặc cam kết chi.
 
@@ -229,8 +228,7 @@ Dashboard tối thiểu có thể là bảng Markdown, spreadsheet hoặc view c
 | Defect Critical | Số lỗi Critical mở | Lớn hơn 0 | Dừng merge tính năng liên quan, xử lý ngay |
 | Defect High | Số lỗi High mở | Trên 05 trước code freeze | Ưu tiên bug fix, giảm phạm vi phụ |
 | Pipeline health | Thời gian nhánh chính không pass | Trên 01 ngày | Owner xử lý pipeline, hạn chế merge mới |
-| Cash forecast | Actual + committed + ETC | Vượt 10.000.000 VNĐ | Dùng free tier/giảm chi/trao đổi với giảng viên |
-| Reserve usage | Dự phòng đã dùng / 800.000 VNĐ | Trên 80% trước Sprint 5 | Không chi mới nếu chưa có quyết định nhóm |
+| Cash forecast | Actual + committed + ETC | Phát sinh tiền mặt ngoài dự kiến | Dùng free tier/giảm chi/trao đổi với nhóm |
 
 Không dùng tỷ lệ code coverage, số commit hay số prompt làm ngưỡng bắt buộc nếu công cụ không đo tin cậy hoặc chưa có baseline. Có thể báo cáo các số đó như thông tin phụ trợ, kèm bối cảnh.
 
@@ -278,7 +276,7 @@ Nếu phát hiện số liệu sai, không ghi đè im lặng: cập nhật bả
 | WIP/task bị kẹt quá 03 ngày | Scrum Master, owner task | Pairing, tách task, hỗ trợ kỹ thuật hoặc đổi owner |
 | Có lỗi Critical/lộ secret | Tech Lead, QA/DevOps và nhóm | Dừng merge/deploy liên quan, phương án xử lý và retest |
 | Capacity giảm trên 20% | Scrum Master và nhóm | Điều chỉnh Sprint Backlog/phân công |
-| Chi phí dự báo vượt 10 triệu VNĐ | Cả nhóm, giảng viên phụ trách | Giảm chi, dùng tài nguyên thay thế hoặc điều chỉnh scope |
+| Phát sinh chi phí tiền mặt ngoài dự kiến | Cả nhóm thống nhất | Ưu tiên phương án miễn phí hoặc điều chỉnh scope |
 | Thay đổi yêu cầu/kiến trúc lớn | PO hoặc Tech Lead, nhóm; giảng viên nếu ảnh hưởng học phần | Change Request/ADR, ảnh hưởng baseline và phê duyệt |
 | Lo ngại quy định AI/học thuật | PO, Scrum Master, giảng viên khi cần | Dừng sử dụng có rủi ro, bổ sung công bố/kiểm chứng |
 
