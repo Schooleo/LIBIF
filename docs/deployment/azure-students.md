@@ -13,22 +13,22 @@ The Azure jobs remain disabled until the student subscription, DNS, VM environme
 ## Architecture
 
 ```text
-browser
-  ├─ https://library.example.edu ──> Vercel Next.js
-  └─ https://api.library.example.edu ──> Azure public IP
-                                                │
-                                              Caddy
-                                                │
-                    ┌───────────────────────────┴────────────┐
-                    │ API ─ PostgreSQL / Redis / MinIO       │
-                    │ worker ─ Redis / PostgreSQL / MinIO    │
-                    └────────────────────────────────────────┘
+browser ──> https://libif.vercel.app ──> Vercel Next.js
+                         │
+                         └─ /api/* rewrite ──> Azure-managed DNS hostname
+                                                      │
+                                                    Caddy
+                                                      │
+                          ┌───────────────────────────┴────────────┐
+                          │ API ─ PostgreSQL / Redis / MinIO       │
+                          │ worker ─ Redis / PostgreSQL / MinIO    │
+                          └────────────────────────────────────────┘
 
 vMAJOR.MINOR.PATCH tag on main -> API + web quality gates -> GHCR tag + SHA images
                               -> GitHub OIDC -> Azure VM Run Command -> Compose deploy -> health check
 ```
 
-Use custom frontend and API hostnames under the same registrable domain. The default `*.vercel.app` hostname and an unrelated API hostname are cross-site, which prevents LIBIF's `SameSite=Lax` credential flow from operating as designed.
+Vercel proxies browser requests under `/api/*` to the Azure-managed API hostname. The browser therefore remains on `libif.vercel.app`, preserving the application's `SameSite=Lax` credential flow without requiring a purchased domain or external DNS provider.
 
 ## 1. Prepare the student subscription
 
@@ -41,7 +41,7 @@ az account set --subscription '<azure-for-students-subscription-id>'
 az account show --output table
 ```
 
-The default template uses Southeast Asia, `Standard_B2als_v2` (AMD64, 2 vCPU, 4 GB RAM), a 30 GB OS disk, and a detached-on-delete 128 GB Standard SSD data disk. Docker stores images and named volumes on the data disk. A 4 GB swap file protects light OCR workloads from abrupt memory exhaustion. For more headroom, deploy `Standard_B2as_v2` (8 GB RAM), understanding that it consumes the student credit faster.
+The default template uses East Asia, `Standard_B2als_v2` (AMD64, 2 vCPU, 4 GB RAM), a 30 GB OS disk, and a detached-on-delete 128 GB Standard SSD data disk. Docker stores images and named volumes on the data disk. A 4 GB swap file protects light OCR workloads from abrupt memory exhaustion. For more headroom, deploy `Standard_B2as_v2` (8 GB RAM), understanding that it consumes the student credit faster.
 
 Create a budget and alerts in Azure Cost Management before deployment. The USD 100 student credit is finite and storage plus public IPv4 continue to incur charges while a VM is deallocated.
 
@@ -67,13 +67,17 @@ The Bicep template creates:
 
 The Home/tenant account performs the initial deployment. GitHub receives only short-lived OIDC access later; no Azure client secret is stored in GitHub.
 
-## 3. Configure DNS and the private VM environment
+## 3. Configure the Azure hostname and private VM environment
 
-Create an A record for the API hostname using `publicIpAddress.value` from the provisioner output:
+The template assigns an Azure-managed hostname and returns it as `publicDnsName.value`:
 
 ```text
-api.library.example.edu  A  <azure-public-ip>
+libif-schooleo-prod.eastasia.cloudapp.azure.com
 ```
+
+Azure maintains this hostname and its A record; no registrar or external DNS configuration is required.
+If the default label is already allocated, rerun the provisioner with a unique
+`AZURE_PUBLIC_DNS_LABEL` value.
 
 Prepare the environment locally, replacing every placeholder. Passwords used in URLs must be percent-encoded while the corresponding service password remains raw.
 
@@ -111,11 +115,16 @@ Alternatively, make the `libif-api` and `libif-migrate` GHCR packages public aft
 Keep the Vercel project rooted at `apps/web` and configure its Production environment:
 
 ```text
-NEXT_PUBLIC_API_BASE_URL=https://api.library.example.edu
-INTERNAL_API_BASE_URL=https://api.library.example.edu
+NEXT_PUBLIC_API_BASE_URL=https://libif.vercel.app
+INTERNAL_API_BASE_URL=https://libif-schooleo-prod.eastasia.cloudapp.azure.com
 ```
 
-Attach `library.example.edu` (or another same-site custom hostname) to Vercel. Set `LIBIF_WEB_BASE_URL=https://library.example.edu` in the Azure VM environment. Add only intentional preview origins to `LIBIF_CORS_ORIGINS`; wildcard origins are not supported for credentialed requests.
+Keep the `/api/*` external rewrite in `apps/web/vercel.json`. Set `LIBIF_WEB_BASE_URL=https://libif.vercel.app` in the Azure VM environment. Add only intentional preview origins to `LIBIF_CORS_ORIGINS`; wildcard origins are not supported for credentialed requests.
+
+Store both Vercel URL variables as non-sensitive build-readable values. They are
+public routing configuration, not secrets. A Vercel sensitive variable is
+returned to the prebuilt GitHub Actions build as `[SENSITIVE]`, and the
+production workflow intentionally rejects that placeholder.
 
 ## 5. Configure GitHub
 
@@ -128,7 +137,7 @@ Create or reuse the protected GitHub environment named `production`. Configure i
 | `AZURE_SUBSCRIPTION_ID` | `subscriptionId.value` |
 | `AZURE_RESOURCE_GROUP` | `resourceGroupName.value` |
 | `AZURE_VM_NAME` | `vmName.value` |
-| `LIBIF_API_HOSTNAME` | API DNS hostname, without `https://` |
+| `LIBIF_API_HOSTNAME` | `publicDnsName.value`, without `https://` |
 | `AZURE_DEPLOY_ENABLED` | Keep `false` until every previous step passes; then set `true`. |
 | `PRODUCTION_ACCESS_URL` | Stable public Vercel origin, including `https://` |
 
