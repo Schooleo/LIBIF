@@ -97,6 +97,22 @@ jobs:
       - name: Pull production project settings
         run: vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
 
+      - name: Verify Vercel API routing environment
+        shell: bash
+        run: |
+          set -euo pipefail
+          set -a
+          source .vercel/.env.production.local
+          set +a
+          for name in NEXT_PUBLIC_API_BASE_URL INTERNAL_API_BASE_URL; do
+            if [[ -z "${!name:-}" || "${!name}" == "[SENSITIVE]" ]]; then
+              echo "::error::${name} must be a build-readable Vercel production variable."
+              exit 1
+            fi
+          done
+          [[ "${NEXT_PUBLIC_API_BASE_URL}" == "https://libif.vercel.app" ]]
+          [[ "${INTERNAL_API_BASE_URL}" == "https://libif-schooleo-prod.eastasia.cloudapp.azure.com" ]]
+
       - name: Build Vercel artifacts
         run: vercel build --prod --token="$VERCEL_TOKEN"
 
@@ -257,10 +273,11 @@ jobs:
           set -euo pipefail
           deploy_script="${RUNNER_TEMP}/libif-azure-deploy.sh"
           {
+            head -n 1 scripts/azure/deploy.sh
             printf 'export LIBIF_RELEASE_TAG=%q\n' "${GITHUB_REF_NAME}"
             printf 'export LIBIF_RELEASE_SHA=%q\n' "${GITHUB_SHA}"
             printf 'export LIBIF_REPOSITORY=%q\n' "${GITHUB_REPOSITORY}"
-            cat scripts/azure/deploy.sh
+            tail -n +2 scripts/azure/deploy.sh
           } > "${deploy_script}"
 
           az vm run-command invoke \

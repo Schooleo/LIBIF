@@ -2,6 +2,12 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "nextjs",
   "buildCommand": "cd ../.. && npm run build -w apps/web",
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://libif-schooleo-prod.eastasia.cloudapp.azure.com/api/:path*"
+    }
+  ],
   "git": {
     "deploymentEnabled": {
       "main": false

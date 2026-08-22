@@ -6,9 +6,10 @@ usage() {
 Usage: scripts/azure/provision.sh <ssh-public-key-file> <trusted-ssh-cidr>
 
 Environment overrides:
-  AZURE_LOCATION       Default: southeastasia
+  AZURE_LOCATION       Default: eastasia
   AZURE_RESOURCE_GROUP Default: libif-production
   AZURE_NAME_PREFIX    Default: libif-prod
+  AZURE_PUBLIC_DNS_LABEL Default: libif-schooleo-prod
   AZURE_VM_SIZE        Default: Standard_B2als_v2
   GITHUB_REPOSITORY    Default: Schooleo/LIBIF
 
@@ -34,9 +35,10 @@ fi
 
 readonly ssh_public_key_file="$1"
 readonly ssh_allowed_cidr="$2"
-readonly location="${AZURE_LOCATION:-southeastasia}"
+readonly location="${AZURE_LOCATION:-eastasia}"
 readonly resource_group="${AZURE_RESOURCE_GROUP:-libif-production}"
 readonly name_prefix="${AZURE_NAME_PREFIX:-libif-prod}"
+readonly public_dns_label="${AZURE_PUBLIC_DNS_LABEL:-libif-schooleo-prod}"
 readonly vm_size="${AZURE_VM_SIZE:-Standard_B2als_v2}"
 readonly github_repository="${GITHUB_REPOSITORY:-Schooleo/LIBIF}"
 
@@ -65,6 +67,7 @@ outputs="$({
     --template-file infra/azure/main.bicep \
     --parameters \
       namePrefix="${name_prefix}" \
+      publicDnsLabel="${public_dns_label}" \
       githubRepository="${github_repository}" \
       vmSize="${vm_size}" \
       sshPublicKey="$(<"${ssh_public_key_file}")" \
@@ -84,7 +87,9 @@ under the protected 'production' environment using the output values above:
   AZURE_SUBSCRIPTION_ID <- subscriptionId.value
   AZURE_RESOURCE_GROUP  <- resourceGroupName.value
   AZURE_VM_NAME         <- vmName.value
-  AZURE_DEPLOY_ENABLED  <- true
+  AZURE_DEPLOY_ENABLED  <- false until DNS, the VM environment, and image access
+                           are verified; then set it to true
 
-Also configure LIBIF_API_HOSTNAME after its DNS A record points to publicIpAddress.value.
+Configure LIBIF_API_HOSTNAME from publicDnsName.value. Azure manages this DNS
+record, so no external DNS provider is required.
 EOF
