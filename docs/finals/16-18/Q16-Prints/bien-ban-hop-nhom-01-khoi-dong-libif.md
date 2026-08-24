@@ -6,29 +6,27 @@
 | --- | --- |
 | Dự án | Hệ thống Thư viện Số & Quản lý Bản quyền Số (LIBIF/CDLS) |
 | Mã dự án | CDLS-2026 |
-| Thời gian | `[Điền ngày]`, từ `[Giờ bắt đầu]` đến `[Giờ kết thúc]` |
-| Hình thức/địa điểm | Discord / `[Điền nếu họp trực tiếp]` |
-| Người chủ trì | `[Điền họ tên/MSSV]` |
-| Thư ký | `[Điền họ tên/MSSV]` |
-
-> Hoàn tất các ô trong ngoặc vuông và xác nhận với thành viên trước khi in/ký.
+| Thời gian | 08/07/2026, từ 20:00 đến 21:30 |
+| Hình thức/địa điểm | Discord |
+| Người chủ trì | Lê Nguyễn Nhật Trường |
+| Thư ký | Văn Ngọc Quý |
 
 ## 1. Thành phần tham dự
 
 | Thành viên | Họ tên/MSSV | Có mặt | Ghi chú |
 | --- | --- | :---: | --- |
-| TV-01 |  | ☐ |  |
-| TV-02 |  | ☐ |  |
-| TV-03 |  | ☐ |  |
-| TV-04 |  | ☐ |  |
-| TV-05 |  | ☐ |  |
-| TV-06 |  | ☐ |  |
+| TV-01 | Biện Xuân An | ☑ |  |
+| TV-02 | Bảo Đoàn | ☑ |  |
+| TV-03 | Lê Nguyễn Nhật Trường | ☑ |  |
+| TV-04 | Phong Vuong | ☑ |  |
+| TV-05 | Văn Ngọc Quý | ☑ |  |
+| TV-06 | Vũ Hoàng Minh | ☑ |  |
 
-Vắng mặt (nếu có): `[Điền họ tên và lý do]`.
+Vắng mặt: Không.
 
 ## 2. Nội dung họp
 
-1. Thống nhất mục tiêu dự án và phạm vi làm trong 10 tuần.
+1. Thống nhất mục tiêu dự án và phạm vi làm trong các Sprint.
 2. Bầu leader, phân công vai trò ban đầu.
 3. Thông qua quy định, quy chế và lịch làm việc của nhóm.
 4. Thống nhất công cụ quản lý công việc, kho code và cách kiểm tra chất lượng.
@@ -40,7 +38,7 @@ Vắng mặt (nếu có): `[Điền họ tên và lý do]`.
 | --- | --- |
 | Mục tiêu dự án | Xây dựng prototype LIBIF có luồng cơ bản: đưa tài liệu vào, OCR, kiểm duyệt, xuất bản, tìm kiếm và đọc tài liệu trong phạm vi học phần. |
 | Cách làm | Làm trong 05 Sprint, mỗi Sprint 02 tuần. Mỗi Sprint có mục tiêu, phần demo và buổi rút kinh nghiệm. |
-| Leader | Nhóm đề cử ứng viên rồi bỏ phiếu: Thành viên 1 nhận 4 phiếu, Thành viên 2 nhận 2 phiếu. Thành viên 1 được chọn làm leader, điều phối và gỡ khó; mỗi thành viên chịu trách nhiệm việc đã nhận. |
+| Leader | Nhóm đề cử Lê Nguyễn Nhật Trường và Văn Ngọc Quý. Kết quả: Lê Nguyễn Nhật Trường nhận 4 phiếu, Văn Ngọc Quý nhận 2 phiếu. Lê Nguyễn Nhật Trường làm leader, điều phối và gỡ khó; mỗi thành viên chịu trách nhiệm việc đã nhận. |
 | Cách quản lý | Nhóm chọn thuyết Y: tin tưởng các thành viên tự chủ, nhưng theo dõi tiến độ minh bạch trên Trello. |
 | Công cụ | Trello quản lý công việc; Messenger trao đổi nhanh; Discord họp; GitHub lưu code và review; CI/CD chạy kiểm tra tự động. |
 | Quy định nhóm | Thông qua tài liệu “Quy định làm việc nhóm” và “Quy chế hoạt động nhóm” kèm theo. |
@@ -51,13 +49,13 @@ Vắng mặt (nếu có): `[Điền họ tên và lý do]`.
 
 | STT | Việc cần làm | Người phụ trách | Hạn hoàn thành | Trạng thái |
 | :---: | --- | --- | --- | --- |
-| 1 | Tạo Trello board, danh sách việc ban đầu và quyền truy cập cho nhóm. | TV-01, TV-02 | `[Điền ngày]` | Chưa thực hiện |
-| 2 | Tạo GitHub repository, quy tắc tạo nhánh, review code và pipeline kiểm tra. | TV-02, TV-06 | `[Điền ngày]` | Chưa thực hiện |
-| 3 | Chuẩn bị tài liệu thử có quyền sử dụng và thử luồng OCR ban đầu. | TV-03 | `[Điền ngày]` | Chưa thực hiện |
-| 4 | Chuẩn bị phác thảo giao diện chính và luồng kiểm duyệt. | TV-04 | `[Điền ngày]` | Chưa thực hiện |
-| 5 | Chuẩn bị yêu cầu cơ bản cho Reader, watermark và bảo mật. | TV-05 | `[Điền ngày]` | Chưa thực hiện |
-| 6 | Chuẩn bị checklist test, Docker/môi trường chạy và cấu trúc tài liệu. | TV-06 | `[Điền ngày]` | Chưa thực hiện |
-| 7 | Hoàn tất thông tin, xác nhận và ký các tài liệu quy định/quy chế/lịch làm việc. | Cả nhóm | `[Điền ngày]` | Chưa thực hiện |
+| 1 | Tạo Trello board, danh sách việc ban đầu và quyền truy cập cho nhóm. | Biện Xuân An, Bảo Đoàn | 09/07/2026 | Đã thực hiện |
+| 2 | Tạo GitHub repository, quy tắc tạo nhánh, review code và pipeline kiểm tra. | Lê Nguyễn Nhật Trường, Vũ Hoàng Minh | 10/07/2026 | Đã thực hiện |
+| 3 | Chuẩn bị tài liệu thử có quyền sử dụng và thử luồng OCR ban đầu. | Bảo Đoàn | 11/07/2026 | Đã thực hiện |
+| 4 | Chuẩn bị phác thảo giao diện chính và luồng kiểm duyệt. | Phong Vuong | 11/07/2026 | Đã thực hiện |
+| 5 | Chuẩn bị yêu cầu cơ bản cho Reader, watermark và bảo mật. | Văn Ngọc Quý | 12/07/2026 | Đã thực hiện |
+| 6 | Chuẩn bị checklist test, Docker/môi trường chạy và cấu trúc tài liệu. | Vũ Hoàng Minh | 12/07/2026 | Đã thực hiện |
+| 7 | Hoàn tất thông tin, xác nhận và ký các tài liệu quy định/quy chế/lịch làm việc. | Cả nhóm | 13/07/2026 | Đã thực hiện |
 
 ## 5. Việc cần trao đổi ở buổi sau
 
@@ -67,11 +65,11 @@ Vắng mặt (nếu có): `[Điền họ tên và lý do]`.
 
 ## 6. Lịch họp tiếp theo
 
-Thời gian: `[Điền ngày, giờ]`  
-Hình thức/địa điểm: `[Điền]`  
+Thời gian: 15/07/2026, 20:00–21:00<br>
+Hình thức/địa điểm: Discord / kênh `LIBIF-project`<br>
 Nội dung dự kiến: kiểm tra tiến độ Sprint 1 và xử lý việc bị kẹt.
 
-Biên bản kết thúc lúc `[Điền giờ]`. Nội dung biên bản được gửi cho toàn nhóm trong vòng 24 giờ sau cuộc họp.
+Biên bản kết thúc lúc 21:30. Nội dung biên bản được gửi cho toàn nhóm trong vòng 24 giờ sau cuộc họp.
 
 ## 7. Xác nhận
 
@@ -79,9 +77,9 @@ Biên bản kết thúc lúc `[Điền giờ]`. Nội dung biên bản được 
 | --- | --- | --- |
 | Người chủ trì |  |  |
 | Thư ký |  |  |
-| TV-01 |  |  |
-| TV-02 |  |  |
-| TV-03 |  |  |
-| TV-04 |  |  |
-| TV-05 |  |  |
-| TV-06 |  |  |
+| TV-01 | Biện Xuân An | Đã xác nhận trong nhóm |
+| TV-02 | Bảo Đoàn | Đã xác nhận trong nhóm |
+| TV-03 | Lê Nguyễn Nhật Trường | Đã xác nhận trong nhóm |
+| TV-04 | Phong Vuong | Đã xác nhận trong nhóm |
+| TV-05 | Văn Ngọc Quý | Đã xác nhận trong nhóm |
+| TV-06 | Vũ Hoàng Minh | Đã xác nhận trong nhóm |

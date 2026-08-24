@@ -5,7 +5,7 @@
 | Dự án | Hệ thống Thư viện Số & Quản lý Bản quyền Số (LIBIF/CDLS) |
 | Cách làm | 05 Sprint, mỗi Sprint 02 tuần |
 | Thời gian áp dụng | 10 tuần thực hiện dự án |
-| Ngày hiệu lực | `[Điền ngày]` |
+| Ngày hiệu lực | 08/07/2026 |
 
 ## 1. Cách tổ chức nhóm
 
@@ -67,9 +67,9 @@ Mỗi cuối Sprint, nhóm xem lại: mục tiêu có đạt không, việc nào
 
 | Thành viên | Họ tên/MSSV | Xác nhận |
 | --- | --- | --- |
-| TV-01 |  |  |
-| TV-02 |  |  |
-| TV-03 |  |  |
-| TV-04 |  |  |
-| TV-05 |  |  |
-| TV-06 |  |  |
+| TV-01 | Biện Xuân An | Đã xác nhận trong nhóm |
+| TV-02 | Bảo Đoàn | Đã xác nhận trong nhóm |
+| TV-03 | Lê Nguyễn Nhật Trường | Đã xác nhận trong nhóm |
+| TV-04 | Phong Vuong | Đã xác nhận trong nhóm |
+| TV-05 | Văn Ngọc Quý | Đã xác nhận trong nhóm |
+| TV-06 | Vũ Hoàng Minh | Đã xác nhận trong nhóm |

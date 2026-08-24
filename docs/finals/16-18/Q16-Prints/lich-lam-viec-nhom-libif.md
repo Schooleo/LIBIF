@@ -6,7 +6,7 @@
 | Cam kết mỗi thành viên | Khoảng 15 giờ/tuần, tùy lịch học thực tế |
 | Kênh họp | Discord |
 | Kênh cập nhật công việc | Trello |
-| Ngày hiệu lực | `[Điền ngày]` |
+| Ngày hiệu lực | 08/07/2026 |
 
 > Lịch dưới đây là lịch làm việc chung để nhóm dễ phối hợp. Phần tự làm của từng thành viên được tự sắp xếp, miễn bảo đảm cam kết đã nhận trên Trello.
 
@@ -51,9 +51,9 @@ Nếu một khung giờ không phù hợp với lịch học của đa số, nh�
 
 | Thành viên | Họ tên/MSSV | Xác nhận |
 | --- | --- | --- |
-| TV-01 |  |  |
-| TV-02 |  |  |
-| TV-03 |  |  |
-| TV-04 |  |  |
-| TV-05 |  |  |
-| TV-06 |  |  |
+| TV-01 | Biện Xuân An | Đã xác nhận trong nhóm |
+| TV-02 | Bảo Đoàn | Đã xác nhận trong nhóm |
+| TV-03 | Lê Nguyễn Nhật Trường | Đã xác nhận trong nhóm |
+| TV-04 | Phong Vuong | Đã xác nhận trong nhóm |
+| TV-05 | Văn Ngọc Quý | Đã xác nhận trong nhóm |
+| TV-06 | Vũ Hoàng Minh | Đã xác nhận trong nhóm |
