@@ -1,10 +1,12 @@
-# ĐỊNH NGHĨA HOÀN THÀNH — LIBIF
+# BẢN IN NỘP KÈM — ĐỊNH NGHĨA HOÀN THÀNH (DEFINITION OF DONE) — LIBIF
 
 | Phiên bản | Ngày hiệu lực | Đường cơ sở sản phẩm | Người phê duyệt |
 |---|---|---|---|
-| `[ ]` | `[ ]` | `[ ]` | `[Scrum Team/PO]` |
+| `1.0` | 08/07/2026 | `dev@82c8fe9` / PBI-01…PBI-16 | Scrum Team; chưa có PO sign-off riêng |
 
 DoD là tiêu chuẩn chung cho Phần tăng trưởng. Tiêu chí chấp nhận cho biết xây đúng câu chuyện người dùng nào; DoD xác nhận Phần tăng trưởng đạt mức chất lượng chung. PBI chưa đạt toàn bộ mục bắt buộc không được tính Done và quay lại Danh sách sản phẩm.
+
+**Cách đọc bản in:** các ô dưới đây là tiêu chí kiểm tra bắt buộc cho từng PBI; trạng thái thực tế của baseline được ghi ở cuối tài liệu. Không đánh dấu “Done” chỉ vì đã có code hoặc test pass.
 
 ## Danh sách kiểm tra bắt buộc cho mỗi PBI/Phần tăng trưởng
 
@@ -57,3 +59,14 @@ DoD là tiêu chuẩn chung cho Phần tăng trưởng. Tiêu chí chấp nhận
 ## Quy tắc thay đổi DoD
 
 Thay đổi qua Cải tiến Sprint/rà soát chất lượng; ghi lý do, ảnh hưởng tới hạng mục đang làm, approver và ngày hiệu lực. Không hạ DoD hồi tố để biến một hạng mục chưa đạt thành Done.
+
+## Đánh giá áp dụng trên baseline hiện tại
+
+| Phạm vi | Bằng chứng | Kết luận |
+|---|---|---|
+| PBI-01…PBI-16 | Board snapshot ghi 11 PBI ở Review, 5 PBI ở Product Backlog, 0 PBI ở Done | Chưa PBI nào được xác nhận Done ở board hiện tại |
+| CI/build/test | Sprint 5 ghi root lint, API/web build, 192 API tests, 96 web tests, 12 API e2e suites/73 tests và worker 5/5 | Gate kỹ thuật đã có bằng chứng |
+| Acceptance/DoD | Chưa có PO sign-off và chưa có acceptance record cho toàn bộ AC | Chưa đủ điều kiện chuyển tất cả thành Done |
+| Release DoD | Backup/restore, secret rotation, browser/accessibility matrix, capacity và release runbook còn carry-over | Chưa đủ điều kiện production release |
+
+**Quyết định:** DoD đã được định nghĩa và sử dụng làm cổng kiểm soát, nhưng repository hiện chưa chứng minh toàn bộ PBI đạt DoD. Đây là lý do board giữ các PBI ở `Review` thay vì đánh dấu hoàn thành.

@@ -1,55 +1,56 @@
-# BIÊN BẢN THANH TRA MÃ NGUỒN — LIBIF
+# BẢN IN NỘP KÈM — HỒ SƠ THANH TRA MÃ NGUỒN LIBIF (DÙNG CHUNG CÂU 19–20)
 
-## A. Thông tin phiên
+> **Loại hồ sơ:** bản tổng hợp bằng chứng từ Git/PR/CI. Repository chưa có biên bản thanh tra mã nguồn chính thức có chữ ký hoặc persisted review discussion; phần này không giả mạo một cuộc họp chưa được ghi nhận.
+
+## A. Thông tin baseline
 
 | Trường | Giá trị |
 |---|---|
-| Inspection ID / Ngày giờ | `CI-[ ]` / `[ ]` |
-| PBI/PR/commit | `[ ]` / `[URL]` / `[full SHA]` |
-| Mô-đun/tệp/số dòng mã thay đổi | `[ ]` |
-| Mục tiêu/rủi ro | `[ ]` |
-| Tác giả | `[ ]` |
-| Điều phối viên / Người đọc / Người ghi biên bản / Người thanh tra | `[ ]` |
-| Pre-check bằng chứng | build `[ ]`; lint `[ ]`; tests `[ ]` |
+| Mã hồ sơ | `CI-EVIDENCE-2026-07-24` |
+| Đường cơ sở | `82c8fe9541e0789479b0ea65d7cac752907c035e` — PR #34 |
+| Phạm vi | processing/OCR, approval, Reader, authorization, watermark, audit, catalogue search và hardening |
+| Tác giả/owner | Nhiều thành viên; Git history ghi nhận `Schooleo`, `PaoPao1406`, `Kwan`, `vnquy94` |
+| Inspector/điều phối viên | Chưa có phân công/biên bản chính thức |
+| Pre-check | Root lint, API/web build, tests, e2e, worker integration được Sprint 5 report ghi là đạt |
 
-## B. Danh sách kiểm tra đầu vào
+## B. Bằng chứng review và kiểm tra
 
-- [ ] Phạm vi nhỏ và phần mã thay đổi ổn định; tác giả đã tự rà soát.
-- [ ] Yêu cầu/AC/thiết kế/rủi ro có sẵn; build/static checks đạt hoặc lỗi đã biết.
-- [ ] Người rà soát độc lập với tác giả; phạm vi nhạy cảm về bảo mật có người rà soát phù hợp.
+| Nguồn | Nội dung đã kiểm tra | Kết quả được repository ghi nhận |
+|---|---|---|
+| PR #14–#15 | Worker boundary, OCR, retry, private object lifecycle, approval | Processing workstream accepted ở Sprint 4 |
+| PR #16–#21 | Rendering, Reader access, watermark, catalogue, admin foundation | Workstream 1–4 có gate và test counts |
+| Commit `6122520` | Cookie privacy, trace/audit, fail-closed 503, 429 metadata, public non-leakage | Security/catalogue gates closed |
+| PR #22–#25 | Notification/accessibility/taxonomy/admin closure | Phase 7 closure accepted |
+| PR #26–#34 | Rendering regressions, CI/CD, local Compose, seed, search, review canvas | POC increment usable; hardening partially accepted |
 
-## C. Danh sách kiểm tra thanh tra
+## C. Checklist kết quả
 
-- [ ] Tính đúng đắn: code đáp ứng AC, boundary/error/state/concurrency đúng.
-- [ ] Thiết kế: dependency/module responsibility/API/schema nhất quán kiến trúc.
-- [ ] Khả năng bảo trì: naming, duplication, complexity, dead code, comments có lý do.
-- [ ] Loại/error/logging: không nuốt lỗi; log có context nhưng không lộ secret/PII.
-- [ ] Bảo mật: input/upload validation; authn + object-level authz; injection/path traversal; secret/key/nonce; crypto API; rate/abuse; audit.
-- [ ] Dữ liệu/xử lý đồng thời: transaction, idempotency, Redis lock/atomicity, retry/timeout.
-- [ ] Chất lượng kiểm thử: phép khẳng định có ý nghĩa, trường hợp đúng/sai/biên, tính xác định và dọn dẹp dữ liệu.
-- [ ] Vận hành: configuration, migration, observability, backward compatibility/rollback.
+| Tiêu chí | Kết quả evidence |
+|---|---|
+| Đúng yêu cầu/AC và state transition | Có test/closure evidence cho các luồng chính; acceptance từng PBI vẫn cần PO xác nhận |
+| Kiến trúc/API/schema | Có contract freeze, generated client và migration/seed checks |
+| Bảo trì và static quality | Root lint/build được ghi nhận đạt; không có formatter/coverage threshold riêng |
+| Bảo mật | Có authz, source-PDF denial, rate/concurrency, audit, watermark và fail-closed checks |
+| Test quality | Có unit/component, e2e và worker integration; chưa có full RTM/raw result archive |
+| Vận hành | Local Compose/Docker smoke có; backup/restore, secret rotation, observability và rollback còn carry-over |
 
-## D. Các phát hiện
+## D. Findings/gaps cần xử lý
 
-| Phát hiện ID | File:line / symbol | Phân loại | Mức nghiêm trọng | Quan sát + violated criterion | Hành động đề xuất | Người phụ trách | Thời hạn | Trạng thái / mã xác nhận sửa lỗi | Xác minh |
-|---|---|---|---|---|---|---|---|---|---|
-| | | | | | | | | | |
+| ID | Phân loại | Quan sát | Hành động | Trạng thái |
+|---|---|---|---|---|
+| CI-GAP-01 | Evidence gap | Không có biên bản inspection chính thức/persisted review discussion cho từng PR | Lập biên bản có inspector, finding, action và xác nhận | Chưa thực hiện |
+| CI-GAP-02 | Quality gap | Search smoke có nhưng p95 trên dataset baseline chưa ghi | Chạy benchmark, lưu raw timings/percentiles | Carry-over |
+| CI-GAP-03 | Release gap | Chưa có production backup/restore, secret rotation, rollback/runbook | Hoàn thiện hardening evidence | Carry-over |
+| CI-GAP-04 | Acceptance gap | Chưa có real-browser/accessibility matrix và UAT sign-off | Chạy matrix, lưu ảnh/log và feedback record | Carry-over |
 
-Mức nghiêm trọng: nghiêm trọng/mức cao/Minor/Quan sát. Đây là severity của inspection phát hiện, không tự động đồng nhất lỗi severity.
+## E. Kết luận
 
-## E. Kết luận và follow-up
+Các PR/CI chứng minh nhóm đã review và kiểm tra mã nguồn trong quá trình phát triển; các lỗi tích hợp và privacy được phát hiện rồi sửa trước các gate Sprint 4–5. Tuy nhiên, hồ sơ này **chưa thể được ký như biên bản thanh tra chính thức**, vì thiếu inspector, thời gian phiên, finding log và chữ ký. Kết luận quản lý phù hợp là: code đã qua nhiều automated/integration gates, còn formal inspection và release-readiness evidence là việc phải hoàn tất.
 
-| Chỉ số | Giá trị |
-|---|---:|
-| Preparation / meeting / rework time | `[ ] / [ ] / [ ]` |
-| Các phát hiện nghiêm trọng/mức cao/Minor | `[ ] / [ ] / [ ]` |
-| Quyết định | Chấp nhận / Chấp nhận sau khi làm lại / Yêu cầu thanh tra lại / Từ chối |
-| Còn mở action IDs | `[ ]` |
-
-Điều phối viên chỉ đóng phiên sau khi kiểm tra mã xác nhận sửa lỗi và cập nhật từng phát hiện. Đính kèm PR phần mã thay đổi, CI log và ảnh/bản xuất phê duyệt; không chỉ chụp màn hình cuộc họp.
+## F. Xác nhận
 
 | Vai trò | Họ tên | Xác nhận | Ngày |
 |---|---|---|---|
-| Tác giả | | | |
-| Điều phối viên | | | |
-| Inspector | | | |
+| Đại diện nhóm | Chưa ghi nhận | Chưa ký | Chưa ghi nhận |
+| Điều phối viên inspection | Chưa ghi nhận | Chưa ký | Chưa ghi nhận |
+| Inspector độc lập | Chưa ghi nhận | Chưa ký | Chưa ghi nhận |

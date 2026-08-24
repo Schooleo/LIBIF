@@ -1,54 +1,53 @@
-# BIÊN BẢN TRÌNH DIỄN/UAT VÀ PHẢN HỒI KHÁCH HÀNG — LIBIF
+# BẢN IN NỘP KÈM — HỒ SƠ TRÌNH DIỄN/UAT VÀ PHẢN HỒI KHÁCH HÀNG LIBIF (DÙNG CHUNG CÂU 19–20)
 
-## A. Thông tin chung
+> **Tình trạng bằng chứng:** repository chưa có phiên UAT với thủ thư/khách hàng thật, chưa có proxy user được ghi nhận và chưa có chữ ký acceptance. Vì vậy không điền giả tên, điểm số hoặc feedback.
+
+## A. Kiểm soát phiên
 
 | Trường | Giá trị |
 |---|---|
-| Mã phiên / Ngày giờ / Địa điểm | `[ ]` |
-| Phiên bản sản phẩm/mã xác nhận + môi trường | `[ ]` |
-| Người điều phối / Người ghi biên bản | `[ ]` |
-| Đại diện khách hàng/người dùng, vai trò, tổ chức | `[ ]` |
-| Đồng ý ghi chép/ghi âm | `[Có/Không; tham chiếu]` |
+| Mã hồ sơ | `UAT-EVIDENCE-GAP-2026-08-24` |
+| SUT baseline | `dev@82c8fe9541e0789479b0ea65d7cac752907c035e` — PR #34 |
+| Môi trường có evidence | Local Docker Compose/CI; có live smoke được ghi trong Sprint 5 |
+| Người điều phối/ghi biên bản | Chưa ghi nhận |
+| Đại diện khách hàng/người dùng | Chưa có record |
+| Đồng ý ghi chép/ghi âm | Chưa có record |
+| Quyết định acceptance | Chưa thể kết luận |
 
-Nếu PO sinh viên đóng vai người dùng đại diện do chưa có thủ thư thật, phải ghi rõ “proxy user”; không ghi là “khách hàng thật”.
+## B. Kịch bản UAT cần thực hiện
 
-## B. Mục tiêu, chương trình và kịch bản
+| Mã | Vai trò/công việc | Liên quan | Kết quả mong đợi | Kết quả thực tế được ghi nhận |
+|---|---|---|---|---|
+| UAT-01 | Thủ thư: upload → OCR → review → approve | AC-01 | Tài liệu đi hết luồng, có trạng thái và approval history | Có processing/approval evidence; chưa có người dùng UAT ký xác nhận |
+| UAT-02 | Quản trị: publish/RBAC/concurrent limit | AC-02/03 | Quyền đúng, vượt giới hạn bị chặn, có audit | Có automated/security evidence; chưa có manual UAT record |
+| UAT-03 | Độc giả: search → Reader → chuyển trang | AC-04/05 | Tìm đúng kết quả và đọc được trên browser mục tiêu | Có live search/Reader smoke; p95 và browser matrix chưa ghi |
+| UAT-04 | Chủ sở hữu: source denial/watermark/audit | AC-06 | Không lộ source PDF; watermark/audit truy vết được | Có security gate; chưa có feedback khách hàng |
 
-| Mã kịch bản | Vai trò/công việc | PBI/AC | Dữ liệu kiểm thử | Kết quả mong đợi | Thực tế | Evidence |
-|---|---|---|---|---|---|---|
-| UAT-01 | Thủ thư: upload→OCR→review→approve | AC-01 | | | | |
-| UAT-02 | Quản trị: publish/RBAC/concurrent limit | AC-02/03 | | | | |
-| UAT-03 | Độc giả: search→reader | AC-04/05 | | | | |
-| UAT-04 | Chủ sở hữu: URL/watermark/audit | AC-06 | | | | |
+## C. Feedback thực tế
 
-## C. Quan sát và phản hồi
+| FB ID | Người/role | Kịch bản | Feedback/quan sát | Loại | Trạng thái |
+|---|---|---|---|---|---|
+| — | — | — | Chưa có phản hồi khách hàng hoặc proxy user trong repository | Chưa có dữ liệu | Cần tổ chức phiên UAT |
 
-| FB ID | Người/role | Kịch bản | Phản hồi/quan sát (nguyên văn ngắn hoặc paraphrase được xác nhận) | Loại | Ảnh hưởng/mức ưu tiên | Phản hồi của nhóm |
-|---|---|---|---|---|---|---|
-| | | | | Lỗi / Thay đổi / Trải nghiệm người dùng / Câu hỏi / Tích cực | | |
+Các nhận xét trong Sprint retrospective là **nội bộ nhóm**, không được ghi là feedback khách hàng. Sprint 5 ghi rõ manual review-canvas walkthrough còn thiếu do không có pending-approval row phù hợp.
 
-## D. Quyết định chuyển hóa thành công việc
+## D. Việc cần tạo sau phiên UAT
 
-| FB ID | Cách xử lý | PBI/lỗi/change ID | Người phụ trách | Thời hạn/Sprint | Tiêu chí chấp nhận | Trạng thái |
-|---|---|---|---|---|---|---|
-| | Chấp nhận ngay / Danh sách sản phẩm / Từ chối / Trùng lặp / Cần nghiên cứu | | | | | |
+| Việc | Owner | Evidence bắt buộc | Trạng thái |
+|---|---|---|---|
+| Chốt representative user/proxy user | PO/đại diện nhóm | Tên, vai trò, tổ chức và quyền ghi chép | Chưa thực hiện |
+| Chạy UAT-01…04 | QA + user | session ID, build, env, dataset, ảnh/log | Chưa thực hiện |
+| Ghi feedback và phân loại | Người ghi biên bản | FB ID, loại, priority, PBI/issue | Chưa thực hiện |
+| Chốt acceptance/change/backlog | PO | chữ ký hoặc decision record | Chưa thực hiện |
 
-Mọi “Từ chối/Trì hoãn” phải có lý do. Feedback không tự động làm đổi đường cơ sở; thay đổi vượt phạm vi qua kiểm soát thay đổi.
+## E. Kết luận quản lý
 
-## E. Đánh giá và chấp nhận
-
-| Câu hỏi | Điểm/câu trả lời | Ghi chú |
-|---|---|---|
-| Luồng có giải quyết đúng công việc không? | `[ ]` | |
-| Dễ hiểu/thao tác? | `[ ]` | |
-| Kết quả/dữ liệu có đáng tin? | `[ ]` | |
-| Rủi ro/giới hạn nào không chấp nhận? | `[ ]` | |
-| Quyết định | Chấp nhận / Conditionally accept / Từ chối | Điều kiện `[ ]` |
+Hệ thống có evidence kỹ thuật cho nhiều luồng và gate, nhưng **chưa có bằng chứng phù hợp để gọi là customer acceptance**. Không được dùng hồ sơ này để tuyên bố khách hàng đã chấp nhận sản phẩm. Khi có phiên UAT thật, phải thay phần gap bằng dữ liệu session và giữ lại lịch sử thay đổi.
 
 ## F. Xác nhận
 
-| Vai trò | Họ tên | Xác nhận nội dung | Ngày/link |
+| Vai trò | Họ tên | Xác nhận | Ngày/link |
 |---|---|---|---|
-| Đại diện người dùng/khách hàng | | | |
-| Chủ sản phẩm | | | |
-| Người ghi biên bản | | | |
+| Đại diện người dùng/khách hàng | Chưa ghi nhận | Chưa ký | Chưa có |
+| Chủ sản phẩm | Chưa ghi nhận | Chưa ký | Chưa có |
+| Người ghi biên bản | Chưa ghi nhận | Chưa ký | Chưa có |

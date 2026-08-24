@@ -1,148 +1,115 @@
-# KẾ HOẠCH KIỂM THỬ TỔNG THỂ — LIBIF
+# BẢN IN NỘP KÈM — KẾ HOẠCH KIỂM THỬ TỔNG THỂ LIBIF
 
 ## Kiểm soát tài liệu
 
 | Thuộc tính | Giá trị |
 |---|---|
-| ID / Phiên bản | `LIBIF-TP-[ ]` / `[ ]` |
-| Kiểm thử basis đường cơ sở | Danh sách sản phẩm `[ ]`; SOW `[ ]`; Kiến trúc `[ ]`; QMP `[ ]` |
-| SUT build | Phát hành/tag `[ ]`; commit `[ ]`; image digest `[ ]` |
-| Người phụ trách / Người phê duyệt | `[ ]` / `[ ]` |
-| Kiểm thử window | `[start]` – `[end]` |
+| ID / phiên bản | `LIBIF-TP-1.0` |
+| Test basis | Product Backlog, SOW, Architecture, QMP và DoD trong bộ tài liệu câu 19–20 |
+| SUT baseline | `dev@82c8fe9541e0789479b0ea65d7cac752907c035e` — PR #34, 24/07/2026 |
+| Môi trường | CI Node 22; local Docker Compose với PostgreSQL, Redis, MinIO; API/web/worker |
+| Người phụ trách/phê duyệt | Nhóm LIBIF; chưa ghi nhận test lead/approver chính thức |
+| Test window | Sprint 1–5; mốc evidence gần nhất 24/07/2026 |
+| Trạng thái | Kế hoạch đã hoàn thiện; execution/UAT report còn incomplete |
 
 ## 1. Mục tiêu và phạm vi
 
-- Xác minh PBI-01…16 và AC-01…08 theo rủi ro.
-- Cung cấp bằng chứng đủ cho quyết định phát hành, không nhằm chứng minh phần mềm “không có lỗi”.
+Mục tiêu là xác minh PBI-01…PBI-16 và AC-01…AC-08 theo rủi ro, cung cấp bằng chứng cho quyết định phát hành. Kế hoạch không chứng minh phần mềm “không có lỗi”.
 
-| Hạng mục kiểm thử | Trong phạm vi | Ngoài phạm vi/lý do |
+| Hạng mục | Trong phạm vi | Ngoài phạm vi hoặc chưa có evidence |
 |---|---|---|
-| Web UI/API | upload, review/catalog, publish, search, reader, audit | `[ ]` |
-| Services/data | OCR, PostgreSQL, Redis concurrency, MinIO encrypted object | production HA/DR |
-| Bảo mật | authn/authz, object access, upload, secrets, crypto use, original-URL exposure, audit | professional pentest/certification |
-| Compatibility | `[browser/version/viewport]` | `[ ]` |
+| Web/API | upload, OCR, review, approval, catalogue, search, Reader, audit | full production traffic |
+| Services/data | PostgreSQL, Redis/BullMQ, MinIO, worker/OCR, migrations/seed | HA/DR, backup/restore production |
+| Security | authn/authz, source denial, upload, watermark, audit, rate/concurrency, fail-closed | pentest/certification thương mại |
+| Compatibility | automated UI/accessibility và live smoke đã ghi | full real-browser/compact-width/Vietnamese-font matrix |
 
-## 2. Kiểm thử basis và assumptions
+## 2. Test basis và oracle
 
-| Basis ID | Phiên bản/link | Kiểm thử implications | Gap/decision |
-|---|---|---|---|
-| PBI/AC | | | |
-| Kiến trúc/API/schema | | | |
-| QMP/DoD | | | |
-| Sổ đăng ký rủi ro | | | |
-| OWASP ASVS subset | | | |
+| Basis | Cách dùng |
+|---|---|
+| [`LIBIF-Product-Backlog.md`](../../../markdowns-vi-v2/LIBIF-Product-Backlog.md) | PBI, priority, dependency |
+| [`LIBIF-Statement-Of-Work.md`](../../../markdowns-vi-v2/LIBIF-Statement-Of-Work.md) | AC-01…AC-08 và boundary prototype |
+| [`LIBIF-Architecture.md`](../../../markdowns-vi-v2/LIBIF-Architecture.md) | API/data/security/processing expectations |
+| QMP/DoD | Quality objectives, gates và evidence cần lưu |
+| Sprint reports/PBI traceability | Đối chiếu execution thực tế và gap; không thay thế acceptance |
+
+Expected result phải đến từ AC, state transition, access matrix, ground truth hoặc oracle được ghi trước; không sửa oracle theo actual result.
 
 ## 3. Chiến lược dựa trên rủi ro
 
-Điểm rủi ro đề xuất: `Khả năng xảy ra (1–5) × Ảnh hưởng (1–5)`. Nhóm chốt ngưỡng ưu tiên và ghi lý do.
-
-| Mã rủi ro | Dạng thất bại | L | I | Điểm | Biện pháp kiểm thử | Cấp độ/loại | Người phụ trách |
-|---|---|---:|---:|---:|---|---|---|
-| TR-01 | Sai authorization làm lộ sách | | | | positive/negative/object-level access | integration/security | |
-| TR-02 | Key/nonce/crypto xử lý sai hoặc file lưu plaintext | | | | storage inspection, decrypt/tamper cases | integration/security | |
-| TR-03 | Race condition vượt hạn mức đọc | | | | concurrent requests at N/N+1 | integration/performance | |
-| TR-04 | OCR sai nhưng được xuất bản | | | | bộ dữ liệu chuẩn + quy trình phê duyệt của con người | chức năng/dữ liệu | |
-| TR-05 | Search sai trang hoặc p95 ≥ 2s | | | | relevance + timed bộ dữ liệu | integration/performance | |
-| TR-06 | Original file URL bị lộ | | | | DOM/network/direct-object checks | security | |
-| TR-07 | Audit thiếu/sai/tiết lộ nhạy cảm | | | | action-to-log reconciliation | integration/security | |
-| TR-08 | Fresh install thất bại | | | | clean môi trường rehearsal | portability | |
-
-## 4. Kiểm thử levels, types và techniques
-
-| Cấp độ/loại | Mục tiêu | Kỹ thuật | Tự động hóa/công cụ | Bằng chứng kết thúc |
-|---|---|---|---|---|
-| Rà soát tĩnh | lỗi requirement/design/code sớm | checklist/inspection | ESLint/type-check/manual | log/minutes |
-| Đơn vị | branch/business logic cô lập | equivalence/boundary/decision | Jest `[verify]` | JUnit/console/coverage |
-| Tích hợp | DB/Redis/MinIO/OCR/API contracts | state transition/error guessing | `[ ]` | report/log |
-| E2E | critical user journeys | scenario/decision table | `[ ]` | run/video/screenshot |
-| Bảo mật | threat/control verification | misuse/negative cases + ASVS subset | `[ ]` | checklist/results |
-| Hiệu năng | search/concurrency/OCR timing | workload/boundary | `[ ]` | raw timings/percentiles |
-| UAT | fitness for librarian/reader | business scenario | manual | signed phản hồi |
-
-## 5. Traceability matrix (RTM)
-
-| PBI/AC | Risk | Kiểm thử case IDs | Execution IDs | Lỗi IDs | Trạng thái cuối/bằng chứng |
-|---|---|---|---|---|---|
-| AC-01 | TR-04 | | | | |
-| AC-02 | TR-01/02 | | | | |
-| AC-03 | TR-03 | | | | |
-| AC-04 | TR-05 | | | | |
-| AC-05 | | | | | |
-| AC-06 | TR-06/07 | | | | |
-| AC-07 | all | | | | |
-| AC-08 | TR-08 | | | | |
-
-## 6. Môi trường và cấu hình kiểm thử
-
-| Thành phần | Phiên bản/config | Endpoint/resource | Evidence |
+| Risk | Dạng thất bại | Kiểm thử | Mức độ evidence hiện tại |
 |---|---|---|---|
-| OS/CPU/RAM | | | |
-| Browser | | | |
-| Node/package lock | | | |
-| App containers | | | |
-| PostgreSQL/Redis/MinIO/Tesseract | | | |
-| Feature flags/secrets source | redacted | | |
+| TR-01 | Sai authorization làm lộ sách | positive/negative/object-level access | Có security/e2e evidence |
+| TR-02 | Lưu trữ/crypto xử lý sai | storage, tamper, secret/source inspection | Có privacy/security evidence; chưa có production key-rotation |
+| TR-03 | Race condition vượt concurrent limit | N và N+1 concurrent requests | Có Redis controls/tests; capacity boundary chưa đủ |
+| TR-04 | OCR sai nhưng được publish | worker, retry, review-before-publish, ground truth | Có worker scenarios; chưa có UAT/accuracy benchmark đầy đủ |
+| TR-05 | Search sai hoặc chậm | relevance + raw timings/percentiles | Có live smoke; p95 chưa ghi |
+| TR-06/07 | Source URL/audit/watermark sai | DOM/network/direct-object/action-to-log checks | Có gate evidence |
+| TR-08 | Fresh install thất bại | clean Compose/README rehearsal | Có local Compose/Docker smoke; production chưa chứng minh |
 
-Mọi execution record phải đủ: build/commit, môi trường ID, test data version, time, executor và phiên bản công cụ.
+## 4. Levels, types và techniques
 
-## 7. Dữ liệu kiểm thử
+| Level/type | Kỹ thuật/công cụ | Evidence đã ghi nhận |
+|---|---|---|
+| Static | ESLint, TypeScript build, review/checklist | Root lint/build passed ở Sprint 5 |
+| Unit/component | Jest API, Vitest web, boundary/decision cases | 192 API tests, 96 web tests ở mốc hardening |
+| Integration | DB/Redis/MinIO/OCR/API contracts | Worker integration 5/5; e2e 12 suites/73 tests |
+| E2E/regression | business journey, access, Reader, catalogue | Có API e2e và live smoke |
+| Security | misuse/negative cases, source denial, fail-closed | Có cross-workstream security gate |
+| Performance | workload/boundary, raw timing/percentile | Chưa có báo cáo p95/capacity hoàn chỉnh |
+| UAT | manual business scenarios | Chưa có customer/proxy-user record |
 
-| Dataset ID/version | Nội dung | Căn cứ xác định kết quả mong đợi | Quyền sử dụng/privacy | Đặt lại/dọn dẹp |
-|---|---|---|---|---|
-| OCR-GOLD-[ ] | tài liệu tiếng Việt 300 DPI + ground truth | CER/WER hoặc field accuracy | | |
-| RBAC-[ ] | users/roles/books | access matrix | synthetic | |
-| SEARCH-[ ] | indexed pages/queries | expected book/page | | |
-| LOAD-[ ] | sessions N/N+1 | allowed/blocked count | synthetic | |
+## 5. Traceability matrix tối thiểu
 
-Không dùng dữ liệu cá nhân thật nếu không cần; ảnh bằng chứng phải che token, secret, full IP và nội dung có bản quyền.
+| AC | Risk | Test/evidence | Trạng thái |
+|---|---|---|---|
+| AC-01 | TR-04 | worker/OCR/approval evidence; Sprint 4–5 | Có evidence kỹ thuật; UAT chưa có |
+| AC-02 | TR-01/02 | authz, private storage, source boundary | Có evidence; PBI acceptance chưa ký |
+| AC-03 | TR-03 | Redis concurrency tests | Có evidence; capacity test còn thiếu |
+| AC-04 | TR-05 | catalogue/content search smoke | Có smoke; p95 chưa ghi |
+| AC-05 | — | canvas Reader/accessibility tests | Có automated evidence; browser matrix thiếu |
+| AC-06 | TR-06/07 | watermark, audit, source denial | Có security gate |
+| AC-07 | all | test counts, regression/security gates | Có gate; defect register đầy đủ chưa có |
+| AC-08 | TR-08 | local Compose, Docker smoke | Có local evidence; production runbook thiếu |
 
-## 8. Tiêu chí bắt đầu, kết thúc, tạm dừng và tiếp tục
+## 6. Dữ liệu và môi trường
 
-### Tiêu chí bắt đầu
+| Thành phần | Baseline thực tế | Ghi chú |
+|---|---|---|
+| Runtime | Node 22 trong CI; root yêu cầu Node >=20.19.0 | packageManager `npm@11.6.2` |
+| Services | PostgreSQL, Redis, MinIO, API, web, worker | Docker Compose/local CI |
+| Test data | seed PDFs, embedded-text, scanned Vietnamese, corrupt PDF fixtures | Không dùng secret/PII trong evidence |
+| Browser | UI component/accessibility tests và live smoke | Full browser/version/viewport matrix chưa được ghi |
+| Config | `.env.example`/Compose; secret values redacted | Không in secret thật |
 
-- [ ] Kiểm thử basis reviewed; build deployable; môi trường/data versioned.
-- [ ] Smoke test đạt; critical dependency available; cases reviewed.
+## 7. Entry, exit, suspend/resume
 
-### Tiêu chí kết thúc (đường cơ sở đề xuất cần duyệt)
+### Entry criteria
 
-- [ ] 100% Must-have AC executed và đạt.
-- [ ] Các kiểm thử rủi ro cao theo kế hoạch đã được thực hiện; số lỗi nghiêm trọng/cao còn mở bằng 0.
-- [ ] Kiểm thử hồi quy, security subset và AC-08 fresh install đạt.
-- [ ] Mọi lỗi và rủi ro còn lại được PO chấp nhận bằng văn bản.
-- [ ] Báo cáo Kiểm thử, RTM và kho bằng chứng đã hoàn tất.
+- Test basis, build, environment và test data được định danh.
+- Smoke test đạt và critical dependency sẵn sàng.
+- Case có expected result/oracle và reviewer.
 
-### Tạm dừng / tiếp tục
+### Exit criteria đề xuất
 
-Suspend khi build không testable, môi trường/data sai đường cơ sở, smoke fail, hoặc blocker làm kết quả mất tin cậy. Resume khi root cause được sửa, build mới định danh và smoke đạt; ghi phần test cần chạy lại.
+- 100% Must-have AC đã thực hiện và đạt.
+- High/Critical còn mở bằng 0; residual risk được PO chấp nhận bằng văn bản.
+- Regression, security subset và fresh install đạt.
+- Test Report, RTM, defect export và raw evidence hoàn tất.
 
-## 9. Quản lý lỗi
+### Suspend/resume
 
-- Mức nghiêm trọng: nghiêm trọng (lộ dữ liệu/mất toàn bộ luồng), cao (Must feature hỏng/không workaround), trung bình (ảnh hưởng có workaround), thấp (nhỏ/cosmetic). Nhóm phải phê duyệt định nghĩa cụ thể.
-- Trường bắt buộc: mã lỗi, tiêu đề, bản dựng/môi trường, điều kiện trước/dữ liệu, các bước, kết quả mong đợi, kết quả thực tế, bằng chứng, khả năng tái hiện, mức nghiêm trọng, mức ưu tiên, người phụ trách, trạng thái, PBI/kiểm thử liên kết, mã xác nhận sửa lỗi và kết quả kiểm thử lại.
-- Triage `[lịch]`; disagreement do `[vai trò]` quyết định; reopened lỗi giữ lịch sử.
+Suspend khi build không testable, môi trường/data sai baseline hoặc smoke fail. Resume khi root cause được sửa, build mới có định danh và smoke đạt; phải ghi rõ test chạy lại.
 
-## 10. Sản phẩm bàn giao, lịch và trách nhiệm
+## 8. Quản lý lỗi và báo cáo
 
-| Sản phẩm bàn giao/hoạt động | Người phụ trách | Kế hoạch | Thực tế | Trạng thái/link |
-|---|---|---|---|---|
-| Kế hoạch/ca kiểm thử/dữ liệu | | | | |
-| Môi trường/kiểm thử khói | | | | |
-| Đơn vị/integration/E2E/security/UAT | | | | |
-| Lỗi triage/retest/regression | | | | |
-| Báo cáo Kiểm thử/lưu trữ | | | | |
+Mỗi defect cần mã, title, build/env/data, precondition, steps, expected/actual, evidence, reproducibility, severity, priority, owner, status, linked PBI/test, fix SHA và retest result. GitHub repository hiện không có Issues; do đó chưa có defect export thực tế để điền vào Test Report.
 
-## 11. Theo dõi, kiểm soát và báo cáo
+Triage phải tách **severity** (mức ảnh hưởng) khỏi **priority** (thứ tự xử lý). Không dùng riêng pass rate để kết luận; phải xem coverage, risk, blocked/skipped và lỗi còn mở.
 
-Theo dõi: số ca theo kế hoạch, đã thực hiện, đạt, không đạt và bị chặn; độ bao phủ yêu cầu/rủi ro; lỗi theo mức nghiêm trọng, trạng thái, thời gian tồn đọng và số lần mở lại; độ ổn định tự động hóa và xu hướng độ bao phủ. Không dùng riêng “tỷ lệ đạt cao” để kết luận chất lượng; phải đối chiếu rủi ro, độ bao phủ kiểm thử và lỗi còn mở.
+## 9. Phương pháp hình thành và đánh giá
 
-## 12. Phương pháp hình thành và đánh giá Kế hoạch Kiểm thử (dùng khi vấn đáp)
+`Test basis → risk analysis → scope/level/type → environment/data/oracle → entry/exit → execute/triage/retest → report/residual risk`
 
-1. Baseline test basis; tìm ambiguity/gap.
-2. Xác định test items, constraints, stakeholders và quality objectives.
-3. Product-risk analysis, ưu tiên phạm vi/levels/types/techniques.
-4. Chọn môi trường, representative data và oracle.
-5. Ước lượng effort/lịch/role; định nghĩa entry/exit/suspension.
-6. Rà soát traceability và feasibility; pilot smoke/high-risk cases.
-7. Trong thực thi: monitoring/control, triage/retest/regression và versioning.
-8. Đánh giá cuối bằng tiêu chí kết thúc, RTM completeness, lỗi/residual-risk analysis và stakeholder approval.
+Kế hoạch được hình thành bằng cách bắt đầu từ AC và risk, sau đó chọn test level/technique, người phụ trách, evidence và tiêu chí kết thúc. Đánh giá cuối phải so sánh kế hoạch với thực tế; baseline hiện tại có execution kỹ thuật đáng kể nhưng chưa đủ UAT, p95, browser matrix, defect log và production hardening để gọi là hoàn tất phát hành.
 

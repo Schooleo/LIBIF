@@ -14,7 +14,9 @@
 |---|---|---|---|---|
 | 19 — Quản lý chất lượng | [Q19-Written](Q19-Written.md) | [Q19-Prepare](Q19-Prepare.md) | [Câu trả lời đầy đủ](19-Cau-tra-loi-van-dap-Quality-Management.md) | [Q19-Print](Q19-Print/) |
 | 20 — Kế hoạch kiểm thử | [Q20-Written](Q20-Written.md) | [Q20-Prepare](Q20-Prepare.md) | [Câu trả lời đầy đủ](20-Cau-tra-loi-van-dap-Test-Plan.md) | [Q20-Print](Q20-Print/) |
-| 21 — Bài học kinh nghiệm | [Q21-Written](Q21-Written.md) | [Q21-Prepare](Q21-Prepare.md) | [Câu trả lời đầy đủ](21-Cau-tra-loi-van-dap-Lessons-Learned-Project-Management.md) | — |
+| 21 — Bài học kinh nghiệm | [Q21-Written](Q21-Written.md) | [Q21-Prepare](Q21-Prepare.md) | [Câu trả lời đầy đủ](21-Cau-tra-loi-van-dap-Lessons-Learned-Project-Management.md) | [Q21-Print](Q21-Print/) |
+
+> **Lưu ý về bản in dùng chung:** Coding Standards, Code Inspection và Customer Feedback/UAT chỉ có một bản chuẩn trong [Q19-Print](Q19-Print/), được dùng kèm cho cả câu 19 và câu 20. Không in lại hoặc tạo bản sao trong Q20-Print.
 
 ## Cách sử dụng trong buổi thi
 

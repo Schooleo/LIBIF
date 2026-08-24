@@ -1,136 +1,124 @@
-# KẾ HOẠCH QUẢN LÝ CHẤT LƯỢNG PHẦN MỀM — LIBIF
+# BẢN IN NỘP KÈM — KẾ HOẠCH QUẢN LÝ CHẤT LƯỢNG PHẦN MỀM LIBIF
 
 ## Kiểm soát tài liệu
 
 | Thuộc tính | Giá trị |
 |---|---|
-| Mã tài liệu / Phiên bản | `LIBIF-QMP-[...]` / `[x.y]` |
-| Đường cơ sở sản phẩm | Bản phát hành/thẻ `[ ]`, mã xác nhận SHA `[ ]` |
-| Người phụ trách / Người phê duyệt | `[người phụ trách QA]` / `[PO + Trưởng nhóm kỹ thuật]` |
-| Ngày hiệu lực / kỳ rà soát | `[ ]` / `[mỗi lần Rà soát Sprint hoặc khi phạm vi/rủi ro thay đổi]` |
-| Trạng thái | Bản nháp / Đã rà soát / Đã phê duyệt / Đã thay thế |
+| Mã tài liệu / phiên bản | `LIBIF-QMP-1.0` |
+| Đường cơ sở sản phẩm | `dev@82c8fe9541e0789479b0ea65d7cac752907c035e` — PR #34, 24/07/2026 |
+| Ngày lập / kỳ rà soát | 24/08/2026 / sau mỗi Sprint hoặc khi phạm vi, rủi ro thay đổi |
+| Người phụ trách | Nhóm LIBIF; chưa có QA chuyên trách được ghi riêng |
+| Người phê duyệt | Chưa ghi nhận chữ ký/phê duyệt chính thức |
+| Trạng thái | Bản rà soát nội bộ; chưa phải baseline đã phê duyệt |
 
 ### Lịch sử thay đổi
 
-| Phiên bản | Ngày | Người sửa | Nội dung | Người duyệt |
-|---|---|---|---|---|
-| | | | | |
-
-## 1. Mục đích, phạm vi và đối tượng chất lượng
-
-Mục đích: mô tả cách nhóm lập kế hoạch, bảo đảm (QA), kiểm soát (QC), đo lường và cải tiến chất lượng cho LIBIF.
-
-| Đối tượng | Trong phạm vi | Ngoài phạm vi |
-|---|---|---|
-| Sản phẩm | PBI-01…16, AC-01…08, dữ liệu OCR/biên mục, API/giao diện | Môi trường vận hành có tính sẵn sàng cao và khôi phục sau thảm họa, kiểm thử xâm nhập thương mại, cam kết chống sao chép tuyệt đối |
-| Quy trình | Scrum trong 5 Sprint, rà soát, kiểm thử, quản lý lỗi, thay đổi và cấu hình | `[ ]` |
-| Dự án | chất lượng sản phẩm bàn giao, bằng chứng, lịch trình và trách nhiệm | `[ ]` |
-| Môi trường | máy cục bộ, CI, môi trường thử nghiệm, Docker và dữ liệu kiểm thử | môi trường vận hành liên tục 24/7 |
-
-## 2. Tài liệu đầu vào và khả năng truy vết
-
-| Đầu vào | Đường cơ sở/phiên bản | Cách sử dụng | Người phụ trách |
+| Phiên bản | Ngày | Nội dung | Người duyệt |
 |---|---|---|---|
-| Tầm nhìn và Phạm vi Dự án | `[ ]` | nhu cầu của các bên liên quan, phạm vi và ngoài phạm vi | PO |
-| Danh sách sản phẩm | `[ ]` | PBI và tiêu chí chấp nhận | PO |
-| Kiến trúc | `[ ]` | thuộc tính chất lượng, thành phần và công nghệ | Trưởng nhóm kỹ thuật |
-| SOW | `[ ]` | AC-01…08 và giới hạn | PM |
-| Kế hoạch Dự án/Rủi ro/Theo dõi | `[ ]` | quy trình, DoD, rủi ro và chỉ số | PM/QA |
+| 1.0 | 24/08/2026 | Chuẩn hóa mục tiêu, quality gate, bằng chứng Sprint và các khoảng trống nghiệm thu | Chưa ghi nhận |
+
+## 1. Mục đích và phạm vi
+
+QMP quy định cách nhóm **bảo đảm chất lượng (QA)**, **kiểm soát chất lượng (QC)**, đo lường, lưu bằng chứng và cải tiến chất lượng cho LIBIF. QMP áp dụng cho sản phẩm prototype, quy trình phát triển và hồ sơ bàn giao của 05 Sprint.
+
+| Đối tượng | Trong phạm vi | Ngoài phạm vi ở baseline này |
+|---|---|---|
+| Sản phẩm | PBI-01…PBI-16, AC-01…AC-08, OCR/biên mục, API, web Reader, audit | HA/DR production, chống sao chép tuyệt đối, pentest thương mại |
+| Quy trình | Scrum accelerated, PR/CI, test, review, quản lý lỗi/rủi ro/thay đổi | Scrum minutes và PO sign-off chưa có trong repository |
+| Môi trường | Local Docker Compose, CI, test infrastructure và dữ liệu seed | Cam kết vận hành 24/7, backup/restore production |
+
+## 2. Tài liệu đầu vào và truy vết
+
+| Đầu vào | Bằng chứng/phiên bản | Cách sử dụng |
+|---|---|---|
+| Vision & Scope | [`LIBIF-Project-Vision-Scope.md`](../../../markdowns-vi-v2/LIBIF-Project-Vision-Scope.md) | Xác định mục tiêu, stakeholder, trong/ngoài phạm vi |
+| Product Backlog | [`LIBIF-Product-Backlog.md`](../../../markdowns-vi-v2/LIBIF-Product-Backlog.md) | Truy vết PBI-01…PBI-16 và priority |
+| SOW | [`LIBIF-Statement-Of-Work.md`](../../../markdowns-vi-v2/LIBIF-Statement-Of-Work.md) | Truy vết AC-01…AC-08 và deliverable |
+| Architecture | [`LIBIF-Architecture.md`](../../../markdowns-vi-v2/LIBIF-Architecture.md) | Chọn thuộc tính chất lượng và rủi ro kỹ thuật |
+| Project Planning/Monitoring | [`LIBIF-Project-Planning.md`](../../../markdowns-vi-v2/LIBIF-Project-Planning.md), [`LIBIF-Project-Monitoring.md`](../../../markdowns-vi-v2/LIBIF-Project-Monitoring.md) | Chu kỳ Sprint, DoD, chỉ số và kiểm soát sai lệch |
+| Risk plan | [`LIBIF-Software-Risk-Management-Plan.md`](../../../markdowns-vi-v2/LIBIF-Software-Risk-Management-Plan.md) | Xác định risk owner, trigger và phương án dự phòng |
+| Evidence thực thi | [Sprint 5 report](../../../../ai_artifacts/sprints/sprint-2026-07-24.md), [PBI traceability](../../../../ai_artifacts/sprints/pbi-traceability.md) | Đối chiếu kế hoạch với kết quả thực tế và gap |
 
 ## 3. Chính sách và mục tiêu chất lượng
 
-> Mỗi mục tiêu phải có công thức, nguồn dữ liệu, tần suất, người phụ trách và ngưỡng. Các ngưỡng dưới đây là `ĐỀ XUẤT`, chỉ trở thành đường cơ sở sau khi nhóm duyệt.
+Các ngưỡng có chữ **Đề xuất** chỉ trở thành baseline sau khi nhóm/PO phê duyệt. Không ghi nhận một mục tiêu là “đạt” nếu repository không có execution record tương ứng.
 
-| Mã | Đặc tính | Mục tiêu đo được | Phương pháp/nguồn | Ngưỡng đề xuất | Người phụ trách |
-|---|---|---|---|---|---|
-| QO-01 | Phù hợp chức năng | AC bắt buộc đạt | số AC bắt buộc đạt / số AC bắt buộc đã thực hiện | 100% trước phát hành | QA/PO |
-| QO-02 | Độ tin cậy | Không còn lỗi nghiêm trọng; luồng chính không bị chặn | công cụ theo dõi lỗi + kiểm thử hồi quy | lỗi nghiêm trọng còn mở = 0 | QA |
-| QO-03 | Hiệu năng | Tìm kiếm PBI-10 trên bộ dữ liệu đường cơ sở | p95 từ nhật ký kiểm thử | < 2 giây | Lập trình viên máy chủ/QA |
-| QO-04 | Bảo mật | RBAC, phân quyền đối tượng, bí mật, lưu trữ mã hóa và nhật ký kiểm toán được kiểm chứng | danh sách kiểm tra/kiểm thử bảo mật | 100% kiểm soát bắt buộc đạt; lỗi nghiêm trọng/cao còn mở = 0 | Bảo mật/QA |
-| QO-05 | Khả năng bảo trì | Mã nguồn thay đổi đạt kiểm tra quy tắc, kiểu dữ liệu, rà soát và kiểm thử | CI + yêu cầu hợp nhất mã | 100% yêu cầu hợp nhất mã vượt qua cổng kiểm tra | Trưởng nhóm kỹ thuật |
-| QO-06 | Chất lượng dữ liệu/nội dung | Nội dung trước xuất bản được thủ thư đối soát | hồ sơ lấy mẫu + nhật ký phê duyệt | 100% trang của tài liệu trình diễn được duyệt; ghi riêng độ chính xác OCR thô | PO/QA |
-| QO-07 | Khả năng sử dụng | Đại diện người dùng hoàn thành kịch bản UAT | số lần hoàn thành / số lần thử + phản hồi | `[nhóm duyệt]` | PO |
-| QO-08 | Tính khả chuyển | Cài đặt mới theo README/Docker Compose | nhật ký trên máy sạch | đạt AC-08 | DevOps |
+| Mã | Đặc tính | Mục tiêu và cách đo | Kết quả/bằng chứng hiện có |
+|---|---|---|---|
+| QO-01 | Phù hợp chức năng | 100% Must-have AC được chạy và đạt trước phát hành (Đề xuất) | 11 PBI có evidence đang ở Review; chưa có acceptance sign-off cuối |
+| QO-02 | Tin cậy | Critical/High còn mở = 0 (Đề xuất) | Có security/regression gates; chưa có defect register đầy đủ |
+| QO-03 | Hiệu năng | Search p95 trên dataset baseline < 2 giây (Đề xuất) | Có live content-search smoke; p95 chưa được ghi |
+| QO-04 | Bảo mật | Authz, source denial, watermark, audit, fail-closed đạt | Có gate và test evidence; production hardening còn carry-over |
+| QO-05 | Bảo trì | Lint, type/build/test gate đạt trên PR | CI workflows, root lint và build được ghi là đạt |
+| QO-06 | Chất lượng dữ liệu | Nội dung xuất bản được con người đối soát | Chưa có biên bản UAT/đối soát khách hàng trong repository |
+| QO-07 | Khả dụng | Đại diện người dùng hoàn thành kịch bản UAT | Chưa có UAT record; chưa chốt ngưỡng |
+| QO-08 | Khả chuyển | Fresh install theo README/Compose đạt | Có local Compose và Docker smoke; production deployment chưa được chứng minh |
 
-Lưu ý: “100% nội dung đã duyệt” không đồng nghĩa OCR tự động chính xác 100%; phải báo cáo riêng độ chính xác OCR thô và kết quả sau con người rà soát.
+## 4. Quality standards và quality gates
 
-## 4. Tiêu chuẩn, quy ước và cổng chất lượng
-
-| Cổng kiểm tra | Bắt buộc | Bằng chứng |
+| Gate | Quy tắc thực tế | Evidence |
 |---|---|---|
-| Commit/PR | định dạng, branch rule, link PBI/issue | PR URL/export |
-| Chất lượng tĩnh | ESLint + kiểm tra kiểu TypeScript + kiểm tra định dạng | cấu hình + nhật ký CI |
-| Rà soát | ít nhất 01 người rà soát độc lập; security-sensitive code có Tech Lead | approval + inspection record |
-| Kiểm thử | affected unit/integration tests đạt | test output |
-| Độ bao phủ | đường cơ sở theo module; không giảm ngoài ngoại lệ được duyệt | coverage report |
-| Bảo mật | không hard-code secret; authn/authz, crypto, upload, audit checklist | scan/review/test bằng chứng |
-| Chấp nhận | AC đạt trên môi trường thử nghiệm và PO quyết định | test/UAT/phản hồi record |
-| Phát hành | DoD + tiêu chí kết thúc + chấp nhận rủi ro còn mở | quyết định phát hành đã ký |
+| Mã nguồn/PR | Thay đổi đi qua PR; PR #14–#34 có lịch sử merge | Git history và Sprint reports |
+| Static quality | ESLint cho shared/API/web; TypeScript build | [`eslint.config.mjs`](../../../../eslint.config.mjs), `.github/workflows/api-ci.yml`, `web-ci.yml` |
+| Test | API Jest, web Vitest, API e2e, worker integration | Sprint 5: 192 API, 96 web; e2e 12 suites/73 tests; worker 5/5 |
+| Security/privacy | Authz, source-PDF denial, watermark, audit, fail-closed | Cross-workstream gate trong Sprint 5 |
+| Acceptance | PBI chỉ chuyển Done khi có acceptance evidence | Board hiện ghi 11 PBI ở Review, 0 PBI Done |
+| Release | DoD, test report, residual risk và PO decision | Chưa đủ bằng chứng cho production release |
 
-Ngoại lệ phải ghi: mã, quy tắc/cổng kiểm tra, lý do, phạm vi, rủi ro, người phê duyệt, thời hạn và vấn đề khắc phục.
+Ngoại lệ phải ghi rõ phạm vi, lý do, rủi ro, người chấp thuận, thời hạn và action ID. Hiện chưa có exception record chính thức.
 
-## 5. Hoạt động QA (phòng ngừa)
+## 5. Hoạt động QA và QC
 
-| Hoạt động | Khi nào | Người thực hiện | Kết quả |
+| Hoạt động | Loại | Thời điểm | Bằng chứng/kết quả |
 |---|---|---|---|
-| Rà soát requirement/AC theo INVEST và testability | refinement | PO+QA+Dev | comment/change |
-| Threat/risk review cho upload, auth, crypto, session, audit | đầu Sprint/thiết kế đổi | Tech Lead+QA | risk/test update |
-| Coding standard/tool configuration | Sprint 1; khi stack đổi | Tech Lead | config versioned |
-| Kiểm thử design trước/đồng thời coding | mỗi PBI | QA+Dev | cases/automation |
-| CI gates và branch protection | liên tục | DevOps | run log |
-| Retrospective/CAPA | cuối Sprint | cả nhóm | action owner/due date |
+| Baseline backlog, SOW, architecture, risk | QA | Trước và trong Sprint | Tài liệu kế hoạch + PBI traceability |
+| Contract freeze và bounded workstreams | QA | Sprint 4–5 | Sprint 4 report; giảm xung đột tích hợp |
+| ESLint/build/test gates | QC | Mỗi PR/CI | Workflow và test counts được ghi trong Sprint reports |
+| Authorization/privacy/rendering regression | QC | Sprint 5 | Gate đóng bằng commit `6122520` |
+| OCR worker integration | QC | Sprint 4–5 | 5/5 infrastructure-backed scenarios |
+| Review/Retrospective và CAPA | QA | Cuối Sprint | Có retrospective trong Sprint reports; action production-hardening còn carry-over |
 
-## 6. Hoạt động QC (phát hiện)
+## 6. Vai trò và trách nhiệm
 
-| Hoạt động | Phạm vi | Sampling/coverage | Kết quả |
-|---|---|---|---|
-| Static analysis/type check | source changed | 100% changed source | log |
-| Thanh tra mã nguồn | yêu cầu hợp nhất mã/mô-đun nhạy cảm rủi ro | 100% mô-đun trọng yếu; `[quy tắc khác]` | biên bản/phát hiện |
-| Đơn vị/tích hợp/E2E/UAT | theo Kế hoạch Kiểm thử | dựa trên rủi ro + khả năng truy vết | kết quả/báo cáo |
-| Lỗi triage/retest/regression | mọi lỗi | theo severity | issue history |
-| Rà soát tài liệu | sản phẩm bàn giao | 01 tác giả + 01 người rà soát | danh sách kiểm tra/phê duyệt |
+| Công việc | PO/đại diện yêu cầu | Tech Lead/leader | Developer | QA/DevOps | Người dùng |
+|---|---|---|---|---|---|
+| Chốt scope/AC | A/R | C | C | C | C |
+| Architecture/coding standard | C | A/R | R | C | I |
+| Test plan/execution/report | C | C | R | A/R | I |
+| UAT/acceptance | A/R | C | I | C | R/C |
+| Go/no-go | A | R | C | R | C |
 
-## 7. Vai trò và RACI
+Biên bản khởi động xác nhận leader là **Lê Nguyễn Nhật Trường** và nhóm có 06 thành viên. Biên bản đó chưa ghi phân công QA/PO chuyên trách, nên không suy đoán tên cho các vai trò còn lại.
 
-| Hoạt động | PO | Trưởng nhóm kỹ thuật | Lập trình viên | QA/DevOps | Đại diện khách hàng |
-|---|---:|---:|---:|---:|---:|
-| Chốt mục tiêu chất lượng/AC | A | C | C | R | C |
-| Coding standards/architecture | C | A/R | R | C | I |
-| Kiểm thử plan/execution/report | C | C | R | A/R | I |
-| Chấp nhận/UAT | A/R | C | I | C | R/C |
-| Quyết định chất lượng phát hành | A | R | C | R | C |
+## 7. Quản lý lỗi, thay đổi và cấu hình
 
-## 8. Quản lý lỗi, thay đổi và cấu hình
+- Lỗi phải có mã, build/commit, môi trường, dữ liệu, bước tái hiện, expected/actual, severity, priority, owner và trạng thái.
+- GitHub repository hiện **không có Issues**; các thẻ trên board là PBI/review, không được gọi là defect.
+- Thay đổi scope/quality threshold phải cập nhật Product Backlog, QMP, Test Plan và RTM.
+- Evidence phải gắn với commit/build, môi trường, thời điểm, executor và phiên bản dữ liệu.
+- Không trình bày prototype deterrence như DRM/chống chụp màn hình tuyệt đối.
 
-- Quy trình xử lý: New → Triaged → In Progress → Ready for Retest → Đã đóng; Đã mở lại/Won't Fix/Duplicate phải có lý do.
-- Mức nghiêm trọng mô tả ảnh hưởng; mức ưu tiên mô tả thứ tự xử lý—không trộn hai khái niệm.
-- Mọi kết quả kiểm thử phải gắn build/commit, môi trường, bộ dữ liệu và phiên bản công cụ.
-- Thay đổi mục tiêu/ngưỡng/scope phải qua change record và cập nhật QMP/Kế hoạch Kiểm thử/RTM tương ứng.
+## 8. Phương pháp hình thành, đánh giá và cập nhật
 
-## 9. Báo cáo, audit và cải tiến
+`Vision/SOW/Backlog/Architecture/Risk → quality objectives → QA/QC gates → evidence → review/retrospective → cập nhật baseline`
 
-| Nhịp | Chỉ số tối thiểu | Người nhận | Trigger hành động |
-|---|---|---|---|
-| PR/CI | lint/type/test/coverage | Dev/Tech Lead | gate fail chặn merge |
-| Hằng tuần | test progress, lỗi theo severity/age, blocked risks | team/PM | lệch ngưỡng → owner/action |
-| Sprint Rà soát | PBI Done, escaped/reopened defects, phản hồi | stakeholders | backlog/CAPA |
-| Phát hành | tiêu chí kết thúc, rủi ro còn lại, còn mở defects | PO/giảng viên | go/no-go |
+1. Thu thập yêu cầu, AC, constraint, kiến trúc và rủi ro.
+2. Chọn thuộc tính chất lượng theo rủi ro; chuyển thành metric có nguồn dữ liệu, owner, tần suất và ngưỡng.
+3. Tách preventive QA khỏi detective QC; xác định evidence bắt buộc.
+4. Pilot bằng các Sprint thực tế; đối chiếu test count, gate, risk và acceptance.
+5. Đánh giá sai lệch, cập nhật QMP bằng revision/change record.
 
-## 10. Phương pháp hình thành và đánh giá QMP (dùng khi vấn đáp)
+### Kết quả đánh giá hiện tại
 
-1. Thu thập Vision/SOW/Danh sách sản phẩm/Kiến trúc/risk/constraint và yêu cầu đề thi.
-2. Xác định entity cần quản lý: product, process, project, môi trường.
-3. Chọn attribute theo rủi ro và ISO/IEC 25010; chuyển thành metric có công thức/nguồn/ngưỡng/owner.
-4. Chọn preventive controls (QA), detective controls (QC), quality gates và bằng chứng.
-5. Rà soát chéo bởi PO–Tech Lead–QA; kiểm tra SMART, feasibility và traceability.
-6. Pilot qua Sprint đầu; đối chiếu dữ liệu thật, lỗi escape và phản hồi; điều chỉnh bằng version/change record.
-7. Đánh giá cuối: coverage của requirement, mức đạt objective, trend lỗi, audit sample và stakeholder acceptance.
+QMP **đủ làm baseline quản lý prototype**, vì đã liên kết scope, risk, DoD, CI/test và evidence. QMP **chưa đủ để kết luận phát hành production**, vì chưa có p95 search, UAT/feedback, defect register hoàn chỉnh, browser/accessibility matrix và production-operability evidence. Đây là kết luận có giới hạn, phù hợp với Sprint 5: POC increment thực tế nhưng hardening chỉ được chấp nhận một phần.
 
-### Danh sách kiểm tra phê duyệt QMP
+### Checklist phê duyệt
 
-- [ ] Phạm vi nhất quán Vision/SOW/Danh sách sản phẩm; ngoài phạm vi được ghi rõ.
-- [ ] Mỗi objective đo được và có nguồn dữ liệu/owner/tần suất/ngưỡng.
-- [ ] QA khác QC; có cả phòng ngừa và phát hiện.
-- [ ] Cổng kiểm tra có bằng chứng, ngoại lệ và escalation.
-- [ ] Mapping tới Kế hoạch Kiểm thử/DoD/inspection/phản hồi đầy đủ.
-- [ ] Reviewer ghi phát hiện; phát hiện đã đóng hoặc chấp nhận risk.
+| Tiêu chí | Trạng thái |
+|---|---|
+| Scope nhất quán Vision/SOW/Backlog | Đạt ở mức tài liệu |
+| Mỗi objective có metric/owner/ngưỡng | Một số mục còn Đề xuất |
+| Có QA và QC | Đạt ở mức quy trình |
+| Gate có evidence | Đạt một phần; thiếu raw artifacts/UAT |
+| Mapping QMP–Test Plan–DoD–inspection–feedback | Có khung; inspection/UAT chính thức còn thiếu |
+| Reviewer/approver và risk acceptance | Chưa có chữ ký chính thức |
