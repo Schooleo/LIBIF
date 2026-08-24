@@ -53,7 +53,7 @@
 2. **Quyết định kiến trúc tổng thể — Modular Monolith**
 
    - WHAT: Toàn bộ backend NestJS chạy cùng một tiến trình nhưng chia module rõ ràng (Auth, OCR, Review, DRM, Search, Audit).
-   - WHY: Phù hợp ràng buộc 6 sinh viên, 10 tuần, VPS 4 triệu — triển khai đơn giản qua Docker, gọi hàm nội bộ hiệu năng cao, ranh giới module sẵn sàng tách thành Microservices khi cần mở rộng.
+   - WHY: Phù hợp ràng buộc 6 sinh viên, 10 tuần và chi phí tiền mặt 0 VNĐ — triển khai đơn giản qua Docker trên hạ tầng học tập/free-tier, gọi hàm nội bộ hiệu năng cao, ranh giới module sẵn sàng tách thành Microservices khi cần mở rộng.
 3. **Luồng dữ liệu — Pipe & Filter với Human-in-the-loop**
 
    - WHAT: Upload → OCR nền (Redis BullMQ) → Đối soát bắt buộc (thủ thư) → AES-256 MinIO → Index PostgreSQL.
@@ -68,6 +68,6 @@
 
 ## Tại sao cần tạo tài liệu Kiến trúc Phần mềm?
 
-Kiến trúc định hướng kỹ thuật để toàn nhóm làm việc song song mà không xung đột. Proof of Concept xác nhận DRM trước Sprint 1 — tránh phát hiện vấn đề chí mạng ở tuần 9–10.
+Kiến trúc định hướng kỹ thuật để toàn nhóm làm việc song song mà không xung đột. Proof of Concept xác nhận luồng OCR tiếng Việt bất đồng bộ trước khi nhóm mở rộng quy trình số hóa — tránh phát hiện vấn đề chí mạng ở tuần 9–10.
 
 **Kết luận:** Kiến trúc trả lời **"Làm bằng cách nào?"** và đảm bảo mọi quyết định kỹ thuật đều có căn cứ từ yêu cầu sản phẩm và ràng buộc thực tế.

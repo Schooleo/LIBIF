@@ -23,7 +23,7 @@
     │  • Scope: In-Scope / Out-of-Scope           │
     │  • Deliverables                             │
     │  • Time: 10 tuần / 5 Sprint                 │
-    │  • Cost: 8.800.000 VNĐ (trần 10 triệu)      │
+    │  • Cost: 0 VNĐ tiền mặt (free-tier)         │
     │  • Feasibility (Kỹ thuật/Tiến độ/Tài chính) │
     │  • Rủi ro chính                             │
     └──────────────────────┬──────────────────────┘
@@ -48,7 +48,7 @@
    - **Scope:** In-Scope — OCR, đối soát, mã hóa, phân quyền, Canvas Reader, watermark, audit log. Out-of-Scope — máy quét, bản quyền nội dung, ứng dụng di động, vận hành thật.
    - **Deliverables:** bản mẫu chạy được, tài liệu quản lý dự án, mã nguồn, Docker, bộ kiểm thử.
    - **Time:** 10 tuần, 5 Sprint, 900 giờ-người của 6 sinh viên.
-   - **Cost:** tiền mặt 8.800.000 VNĐ, trần kiểm soát 10.000.000 VNĐ.
+   - **Cost:** 0 VNĐ tiền mặt nhờ Coding Agent subscription miễn phí, Azure for Students, Vercel và Tailscale Funnel; công sức sinh viên được quản lý bằng giờ-người.
    - **Feasibility:** Kỹ thuật — khả thi nhờ PoC và hạ tầng sẵn có; Tiến độ — khả thi nếu giữ phạm vi ưu tiên; Tài chính — trong ngân sách học phần.
    - **Rủi ro:** chất lượng ảnh quét, thiếu hụt năng lực nhóm, giới hạn bảo vệ nội dung trên trình duyệt.
 

@@ -138,7 +138,7 @@ Tài liệu trả lời trọn vẹn 7 câu hỏi theo nguyên lý W5HH:
   - `LIBIF-Project-Estimation.md` (Baseline quy mô 136 SP, effort 900h, chi phí 0 VNĐ).
   - `LIBIF-Product-Backlog.md` (Danh sách 16 PBIs, User Stories, Acceptance Criteria).
   - `LIBIF-Architecture.md` (Thiết kế hệ thống Modular Monolith, công nghệ, hạ tầng).
-  - `LIBIF-Proof-Of-Concept.md` (Kết quả thử nghiệm kỹ thuật Canvas DRM).
+  - `LIBIF-Proof-Of-Concept.md` (Kết quả thử nghiệm kỹ thuật OCR tiếng Việt bất đồng bộ).
   - `LIBIF-Project-Vision-Scope.md` & `LIBIF-Project-Charter.md`.
 - **Các bước thực hiện (Steps):**
   - *Bước 1:* Xác lập mục tiêu và tiêu chí thành công của dự án (SC-01 đến SC-07).

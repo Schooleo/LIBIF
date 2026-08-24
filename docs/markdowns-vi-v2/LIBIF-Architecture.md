@@ -5,7 +5,7 @@
 **Mã kiến trúc:** CDLS-ARCH-2026  
 **Nguồn chiếu chính (Source of Truth):**  
 - Tài liệu Product Backlog chính thức (`docs/markdowns-vi-v2/LIBIF-Product-Backlog.md` - 16 PBIs)  
-- Tài liệu Chứng minh Khả thi (`docs/markdowns-vi-v2/LIBIF-Proof-Of-Concept.md` - Zero-Download Canvas DRM)  
+- Tài liệu Chứng minh Khả thi (`docs/markdowns-vi-v2/LIBIF-Proof-Of-Concept.md` - OCR tiếng Việt bất đồng bộ)
 - Tuyên bố Phạm vi Công việc SOW (`docs/markdowns-vi-v2/LIBIF-Statement-Of-Work.md`)  
 **Đội ngũ thực hiện:** 06 Sinh viên năm 4 (Chuyên ngành CNTT / Antigravity AI Assistant)  
 **Ngôn ngữ tài liệu:** Tiếng Việt  
@@ -28,7 +28,7 @@ Hệ thống thống nhất áp dụng mô hình kiến trúc **Modular Monolith
 
 | Phương án Đánh giá | Ưu điểm cốt lõi | Lý do Lựa chọn & Đóng gói |
 | :--- | :--- | :--- |
-| **Modular Monolith (Quyết định)** | • Triển khai đơn giản qua Docker Container, chi phí hạ tầng thấp ($4.000.000\text{ VNĐ}$ VPS Staging).<br>• Gọi hàm nội bộ (in-process), hiệu năng cao.<br>• Ranh giới miền (Domain Modules) tách biệt sạch sẽ, sẵn sàng nâng cấp lên Microservices khi quy mô lớn. | ✅ **Phù hợp $100\%$ với tiến độ 10 tuần của 06 sinh viên năm 4 và hệ thống hiện có.** |
+| **Modular Monolith (Quyết định)** | • Triển khai đơn giản qua Docker Container trên Azure for Students, Vercel và staging qua Tailscale Funnel với chi phí tiền mặt 0 VNĐ.<br>• Gọi hàm nội bộ (in-process), hiệu năng cao.<br>• Ranh giới miền (Domain Modules) tách biệt sạch sẽ, sẵn sàng nâng cấp lên Microservices khi quy mô lớn. | ✅ **Phù hợp $100\%$ với tiến độ 10 tuần của 06 sinh viên năm 4 và hệ thống hiện có.** |
 | **Microservices** | • Mở rộng độc lập cho từng dịch vụ OCR/DRM. | ❌ Quá phức tạp về hạ tầng, gây độ trễ mạng RPC và tốn kém chi phí máy chủ không cần thiết. |
 
 ```mermaid

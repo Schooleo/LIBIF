@@ -24,20 +24,20 @@
 ---
 
 ### B3. Nhóm chọn gì làm PoC và tại sao?
-* **Sản phẩm:** Mô-đun **OCR Tiếng Việt 300 DPI** bằng **Tesseract + OpenCV** ($0$ VNĐ).
-* **Lý do:** OCR là đầu vào của toàn bộ luồng (OCR hỏng → cả hệ thống dừng) + Tiếng Việt có dấu phức tạp + Ảnh scan dễ nghiêng/nhiễu cần tiền xử lý + Cần tọa độ Bounding Box cho Side-by-side + Chứng minh mã nguồn mở đủ tốt.
+* **Sản phẩm:** Luồng **OCR tiếng Việt bất đồng bộ** cho PDF quét bằng **Tesseract.js + Redis/BullMQ + NestJS worker** với chi phí tiền mặt 0 VNĐ.
+* **Lý do:** OCR là đầu vào của tìm kiếm và đối soát; tác vụ tốn CPU nên không thể giữ request tải lên chờ xử lý. PoC cần chứng minh worker nền có thể nhận job, OCR dữ liệu thật và lưu kết quả theo từng trang.
 
 ---
 
 ### B4. Đầu vào và các bước thực hiện PoC?
-* **5 Đầu vào:** Product Backlog + Đề xuất dự án + Kiến trúc Pipe & Filter + 20 trang scan mẫu + Tesseract/OpenCV.
-* **5 Bước:** 1. Xác định mục tiêu → 2. Cài đặt môi trường → 3. Lập trình chuỗi xử lý (Ảnh → Tiền xử lý → OCR → Text & BBox) → 4. Thử nghiệm trên 20 trang → 5. Đánh giá & đóng gói báo cáo.
+* **5 Đầu vào:** Product Backlog + Kiến trúc Pipe & Filter + PDF quét tiếng Việt + Tesseract.js `vie+eng` + Redis/MinIO/PostgreSQL.
+* **5 Bước:** 1. Xác định rủi ro → 2. Tách API và worker → 3. Render trang PDF 200 DPI và OCR → 4. Lưu text + JSON theo trang → 5. Chạy kiểm thử tích hợp và đánh giá.
 
 ---
 
 ### B5. Tại sao cần PoC?
 1. **Giảm rủi ro kỹ thuật** — phát hiện sớm hạn chế xử lý dấu tiếng Việt.
-2. **Thuyết phục các bên** — số liệu đo đạc thực tế cho Product Owner và Giảng viên.
+2. **Thuyết phục các bên** — mã nguồn và kiểm thử tích hợp cung cấp bằng chứng thực tế cho Product Owner và Giảng viên.
 3. **Định hình kiến trúc** — cơ sở thiết kế Pipe & Filter và hàng chờ Redis/BullMQ.
 4. **Hỗ trợ ước lượng** — căn cứ cam kết tiến độ 10 tuần.
 5. **Tăng tự tin đội ngũ** — bài toán khó nhất đã giải quyết xong.
@@ -46,7 +46,7 @@
 
 ### B6. PoC đã dùng trong dự án thế nào?
 * Đóng gói thành mô-đun Backend NestJS + hàng chờ **Redis/BullMQ** xử lý OCR ngầm.
-* Dữ liệu Bounding Box dùng xây **Giao diện đối soát Side-by-side** (Sprint 2).
+* Dữ liệu văn bản theo trang dùng xây **Giao diện đối soát Side-by-side**.
 * Nạp văn bản vào **PostgreSQL** (`tsvector`) phục vụ tìm kiếm toàn văn (Sprint 4).
 * Định hướng kế hoạch Sprint và làm nền tảng tài liệu Kiến trúc, Ước lượng.
 
@@ -56,23 +56,23 @@
 
 ```
 [BÀI TOÁN KỸ THUẬT CỐT LÕI]
-OCR Tiếng Việt từ ảnh scan 300 DPI bằng Tesseract Engine + OpenCV (0 VNĐ)
+OCR tiếng Việt bất đồng bộ cho PDF quét bằng Tesseract.js + Redis/BullMQ (0 VNĐ)
                                 │
                                 ▼
 [5 ĐẦU VÀO] ──► [5 BƯỚC THỰC HIỆN]
-• Backlog (PBI-01, 02, 04)      1. Xác định mục tiêu
-• Đề xuất dự án (Mục 6.2)       2. Cài đặt môi trường
-• Kiến trúc Pipe & Filter       3. Lập trình chuỗi: Ảnh -> Tiền xử lý -> OCR -> Text & BBox
-• 20 trang scan mẫu 300 DPI     4. Thử nghiệm trên 20 trang mẫu
-• Tesseract + OpenCV            5. Đánh giá & lập báo cáo
+• Product Backlog                1. Xác định rủi ro OCR
+• Kiến trúc Pipe & Filter        2. Tách API và worker nền
+• PDF quét tiếng Việt            3. PDF -> ảnh 200 DPI -> Tesseract.js
+• Tesseract.js vie+eng           4. Lưu text + JSON theo trang
+• Redis/MinIO/PostgreSQL         5. Chạy kiểm thử tích hợp
                                 │
                                 ▼
 [PHƯƠNG PHÁP ĐÁNH GIÁ]
-• Độ chính xác ký tự            • Tốc độ xử lý 
-• Khớp Bounding Box             • Nhận dạng dấu tiếng Việt
-• Tiền xử lý ảnh                • Hàng chờ Redis
+• Job worker hoàn tất           • Kết quả OCR thật được lưu
+• JSON giữ đúng số trang        • Job trùng chỉ xử lý một lần
+• PDF lỗi thất bại an toàn      • Workspace tạm được dọn dẹp
                                 │
                                 ▼
 [ỨNG DỤNG VÀO DỰ ÁN]
-Chuyển giao vào NestJS + Redis/BullMQ -> Xây Side-by-side UI -> Nạp PostgreSQL tsvector (Sprint 1-3)
+NestJS + Redis/BullMQ -> OCR text theo trang -> Side-by-side review -> PostgreSQL tsvector
 ```

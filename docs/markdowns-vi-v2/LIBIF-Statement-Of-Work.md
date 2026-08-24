@@ -33,7 +33,7 @@ Statement of Work (SOW) này xác định công việc nhóm sinh viên cam kế
 | 2 | `LIBIF-Project-Vision-Scope.md` | Ranh giới phạm vi trong (In-scope) và ngoài (Out-of-scope) |
 | 3 | `LIBIF-Product-Backlog.md` | 16 PBIs với acceptance criteria, mức ưu tiên Must/Should |
 | 4 | `LIBIF-Architecture.md` | Kiến trúc kỹ thuật, tech stack và ràng buộc công nghệ |
-| 5 | `LIBIF-Proof-Of-Concept.md` | Kết quả PoC Canvas DRM, xác nhận tính khả thi kỹ thuật |
+| 5 | `LIBIF-Proof-Of-Concept.md` | Kết quả PoC OCR tiếng Việt bất đồng bộ, xác nhận tính khả thi kỹ thuật của worker nền |
 | 6 | `LIBIF-Project-Estimation.md` | Baseline quy mô (136 SP), effort (900h), chi phí (0 VNĐ) |
 | 7 | `LIBIF-Project-Planning.md` | Lịch 05 Sprint, ma trận RACI và kế hoạch quản lý |
 

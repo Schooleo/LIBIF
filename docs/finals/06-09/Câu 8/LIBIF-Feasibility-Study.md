@@ -23,9 +23,9 @@ Nhóm đã phân tích **06 khía cạnh khả thi** dựa trên dữ liệu th�
 | STT | Nguồn dữ liệu | Nội dung đóng góp |
 | :---: | :--- | :--- |
 | **1** | Khảo sát thị trường & nghiệp vụ | Nhu cầu chuyển đổi số tại các trường đại học và thư viện tỉnh/thành phố. |
-| **2** | Kết quả thực nghiệm PoC | Tesseract OCR nhận dạng chữ tiếng Việt và HTML5 Canvas DRM chạy được trên trình duyệt. |
+| **2** | Kết quả thực nghiệm PoC | Luồng OCR tiếng Việt bất đồng bộ bằng Tesseract.js, Redis/BullMQ, MinIO và PostgreSQL chạy được với dữ liệu thật. |
 | **3** | Khảo sát Thủ thư | Phản hồi thực tế về giao diện đối soát hai màn hình. |
-| **4** | Ước lượng nguồn lực | 10 tuần, 06 sinh viên ($15$ giờ/người/tuần), ngân sách $4.400.000$ VNĐ. |
+| **4** | Ước lượng nguồn lực | 10 tuần, 06 sinh viên ($15$ giờ/người/tuần), ngân sách tiền mặt 0 VNĐ. |
 | **5** | Văn bản pháp lý | Luật Sở hữu trí tuệ, Luật An ninh mạng Việt Nam. |
 
 ---
@@ -38,9 +38,9 @@ Nhóm đã phân tích **06 khía cạnh khả thi** dựa trên dữ liệu th�
 * **Đánh giá:** **Khả thi cao.**
 
 ### 4.2 Kỹ thuật
-* **Tesseract OCR Engine** mã nguồn mở + OpenCV làm sạch ảnh quét, chạy hoàn toàn trên máy chủ nội bộ.
+* **Tesseract.js** mã nguồn mở với dữ liệu ngôn ngữ `vie+eng`, kết hợp worker Redis/BullMQ, chạy trong backend của nhóm.
 * HTML5 Canvas, Web Crypto API hỗ trợ trình đọc mã hóa và chống tải file không cần plugin.
-* PoC đã chứng minh cả OCR và Canvas DRM hoạt động chính xác (`LIBIF-Proof-Of-Concept.md`).
+* PoC đã chứng minh worker có thể xử lý OCR tiếng Việt bất đồng bộ, lưu văn bản thật và dữ liệu theo từng trang (`LIBIF-Proof-Of-Concept.md`). Canvas DRM được đánh giá riêng trong tài liệu Kiến trúc.
 * *Lưu ý:* Chống chụp màn hình trên Web chỉ đạt mức răn đe, không ngăn chặn $100\%$ thiết bị bên ngoài.
 * **Đánh giá:** **Khả thi.**
 
@@ -55,16 +55,15 @@ Nhóm đã phân tích **06 khía cạnh khả thi** dựa trên dữ liệu th�
 | :--- | :--- | ---: |
 | Công sức 06 sinh viên | 900 giờ-người, không trả lương | 0 |
 | Tesseract OCR | Mã nguồn mở, miễn phí | 0 |
-| Cloud | Azure for Students (miễn phí cho sinh viên) | 0 |
-| Coding Agent | Hạn mức sử dụng 10 tuần | 3.000.000 |
-| Tên miền, sao lưu & phụ trợ | Hạn mức đồ án | 600.000 |
-| Dữ liệu kiểm thử, in ấn & vật tư | Hạn mức | 400.000 |
-| **Tạm tính** |  | **4.000.000** |
-| Dự phòng rủi ro ($10\%$) |  | 400.000 |
-| **Tổng ngân sách dự kiến** |  | **4.400.000** |
+| Production backend/database | Azure for Students | 0 |
+| Production frontend | Vercel free tier | 0 |
+| Staging access | Tailscale Funnel | 0 |
+| Coding Agent | Subscription/free-tier sẵn có cho học tập | 0 |
+| Tên miền, dữ liệu kiểm thử và phụ trợ | Subdomain/tài nguyên sẵn có | 0 |
+| **Tổng ngân sách tiền mặt** |  | **0** |
 
-* Toàn bộ phần mềm lõi (OCR, bảo vệ bản quyền) đều miễn phí nhờ mã nguồn mở và Azure for Students.
-* **Đánh giá:** **Khả thi cao** — Chi phí rất thấp, nằm trong tầm kiểm soát.
+* Toàn bộ phần mềm lõi và môi trường triển khai dùng mã nguồn mở, Azure for Students, Vercel, Tailscale Funnel và các free-tier sẵn có.
+* **Đánh giá:** **Khả thi cao** — không phát sinh chi phí tiền mặt trong phạm vi đồ án học tập.
 
 ### 4.5 Tiến độ
 
@@ -93,9 +92,9 @@ Nhóm đã phân tích **06 khía cạnh khả thi** dựa trên dữ liệu th�
 | STT | Khía cạnh | Câu hỏi cốt lõi | Kết quả | Đánh giá |
 | :---: | :--- | :--- | :--- | :---: |
 | **1** | Kinh doanh | Thị trường có cần? | Nhu cầu lớn; thu phí linh hoạt. | **Khả thi cao** |
-| **2** | Kỹ thuật | Có đủ công nghệ? | Tesseract OCR + Canvas DRM đã chạy được trong PoC. | **Khả thi** |
+| **2** | Kỹ thuật | Có đủ công nghệ? | Luồng OCR tiếng Việt bất đồng bộ đã chạy được trong PoC; Canvas DRM có thiết kế kiến trúc riêng. | **Khả thi** |
 | **3** | Vận hành | Thủ thư dùng được? | Side-by-side mô phỏng đúng thói quen, không cần đào tạo IT sâu. | **Khả thi cao** |
-| **4** | Tài chính | Chi phí tầm tay? | $4.400.000$ VNĐ; $0$ VNĐ phí bản quyền; Azure for Students miễn phí. | **Khả thi cao** |
+| **4** | Tài chính | Chi phí tầm tay? | 0 VNĐ tiền mặt nhờ Azure for Students, Vercel, Tailscale Funnel, mã nguồn mở và free-tier. | **Khả thi cao** |
 | **5** | Tiến độ | 10 tuần làm kịp? | 136 SP / 5 Sprint; ưu tiên 13 tính năng bắt buộc. | **Khả thi** |
 | **6** | Pháp lý | Vi phạm bản quyền? | Tuân thủ Luật Sở hữu trí tuệ; có nhật ký giải trình. | **Khả thi cao** |
 
@@ -103,8 +102,7 @@ Nhóm đã phân tích **06 khía cạnh khả thi** dựa trên dữ liệu th�
 
 ## 6. Kết luận & Quyết định
 
-Dự án hoàn toàn khả thi về Kỹ thuật, Vận hành và Pháp lý. Tài chính rất thuận lợi nhờ Azure for Students miễn phí và công nghệ mã nguồn mở ($0$ VNĐ phí bản quyền). Tổng ngân sách chỉ $4.400.000$ VNĐ. Tất cả rủi ro đã được nhận diện và có phương án giảm thiểu.
+Dự án khả thi về Kỹ thuật, Vận hành và Pháp lý. Trong phạm vi đồ án học tập, tổng ngân sách tiền mặt là 0 VNĐ nhờ Azure for Students, Vercel, Tailscale Funnel, Coding Agent subscription/free-tier và công nghệ mã nguồn mở. Các rủi ro chính được nhận diện và có phương án giảm thiểu.
 
 > **QUYẾT ĐỊNH: Chấp thuận khởi động dự án (GO)**  
 > Kết quả phân tích trở thành căn cứ để ký duyệt Điều lệ dự án (`LIBIF-Project-Charter.md`) và chuyển sang lập Kế hoạch thực thi.
-

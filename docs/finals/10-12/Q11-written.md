@@ -5,7 +5,7 @@
 ## Mô hình cần vẽ
 
     Đầu vào: LIBIF-Project-Estimation.md (baseline: 136 SP, 900h→765h,
-             8,8 triệu VNĐ), Product Backlog, Architecture, Charter
+             0 VNĐ tiền mặt), Product Backlog, Architecture, Charter
                               │
                               ▼
               Áp dụng nguyên tắc W5HH để chuyển Baseline ước tính
@@ -33,7 +33,7 @@
    - WHY: Trả lời câu hỏi "Can we do it?" trước khi cam kết — theo nguyên tắc Why Planning (giảm bất định, tạo niềm tin, hỗ trợ quyết định).
 
 2. **WHAT — Baseline & WBS (Mục 2, 5)**
-   - WHAT: Baseline gồm 136 SP (104 SP Must Have), 900h → 765h effort, 8,8 triệu VNĐ. WBS phân rã thành 8 work package (1.0 Quản lý dự án → 8.0 Bàn giao học phần), mỗi package có owner rõ ràng.
+   - WHAT: Baseline gồm 136 SP (104 SP Must Have), 900h → 765h effort và 0 VNĐ tiền mặt. WBS phân rã thành 8 work package (1.0 Quản lý dự án → 8.0 Bàn giao học phần), mỗi package có owner rõ ràng.
    - WHY: WBS là cầu nối giữa Product Backlog (đơn vị SP) và tổ chức công việc thực tế (đơn vị package/owner) — theo nguyên tắc Decomposition trong slide WBS.
 
 3. **WHEN — Lịch trình (Mục 6)**

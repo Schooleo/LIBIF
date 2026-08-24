@@ -34,7 +34,7 @@ Tài liệu ước tính **kích cỡ, thời gian, công sức và chi phí** c
 
 1. `LIBIF-Product-Backlog.md` — 16 PBIs thuộc 05 Epic (13 Bắt Buộc, 03 Nên Làm).
 2. `LIBIF-Architecture.md` — Kiến trúc Monolith; React/Next.js, NestJS, PostgreSQL, Redis, MinIO, Tesseract, Docker.
-3. `LIBIF-Proof-Of-Concept.md` — PoC Canvas DRM và kế hoạch tích hợp.
+3. `LIBIF-Proof-Of-Concept.md` — PoC OCR tiếng Việt bất đồng bộ và kế hoạch tích hợp.
 4. `LIBIF-Project-Vision-Scope.md` — Phạm vi trong/ngoài dự án.
 5. `LIBIF-Project-Charter.md` — Sản phẩm bàn giao, tiêu chí thành công, ràng buộc và mốc thời gian.
 6. `LIBIF-Project-Proposal.md` — Tính khả thi, giả định và rủi ro.

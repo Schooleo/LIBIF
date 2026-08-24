@@ -10,7 +10,7 @@ Dùng cấu trúc ba ý:
 
 Điểm neo phải nhớ:
 
-    ĐẦU VÀO: Product Backlog (16 PBIs) + Proof of Concept + Ràng buộc (6 SV / 10 tuần / VPS ~4 triệu)
+    ĐẦU VÀO: Product Backlog (16 PBIs) + Proof of Concept OCR + Ràng buộc (6 SV / 10 tuần / 0 VNĐ)
          ↓
     ĐẦU RA — Software Architecture gồm:
       Kiến trúc tổng thể: Modular Monolith (không Microservices)
@@ -33,7 +33,7 @@ Dùng cấu trúc ba ý:
 
 ### 2. Tại sao chọn Modular Monolith thay vì Microservices?
 
-**Trả lời:** Modular Monolith phù hợp 6 sinh viên và 10 tuần vì: triển khai đơn giản qua Docker, chi phí hạ tầng thấp (4.000.000 VNĐ VPS), gọi hàm nội bộ hiệu năng cao, ranh giới module sạch sẽ và có thể tách thành Microservices khi quy mô lớn.
+**Trả lời:** Modular Monolith phù hợp 6 sinh viên, 10 tuần và ngân sách tiền mặt 0 VNĐ vì triển khai đơn giản qua Docker trên hạ tầng học tập/free-tier, gọi hàm nội bộ hiệu năng cao, ranh giới module sạch và có thể tách thành Microservices khi quy mô lớn.
 
 **Microservices** quá phức tạp — thêm độ trễ RPC và chi phí hạ tầng không cần thiết cho bản mẫu.
 
@@ -73,7 +73,7 @@ Dùng cấu trúc ba ý:
 
 ### 10. Proof of Concept có vai trò gì trong kiến trúc?
 
-**Trả lời:** PoC xác nhận Zero-Download Canvas DRM hoạt động được trên trình duyệt thực trước Sprint 1 — tránh phát hiện vấn đề kỹ thuật chí mạng ở tuần 8-9. Kết quả PoC là đầu vào xác nhận tính khả thi của lớp 2 và 3 trong DRM.
+**Trả lời:** PoC xác nhận PDF quét có thể được đưa vào Redis/BullMQ, xử lý OCR tiếng Việt ở worker nền và lưu văn bản thật theo từng trang. Kết quả này xác nhận tính khả thi của Pipe & Filter, đồng thời cung cấp dữ liệu cho đối soát và tìm kiếm; Canvas DRM được đánh giá như một quyết định kiến trúc riêng.
 
 ## Điều không nên nói
 

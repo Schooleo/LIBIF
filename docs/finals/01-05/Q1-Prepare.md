@@ -14,7 +14,7 @@ Dùng cấu trúc ba ý:
          ↓
     ĐẦU RA — Project Proposal gồm:
       Problem Statement | Mục tiêu & Tiêu chí | Scope (In/Out)
-      Deliverables | Time (10 tuần) | Cost (8.800.000 VNĐ)
+      Deliverables | Time (10 tuần) | Cost (0 VNĐ tiền mặt)
       Feasibility (Kỹ thuật / Tiến độ / Tài chính) | Rủi ro chính
          ↓
     → Đầu vào cho Vision & Scope và Project Charter
@@ -77,13 +77,13 @@ Dùng cấu trúc ba ý:
 
 **Trả lời:** Yêu cầu không rõ, thiếu tham gia của stakeholder, ước tính không chính xác, rủi ro kỹ thuật không được quản lý, năng lực nhóm không đủ.
 
-**LIBIF:** Nhóm kiểm soát bằng phạm vi rõ ràng, Proof of Concept xác nhận DRM trước khi code, và ưu tiên tái sử dụng hạ tầng sẵn có.
+**LIBIF:** Nhóm kiểm soát bằng phạm vi rõ ràng, Proof of Concept xác nhận luồng OCR tiếng Việt trước khi mở rộng, và ưu tiên tái sử dụng hạ tầng sẵn có.
 
 ### 12. Ràng buộc dự án có ý nghĩa gì?
 
 **Trả lời:** Ràng buộc là giới hạn không thể thương lượng, xác định không gian giải pháp khả thi và là căn cứ từ chối yêu cầu bất khả thi.
 
-**LIBIF:** 6 sinh viên, 15 giờ/người/tuần, 10 tuần, trần chi phí 10.000.000 VNĐ; ràng buộc này quyết định chọn Modular Monolith thay vì Microservices.
+**LIBIF:** 6 sinh viên, 15 giờ/người/tuần, 10 tuần và ngân sách tiền mặt 0 VNĐ; ràng buộc này khiến nhóm ưu tiên Modular Monolith, công cụ mã nguồn mở và các dịch vụ free-tier thay vì giải pháp tốn phí.
 
 ## Điều không nên nói
 

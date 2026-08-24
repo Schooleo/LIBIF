@@ -25,7 +25,7 @@
 
 ### B3. Đánh giá Báo cáo khả thi?
 * Đánh giá chéo nội bộ (Tech Lead kiểm kỹ thuật, SM kiểm tiến độ, PO kiểm kinh doanh).
-* Tính khả thi kỹ thuật được kiểm chứng bằng mã PoC chạy thực tế.
+* Tính khả thi kỹ thuật của luồng OCR tiếng Việt bất đồng bộ được kiểm chứng bằng mã PoC và kiểm thử tích hợp chạy thực tế.
 * Kết quả: 6/6 khía cạnh đạt **Khả thi**, phê duyệt quyết định **"GO"**.
 
 ---
@@ -63,8 +63,8 @@ Trả lời câu hỏi cốt lõi: "Dự án có đáng làm và có làm đư�
                                 │
                                 ▼
 [KẾT QUẢ ĐÁNH GIÁ 6 KHÍA CẠNH (TẤT CẢ ĐẠT KHẢ THI)]
-1. Kinh doanh: Nhu cầu lớn, thu phí linh hoạt    4. Tài chính: Tiết kiệm tối đa, 0 VNĐ phí bản quyền
-2. Kỹ thuật: Tesseract + OpenCV + Canvas DRM      5. Tiến độ: 10 tuần (5 Sprint) cho 13 Must Have
+1. Kinh doanh: Nhu cầu số hóa rõ                  4. Tài chính: 0 VNĐ tiền mặt nhờ free-tier
+2. Kỹ thuật: Tesseract.js + Redis/BullMQ OCR      5. Tiến độ: 10 tuần (5 Sprint) cho 13 Must Have
 3. Vận hành: Giao diện chia đôi dễ dùng           6. Pháp lý: Tuân thủ Luật SHTT, có nhật ký giải trình
 ==> KẾT LUẬN: Ra quyết định "GO" (Đủ điều kiện phê duyệt khởi động dự án)
                                 │

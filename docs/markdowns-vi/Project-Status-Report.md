@@ -34,25 +34,21 @@ DÒNG THỜI GIAN TIẾN ĐỘ DỰ ÁN (TUẦN 1 - TUẦN 8)
 
 ---
 
-## 2. PHÂN TÍCH EARNED VALUE MANAGEMENT (EVM)
+## 2. THEO DÕI CHI PHÍ VÀ CÔNG SỨC
 
-Để đo lường định lượng hiệu quả tiến độ và ngân sách, đội ngũ áp dụng phương pháp **Earned Value Management (EVM)** tại Tuần 4 với Tổng ngân sách Phê duyệt (BAC) là **90.500.000 VNĐ** (6 kỹ sư, 8 tuần).
+LIBIF là đồ án học tập nên baseline chi phí tiền mặt bằng **0 VNĐ**. Nhóm sử dụng Coding Agent subscription/free-tier, Azure for Students và Vercel cho production, Tailscale Funnel cho staging, cùng các công cụ mã nguồn mở. Công sức sinh viên được theo dõi bằng giờ-người, không quy đổi thành chi phí lương giả định.
 
-### 2.1 Các Chỉ số EVM tại Tuần 4
+### 2.1 Tình trạng chi phí tại Tuần 4
 
-| Chỉ số | Viết tắt | Giá trị Tính toán | Công thức / Ý nghĩa |
-|---|:---:|:---:|---|
-| **Tổng Ngân sách Dự án** | **BAC** | **90.500.000 VNĐ** | Tổng ngân sách cơ sở được duyệt |
-| **Giá trị Theo Kế hoạch** | **PV** | **45.250.000 VNĐ** | Giá trị kế hoạch tại Tuần 4 (50% BAC) |
-| **Giá trị Thu được** | **EV** | **47.060.000 VNĐ** | Giá trị thực tế của công việc hoàn thành (~52% BAC) |
-| **Chi phí Thực tế** | **AC** | **41.200.000 VNĐ** | Chi phí thực tế đã phát sinh sau 4 tuần |
-| **Chênh lệch Chi phí** | **CV** | **+5.860.000 VNĐ** | `EV - AC` (> 0: Tiết kiệm chi phí) |
-| **Chênh lệch Tiến độ** | **SV** | **+1.810.000 VNĐ** | `EV - PV` (> 0: Nhanh hơn tiến độ) |
-| **Chỉ số Hiệu năng Chi phí** | **CPI** | **1.14** | `EV / AC` (> 1.0: Hiệu quả chi phí cao) |
-| **Chỉ số Hiệu năng Tiến độ**| **SPI** | **1.04** | `EV / PV` (> 1.0: Nhanh hơn 4% so với kế hoạch) |
-| **Dự báo Chi phí Hoàn thành** | **EAC** | **79.385.964 VNĐ** | `BAC / CPI` (Dự báo tổng chi phí khi kết thúc) |
+| Chỉ số | Giá trị | Ý nghĩa |
+|---|:---:|---|
+| **Ngân sách tiền mặt cơ sở** | **0 VNĐ** | Không dự kiến phát sinh giao dịch tiền mặt trong phạm vi đồ án |
+| **Chi phí tiền mặt thực tế** | **0 VNĐ** | Các môi trường và công cụ đang dùng thuộc free-tier/tài nguyên học tập |
+| **Chi phí tiền mặt cam kết** | **0 VNĐ** | Không có hợp đồng hoặc dịch vụ trả phí đã cam kết |
+| **Dự báo hoàn thành** | **0 VNĐ** | Tiếp tục dùng các lựa chọn miễn phí hiện tại |
+| **Công sức** | Theo dõi bằng giờ-người | Dùng để cân bằng tải và tái ước lượng, không quy đổi thành lương |
 
-> 🟢 **Tóm tắt Chỉ số:** Với **CPI = 1.14** và **SPI = 1.04**, dự án đang vận hành rất hiệu quả. Tiến độ **nhanh hơn 4% so với kế hoạch**, tiết kiệm **14% chi phí nhân công** nhờ sự hỗ trợ của trợ lý lập trình AI giúp giảm thời gian gỡ lỗi.
+Vì BAC và AC tiền mặt đều bằng 0, các chỉ số chi phí EVM như CPI hoặc CV không có ý nghĩa toán học cho đồ án này. Tiến độ được đánh giá bằng Story Points, velocity, burndown và Sprint Goal; effort được đánh giá bằng planned/actual hours.
 
 ---
 
@@ -84,7 +80,7 @@ Story Points
 | **US-03** | Xử lý & Tesseract OCR | 13 SP | 🟢 Hoàn thành (Done) | Chuyên gia AI + Redis BullMQ Queue |
 | **US-04** | Cổng Danh mục Trực tuyến | 8 SP | 🟢 Hoàn thành (Done) | Kỹ sư Frontend & Backend |
 | **US-05** | Tìm kiếm Nội dung Toàn văn | 8 SP | 🟡 Đang Thực hiện (50%) | Đã đánh chỉ mục, đang nối API Viewer |
-| **US-06** | Trình đọc DRM Canvas Reader | 13 SP | 🟡 Đang Thực hiện (40%) | Đã xác minh PoC, đang đóng gói UI |
+| **US-06** | Trình đọc DRM Canvas Reader | 13 SP | 🟡 Đang Thực hiện (40%) | Đã có thiết kế kiến trúc, đang đóng gói UI |
 | **US-07** | Dashboard Thống kê | 8 SP | ⚪ Chờ Thực hiện | Lập kế hoạch cho Sprint 4 |
 | **US-08** | Quy trình Phê duyệt Sách | 5 SP | ⚪ Chờ Thực hiện | Lập kế hoạch cho Sprint 3 |
 | **US-09** | Quản lý Thẻ & Danh mục | 5 SP | ⚪ Chờ Thực hiện | Lập kế hoạch cho Sprint 4 |
@@ -107,4 +103,4 @@ Story Points
 2. **Hoàn thành US-06 (Component DRM Canvas Reader):** Đóng gói giao diện reader chính thức với chèn watermark người dùng động.
 3. **Hoàn thành US-08 (Quy trình Phê duyệt Sách):** Xây dựng giao diện phê duyệt của thủ thư trước khi xuất bản sách cho độc giả.
 
-> **ĐÁNH GIÁ CỦA TRỢ LÝ AI:** Dự án LIBIF duy trì nhịp độ phát triển mượt mà. Các rủi ro kỹ thuật đã được vô hiệu hóa thông qua kiểm thử PoC. Dự án hoàn toàn đi đúng hướng cho lần ký duyệt cuối cùng vào Tuần 8.
+> **ĐÁNH GIÁ TỔNG THỂ:** PoC OCR đã giảm rủi ro của luồng xử lý tài liệu nền. Các rủi ro còn lại về tiến độ, bảo mật trình đọc và chất lượng dữ liệu vẫn phải được theo dõi trong các Sprint tiếp theo.

@@ -38,7 +38,7 @@ Mục tiêu quản lý dự án gồm:
 | 2 | `LIBIF-Project-Vision-Scope.md` | Hiện trạng, bài toán, ranh giới phạm vi trong (In-scope) và ngoài (Out-of-scope) |
 | 3 | `LIBIF-Product-Backlog.md` | 16 PBIs với User Stories, Acceptance Criteria và mức ưu tiên MoSCoW |
 | 4 | `LIBIF-Architecture.md` | Kiến trúc Modular Monolith, tech stack, sơ đồ phân rã thành phần và ràng buộc kỹ thuật |
-| 5 | `LIBIF-Proof-Of-Concept.md` | Kết quả PoC Canvas DRM, xác nhận tính khả thi kỹ thuật |
+| 5 | `LIBIF-Proof-Of-Concept.md` | Kết quả PoC OCR tiếng Việt bất đồng bộ, xác nhận tính khả thi kỹ thuật của luồng xử lý nền |
 | 6 | `LIBIF-Project-Estimation.md` | Baseline quy mô (136 SP), thời gian (10 tuần, 05 Sprint), công sức (900h), chi phí (0 VNĐ) |
 | 7 | `LIBIF-Statement-Of-Work.md` | Thỏa thuận cam kết phạm vi và danh mục sản phẩm bàn giao (DEL-01 → DEL-08) |
 

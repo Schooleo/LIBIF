@@ -35,25 +35,21 @@ TIẾN ĐỘ DỰ ÁN THEO THỜI GIAN (WEEK 1 - WEEK 8)
 
 ---
 
-## 2. ĐÁNH GIÁ CHỈ SỐ EVM & CHI PHÍ THỰC TẾ (EARNED VALUE MANAGEMENT)
+## 2. THEO DÕI CHI PHÍ VÀ CÔNG SỨC
 
-Để đo lường định lượng chính xác hiệu quả tiến độ và ngân sách, nhóm áp dụng kỹ thuật **Earned Value Management (EVM)** tại mốc Tuần 4 với tổng ngân sách phát triển (BAC - Budget at Completion) là **90.500.000 VNĐ** (cho 6 nhân sự trong 8 tuần).
+LIBIF là đồ án học tập nên baseline chi phí tiền mặt bằng **0 VNĐ**. Nhóm sử dụng Coding Agent subscription/free-tier, Azure for Students và Vercel cho production, Tailscale Funnel cho staging, cùng các công cụ mã nguồn mở. Công sức sinh viên được theo dõi bằng giờ-người, không quy đổi thành chi phí lương giả định.
 
-### 2.1 Bảng tính chỉ số EVM tại Tuần 4
+### 2.1 Tình trạng chi phí tại Tuần 4
 
-| Chỉ số EVM | Tên viết tắt | Giá trị Tính toán (VNĐ / Chỉ số) | Công thức / Ý nghĩa |
-|---|:---:|:---:|---|
-| **Budget at Completion** | **BAC** | **90.500.000 VNĐ** | Tổng ngân sách dự kiến của dự án |
-| **Planned Value** | **PV** | **45.250.000 VNĐ** | Giá trị kế hoạch phải đạt tại Tuần 4 (50% BAC) |
-| **Earned Value** | **EV** | **47.060.000 VNĐ** | Giá trị thực tế công việc đã hoàn thành (~52% BAC) |
-| **Actual Cost** | **AC** | **41.200.000 VNĐ** | Chi phí thực tế đã chi trả cho 4 tuần đầu |
-| **Cost Variance** | **CV** | **+5.860.000 VNĐ** | `EV - AC` (> 0: Tiết kiệm chi phí) |
-| **Schedule Variance** | **SV** | **+1.810.000 VNĐ** | `EV - PV` (> 0: Vượt tiến độ kế hoạch) |
-| **Cost Performance Index** | **CPI** | **1.14** | `EV / AC` (> 1.0: Hiệu quả chi phí tốt) |
-| **Schedule Performance Index**| **SPI** | **1.04** | `EV / PV` (> 1.0: Tiến độ nhanh hơn kế hoạch 4%) |
-| **Estimate at Completion** | **EAC** | **79.385.964 VNĐ** | `BAC / CPI` (Dự báo tổng chi phí khi hoàn thành dự án) |
+| Chỉ số | Giá trị | Ý nghĩa |
+|---|:---:|---|
+| **Ngân sách tiền mặt cơ sở** | **0 VNĐ** | Không dự kiến phát sinh giao dịch tiền mặt trong phạm vi đồ án |
+| **Chi phí tiền mặt thực tế** | **0 VNĐ** | Các môi trường và công cụ đang dùng thuộc free-tier/tài nguyên học tập |
+| **Chi phí tiền mặt cam kết** | **0 VNĐ** | Không có hợp đồng hoặc dịch vụ trả phí đã cam kết |
+| **Dự báo hoàn thành** | **0 VNĐ** | Tiếp tục dùng các lựa chọn miễn phí hiện tại |
+| **Công sức** | Theo dõi bằng giờ-người | Dùng để cân bằng tải và tái ước lượng, không quy đổi thành lương |
 
-> 🟢 **Nhận xét chỉ số:** Với **CPI = 1.14** và **SPI = 1.04**, dự án đang hoạt động cực kỳ hiệu quả. Tiến độ nhanh hơn kế hoạch **4%** và tiết kiệm được **14% chi phí thù lao nhân sự** nhờ sự hỗ trợ đắc lực của công cụ AI Coding Assistants giúp giảm bớt thời gian sửa lỗi (debugging).
+Vì BAC và AC tiền mặt đều bằng 0, các chỉ số chi phí EVM như CPI hoặc CV không có ý nghĩa toán học cho đồ án này. Tiến độ được đánh giá bằng Story Points, velocity, burndown và Sprint Goal; effort được đánh giá bằng planned/actual hours.
 
 ---
 
@@ -85,7 +81,7 @@ Story Points
 | **US-03** | Processing & VietOCR | 13 SP | 🟢 Complete (Done) | AI Specialist + Redis BullMQ Queue |
 | **US-04** | Cổng tra cứu Catalog | 8 SP | 🟢 Complete (Done) | Frontend & Backend Engineers |
 | **US-05** | Tìm kiếm nội dung Full-text | 8 SP | 🟡 In Progress (50%) | Đã xong Indexing, đang nối API Viewer |
-| **US-06** | Trình xem bảo mật DRM Canvas | 13 SP | 🟡 In Progress (40%) | Đã xong PoC, đang đóng gói UI |
+| **US-06** | Trình xem bảo mật DRM Canvas | 13 SP | 🟡 In Progress (40%) | Đã có thiết kế kiến trúc, đang đóng gói UI |
 | **US-07** | Dashboard Thống kê | 8 SP | ⚪ Pending | Đã lên kịch bản, làm trong Sprint 4 |
 | **US-08** | Duyệt sách (Approval) | 5 SP | ⚪ Pending | Làm trong Sprint 3 |
 | **US-09** | Quản lý Tags & Category | 5 SP | ⚪ Pending | Làm trong Sprint 4 |
@@ -109,4 +105,4 @@ Dựa trên kết quả theo dõi tiến độ Tuần 4, nhóm thiết lập cá
 2. **Hoàn thiện US-06 (DRM Canvas Reader Component):** Đóng gói UI đọc sách chính thức, áp dụng Dynamic Watermark mờ mang thông tin tài khoản đọc.
 3. **Hoàn thiện US-08 (Librarian Approval Workflow):** Xây dựng trang quản trị phê duyệt sách trước khi xuất bản công khai.
 
-> **ĐÁNH GIÁ TỔNG THỂ CỦA AI ASSISTANT:** Dự án LIBIF đang giữ vững nhịp độ phát triển mượt mà. Rủi ro về mặt kỹ thuật đã được triệt tiêu qua bước PoC. Dự án hoàn toàn đủ khả năng nghiệm thu đúng hạn vào cuối Tuần 8.
+> **ĐÁNH GIÁ TỔNG THỂ:** PoC OCR đã giảm rủi ro của luồng xử lý tài liệu nền. Các rủi ro còn lại về tiến độ, bảo mật trình đọc và chất lượng dữ liệu vẫn phải được theo dõi trong các Sprint tiếp theo.
