@@ -36,8 +36,8 @@ QMP quy định cách nhóm **bảo đảm chất lượng (QA)**, **kiểm soá
 | SOW | [`LIBIF-Statement-Of-Work.md`](../../../markdowns-vi-v2/LIBIF-Statement-Of-Work.md) | Truy vết AC-01…AC-08 và deliverable |
 | Architecture | [`LIBIF-Architecture.md`](../../../markdowns-vi-v2/LIBIF-Architecture.md) | Chọn thuộc tính chất lượng và rủi ro kỹ thuật |
 | Project Planning/Monitoring | [`LIBIF-Project-Planning.md`](../../../markdowns-vi-v2/LIBIF-Project-Planning.md), [`LIBIF-Project-Monitoring.md`](../../../markdowns-vi-v2/LIBIF-Project-Monitoring.md) | Chu kỳ Sprint, DoD, chỉ số và kiểm soát sai lệch |
-| Risk plan | [`LIBIF-Software-Risk-Management-Plan.md`](../../../markdowns-vi-v2/LIBIF-Software-Risk-Management-Plan.md) | Xác định risk owner, trigger và phương án dự phòng |
-| Evidence thực thi | [Sprint 5 report](../../../../ai_artifacts/sprints/sprint-2026-07-24.md), [PBI traceability](../../../../ai_artifacts/sprints/pbi-traceability.md) | Đối chiếu kế hoạch với kết quả thực tế và gap |
+| Risk plan | [`LIBIF-Software-Risk-Management-Plan.md`](../../16-18/Q18-Prints/LIBIF-Software-Risk-Management-Plan.md) | Xác định risk owner, trigger và phương án dự phòng |
+| Evidence thực thi | [Sprint 5 report](../../../../ai_artifacts/sprints/sprint-2026-07-24-phase-7-waves-5-7-and-phase-8.md) | Đối chiếu kế hoạch với kết quả thực tế và gap |
 
 ## 3. Chính sách và mục tiêu chất lượng
 
