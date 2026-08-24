@@ -358,18 +358,3 @@ SOW được xem là hoàn tất khi:
 - Retrospective cuối dự án và lessons learned được ghi nhận.
 
 Những hạng mục ngoài phạm vi hoặc chưa hoàn thành được đưa vào Product Backlog/Roadmap sau học phần, không mặc nhiên kéo dài nghĩa vụ của SOW.
-
----
-
-## 16. Xác nhận Phạm vi Công việc
-
-| Vai trò | Nội dung xác nhận | Họ tên | Ngày/Xác nhận |
-| :--- | :--- | :--- | :--- |
-| Product Owner/Đại diện nhóm | Phạm vi, ưu tiên và deliverables |  |  |
-| Scrum Master/Trưởng nhóm | Tiến độ, nguồn lực và quy trình thực hiện |  |  |
-| Đại diện nhóm phát triển | Capacity, Definition of Done và trách nhiệm bàn giao |  |  |
-| Giảng viên phụ trách | Sự phù hợp với mục tiêu và yêu cầu học phần |  |  |
-
----
-
-> **Xác nhận:** `LIBIF-Statement-Of-Work.md` là cơ sở thống nhất phạm vi công việc của đồ án LIBIF. Khi SOW và Product Backlog khác nhau, thay đổi được phê duyệt gần nhất và có bằng chứng trong hồ sơ dự án là căn cứ áp dụng.

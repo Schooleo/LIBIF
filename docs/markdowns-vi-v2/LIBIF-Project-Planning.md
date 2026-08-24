@@ -18,7 +18,7 @@
 
 ## 1. Mục đích Tài liệu
 
-Tài liệu này mô tả cách nhóm lập kế hoạch, tổ chức, thực hiện, theo dõi và kết thúc đồ án LIBIF trong học phần Quản lý Dự án Phần mềm. Theo lý thuyết quản lý dự án (Slide 06 – Software Project Planning & Slide 06.1 – Agile Planning), Kế hoạch dự án là **"bản đồ dẫn đường" (Navigation Map)** tích hợp toàn bộ các hoạt động kỹ thuật và quản trị theo nguyên lý W5HH (Barry Boehm), đồng thời chuyển hóa các baseline từ `LIBIF-Project-Estimation.md` thành hoạt động điều hành cụ thể cho 05 Sprint.
+Tài liệu này mô tả cách nhóm lập kế hoạch, tổ chức, thực hiện, theo dõi và kết thúc đồ án LIBIF trong học phần Quản lý Dự án Phần mềm. Theo lý thuyết quản lý dự án, Kế hoạch dự án là **"bản đồ dẫn đường" ** tích hợp toàn bộ các hoạt động kỹ thuật và quản trị theo nguyên lý W5HH (Barry Boehm), đồng thời chuyển hóa các baseline từ `LIBIF-Project-Estimation.md` thành hoạt động điều hành cụ thể cho 05 Sprint.
 
 Mục tiêu quản lý dự án gồm:
 
@@ -28,9 +28,7 @@ Mục tiêu quản lý dự án gồm:
 - Phân công minh bạch, cân bằng đóng góp và giảm phụ thuộc vào cá nhân.
 - Sử dụng Coding Agent có kiểm soát, tuân thủ quy định học thuật và bảo đảm thành viên hiểu đầu ra.
 
-### 1.1 Quá trình Hình thành, Đầu vào và Phương pháp Đánh giá Kế hoạch
-
-#### Tài liệu đầu vào (Inputs)
+### Tài liệu đầu vào
 
 | # | Tài liệu đầu vào | Vai trò đối với Kế hoạch dự án |
 | :---: | :--- | :--- |
@@ -40,24 +38,6 @@ Mục tiêu quản lý dự án gồm:
 | 4 | `LIBIF-Architecture.md` | Kiến trúc Modular Monolith, tech stack, sơ đồ phân rã thành phần và ràng buộc kỹ thuật |
 | 5 | `LIBIF-Proof-Of-Concept.md` | Kết quả PoC OCR tiếng Việt bất đồng bộ, xác nhận tính khả thi kỹ thuật của luồng xử lý nền |
 | 6 | `LIBIF-Project-Estimation.md` | Baseline quy mô (136 SP), thời gian (10 tuần, 05 Sprint), công sức (900h), chi phí (0 VNĐ) |
-| 7 | `LIBIF-Statement-Of-Work.md` | Thỏa thuận cam kết phạm vi và danh mục sản phẩm bàn giao (DEL-01 → DEL-08) |
-
-#### Các bước hình thành Kế hoạch
-
-1. **Xác lập mục tiêu & tiêu chí thành công:** Định nghĩa 07 tiêu chí thành công cụ thể (SC-01 đến SC-07) trả lời câu hỏi *Why & What* theo nguyên lý W5HH.
-2. **Xây dựng cấu trúc phân rã công việc (WBS):** Phân rã dự án thành 08 gói công việc (1.0 Quản lý đến 8.0 Bàn giao) từ Product Backlog và Deliverables.
-3. **Thiết lập cơ cấu tổ chức & RACI:** Phân định 06 vai trò chính/kiêm nhiệm và thiết lập ma trận RACI (*Who & Where*).
-4. **Lập kế hoạch phát hành Agile (Fixed-Date Release Plan):** Phân bổ 136 SP vào 05 Sprint (Sprint Mapping) với 05 mốc Milestone G1 → G5 (*When*).
-5. **Xây dựng kế hoạch quản lý chất lượng:** Thiết lập luồng trạng thái Kanban/Scrum, tiêu chuẩn Definition of Ready (DoR) và Definition of Done (DoD) (*How*).
-6. **Xây dựng các kế hoạch tích hợp quản trị:** Kế hoạch nguồn lực, chi phí 0 VNĐ, giao tiếp, quản lý rủi ro (Risk Register), quản lý thay đổi và cấu hình.
-7. **Lập kế hoạch kết thúc dự án & ký duyệt:** Quy trình đóng dự án và cơ chế phê duyệt kế hoạch.
-
-#### Phương pháp đánh giá và thẩm định Kế hoạch
-
-1. **Tính đầy đủ và khả thi (Completeness & Feasibility):** Rà soát toàn bộ các gói WBS, đảm bảo bao phủ đầy đủ 7 câu hỏi W5HH và các cấp độ Agile Planning Onion; khối lượng 136 SP khả thi trong 10 tuần với 900 giờ công.
-2. **Sự đồng thuận và cam kết của nhóm (Team Consensus & Commitment):** Toàn bộ 06 thành viên cam kết capacity 15 giờ/tuần, đồng thuận với vai trò phân công trong ma trận RACI và tiêu chuẩn Definition of Done.
-3. **Tính nhất quán đa tài liệu (Cross-document Consistency):** Đối chiếu và khớp nối tuyệt đối với Baseline của `LIBIF-Project-Estimation.md` (136 SP, 900h, 0 VNĐ), `LIBIF-Statement-Of-Work.md` và `LIBIF-Product-Backlog.md`.
-4. **Khả năng thích ứng và kiểm soát (Adaptability & Agility):** Kế hoạch định kỳ được đánh giá lại sau mỗi Sprint Review/Retro và tái ước tính tại mốc Sprint 1 & Sprint 2; có kịch bản co giãn 3 Should Have khi velocity giảm.
 
 ---
 
@@ -385,18 +365,3 @@ Dự án được đóng khi hoàn thành các hoạt động sau:
 - Thực hiện demo/nộp bài theo yêu cầu học phần.
 - Tổ chức Retrospective cuối dự án và ghi lessons learned.
 - Đối chiếu contribution của các thành viên và quyết toán chi phí thực tế.
-
----
-
-## 15. Phê duyệt Kế hoạch
-
-| Vai trò | Trách nhiệm phê duyệt | Họ tên | Ngày/Xác nhận |
-| :--- | :--- | :--- | :--- |
-| Product Owner/Đại diện nhóm | Xác nhận phạm vi và sản phẩm bàn giao |  |  |
-| Scrum Master/Trưởng nhóm | Xác nhận tiến độ, nguồn lực và cơ chế kiểm soát |  |  |
-| Đại diện nhóm phát triển | Xác nhận capacity và Definition of Done |  |  |
-| Giảng viên phụ trách | Xác nhận phù hợp yêu cầu học phần |  |  |
-
----
-
-> **Xác nhận:** `LIBIF-Project-Planning.md` là kế hoạch điều hành đồ án LIBIF trong 10 tuần. Khi có thay đổi baseline được chấp thuận, Product Owner và Scrum Master phải cập nhật tài liệu hoặc lưu quyết định trong hồ sơ Sprint tương ứng.
