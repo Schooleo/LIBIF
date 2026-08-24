@@ -16,13 +16,13 @@
               Compose → runtime services
               Make/scripts + Actions → automation
 
-    ┌────────────────┬────────────────────┬──────────────────────┐
-    │ DEV            │ STAGING            │ PRODUCTION           │
-    ├────────────────┼────────────────────┼──────────────────────┤
+    ┌────────────────┬────────────────────┬───────────────────────┐
+    │ DEV            │ STAGING            │ PRODUCTION            │
+    ├────────────────┼────────────────────┼───────────────────────┤
     │ branch dev     │ branch main        │ tag vMAJOR.MINOR.PATCH│
-    │ image latest   │ image full SHA     │ backend image vX.Y.Z │
+    │ image latest   │ image full SHA     │ backend image vX.Y.Z  │
     │ local/dev test │ Compose + Funnel   │ Web Vercel + API Azure│
-    └────────────────┴────────────────────┴──────────────────────┘
+    └────────────────┴────────────────────┴───────────────────────┘
 
 ## Giải thích
 
