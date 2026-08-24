@@ -113,7 +113,6 @@
 Lập kế hoạch Sprint -> Viết mã -> Kiểm tra chéo -> Triển khai máy chủ thử nghiệm -> Đạt chuẩn DoD -> Họp demo
                                 │
                                 ▼
-[ĐÁNH GIÁ & CẬP NHẬT QUY TRÌNH]
+[ĐÁNH GIÁ QUY TRÌNH]
 • Đánh giá: Họp Rút kinh nghiệm mỗi 2 tuần -> Đo vận tốc 26-29 SP/Sprint -> Đạt 100% tiêu chí nghiệm thu
-• Cập nhật: Sprint 2 điều động SV-6 hỗ trợ giao diện Side-by-side để giải phóng đường găng tiến độ
 ```
